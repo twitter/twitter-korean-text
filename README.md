@@ -84,7 +84,8 @@ TwitterKoreanProcessor.scala is the central object that provides interface for a
 
 ## Tools
 
-
+We provide tools for quality assurance and test resources. They can be found under [src/main/scala/com/twitter/penguin/korean/qa](src/main/scala/com/twitter/penguin/korean/qa) and [src/main/scala/com/twitter/penguin/korean/tools](src/main/scala/com/twitter/penguin/korean/tools).
+ 
 
 ## Author(s)
 
