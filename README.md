@@ -2,9 +2,14 @@
 
 ## twitter-korean-text [![Build Status](https://secure.travis-ci.org/twitter/twitter-korean-text.png?branch=master)](http://travis-ci.org/twitter/twitter-korean-text)
 
-Scala library to process Korean text.
+Scala library to process Korean text. twitter-korean-text currently provides Korean normalization and tokenization. 
 
 ## Usage
+
+from Scala
+
+from Java
+
 
 ### Maven
 ```xml
@@ -17,9 +22,15 @@ Scala library to process Korean text.
 
 ### Basics
 
+TwitterKoreanProcessor.scala is the central object that provides interface for all the features.
+
 ## Running Tests
 
 `mvn test` will run our unit tests
+
+## Tools
+
+
 
 ## Author(s)
 
