@@ -11,7 +11,7 @@ To include this in your Maven-based JVM project, add the following lines to your
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>0.1.0</version>
+    <version>1.0-SNAPSHOT</version>
   <dependency>
 ```
 
