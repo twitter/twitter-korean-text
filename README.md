@@ -89,7 +89,7 @@ We provide tools for quality assurance and test resources. They can be found und
 
 ## Author(s)
 
-* Hohyon "Will" Ryu: https://github.com/softbass https://twitter.com/NLPenguin
+* Hohyon "Will" Ryu: https://github.com/nlpenguin https://twitter.com/NLPenguin
 
 ## License
 
