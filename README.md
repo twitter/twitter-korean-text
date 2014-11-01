@@ -86,6 +86,9 @@ public class JavaTwitterKoreanTextExample {
 
 We provide tools for quality assurance and test resources. They can be found under [src/main/scala/com/twitter/penguin/korean/qa](src/main/scala/com/twitter/penguin/korean/qa) and [src/main/scala/com/twitter/penguin/korean/tools](src/main/scala/com/twitter/penguin/korean/tools).
  
+## Contribution
+
+Refer to the [general contribution guide](CONTRIBUTING.md). We will add this project-specific contribution guide later.
 
 ## Author(s)
 
