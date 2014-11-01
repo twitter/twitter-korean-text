@@ -76,7 +76,7 @@ public class JavaTwitterKoreanTextExample {
 
 ### Basics
 
-TwitterKoreanProcessor.scala is the central object that provides interface for all the features.
+[TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) is the central object that provides interface for all the features.
 
 ## Running Tests
 
