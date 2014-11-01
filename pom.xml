@@ -16,8 +16,7 @@
     limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.twitter.penguin</groupId>
   <artifactId>korean-text</artifactId>
@@ -36,12 +35,12 @@
   <scm>
     <url>https://github.com/twitter/twitter-korean-text</url>
     <connection>scm:git:git@github.com:twitter/twitter-korean-text.git</connection>
+    <tag>HEAD</tag>
   </scm>
   <developers>
     <developer>
       <id>nlpenguin</id>
       <name>Hohyon Ryu</name>
-      <email>james.ross.koval@gmail.com</email>
       <url>https://twitter.com/nlpenguin</url>
     </developer>
   </developers>
@@ -138,6 +137,11 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.1</version>
       </plugin>
     </plugins>
   </build>
