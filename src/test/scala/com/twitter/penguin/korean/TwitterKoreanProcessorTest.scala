@@ -119,19 +119,19 @@ class TwitterKoreanProcessorTest extends FunSuite {
     time(tokenizeWithNormalization("아그리고선생님"))
 
     assert(
-      time(tokenizeWithNormalization("아그리고선생님")) < 500
+      time(tokenizeWithNormalization("아그리고선생님")) < 1000
     )
     assert(
-      time(tokenizeWithNormalization("아그리고선생님이사람의정말귀여운헐쵸귀여운개루루엄청작아서귀엽다안녕ㅋㅋ")) < 500
+      time(tokenizeWithNormalization("아그리고선생님이사람의정말귀여운헐쵸귀여운개루루엄청작아서귀엽다안녕ㅋㅋ")) < 1000
     )
     assert(
-      time(tokenizeWithNormalization("강원랜드잭팟이용하세요")) < 500
+      time(tokenizeWithNormalization("강원랜드잭팟이용하세요")) < 1000
     )
     assert(
-      time(tokenizeWithNormalization("강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 500
+      time(tokenizeWithNormalization("강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 1000
     )
     assert(
-      time(tokenizeWithNormalization("감동적인강남카지노브라보카지노라오스카지노강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 500
+      time(tokenizeWithNormalization("감동적인강남카지노브라보카지노라오스카지노강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 1000
     )
   }
 
