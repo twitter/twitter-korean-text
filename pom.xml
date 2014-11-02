@@ -34,9 +34,13 @@
   </licenses>
   <scm>
     <url>https://github.com/twitter/twitter-korean-text</url>
-    <connection>scm:git:git@github.com:twitter/twitter-korean-text.git</connection>
+    <connection>scm:git:https://github.com/twitter/twitter-korean-text.git</connection>
+    <developerConnection>scm:git:git@github.com:twitter/twitter-korean-text.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
   <developers>
     <developer>
       <id>nlpenguin</id>
@@ -44,6 +48,10 @@
       <url>https://twitter.com/nlpenguin</url>
     </developer>
   </developers>
+  <issueManagement>
+    <url>https://www.github.com/twitter/twitter-korean-text/issues</url>
+    <system>Github Issues</system>
+  </issueManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -112,8 +120,39 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.1.6</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
+  </reporting>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content>
+          <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}</checkinComment>
+          <skipDeletedFiles>true</skipDeletedFiles>
+          <pubScmUrl>scm:git:git@github.com:twitter/twitter-korean-text.git</pubScmUrl>
+          <scmBranch>gh-pages</scmBranch>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>com.twitter</groupId>
         <artifactId>scrooge-maven-plugin</artifactId>
