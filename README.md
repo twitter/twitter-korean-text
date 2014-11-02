@@ -15,15 +15,17 @@ Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaa
 ### Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
 
-aven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
+Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
 
 ```xml
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
   <dependency>
 ```
+
+The maven site is available here http://twitter.github.io/twitter-korean-text/ and scaladocs are here http://twitter.github.io/twitter-korean-text/scaladocs/
 
 ## Get the source 소스를 원하시는 경우
 
@@ -109,7 +111,7 @@ Refer to the [general contribution guide](CONTRIBUTING.md). We will add this pro
 
 ## Author(s)
 
-* Hohyon "Will" Ryu: https://github.com/nlpenguin https://twitter.com/NLPenguin
+* Will Hohyon Ryu (유호현): https://github.com/nlpenguin | https://twitter.com/NLPenguin
 
 ## License
 

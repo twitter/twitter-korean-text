@@ -21,9 +21,11 @@
   <groupId>com.twitter.penguin</groupId>
   <artifactId>korean-text</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <name>Korean Text Processing Utilities</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
+  <description>Scala library to process Korean text</description>
+  <inceptionYear>2014</inceptionYear>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -34,9 +36,13 @@
   </licenses>
   <scm>
     <url>https://github.com/twitter/twitter-korean-text</url>
-    <connection>scm:git:git@github.com:twitter/twitter-korean-text.git</connection>
+    <connection>scm:git:https://github.com/twitter/twitter-korean-text.git</connection>
+    <developerConnection>scm:git:git@github.com:twitter/twitter-korean-text.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
   <developers>
     <developer>
       <id>nlpenguin</id>
@@ -44,6 +50,10 @@
       <url>https://twitter.com/nlpenguin</url>
     </developer>
   </developers>
+  <issueManagement>
+    <url>https://www.github.com/twitter/twitter-korean-text/issues</url>
+    <system>Github Issues</system>
+  </issueManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -112,8 +122,39 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
+  </reporting>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content>
+          <checkinComment>Publishing Site Docs for ${project.artifactId}:${project.version}</checkinComment>
+          <skipDeletedFiles>true</skipDeletedFiles>
+          <pubScmUrl>scm:git:git@github.com:twitter/twitter-korean-text.git</pubScmUrl>
+          <scmBranch>gh-pages</scmBranch>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>com.twitter</groupId>
         <artifactId>scrooge-maven-plugin</artifactId>
@@ -129,14 +170,15 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <version>2.15.2</version>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <goals>
               <goal>compile</goal>
               <goal>testCompile</goal>
+              <goal>doc-jar</goal>
             </goals>
           </execution>
         </executions>
@@ -148,4 +190,27 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>release-profile</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
