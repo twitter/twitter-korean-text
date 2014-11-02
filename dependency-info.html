@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Korean Text Processing Utilities &#x2013; About</title>
+    <title>Korean Text Processing Utilities &#x2013; Dependency Information</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -48,8 +48,8 @@
                           <a href="project-info.html" title="Project Information">Project Information</a>
                     <ul>
                       <li class="none">
-            <strong>About</strong>
-          </li>
+                          <a href="index.html" title="About">About</a>
+            </li>
                       <li class="none">
                           <a href="plugin-management.html" title="Plugin Management">Plugin Management</a>
             </li>
@@ -57,8 +57,8 @@
                           <a href="distribution-management.html" title="Distribution Management">Distribution Management</a>
             </li>
                       <li class="none">
-                          <a href="dependency-info.html" title="Dependency Information">Dependency Information</a>
-            </li>
+            <strong>Dependency Information</strong>
+          </li>
                       <li class="none">
                           <a href="source-repository.html" title="Source Repository">Source Repository</a>
             </li>
@@ -102,8 +102,43 @@
     <div id="bodyColumn">
       <div id="contentBox">
         <div class="section">
-<h2><a name="About_Korean_Text_Processing_Utilities"></a>About Korean Text Processing Utilities</h2><a name="About_Korean_Text_Processing_Utilities"></a>
-<p>There is currently no description associated with this project.</p></div>
+<h2><a name="Dependency_Information"></a>Dependency Information</h2><a name="Dependency_Information"></a>
+<div class="section">
+<h3><a name="Apache_Maven"></a>Apache Maven</h3><a name="Apache_Maven"></a>
+<div class="source">
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;com.twitter.penguin&lt;/groupId&gt;
+  &lt;artifactId&gt;korean-text&lt;/artifactId&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</pre></div></div>
+<div class="section">
+<h3><a name="Apache_Buildr"></a>Apache Buildr</h3><a name="Apache_Buildr"></a>
+<div class="source">
+<pre>'com.twitter.penguin:korean-text:jar:1.0-SNAPSHOT'</pre></div></div>
+<div class="section">
+<h3><a name="Apache_Ant"></a>Apache Ant</h3><a name="Apache_Ant"></a>
+<div class="source">
+<pre>&lt;dependency org=&quot;com.twitter.penguin&quot; name=&quot;korean-text&quot; rev=&quot;1.0-SNAPSHOT&quot;&gt;
+  &lt;artifact name=&quot;korean-text&quot; type=&quot;jar&quot; /&gt;
+&lt;/dependency&gt;</pre></div></div>
+<div class="section">
+<h3><a name="Groovy_Grape"></a>Groovy Grape</h3><a name="Groovy_Grape"></a>
+<div class="source">
+<pre>@Grapes(
+@Grab(group='com.twitter.penguin', module='korean-text', version='1.0-SNAPSHOT')
+)</pre></div></div>
+<div class="section">
+<h3><a name="Grails"></a>Grails</h3><a name="Grails"></a>
+<div class="source">
+<pre>compile 'com.twitter.penguin:korean-text:1.0-SNAPSHOT'</pre></div></div>
+<div class="section">
+<h3><a name="Leiningen"></a>Leiningen</h3><a name="Leiningen"></a>
+<div class="source">
+<pre>[com.twitter.penguin/korean-text &quot;1.0-SNAPSHOT&quot;]</pre></div></div>
+<div class="section">
+<h3><a name="SBT"></a>SBT</h3><a name="SBT"></a>
+<div class="source">
+<pre>libraryDependencies += &quot;com.twitter.penguin&quot; %% &quot;korean-text&quot; % &quot;1.0-SNAPSHOT&quot;</pre></div></div></div>
       </div>
     </div>
     <div class="clear">
