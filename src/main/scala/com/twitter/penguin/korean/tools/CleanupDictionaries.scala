@@ -25,9 +25,7 @@ import scala.io.Source
 /**
  * Clean up resources by removing duplicates and sorting.
  *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/tools:clean_up_dictionaries
- * --jvm-run-args="/Users/hohyonryu/workspace/penguin-binaries/src/com/twitter/penguin/korean"
- *
+ * Program arguments: src/main/resources/com/twitter/penguin/korean/util/
  */
 object CleanUpDictionaries {
 

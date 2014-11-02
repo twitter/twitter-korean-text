@@ -31,9 +31,8 @@ import org.apache.thrift.transport.TIOStreamTransport
  * Create Korean Parsing goldenset from the goldenset resource that contains goldenset chunks.
  * The first argument is a gzipped output file.
  *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/tools:create_parsing_goldenset
- * --jvm-run-args="/Users/hohyonryu/workspace/penguin-binaries/tests/com/twitter/penguin/korean/goldenset.txt.gz"
- */
+ * Program arguments: src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz
+*/
 object CreateParsingGoldenset {
   def main(args: Array[String]) {
     if (args.length != 1) {

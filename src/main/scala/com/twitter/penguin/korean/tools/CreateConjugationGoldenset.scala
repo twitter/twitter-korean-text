@@ -33,8 +33,7 @@ import scala.collection.JavaConversions._
  * Create Korean predicate expansion goldenset from adjective and verb resources.
  * The first argument is the test resource directory.
  *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/tools:create_conjugation_goldenset
- * --jvm-run-args="/Users/hohyonryu/workspace/penguin-binaries/tests/com/twitter/penguin/korean"
+ * Program arguments: src/test/resources/com/twitter/penguin/korean/util
  */
 object CreateConjugationGoldenset {
   def main(args: Array[String]) {
