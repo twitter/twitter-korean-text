@@ -4,11 +4,13 @@
 트위터 한국어 분석기
 
 Scala library to process Korean text. twitter-korean-text currently provides Korean normalization and tokenization. 
+
 스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석을 지원하고 있습니다. 
 
 ### Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
-Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
+
+aven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
 
 ```xml
   <dependency>
@@ -21,7 +23,9 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
 ## Get the source 소스를 원하시는 경우
 
 Clone the git repo and build using maven.
+
 Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
+
 ```bash
 git clone https://github.com/twitter/twitter-korean-text.git
 cd twitter-korean-text
@@ -33,6 +37,7 @@ Open 'pom.xml' from your favorite IDE.
 ## Usage 사용 방법
 
 You can find these [examples](examples) in examples folder.
+
 [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다. 
 
 from Scala
@@ -82,6 +87,7 @@ public class JavaTwitterKoreanTextExample {
 ### Basics
 
 [TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) is the central object that provides interface for all the features.
+
 [TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) Object에 지원하는 모든 기능을 모아 두었습니다. 
 
 ## Running Tests
