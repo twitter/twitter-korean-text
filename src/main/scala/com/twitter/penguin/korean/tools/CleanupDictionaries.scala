@@ -43,7 +43,7 @@ object CleanUpDictionaries {
     "noun/slangs.txt", "noun/company_names.txt",
     "noun/foreign.txt", "noun/geolocations.txt", "noun/profane.txt",
     "noun/kpop.txt", "noun/bible.txt",
-    "noun/wikipedia_title_nouns.txt", "noun/pokemon.txt",
+    "noun/wikipedia_title_nouns.txt", "noun/pokemon.txt", "noun/congress.txt",
 
     "substantives/noun_prefix.txt", "substantives/suffix.txt",
     "substantives/family_names.txt", "substantives/given_names.txt",

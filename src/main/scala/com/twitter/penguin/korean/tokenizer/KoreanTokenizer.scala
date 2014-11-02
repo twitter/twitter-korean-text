@@ -48,6 +48,7 @@ object KoreanTokenizer {
   val WEIGHT_EXACT_MATCH = 0.5f
   val WEIGHT_ALL_NOUN = 0.1f
   val WEIGHT_PREFFERED_PATTERN = 0.6f
+  val WEIGHT_DETERMINER = -0.01f
 
   val PREFERRED_PATTERN = Seq(Noun, Josa)
 
@@ -70,7 +71,8 @@ object KoreanTokenizer {
         countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
         isExactMatch * WEIGHT_EXACT_MATCH +
         isAllNouns * WEIGHT_ALL_NOUN +
-        isPreferredPattern * WEIGHT_PREFFERED_PATTERN
+        isPreferredPattern * WEIGHT_PREFFERED_PATTERN +
+        countPos(Determiner) * WEIGHT_DETERMINER
 
     lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
     lazy val countTokens = this.posNodes.size
