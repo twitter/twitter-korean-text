@@ -7,6 +7,11 @@ Scala library to process Korean text. twitter-korean-text currently provides Kor
 
 스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석을 지원하고 있습니다. 
 
+### Try here
+
+Gunja Agrawal [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/) kindly created a test API webpage for this project.
+
+
 ### Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
 
