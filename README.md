@@ -9,7 +9,7 @@ Scala library to process Korean text. twitter-korean-text currently provides Kor
 
 ### Try here
 
-Gunja Agrawal [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/) kindly created a test API webpage for this project.
+Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
 
 ### Maven
