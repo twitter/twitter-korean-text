@@ -5,7 +5,7 @@
 
 Scala library to process Korean text. twitter-korean-text currently provides Korean normalization and tokenization. 
 
-스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석을 지원하고 있습니다. 
+스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석을 지원하고 있습니다. 본 프로젝트는 아직 기초적인 단계에 있습니다. 참여하시고 싶은 분은 hohyonryu@twitter.com으로 연락 부탁드립니다. 
 
 ### Try here
 
@@ -93,7 +93,7 @@ public class JavaTwitterKoreanTextExample {
 
 [TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) is the central object that provides interface for all the features.
 
-[TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) Object에 지원하는 모든 기능을 모아 두었습니다. 
+[TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala)에 지원하는 모든 기능을 모아 두었습니다. 
 
 ## Running Tests
 
