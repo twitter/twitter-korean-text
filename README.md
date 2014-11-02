@@ -109,7 +109,7 @@ Refer to the [general contribution guide](CONTRIBUTING.md). We will add this pro
 
 ## Author(s)
 
-* Hohyon "Will" Ryu (유호현): https://github.com/nlpenguin | https://twitter.com/NLPenguin
+* Will Hohyon Ryu (유호현): https://github.com/nlpenguin | https://twitter.com/NLPenguin
 
 ## License
 
