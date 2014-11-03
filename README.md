@@ -3,9 +3,9 @@
 ## twitter-korean-text [![Build Status](https://secure.travis-ci.org/twitter/twitter-korean-text.png?branch=master)](http://travis-ci.org/twitter/twitter-korean-text)
 트위터 한국어 분석기
 
-Scala library to process Korean text. twitter-korean-text currently provides Korean normalization and tokenization. 
+Scala library to process Korean text. twitter-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text).
 
-스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석을 지원하고 있습니다. 본 프로젝트는 아직 기초적인 단계에 있습니다. 참여하시고 싶은 분은 hohyonryu@twitter.com으로 연락 부탁드립니다. 
+스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석을 지원하고 있습니다. 본 프로젝트는 아직 기초적인 단계에 있습니다. 참여하시고 싶은 분은 [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text)에 가입해 주세요. 사용법을 알고자 하시는 초보부터 코드에 참여하고 싶으신 분들까지 모두 환영합니다. 
 
 ### Try here
 
