@@ -51,7 +51,12 @@ object BatchTokenizeTweets {
         val t1 = System.currentTimeMillis()
 
         if (VERBOSE) {
-          println(line.trim + "\t" + parseToString(parsed))
+          if (parsed.length > 2
+            && parsed.forall(_.pos == KoreanPos.Noun)
+            && parsed.forall(_.unknown == false)
+            && parsed.forall(_.text.length > 1)) {
+            println(line.trim + "\t" + parsed.map(_.text).mkString(" "))
+          }
         }
         ParseTime(t1 - t0, line.trim) :: l
       case (l: List[ParseTime], line: String) => l

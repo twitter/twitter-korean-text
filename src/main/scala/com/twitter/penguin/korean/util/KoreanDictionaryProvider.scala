@@ -127,7 +127,7 @@ object KoreanDictionaryProvider {
       "noun/slangs.txt", "noun/company_names.txt",
       "noun/foreign.txt", "noun/geolocations.txt", "noun/profane.txt",
       "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
-      "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt"
+      "noun/pokemon.txt", "noun/congress.txt"//, "noun/wikipedia_title_nouns.txt"
     )
     map += Verb -> conjugatePredicates(readWordsAsSet("verb/verb.txt"))
     map += Adjective -> conjugatePredicates(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
