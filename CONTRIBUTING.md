@@ -34,7 +34,7 @@ Contribution enquiries should take place before any significant pull request,
 otherwise you risk spending a lot of time working on something that we might
 have good reasons for rejecting.
 
-## Making changes to the code (IntelliJ Idea)
+## Making changes to the code
 
 1. Clone the repo
 ```
