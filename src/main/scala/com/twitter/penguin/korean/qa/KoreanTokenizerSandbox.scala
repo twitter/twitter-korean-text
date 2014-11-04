@@ -22,9 +22,6 @@ import com.twitter.penguin.korean.TwitterKoreanProcessor._
 
 /**
  * A simple testing tool to try Korean tokenization.
- *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/qa:korean_tokenizer_sandbox
- *
  */
 object KoreanTokenizerSandbox {
   def main(args: Array[String]) {

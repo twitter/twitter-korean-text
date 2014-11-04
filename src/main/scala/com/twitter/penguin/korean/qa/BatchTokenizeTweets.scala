@@ -27,8 +27,7 @@ import scala.io.Source
 /**
  * Batch tokenize a file of Korean tweets.
  *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/qa:batch_tokenize_tweets
- * --jvm-run-args="~/korean_201407_100"
+ * Program arguments example = "~/korean_201407_100"
  */
 object BatchTokenizeTweets {
 

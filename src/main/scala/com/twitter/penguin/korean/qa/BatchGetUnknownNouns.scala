@@ -30,8 +30,7 @@ import scala.io.Source
 /**
  * Find unknown nouns from a file of tweets.
  *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/qa:batch_get_unknown_nouns
- * --jvm-run-args="~/korean_201407_100"
+ * Program arguments example = "~/korean_201407_100"
  */
 object BatchGetUnknownNouns {
   val LOG = Logger.getLogger(getClass.getSimpleName)
