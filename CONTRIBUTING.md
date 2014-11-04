@@ -34,6 +34,19 @@ Contribution enquiries should take place before any significant pull request,
 otherwise you risk spending a lot of time working on something that we might
 have good reasons for rejecting.
 
+## Making changes to the code (IntelliJ Idea)
+
+1. Clone the repo
+```
+git clone https://github.com/twitter/twitter-korean-text.git
+```
+2. Change the code
+3. Run tests
+```
+mvn test
+```
+4. You are almost certain to have broken a test, probably TwitterKoreanProcessorTest. You will see the difference of behavior in the console. Check if the difference improves the tokenizer. (Please copy and store the difference. It would be useful to have it in the review process.)
+5. Run [src/main/scala/com/twitter/penguin/korean/tools/CreateConjugationGoldenset.scala](src/main/scala/com/twitter/penguin/korean/tools/CreateConjugationGoldenset.scala) to update the golden set. 
 
 ## Pull requests
 
