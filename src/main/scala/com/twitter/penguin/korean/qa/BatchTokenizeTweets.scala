@@ -21,6 +21,8 @@ package com.twitter.penguin.korean.qa
 import java.util.logging.{Level, Logger}
 
 import com.twitter.penguin.korean.TwitterKoreanProcessor
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+import com.twitter.penguin.korean.util.KoreanPos
 
 import scala.io.Source
 
@@ -35,6 +37,7 @@ object BatchTokenizeTweets {
 
   val LOG = Logger.getLogger(getClass.getSimpleName)
   val VERBOSE = true
+  val NON_NOUNS = Set(KoreanPos.Adjective, KoreanPos.Adverb, KoreanPos.Verb)
 
   def main(args: Array[String]) {
     if (args.length != 1) {
@@ -42,20 +45,13 @@ object BatchTokenizeTweets {
       return
     }
     val parseTimesAll = Source.fromFile(args(0)).getLines().foldLeft(List[ParseTime]()) {
-      case (l: List[ParseTime], line: String) if line.trim.length > 5 =>
-        if (VERBOSE) println(line.trim)
-
+      case (l: List[ParseTime], line: String) =>
         val t0 = System.currentTimeMillis()
         val parsed = TwitterKoreanProcessor.tokenize(line)
         val t1 = System.currentTimeMillis()
 
         if (VERBOSE) {
-          println(parsed.map {
-            case t if t.unknown => t.text.toString + t.pos + "*"
-            case t => t.text + t.pos.toString
-          }.mkString(" "))
-
-          println()
+          println(line.trim + "\t" + parseToString(parsed))
         }
         ParseTime(t1 - t0, line.trim) :: l
       case (l: List[ParseTime], line: String) => l
@@ -90,5 +86,12 @@ object BatchTokenizeTweets {
             case t => t.text + t.pos.toString
           }.mkString(" ")
         ))
+  }
+
+  def parseToString(parsed: Seq[KoreanToken]): String = {
+    parsed.map {
+      case t if t.unknown => t.text.toString + t.pos + "*"
+      case t => t.text + t.pos.toString
+    }.mkString(" ")
   }
 }
