@@ -30,15 +30,9 @@ import org.apache.thrift.transport.TIOStreamTransport
 /**
  * Create Korean Parsing goldenset from the goldenset resource that contains goldenset chunks.
  * The first argument is a gzipped output file.
- *
- * Program arguments: src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz
 */
 object CreateParsingGoldenset {
   def main(args: Array[String]) {
-    if (args.length != 1) {
-      throw new IllegalArgumentException("Please specify an output file")
-    }
-
     System.err.println("Reading the goldenset..")
 
     val parsed = readFileByLineFromResources("goldenset.txt").flatMap {
@@ -50,7 +44,7 @@ object CreateParsingGoldenset {
     }.toSeq
 
 
-    val outputFile: String = args(0)
+    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz"
 
     System.err.println("Writing the new goldenset to " + outputFile)
 

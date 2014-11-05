@@ -24,8 +24,6 @@ import scala.io.Source
 
 /**
  * Clean up resources by removing duplicates and sorting.
- *
- * Program arguments: src/main/resources/com/twitter/penguin/korean/util/
  */
 object CleanUpDictionaries {
 
@@ -58,14 +56,9 @@ object CleanUpDictionaries {
   )
 
   def main(args: Array[String]) {
-
-    if (args.size != 1) {
-      throw new IllegalArgumentException("Please enter the dictionary directory.")
-    }
-
     RESOURCES_TO_CLEANUP.foreach {
       f: String =>
-        val outputFolder = args(0) + "/"
+        val outputFolder = "src/main/resources/com/twitter/penguin/korean/util/"
         System.err.println("Processing %s.".format(f))
         val words = readWords(outputFolder + f).toList.sorted
 

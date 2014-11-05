@@ -32,21 +32,15 @@ import scala.collection.JavaConversions._
 /**
  * Create Korean predicate expansion goldenset from adjective and verb resources.
  * The first argument is the test resource directory.
- *
- * Program arguments: src/test/resources/com/twitter/penguin/korean/util
  */
 object CreateConjugationGoldenset {
   def main(args: Array[String]) {
-    if (args.length != 1) {
-      throw new IllegalArgumentException("Please specify an output resource directory..")
-    }
-
     System.err.println("Reading the verbs and adjectives..")
 
     def updateConjugateGoldenset(file: String, isAdj: Boolean, outputFileName: String) {
       System.err.println("Writing the expansion goldenset in " + outputFileName)
 
-      val outputPath = args(0) + "/" + outputFileName
+      val outputPath = "src/test/resources/com/twitter/penguin/korean/util/" + outputFileName
       val out = new GZIPOutputStream(new FileOutputStream(outputPath))
 
       val binaryOut = new TBinaryProtocol(new TIOStreamTransport(out));
