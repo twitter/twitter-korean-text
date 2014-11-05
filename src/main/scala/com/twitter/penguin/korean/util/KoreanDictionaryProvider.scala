@@ -109,7 +109,6 @@ object KoreanDictionaryProvider {
     new TBinaryProtocol(new TIOStreamTransport(in))
   }
 
-
   protected[korean] def newCharArraySet: CharArraySet = {
     new CharArraySet(Version.LUCENE_4_9, 10000, false)
   }
