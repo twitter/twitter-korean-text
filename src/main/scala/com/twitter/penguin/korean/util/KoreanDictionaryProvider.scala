@@ -111,7 +111,7 @@ object KoreanDictionaryProvider {
 
 
   protected[korean] def newCharArraySet: CharArraySet = {
-    new CharArraySet(Version.LUCENE_41, 10000, false)
+    new CharArraySet(Version.LUCENE_4_9, 10000, false)
   }
 
   val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
