@@ -52,7 +52,7 @@ Goldenset Match Error: 동일조건변경허락 (동일조건변경허락Noun) -
 Goldenset Match Error: 기획조정실장 (기획조정실장Noun) -> (기획Noun 조정Noun 실장Noun)
 Goldenset Match Error: 안올라 (안Noun 올라Noun) -> (안Noun 올라Verb)
 ```
-5. Run [src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala) to update the golden set. 
+5. Run [src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala) to update the golden set. You can run it via maven or your IDE. I would recommend using an IDE.
 
 ## Pull requests
 
