@@ -34,6 +34,25 @@ Contribution enquiries should take place before any significant pull request,
 otherwise you risk spending a lot of time working on something that we might
 have good reasons for rejecting.
 
+## Making changes to the code
+
+1. Clone the repo
+```
+git clone https://github.com/twitter/twitter-korean-text.git
+```
+2. Change the code
+3. Run tests
+```
+mvn test
+```
+4. You are almost certain to have broken a test, probably TwitterKoreanProcessorTest. You will see the difference of behavior in the console. Check if the difference improves the tokenizer. (Please copy and store the difference. It would be useful to have it in the review process.)
+```
+Goldenset Match Error: 올라와도 (올라Noun 와도Josa) -> (올라와Verb 도Eomi)
+Goldenset Match Error: 동일조건변경허락 (동일조건변경허락Noun) -> (동일Noun 조건Noun 변경Noun 허락Noun)
+Goldenset Match Error: 기획조정실장 (기획조정실장Noun) -> (기획Noun 조정Noun 실장Noun)
+Goldenset Match Error: 안올라 (안Noun 올라Noun) -> (안Noun 올라Verb)
+```
+5. Run [src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala) to update the golden set. 
 
 ## Pull requests
 
