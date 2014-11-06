@@ -127,12 +127,17 @@ object KoreanConjugation {
               lastCharString)
 
         // 사귀다
-        case (o: Char, 'ㅟ', ' ') =>
-          CODAS_NO_PAST.map(composeHangul(o, 'ㅟ', _).toString) ++
-            Seq(composeHangul(o, 'ㅕ', ' ').toString, composeHangul(o, 'ㅕ', 'ㅆ').toString) ++
+        case ('ㄱ', 'ㅟ', ' ') =>
+          CODAS_NO_PAST.map(composeHangul('ㄱ', 'ㅟ', _).toString) ++
+             Seq(composeHangul('ㄱ', 'ㅕ', ' ').toString, composeHangul('ㄱ', 'ㅕ', 'ㅆ').toString) ++
             Seq(lastCharString)
 
-        // 마시다, 엎드리다, 치다
+        // 쥐다
+        case (o: Char, 'ㅟ', ' ') =>
+          CODAS_NO_PAST.map(composeHangul(o, 'ㅟ', _).toString) ++
+            Seq(lastCharString)
+
+        // 마시다, 엎드리다, 치다, 이다
         case (o: Char, 'ㅣ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
             Seq(composeHangul(o, 'ㅕ', ' ').toString,
@@ -213,7 +218,13 @@ object KoreanConjugation {
 
       expandedLast.map(init + _)
     }
-    expanded
+
+    if (isAdjective) {
+      expanded
+    } else {
+      // Edge cases: these more likely to be a conjugation of an adjective than a verb
+      expanded -- Set("아니", "아냐", "입")
+    }
   }
 
   /**

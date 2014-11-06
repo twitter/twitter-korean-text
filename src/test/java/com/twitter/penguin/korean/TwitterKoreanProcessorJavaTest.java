@@ -62,6 +62,27 @@ public class TwitterKoreanProcessorJavaTest {
   }
 
   @Test
+  public void testTokenizeToStrings() throws Exception {
+    String text = "이런 생각을 하는 게 정말로 말이 되닠ㅋㅋㅋㅋㅋ";
+    assertEquals(
+        "[이렇다, 생각, 을, 하다, 게, 정말로, 말, 이, 되다, ㅋㅋ]",
+        processor.tokenizeToStrings(text).toString()
+    );
+    assertEquals(
+        "[이런, 생각, 을, 하는, 게, 정말로, 말, 이, 되, 니, ㅋㅋ]",
+        processorNormalization.tokenizeToStrings(text).toString()
+    );
+    assertEquals(
+        "[이렇다, 생각, 을, 하다, 게, 정말로, 말, 이, 되닠, ㅋㅋㅋㅋㅋ]",
+        processorStemming.tokenizeToStrings(text).toString()
+    );
+    assertEquals(
+        "[이런, 생각, 을, 하는, 게, 정말로, 말, 이, 되닠, ㅋㅋㅋㅋㅋ]",
+        processorNeither.tokenizeToStrings(text).toString()
+    );
+  }
+
+  @Test
   public void testTokenizeWithIndex() throws Exception {
     String text = "아름다운 트위터를 만들어 보자.";
     List<TwitterKoreanProcessor.KoreanSegment> segements = processor.tokenizeWithIndex(text);

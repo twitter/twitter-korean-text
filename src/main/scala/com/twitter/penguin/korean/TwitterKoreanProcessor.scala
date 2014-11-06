@@ -38,6 +38,12 @@ object TwitterKoreanProcessor {
    */
   case class KoreanSegment(start: Int, length: Int, token: KoreanToken)
 
+  /**
+   * Wraps a text and the sequence of KoreanSegments
+   *
+   * @param text Input text.
+   * @param segments Sequence of Korean Segments.
+   */
   case class KoreanSegmentWithText(text: CharSequence, segments: Seq[KoreanSegment])
 
   /**
@@ -74,7 +80,7 @@ object TwitterKoreanProcessor {
    * Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
    * and the full information of each token.
    *
-   * This is useful for Lucene integration. For stemming, use tokenizeWithIndexWithStemmer
+   * This is useful for Lucene integration. For stemming support, use tokenizeWithIndexWithStemmer
    *
    * @param text Input text.
    * @return A sequence of KoreanSegments.
@@ -97,6 +103,7 @@ object TwitterKoreanProcessor {
     val stemmed: StemmedTextWithTokens = KoreanStemmer.stem(text)
     KoreanSegmentWithText(stemmed.text, getKoreanSegments(stemmed.text, stemmed.tokens))
   }
+
   /**
    * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
    * whether a token is an out-of-vocabulary term.

@@ -82,7 +82,7 @@ class KoreanStemmerTest extends FunSuite {
       "예쁘긴" -> "예쁘다Adjective",
       "예쁘지만" -> "예쁘다Adjective",
       "예쁜 것 같다" -> "예쁘다Adjective 것Noun 같다Adjective",
-      "예쁜건 아니잖아" -> "예쁘다Adjective 알다Verb", // todo: this should be 아니다Adjective
+      "예쁜건 아니잖아" -> "예쁘다Adjective 아니다Adjective",
       "예쁠 수 있을까" -> "예쁘다Adjective 수Noun 있다Adjective",
       "예쁠" -> "예쁘다Adjective",
       "예쁠수있을까" -> "예쁘다Adjective",
@@ -106,7 +106,7 @@ class KoreanStemmerTest extends FunSuite {
       "먹긴" -> "먹다Verb",
       "먹지만" -> "먹다Verb",
       "먹은 것 같다" -> "먹다Verb 것Noun 같다Adjective",
-      "먹은건 아니잖아" -> "먹다Verb 알다Verb", // todo: this should be 아니다Adjective
+      "먹은건 아니잖아" -> "먹다Verb 아니다Adjective",
       "먹을 수 있을까" -> "먹다Verb 수Noun 있다Adjective",
       "먹을" -> "먹다Verb",
       "먹을수있을까" -> "먹다Verb",
