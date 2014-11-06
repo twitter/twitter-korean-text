@@ -38,7 +38,7 @@ object CreateParsingGoldenset {
     val parsed = readFileByLineFromResources("goldenset.txt").flatMap {
       case line if line.length > 0 =>
         val chunk = line.trim
-        val parsed = tokenizeWithNormalization(chunk)
+        val parsed = tokenize(chunk)
         Some(ParseItem(chunk, parsed.map(p => KoreanTokenThrift(p.text, p.pos.id, p.unknown))))
       case line => None
     }.toSeq

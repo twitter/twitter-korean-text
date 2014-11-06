@@ -128,8 +128,8 @@ object KoreanDictionaryProvider {
       "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
       "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt"
     )
-    map += Verb -> conjugatePredicates(readWordsAsSet("verb/verb.txt"))
-    map += Adjective -> conjugatePredicates(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+    map += Verb -> conjugatePredicatesToCharArraySet(readWordsAsSet("verb/verb.txt"))
+    map += Adjective -> conjugatePredicatesToCharArraySet(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
     map += Adverb -> readWords("adverb/adverb.txt")
     map += Determiner -> readWords("aux/determiner.txt")
     map += Exclamation -> readWords("aux/exclamation.txt")
@@ -150,6 +150,22 @@ object KoreanDictionaryProvider {
 
   val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
     case (key: String, value: String) => key.length
+  }
+
+  // using lazy val as this is not used unless stemmer is enabled.
+  lazy val predicateStems = {
+    def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
+      words.flatMap {
+        word: String => conjugatePredicated(Set(word), isAdjective).map {
+          conjugated => (conjugated.toString, word + "다")
+        }
+      }.toMap
+    }
+
+    Map(
+      Verb -> getConjugationMap(readWordsAsSet("verb/verb.txt"), isAdjective = false),
+      Adjective ->  getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+    )
   }
 }
 

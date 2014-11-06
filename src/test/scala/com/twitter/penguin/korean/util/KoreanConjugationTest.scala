@@ -55,7 +55,7 @@ class KoreanConjugationTest extends FunSuite {
     assert(
       loaded.foldLeft(true) {
         case (output: Boolean, (predicate: String, goldensetExpanded: Set[String])) =>
-          matchGoldenset(predicate, conjugatePredicates(Set(predicate), isAdjective), goldensetExpanded) && output
+          matchGoldenset(predicate, conjugatePredicatesToCharArraySet(Set(predicate), isAdjective), goldensetExpanded) && output
       }
     )
   }

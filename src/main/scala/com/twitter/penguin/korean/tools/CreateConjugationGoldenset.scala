@@ -47,7 +47,7 @@ object CreateConjugationGoldenset {
 
       val words = readWordsAsSeq(file)
       val goldenset = words.map(word =>
-        ConjugationItem(word, conjugatePredicates(Set(word), isAdj).map {
+        ConjugationItem(word, conjugatePredicatesToCharArraySet(Set(word), isAdj).map {
           case charArray: Array[Char] => new String(charArray)
         }.toSet)
       )

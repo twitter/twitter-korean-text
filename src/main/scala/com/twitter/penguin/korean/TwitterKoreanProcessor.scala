@@ -19,8 +19,10 @@
 package com.twitter.penguin.korean
 
 import com.twitter.penguin.korean.normalizer.KoreanNormalizer
+import com.twitter.penguin.korean.stemmer.KoreanStemmer
+import com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer._
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 
 /**
  * TwitterKoreanTokenizer provides error and slang tolerant Korean tokenization.
@@ -36,6 +38,8 @@ object TwitterKoreanProcessor {
    */
   case class KoreanSegment(start: Int, length: Int, token: KoreanToken)
 
+  case class KoreanSegmentWithText(text: CharSequence, segments: Seq[KoreanSegment])
+
   /**
    * Normalize Korean text. Uses KoreanNormalizer.normalize().
    *
@@ -45,59 +49,77 @@ object TwitterKoreanProcessor {
   def normalize(text: CharSequence): CharSequence = KoreanNormalizer.normalize(text)
 
   /**
+   * Wrapper for Korean stemmer
+   *
+   * @param text Input text
+   * @return A sequence of stemmed tokens
+   */
+  def stem(text: CharSequence): StemmedTextWithTokens = {
+    KoreanStemmer.stem(text)
+  }
+
+  /**
    * Tokenize text into a sequence of token strings.
    *
-   * @param text Input text, which can include any characters or spaces.
+   * @param text input text
+   * @param normalize option to enable the normalizer
+   * @param stem option to enable the stemmer
    * @return A sequence of token strings.
    */
-  def tokenizeToStrings(text: CharSequence): Seq[String] = {
-    tokenize(text).map(_.text.toString)
-  }
-
-  /**
-   * Tokenize text into a sequence of normalized token strings.
-   *
-   * @param text Input text, which can include any characters or spaces.
-   * @return A sequence of normalized token strings.
-   */
-  def tokenizeToNormalizedStrings(text: CharSequence): Seq[String] = {
-    tokenizeWithNormalization(text).map(_.text.toString)
-  }
-
-  /**
-   * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
-   * whether a token is an out-of-vocabulary term.
-   *
-   * @param text Input text.
-   * @return A sequence of KoreanTokens.
-   */
-  def tokenize(text: CharSequence): Seq[KoreanToken] = {
-    KoreanTokenizer.tokenize(text)
-  }
-
-  /**
-   * Apply normalization before tokenization.
-   *
-   * @param text Input text.
-   * @return A sequence of normalized KoreanTokens.
-   */
-  def tokenizeWithNormalization(text: CharSequence): Seq[KoreanToken] = {
-    tokenize(normalize(text))
+  def tokenizeToStrings(text: CharSequence, normalize: Boolean = true, stem: Boolean = true): Seq[String] = {
+    tokenize(text, normalize, stem).map(_.text.toString)
   }
 
   /**
    * Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
    * and the full information of each token.
    *
-   * This is useful for Lucene integration.
+   * This is useful for Lucene integration. For stemming, use tokenizeWithIndexWithStemmer
    *
    * @param text Input text.
    * @return A sequence of KoreanSegments.
    */
   def tokenizeWithIndex(text: CharSequence): Seq[KoreanSegment] = {
-    val tokens: Seq[KoreanToken] = tokenize(text)
+    val tokens: Seq[KoreanToken] = tokenize(text, normalizization = false, stemming = false)
+    getKoreanSegments(text, tokens)
+  }
 
-    val s: String = text.toString
+  /**
+   * Tokenize text into a KoreanSegmentWithText,
+   * which includes stemmed input text and a sequence stemmed tokens
+   *
+   * This is useful for Lucene integration.
+   *
+   * @param text Input text.
+   * @return KoreanSegmentWithText
+   */
+  def tokenizeWithIndexWithStemmer(text: CharSequence): KoreanSegmentWithText = {
+    val stemmed: StemmedTextWithTokens = KoreanStemmer.stem(text)
+    KoreanSegmentWithText(stemmed.text, getKoreanSegments(stemmed.text, stemmed.tokens))
+  }
+  /**
+   * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
+   * whether a token is an out-of-vocabulary term.
+   *
+   * @param text input text
+   * @param normalizization option to enable the normalizer
+   * @param stemming option to enable the stemmer
+   * @return A sequence of KoreanTokens.
+   */
+  def tokenize(text: CharSequence, normalizization: Boolean = true, stemming: Boolean = true): Seq[KoreanToken] = {
+    val normalized = if (normalizization) KoreanNormalizer.normalize(text) else text
+    val tokenized = KoreanTokenizer.tokenize(normalized)
+    if (stemming) KoreanStemmer.stemPredicates(tokenized).flatten else tokenized
+  }
+
+  /**
+   * Align text with tokens to get indices (useful for Lucene integration)
+   * @param text Input CharSequence
+   * @param tokens A sequence of Tokens
+   * @return  A sequence of KoreanSegments
+   */
+  private def getKoreanSegments(text: CharSequence, tokens: Seq[KoreanToken]): Seq[KoreanSegment] = {
+    val s = text.toString
     // Match text with the tokenization results to get offset and length of each token
     val (output, i) = tokens.foldLeft(List[KoreanSegment](), 0) {
       case ((l: List[KoreanSegment], i: Int), token: KoreanToken) =>
