@@ -85,7 +85,7 @@ public class TwitterKoreanProcessorJavaTest {
   @Test
   public void testTokenizeWithIndex() throws Exception {
     String text = "아름다운 트위터를 만들어 보자.";
-    List<TwitterKoreanProcessor.KoreanSegment> segements = processor.tokenizeWithIndex(text);
+    Iterable<TwitterKoreanProcessor.KoreanSegment> segements = processor.tokenizeWithIndex(text);
     assertEquals(
         "[KoreanSegment(0,4,아름다운Adjective), KoreanSegment(5,3,트위터Noun), " +
             "KoreanSegment(8,1,를Josa), KoreanSegment(10,2,만들Verb), KoreanSegment(12,1,어Eomi), " +

@@ -1,5 +1,7 @@
 package com.twitter.penguin.korean;
 
+import java.util.List;
+
 import scala.collection.JavaConversions;
 import scala.collection.Seq;
 
@@ -48,7 +50,7 @@ public class TwitterKoreanProcessorJava {
    * @param text Input text.
    * @return A list of Korean Tokens
    */
-  public Iterable<KoreanToken> tokenize(CharSequence text) {
+  public List<KoreanToken> tokenize(CharSequence text) {
     Seq<KoreanToken> tokenized = TwitterKoreanProcessor.tokenize(
         text, normalizerEnabled, stemmerEnabled
     );
@@ -59,9 +61,9 @@ public class TwitterKoreanProcessorJava {
    * Tokenize with the builder options into a String Iterable.
    *
    * @param text Input text.
-   * @return An iterable of token strings.
+   * @return A list of token strings.
    */
-  public Iterable<String> tokenizeToStrings(CharSequence text) {
+  public List<String> tokenizeToStrings(CharSequence text) {
     Seq<String> tokenized = TwitterKoreanProcessor.tokenizeToStrings(
         text, normalizerEnabled, stemmerEnabled
     );
@@ -72,9 +74,9 @@ public class TwitterKoreanProcessorJava {
    * Tokenize into KoreanSegments, which includes the indices
    *
    * @param text Input text.
-   * @return An iterable of KoreanSegments.
+   * @return A list of KoreanSegments.
    */
-  public Iterable<KoreanSegment> tokenizeWithIndex(CharSequence text) {
+  public List<KoreanSegment> tokenizeWithIndex(CharSequence text) {
     return JavaConversions.seqAsJavaList(
         TwitterKoreanProcessor.tokenizeWithIndex(text)
     );
