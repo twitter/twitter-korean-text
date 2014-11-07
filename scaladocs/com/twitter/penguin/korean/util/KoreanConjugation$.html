@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanConjugation - Korean Text Processing Utilities 1.0 API - com.twitter.penguin.korean.util.KoreanConjugation</title>
-          <meta name="description" content="KoreanConjugation - Korean Text Processing Utilities 1.0 API - com.twitter.penguin.korean.util.KoreanConjugation" />
-          <meta name="keywords" content="KoreanConjugation Korean Text Processing Utilities 1.0 API com.twitter.penguin.korean.util.KoreanConjugation" />
+          <title>KoreanConjugation - Korean Text Processing Utilities 2.1-SNAPSHOT API - com.twitter.penguin.korean.util.KoreanConjugation</title>
+          <meta name="description" content="KoreanConjugation - Korean Text Processing Utilities 2.1 - SNAPSHOT API - com.twitter.penguin.korean.util.KoreanConjugation" />
+          <meta name="keywords" content="KoreanConjugation Korean Text Processing Utilities 2.1 SNAPSHOT API com.twitter.penguin.korean.util.KoreanConjugation" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -201,19 +201,35 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.util.KoreanConjugation#conjugatePredicates" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="conjugatePredicates(words:Set[String],isAdjective:Boolean):org.apache.lucene.analysis.util.CharArraySet"></a>
-      <a id="conjugatePredicates(Set[String],Boolean):CharArraySet"></a>
+    </li><li name="com.twitter.penguin.korean.util.KoreanConjugation#conjugatePredicated" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="conjugatePredicated(words:Set[String],isAdjective:Boolean):Set[String]"></a>
+      <a id="conjugatePredicated(Set[String],Boolean):Set[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">conjugatePredicates</span><span class="params">(<span name="words">words: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isAdjective">isAdjective: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.lucene.analysis.util.CharArraySet">CharArraySet</span></span>
+        <span class="name">conjugatePredicated</span><span class="params">(<span name="words">words: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isAdjective">isAdjective: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Conjugate adjectives and verbs.</p><div class="fullcomment"><div class="comment cmt"><p>Conjugate adjectives and verbs.
+</p></div><dl class="paramcmts block"><dt class="param">words</dt><dd class="cmt"><p>Set of adjectives or verbs.</p></dd><dt class="param">isAdjective</dt><dd class="cmt"><p>True if the set contains adjectives.</p></dd><dt>returns</dt><dd class="cmt"><p>Set of conjugated words
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.KoreanConjugation#conjugatePredicatesToCharArraySet" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="conjugatePredicatesToCharArraySet(words:Set[String],isAdjective:Boolean):org.apache.lucene.analysis.util.CharArraySet"></a>
+      <a id="conjugatePredicatesToCharArraySet(Set[String],Boolean):CharArraySet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">conjugatePredicatesToCharArraySet</span><span class="params">(<span name="words">words: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="isAdjective">isAdjective: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="org.apache.lucene.analysis.util.CharArraySet">CharArraySet</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Wrap conjugatePredicated
+</p><div class="fullcomment"><div class="comment cmt"><p>Wrap conjugatePredicated
 </p></div><dl class="paramcmts block"><dt class="param">words</dt><dd class="cmt"><p>Set of adjectives or verbs.</p></dd><dt class="param">isAdjective</dt><dd class="cmt"><p>True if the set contains adjectives.</p></dd><dt>returns</dt><dd class="cmt"><p>CharArraySet with conjugated words.
 </p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">

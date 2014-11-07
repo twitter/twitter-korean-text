@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>CandidateParse - Korean Text Processing Utilities 2.1-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse</title>
-          <meta name="description" content="CandidateParse - Korean Text Processing Utilities 2.1 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse" />
-          <meta name="keywords" content="CandidateParse Korean Text Processing Utilities 2.1 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse" />
+          <title>KoreanSegmentWithText - Korean Text Processing Utilities 2.1-SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText</title>
+          <meta name="description" content="KoreanSegmentWithText - Korean Text Processing Utilities 2.1 - SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText" />
+          <meta name="keywords" content="KoreanSegmentWithText Korean Text Processing Utilities 2.1 SNAPSHOT API com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../../../../index.html';
-            var hash = 'com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$CandidateParse';
+            var url = '../../../../index.html';
+            var hash = 'com.twitter.penguin.korean.TwitterKoreanProcessor$$KoreanSegmentWithText';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean.tokenizer">tokenizer</a>.<a href="KoreanTokenizer$.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer">KoreanTokenizer</a></p>
-        <h1>CandidateParse</h1>
+        <img src="../../../../lib/class_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="TwitterKoreanProcessor$.html" class="extype" name="com.twitter.penguin.korean.TwitterKoreanProcessor">TwitterKoreanProcessor</a></p>
+        <h1>KoreanSegmentWithText</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">CandidateParse</span><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">KoreanSegmentWithText</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="segments">segments: <span class="extype" name="scala.Seq">Seq</span>[<a href="TwitterKoreanProcessor$$KoreanSegment.html" class="extype" name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment">KoreanSegment</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Wraps a text and the sequence of KoreanSegments
+</p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input text.</p></dd><dt class="param">segments</dt><dd class="cmt"><p>Sequence of Korean Segments.
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse"><span>CandidateParse</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText"><span>KoreanSegmentWithText</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,19 +81,20 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(parse:com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk,curTrie:List[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie],ending:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse"></a>
-      <a id="&lt;init&gt;:CandidateParse"></a>
+              <ol><li name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(text:CharSequence,segments:Seq[com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment]):com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText"></a>
+      <a id="&lt;init&gt;:KoreanSegmentWithText"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CandidateParse</span><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">KoreanSegmentWithText</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="segments">segments: <span class="extype" name="scala.Seq">Seq</span>[<a href="TwitterKoreanProcessor$$KoreanSegment.html" class="extype" name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment">KoreanSegment</a>]</span>)</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input text.</p></dd><dt class="param">segments</dt><dd class="cmt"><p>Sequence of Korean Segments.
+</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -191,39 +194,13 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#curTrie" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="curTrie:List[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie]"></a>
-      <a id="curTrie:List[KoreanPosTrie]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">curTrie</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#ending" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ending:Boolean"></a>
-      <a id="ending:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ending</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -249,7 +226,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -321,19 +298,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#parse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="parse:com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk"></a>
-      <a id="parse:ParsedChunk"></a>
+    </li><li name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText#segments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="segments:Seq[com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment]"></a>
+      <a id="segments:Seq[KoreanSegment]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">parse</span><span class="result">: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>
+        <span class="name">segments</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="TwitterKoreanProcessor$$KoreanSegment.html" class="extype" name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment">KoreanSegment</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Sequence of Korean Segments.</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -347,6 +324,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText#text" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="text:CharSequence"></a>
+      <a id="text:CharSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">text</span><span class="result">: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Input text.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -441,6 +431,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
     </body>
       </html>
