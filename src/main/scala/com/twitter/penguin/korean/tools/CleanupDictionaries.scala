@@ -48,7 +48,7 @@ object CleanUpDictionaries {
 
     "adjective/adjective.txt", "adverb/adverb.txt",
 
-    "aux/determiner.txt", "aux/exclamation.txt", "aux/conjunctions.txt",
+    "auxiliary/determiner.txt", "auxiliary/exclamation.txt", "auxiliary/conjunctions.txt",
 
     "josa/josa.txt", "typos/typos.txt",
 
