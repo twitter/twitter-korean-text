@@ -30,7 +30,7 @@ import org.apache.thrift.transport.TIOStreamTransport
 /**
  * Create Korean Parsing goldenset from the goldenset resource that contains goldenset chunks.
  * The first argument is a gzipped output file.
-*/
+ */
 object CreateParsingGoldenset {
   def main(args: Array[String]) {
     System.err.println("Reading the goldenset..")

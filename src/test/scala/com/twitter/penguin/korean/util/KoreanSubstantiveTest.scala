@@ -104,31 +104,31 @@ class KoreanSubstantiveTest extends FunSuite {
   test("collapseNouns should collapse single-length nouns correctly") {
     assert(
       collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun), KoreanToken("토", Noun)))
-          === Seq(KoreanToken("마코토", Noun, unknown = true))
+        === Seq(KoreanToken("마코토", Noun, unknown = true))
     )
 
     assert(
       collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun),
         KoreanToken("토", Noun), KoreanToken("를", Josa)))
-          === Seq(KoreanToken("마코토", Noun, unknown = true), KoreanToken("를", Josa))
+        === Seq(KoreanToken("마코토", Noun, unknown = true), KoreanToken("를", Josa))
     )
 
     assert(
       collapseNouns(Seq(KoreanToken("개", NounPrefix), KoreanToken("마", Noun),
         KoreanToken("코", Noun), KoreanToken("토", Noun)))
-          === Seq(KoreanToken("개", NounPrefix), KoreanToken("마코토", Noun, unknown = true))
+        === Seq(KoreanToken("개", NounPrefix), KoreanToken("마코토", Noun, unknown = true))
     )
 
     assert(
       collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun),
         KoreanToken("토", Noun), KoreanToken("사람", Noun)))
-          === Seq(KoreanToken("마코토", Noun, unknown = true), KoreanToken("사람", Noun))
+        === Seq(KoreanToken("마코토", Noun, unknown = true), KoreanToken("사람", Noun))
     )
 
     assert(
       collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun),
         KoreanToken("사람", Noun), KoreanToken("토", Noun)))
-          === Seq(KoreanToken("마코", Noun, unknown = true), KoreanToken("사람", Noun), KoreanToken("토", Noun))
+        === Seq(KoreanToken("마코", Noun, unknown = true), KoreanToken("사람", Noun), KoreanToken("토", Noun))
     )
   }
 

@@ -1,7 +1,5 @@
 package com.twitter.penguin.korean;
 
-import java.util.List;
-
 import org.junit.Test;
 
 import com.twitter.penguin.korean.stemmer.KoreanStemmer;

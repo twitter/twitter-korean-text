@@ -28,7 +28,7 @@ class KoreanNormalizerTest extends FunSuite {
 
   test("normalize should normalize ㅋㅋ ㅎㅎ ㅠㅜ chunks") {
     assert(normalize("안됔ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ내 심장을 가격했엌ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")
-        === "안돼ㅋㅋ내 심장을 가격했어ㅋㅋ")
+      === "안돼ㅋㅋ내 심장을 가격했어ㅋㅋ")
     assert(normalize("무의식중에 손들어버려섴ㅋㅋㅋㅋ") === "무의식중에 손들어버려서ㅋㅋ")
     assert(normalize("기억도 나지아낳ㅎㅎㅎ") === "기억도 나지아나ㅎㅎ")
     assert(normalize("근데비싸서못머구뮤ㅠㅠ") === "근데비싸서못먹음ㅠㅠ")
@@ -57,7 +57,7 @@ class KoreanNormalizerTest extends FunSuite {
 
   test("normalize should not normalize non-Korean chunks") {
     assert(normalize("http://11111.cccccom soooooooo !!!!!!!!!!!!!!!") ===
-        "http://11111.cccccom soooooooo !!!!!!!!!!!!!!!")
+      "http://11111.cccccom soooooooo !!!!!!!!!!!!!!!")
   }
 
 

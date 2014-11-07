@@ -5,10 +5,10 @@ import java.util.List;
 import scala.collection.JavaConversions;
 import scala.collection.Seq;
 
-import com.twitter.penguin.korean.stemmer.KoreanStemmer;
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
 import com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment;
 import com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText;
+import com.twitter.penguin.korean.stemmer.KoreanStemmer;
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
 
 /**
  * Java wrapper for TwitterKoreanProcessor using Builder pattern
@@ -96,7 +96,7 @@ public class TwitterKoreanProcessorJava {
   /**
    * Builder for TwitterKoreanProcessorJava
    */
-  public static final class Builder{
+  public static final class Builder {
     private boolean normalizerEnabled = true;
     private boolean stemmerEnabled = true;
 
@@ -104,12 +104,13 @@ public class TwitterKoreanProcessorJava {
       normalizerEnabled = false;
       return this;
     }
+
     public Builder disableStemmer() {
       stemmerEnabled = false;
       return this;
     }
 
-    public TwitterKoreanProcessorJava build(){
+    public TwitterKoreanProcessorJava build() {
       return new TwitterKoreanProcessorJava(normalizerEnabled, stemmerEnabled);
     }
   }

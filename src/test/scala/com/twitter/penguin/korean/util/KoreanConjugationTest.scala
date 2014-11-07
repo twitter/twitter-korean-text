@@ -32,18 +32,18 @@ import scala.collection.JavaConversions._
 class KoreanConjugationTest extends FunSuite {
 
   def matchGoldenset(predicate: String, newExpanded: CharArraySet, goldensetExpanded: Set[String]): Boolean = {
-    val newExpandedScalaSet = newExpanded.map { case word: Array[Char] => new String(word) }
+    val newExpandedScalaSet = newExpanded.map { case word: Array[Char] => new String(word)}
     val isSameToGoldenset = newExpandedScalaSet == goldensetExpanded
     if (!isSameToGoldenset) {
       System.err.println(("%s:\n" +
-          "  Common: %s\n" +
-          "  Goldenset only: %s\n" +
-          "  Newset only: %s").format(
-            predicate,
-            goldensetExpanded.intersect(newExpandedScalaSet).mkString(" "),
-            goldensetExpanded.diff(newExpandedScalaSet).mkString(" "),
-            newExpandedScalaSet.diff(goldensetExpanded).mkString(" ")
-          ))
+        "  Common: %s\n" +
+        "  Goldenset only: %s\n" +
+        "  Newset only: %s").format(
+          predicate,
+          goldensetExpanded.intersect(newExpandedScalaSet).mkString(" "),
+          goldensetExpanded.diff(newExpandedScalaSet).mkString(" "),
+          newExpandedScalaSet.diff(goldensetExpanded).mkString(" ")
+        ))
     }
     isSameToGoldenset
   }

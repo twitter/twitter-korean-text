@@ -1,6 +1,5 @@
 package com.twitter.penguin.korean.stemmer
 
-import com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.{KoreanDictionaryProvider, KoreanPos}
@@ -27,7 +26,7 @@ object KoreanStemmer {
       case token => Some(token)
     }
   }
-  
+
   def stem(text: CharSequence): StemmedTextWithTokens = {
     val tokenized = KoreanTokenizer.tokenize(text)
     val stemmed = stemPredicates(tokenized)
@@ -48,5 +47,5 @@ object KoreanStemmer {
     sb.append(s.substring(i, text.length))
 
     StemmedTextWithTokens(sb, stemmed.flatten)
-  } 
+  }
 }
