@@ -31,54 +31,54 @@ class KoreanChunkerTest extends FunSuite {
   test("getChunks should correctly split a string into Korean-sensitive chunks") {
     assert(
       getChunks("안녕? iphone6안녕? 세상아?")
-          === "안녕 ? iphone 6 안녕 ? 세상아 ?".split(" ").toSeq
+        === "안녕 ? iphone 6 안녕 ? 세상아 ?".split(" ").toSeq
     )
 
     assert(
       getChunks("This is an 한국어가 섞인 English tweet.")
-          === "This is an 한국어가 섞인 English tweet .".split(" ").toSeq
+        === "This is an 한국어가 섞인 English tweet .".split(" ").toSeq
     )
 
     assert(
       getChunks("이 日本것은 日本語Eng")
-          === "이 日本 것은 日本語 Eng".split(" ").toSeq
+        === "이 日本 것은 日本語 Eng".split(" ").toSeq
     )
 
     assert(
       getChunks("무효이며")
-          === Seq("무효이며")
+        === Seq("무효이며")
     )
 
     assert(
       getChunks("#해쉬태그 이라는 것 #hash @hello 123 이런이런 #여자최애캐_5명으로_취향을_드러내자")
-          === "#해쉬태그 이라는 것 #hash @hello 123 이런이런 #여자최애캐_5명으로_취향을_드러내자".split(" ").toSeq
+        === "#해쉬태그 이라는 것 #hash @hello 123 이런이런 #여자최애캐_5명으로_취향을_드러내자".split(" ").toSeq
     )
   }
 
   test("getChunkTokens should correctly find chunks with correct POS tags") {
     assert(
       chunk("한국어와 English와 1234와 pic.twitter.com " +
+        "http://news.kukinews.com/article/view.asp?" +
+        "page=1&gCode=soc&arcid=0008599913&code=41121111 " +
+        "hohyonryu@twitter.com 갤럭시 S5").mkString(" ")
+        ===
+        "한국어와Korean EnglishAlpha 와Korean 1234Number 와Korean " +
+          "pic.twitter.comURL " +
           "http://news.kukinews.com/article/view.asp?" +
-          "page=1&gCode=soc&arcid=0008599913&code=41121111 " +
-          "hohyonryu@twitter.com 갤럭시 S5").mkString(" ")
-          ===
-          "한국어와Korean EnglishAlpha 와Korean 1234Number 와Korean " +
-              "pic.twitter.comURL " +
-              "http://news.kukinews.com/article/view.asp?" +
-              "page=1&gCode=soc&arcid=0008599913&code=41121111URL " +
-              "hohyonryu@twitter.comEmail 갤럭시Korean SAlpha 5Number"
+          "page=1&gCode=soc&arcid=0008599913&code=41121111URL " +
+          "hohyonryu@twitter.comEmail 갤럭시Korean SAlpha 5Number"
     )
 
     assert(
       chunk("우와!!! 완전ㅋㅋㅋㅋ")
-          === Seq(
+        === Seq(
         KoreanToken("우와", Korean), KoreanToken("!!!", Punctuation),
         KoreanToken("완전", Korean), KoreanToken("ㅋㅋㅋㅋ", KoreanParticle))
     )
 
     assert(
       chunk("@nlpenguin @edeng #korean_tokenizer_rocks 우하하")
-          === Seq(KoreanToken("@nlpenguin", ScreenName), KoreanToken("@edeng", ScreenName),
+        === Seq(KoreanToken("@nlpenguin", ScreenName), KoreanToken("@edeng", ScreenName),
         KoreanToken("#korean_tokenizer_rocks", Hashtag), KoreanToken("우하하", Korean))
     )
   }

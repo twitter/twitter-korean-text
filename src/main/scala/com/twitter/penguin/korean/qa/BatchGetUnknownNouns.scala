@@ -57,11 +57,11 @@ object BatchGetUnknownNouns {
       chunkWithTweet: ChunkWithTweet =>
         println(chunkWithTweet.tweet)
         println(TwitterKoreanProcessor
-            .tokenize(chunkWithTweet.tweet)
-            .mkString(" "))
+          .tokenize(chunkWithTweet.tweet)
+          .mkString(" "))
 
         println(chunkWithTweet.chunk + ": " +
-            tokenize(chunkWithTweet.chunk).mkString(" "))
+          tokenize(chunkWithTweet.chunk).mkString(" "))
         println()
     }
 

@@ -23,8 +23,6 @@ import java.util.zip.GZIPInputStream
 
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.apache.lucene.analysis.util.CharArraySet
-import org.apache.lucene.util.Version
 import org.apache.thrift.protocol.TBinaryProtocol
 import org.apache.thrift.transport.TIOStreamTransport
 
@@ -38,9 +36,9 @@ object KoreanDictionaryProvider {
   private[this] def readStreamByLine(stream: InputStream, filename: String): Iterator[String] = {
     require(stream != null, "Resource not loaded: " + filename)
     Source.fromInputStream(stream)(io.Codec("UTF-8"))
-        .getLines()
-        .map(_.trim)
-        .filter(_.length > 0)
+      .getLines()
+      .map(_.trim)
+      .filter(_.length > 0)
   }
 
   private[this] def readWordFreqs(filename: String): collection.mutable.Map[CharSequence, Float] = {
@@ -110,7 +108,7 @@ object KoreanDictionaryProvider {
   }
 
   protected[korean] def newCharArraySet: CharArraySet = {
-    new CharArraySet(Version.LUCENE_4_9, 10000, false)
+    new CharArraySet(10000, false)
   }
 
   val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
@@ -164,7 +162,7 @@ object KoreanDictionaryProvider {
 
     Map(
       Verb -> getConjugationMap(readWordsAsSet("verb/verb.txt"), isAdjective = false),
-      Adjective ->  getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+      Adjective -> getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
     )
   }
 }

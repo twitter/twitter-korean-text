@@ -54,7 +54,6 @@ object BatchTokenizeTweets {
           println(parsed.map(t => t.text + "/" + t.pos).mkString(" "))
         }
         ParseTime(t1 - t0, line.trim) :: l
-      case (l: List[ParseTime], line: String) => l
     }
 
     val loadingTime = parseTimesAll.last
@@ -69,23 +68,23 @@ object BatchTokenizeTweets {
     val maxItem = parseTimes.maxBy(_.time)
 
     LOG.log(Level.INFO, ("Parsed %d items. \n" +
-        "       Total time: %d s \n" +
-        "       Average tweet length: %.2f chars \n" +
-        "       Average time per tweet: %.2f ms \n" +
-        "       Max time: %d ms, %s\n" +
-        "       Parsed: %s"
-        ).format(
-          parseTimes.size,
-          parseTimes.map(_.time).sum / 1000,
-          averageTweetLength,
-          averageTime,
-          maxItem.time,
-          maxItem.chunk,
-          TwitterKoreanProcessor.tokenize(maxItem.chunk).map {
-            case t if t.unknown => t.text.toString + t.pos + "*"
-            case t => t.text + t.pos.toString
-          }.mkString(" ")
-        ))
+      "       Total time: %d s \n" +
+      "       Average tweet length: %.2f chars \n" +
+      "       Average time per tweet: %.2f ms \n" +
+      "       Max time: %d ms, %s\n" +
+      "       Parsed: %s"
+      ).format(
+        parseTimes.size,
+        parseTimes.map(_.time).sum / 1000,
+        averageTweetLength,
+        averageTime,
+        maxItem.time,
+        maxItem.chunk,
+        TwitterKoreanProcessor.tokenize(maxItem.chunk).map {
+          case t if t.unknown => t.text.toString + t.pos + "*"
+          case t => t.text + t.pos.toString
+        }.mkString(" ")
+      ))
   }
 
   def parseToString(parsed: Seq[KoreanToken]): String = {

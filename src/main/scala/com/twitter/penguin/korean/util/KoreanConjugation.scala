@@ -20,7 +20,6 @@ package com.twitter.penguin.korean.util
 
 import com.twitter.penguin.korean.util.Hangul._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import org.apache.lucene.analysis.util.CharArraySet
 
 import scala.collection.JavaConversions._
 
@@ -75,7 +74,7 @@ object KoreanConjugation {
 
   /**
    * Conjugate adjectives and verbs.
-   * 
+   *
    * @param words Set of adjectives or verbs.
    * @param isAdjective True if the set contains adjectives.
    * @return Set of conjugated words
@@ -129,7 +128,7 @@ object KoreanConjugation {
         // 사귀다
         case ('ㄱ', 'ㅟ', ' ') =>
           CODAS_NO_PAST.map(composeHangul('ㄱ', 'ㅟ', _).toString) ++
-             Seq(composeHangul('ㄱ', 'ㅕ', ' ').toString, composeHangul('ㄱ', 'ㅕ', 'ㅆ').toString) ++
+            Seq(composeHangul('ㄱ', 'ㅕ', ' ').toString, composeHangul('ㄱ', 'ㅕ', 'ㅆ').toString) ++
             Seq(lastCharString)
 
         // 쥐다
@@ -240,14 +239,14 @@ object KoreanConjugation {
     decomposeHangul(word.last) match {
       case (o: Char, v: Char, ' ') if applyToOneChar || word.length > 1 =>
         Seq(word) ++
-            CODAS_SLANG_CONSONANT.map(word.init + composeHangul(o, v, _))
+          CODAS_SLANG_CONSONANT.map(word.init + composeHangul(o, v, _))
       case (o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) && word.length > 1 =>
         val doubleCoda = DOUBLE_CODAS(c)
         Seq(word) ++
-            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, doubleCoda.first) + composeHangul(doubleCoda.second, _))
+          CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, doubleCoda.first) + composeHangul(doubleCoda.second, _))
       case (o: Char, v: Char, c: Char) if word.length > 1 =>
         Seq(word) ++
-            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, ' ') + composeHangul(c, _))
+          CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, ' ') + composeHangul(c, _))
       case _ => Seq(word)
     }
   }
