@@ -1,5 +1,3 @@
-package com.twitter.penguin.korean.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -21,6 +19,8 @@ package com.twitter.penguin.korean.util;
  * This is an adapted copy of org.apache.lucene.analysis.util.CharArrayMap
  * to avoid unnecessary conflicts.
  */
+
+package com.twitter.penguin.korean.util;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
