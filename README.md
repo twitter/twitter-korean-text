@@ -130,6 +130,11 @@ We provide tools for quality assurance and test resources. They can be found und
 
 Refer to the [general contribution guide](CONTRIBUTING.md). We will add this project-specific contribution guide later.
 
+## Performance
+
+Initial loading time: 3~4 secs
+Average time per parsing a chunk(어절): 0.11 ms
+
 ## Author(s)
 
 * Will Hohyon Ryu (유호현): https://github.com/nlpenguin | https://twitter.com/NLPenguin
