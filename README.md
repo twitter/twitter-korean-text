@@ -130,10 +130,22 @@ We provide tools for quality assurance and test resources. They can be found und
 
 Refer to the [general contribution guide](CONTRIBUTING.md). We will add this project-specific contribution guide later.
 
-## Performance
+## Performance 처리 속도
 
-Initial loading time: 3~4 secs
-Average time per parsing a chunk(어절): 0.11 ms
+Tested on Intel i7 2.3 Ghz
+
+Initial loading time(초기 로딩 시간): 2~4 sec
+
+Average time per parsing a chunk(평균 어절 처리 시간): 0.12 ms
+
+
+**Tweets (Avg length ~50 chars)**
+
+Tweets|100000|200000|300000|400000|500000|600000|700000|800000|900000|1000000
+---|---|---|---|---|---|---|---|---|---|---
+Time in Seconds|57.59|112.09|165.05|218.11|270.54|328.52|381.09|439.71|492.94|542.12
+Average per tweet: 0.54212 ms
+
 
 ## Author(s)
 
