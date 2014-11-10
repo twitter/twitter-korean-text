@@ -20,7 +20,6 @@ package com.twitter.penguin.korean.util
 
 import com.twitter.penguin.korean.util.Hangul._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import org.apache.lucene.analysis.util.CharArraySet
 
 import scala.collection.JavaConversions._
 

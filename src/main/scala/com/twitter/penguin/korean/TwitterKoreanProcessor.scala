@@ -80,7 +80,8 @@ object TwitterKoreanProcessor {
    * Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
    * and the full information of each token.
    *
-   * This is useful for Lucene integration. For stemming support, use tokenizeWithIndexWithStemmer
+   * This is useful for Lucene integration. Normalization is not supported for this feature.
+   * For stemming support, use tokenizeWithIndexWithStemmer
    *
    * @param text Input text.
    * @return A sequence of KoreanSegments.
@@ -94,7 +95,7 @@ object TwitterKoreanProcessor {
    * Tokenize text into a KoreanSegmentWithText,
    * which includes stemmed input text and a sequence stemmed tokens
    *
-   * This is useful for Lucene integration.
+   * This is useful for Lucene integration. Normalization is not supported for this feature.
    *
    * @param text Input text.
    * @return KoreanSegmentWithText

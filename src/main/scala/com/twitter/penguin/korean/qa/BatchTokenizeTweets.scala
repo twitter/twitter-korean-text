@@ -54,7 +54,6 @@ object BatchTokenizeTweets {
           println(parsed.map(t => t.text + "/" + t.pos).mkString(" "))
         }
         ParseTime(t1 - t0, line.trim) :: l
-      case (l: List[ParseTime], line: String) => l
     }
 
     val loadingTime = parseTimesAll.last

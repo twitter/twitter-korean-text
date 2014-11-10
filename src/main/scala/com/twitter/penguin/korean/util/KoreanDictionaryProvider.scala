@@ -23,8 +23,6 @@ import java.util.zip.GZIPInputStream
 
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.apache.lucene.analysis.util.CharArraySet
-import org.apache.lucene.util.Version
 import org.apache.thrift.protocol.TBinaryProtocol
 import org.apache.thrift.transport.TIOStreamTransport
 
@@ -110,7 +108,7 @@ object KoreanDictionaryProvider {
   }
 
   protected[korean] def newCharArraySet: CharArraySet = {
-    new CharArraySet(Version.LUCENE_4_9, 10000, false)
+    new CharArraySet(10000, false)
   }
 
   val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =

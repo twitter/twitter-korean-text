@@ -21,7 +21,6 @@ package com.twitter.penguin.korean.util
 import com.twitter.penguin.korean.thriftscala.ConjugationGoldenset
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import org.apache.lucene.analysis.util.CharArraySet
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
