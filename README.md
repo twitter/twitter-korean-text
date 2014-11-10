@@ -134,9 +134,9 @@ Refer to the [general contribution guide](CONTRIBUTING.md). We will add this pro
 
 Tested on Intel i7 2.3 Ghz
 
-Initial loading time(초기 로딩 시간): 2~4 sec
+Initial loading time (초기 로딩 시간): 2~4 sec
 
-Average time per parsing a chunk(평균 어절 처리 시간): 0.12 ms
+Average time per parsing a chunk (평균 어절 처리 시간): 0.12 ms
 
 
 **Tweets (Avg length ~50 chars)**
