@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanToken - Korean Text Processing Utilities 2.2-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken</title>
-          <meta name="description" content="KoreanToken - Korean Text Processing Utilities 2.2 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" />
-          <meta name="keywords" content="KoreanToken Korean Text Processing Utilities 2.2 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" />
+          <title>EntrySet - Korean Text Processing Utilities 2.2-SNAPSHOT API - com.twitter.penguin.korean.util.CharArrayMap.EntrySet</title>
+          <meta name="description" content="EntrySet - Korean Text Processing Utilities 2.2 - SNAPSHOT API - com.twitter.penguin.korean.util.CharArrayMap.EntrySet" />
+          <meta name="keywords" content="EntrySet Korean Text Processing Utilities 2.2 SNAPSHOT API com.twitter.penguin.korean.util.CharArrayMap.EntrySet" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../index.html';
-            var hash = 'com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken';
+            var hash = 'com.twitter.penguin.korean.util.CharArrayMap$EntrySet';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,23 +25,23 @@
         <body class="type">
       <div id="definition">
         <img src="../../../../../lib/class_big.png" />
-        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean.tokenizer">tokenizer</a>.<a href="KoreanTokenizer$.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer">KoreanTokenizer</a></p>
-        <h1>KoreanToken</h1>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean.util">util</a>.<a href="CharArrayMap.html" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap">CharArrayMap</a></p>
+        <h1>EntrySet</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="modifier">final </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">KoreanToken</span><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">EntrySet</span><span class="result"> extends <span class="extype" name="java.util.AbstractSet">AbstractSet</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="java.util.AbstractSet">AbstractSet</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]], <span class="extype" name="java.util.Set">Set</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]], <span class="extype" name="java.util.AbstractCollection">AbstractCollection</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]], <span class="extype" name="java.util.Collection">Collection</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]], <span class="extype" name="java.lang.Iterable">Iterable</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken"><span>KoreanToken</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet"><span>EntrySet</span></li><li class="in" name="java.util.AbstractSet"><span>AbstractSet</span></li><li class="in" name="java.util.Set"><span>Set</span></li><li class="in" name="java.util.AbstractCollection"><span>AbstractCollection</span></li><li class="in" name="java.util.Collection"><span>Collection</span></li><li class="in" name="java.lang.Iterable"><span>Iterable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -77,23 +77,7 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(text:String,pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos,unknown:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken"></a>
-      <a id="&lt;init&gt;:KoreanToken"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">KoreanToken</span><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -166,6 +150,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#add" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="add(x$1:E):Boolean"></a>
+      <a id="add(Entry[AnyRef,V]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">add</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#addAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addAll(x$1:java.util.Collection[_&lt;:E]):Boolean"></a>
+      <a id="addAll(Collection[_&lt;:Entry[AnyRef,V]]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addAll</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.util.Collection">Collection</span>[_ &lt;: <span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -179,6 +189,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet#clear" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clear():Unit"></a>
+      <a id="clear():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clear</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet">EntrySet</a> → Set → AbstractCollection → Collection</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -198,19 +221,32 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#copyWithNewPos" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="copyWithNewPos(pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken"></a>
-      <a id="copyWithNewPos(KoreanPos):KoreanToken"></a>
+    </li><li name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet#contains" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="contains(o:Any):Boolean"></a>
+      <a id="contains(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">copyWithNewPos</span><span class="params">(<span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>)</span><span class="result">: <a href="" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a></span>
+        <span class="name">contains</span><span class="params">(<span name="o">o: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet">EntrySet</a> → Set → AbstractCollection → Collection</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#containsAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="containsAll(x$1:java.util.Collection[_]):Boolean"></a>
+      <a id="containsAll(Collection[_]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">containsAll</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.util.Collection">Collection</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -224,6 +260,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="java.util.AbstractSet#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractSet → Set → Collection → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -256,6 +305,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="java.util.AbstractSet#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractSet → Set → Collection → AnyRef → Any</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#isEmpty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isEmpty():Boolean"></a>
+      <a id="isEmpty():Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isEmpty</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -269,6 +344,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet#iterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="iterator():CharArrayMap.this.EntryIterator"></a>
+      <a id="iterator():EntryIterator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">iterator</span><span class="params">()</span><span class="result">: <a href="CharArrayMap$EntryIterator.html" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.EntryIterator">EntryIterator</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet">EntrySet</a> → Set → AbstractCollection → Collection → Iterable</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -308,19 +396,58 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#pos" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos"></a>
-      <a id="pos:KoreanPos"></a>
+    </li><li name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet#remove" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="remove(o:Any):Boolean"></a>
+      <a id="remove(Any):Boolean"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pos</span><span class="result">: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>
+        <span class="name">remove</span><span class="params">(<span name="o">o: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet">EntrySet</a> → Set → AbstractCollection → Collection</dd></dl></div>
+    </li><li name="java.util.AbstractSet#removeAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="removeAll(x$1:java.util.Collection[_]):Boolean"></a>
+      <a id="removeAll(Collection[_]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">removeAll</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.util.Collection">Collection</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractSet → Set → AbstractCollection → Collection</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#retainAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="retainAll(x$1:java.util.Collection[_]):Boolean"></a>
+      <a id="retainAll(Collection[_]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">retainAll</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="java.util.Collection">Collection</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet#size" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="size():Int"></a>
+      <a id="size():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">size</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.EntrySet">EntrySet</a> → Set → AbstractCollection → Collection</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -334,20 +461,33 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#text" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="text:String"></a>
-      <a id="text:String"></a>
+    </li><li name="java.util.AbstractCollection#toArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toArray[T](x$1:Array[TwithObject]):Array[TwithObject]"></a>
+      <a id="toArray[T](Array[T]):Array[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">text</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toArray</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.util.AbstractCollection.toArray.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="java.util.AbstractCollection.toArray.T">T</span>]</span>
       </span>
       </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#toArray" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toArray():Array[Object]"></a>
+      <a id="toArray():Array[AnyRef]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toArray</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → Collection</dd></dl></div>
+    </li><li name="java.util.AbstractCollection#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -356,23 +496,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#unknown" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="unknown:Boolean"></a>
-      <a id="unknown:Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">unknown</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractCollection → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -439,14 +566,16 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+        <div class="parent" name="java.util.AbstractSet">
+              <h3>Inherited from <span class="extype" name="java.util.AbstractSet">AbstractSet</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</h3>
+            </div><div class="parent" name="java.util.Set">
+              <h3>Inherited from <span class="extype" name="java.util.Set">Set</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</h3>
+            </div><div class="parent" name="java.util.AbstractCollection">
+              <h3>Inherited from <span class="extype" name="java.util.AbstractCollection">AbstractCollection</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</h3>
+            </div><div class="parent" name="java.util.Collection">
+              <h3>Inherited from <span class="extype" name="java.util.Collection">Collection</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</h3>
+            </div><div class="parent" name="java.lang.Iterable">
+              <h3>Inherited from <span class="extype" name="java.lang.Iterable">Iterable</span>[<span class="extype" name="java.util.Map.Entry">Entry</span>[<span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="com.twitter.penguin.korean.util.CharArrayMap.V">V</span>]]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

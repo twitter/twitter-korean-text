@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>TwitterKoreanProcessor - Korean Text Processing Utilities 2.1-SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor</title>
-          <meta name="description" content="TwitterKoreanProcessor - Korean Text Processing Utilities 2.1 - SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor" />
-          <meta name="keywords" content="TwitterKoreanProcessor Korean Text Processing Utilities 2.1 SNAPSHOT API com.twitter.penguin.korean.TwitterKoreanProcessor" />
+          <title>TwitterKoreanProcessor - Korean Text Processing Utilities 2.2-SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor</title>
+          <meta name="description" content="TwitterKoreanProcessor - Korean Text Processing Utilities 2.2 - SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor" />
+          <meta name="keywords" content="TwitterKoreanProcessor Korean Text Processing Utilities 2.2 SNAPSHOT API com.twitter.penguin.korean.TwitterKoreanProcessor" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -439,7 +439,8 @@ whether a token is an out-of-vocabulary term.
       </h4>
       <p class="shortcomment cmt">Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
 and the full information of each token.</p><div class="fullcomment"><div class="comment cmt"><p>Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
-and the full information of each token.</p><p>This is useful for Lucene integration. For stemming support, use tokenizeWithIndexWithStemmer
+and the full information of each token.</p><p>This is useful for Lucene integration. Normalization is not supported for this feature.
+For stemming support, use tokenizeWithIndexWithStemmer
 </p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input text.</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of KoreanSegments.
 </p></dd></dl></div>
     </li><li name="com.twitter.penguin.korean.TwitterKoreanProcessor#tokenizeWithIndexWithStemmer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -456,7 +457,7 @@ and the full information of each token.</p><p>This is useful for Lucene integrat
       </h4>
       <p class="shortcomment cmt">Tokenize text into a KoreanSegmentWithText,
 which includes stemmed input text and a sequence stemmed tokens</p><div class="fullcomment"><div class="comment cmt"><p>Tokenize text into a KoreanSegmentWithText,
-which includes stemmed input text and a sequence stemmed tokens</p><p>This is useful for Lucene integration.
+which includes stemmed input text and a sequence stemmed tokens</p><p>This is useful for Lucene integration. Normalization is not supported for this feature.
 </p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input text.</p></dd><dt>returns</dt><dd class="cmt"><p>KoreanSegmentWithText
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
