@@ -36,8 +36,10 @@
   </licenses>
   <scm>
     <url>https://github.com/twitter/twitter-korean-text</url>
-    <connection>scm:git:git@github.com:twitter/twitter-korean-text.git</connection>
-    <tag>HEAD</tag>
+    <connection>scm:git:https://github.com/twitter/twitter-korean-text.git</connection>
+    <developerConnection>scm:git:git@github.com:twitter/twitter-korean-text.git
+    </developerConnection>
+    <tag>korean-text-2.1</tag>
   </scm>
   <prerequisites>
     <maven>3.0.4</maven>
