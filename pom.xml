@@ -25,6 +25,7 @@
   <name>Korean Text Processing Utilities</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
   <description>Scala library to process Korean text</description>
+  <inceptionYear>2014</inceptionYear>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -38,6 +39,9 @@
     <connection>scm:git:git@github.com:twitter/twitter-korean-text.git</connection>
     <tag>HEAD</tag>
   </scm>
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
   <developers>
     <developer>
       <id>nlpenguin</id>
@@ -45,6 +49,10 @@
       <url>https://twitter.com/nlpenguin</url>
     </developer>
   </developers>
+  <issueManagement>
+    <url>https://www.github.com/twitter/twitter-korean-text/issues</url>
+    <system>Github Issues</system>
+  </issueManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -96,15 +104,14 @@
       <version>3.17.0</version>
     </dependency>
     <dependency>
-      <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_2.10</artifactId>
-      <version>2.2.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-nop</artifactId>
       <version>1.5.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_2.10</artifactId>
+      <version>2.2.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -114,8 +121,41 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
+  </reporting>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content>
+          <checkinComment>Publishing Site Docs for
+            ${project.artifactId}:${project.version}
+          </checkinComment>
+          <skipDeletedFiles>true</skipDeletedFiles>
+          <pubScmUrl>scm:git:git@github.com:twitter/twitter-korean-text.git</pubScmUrl>
+          <scmBranch>gh-pages</scmBranch>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>com.twitter</groupId>
         <artifactId>scrooge-maven-plugin</artifactId>
@@ -131,14 +171,35 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <version>2.15.2</version>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>3.2.0</version>
         <executions>
           <execution>
+            <id>scala-compile-first</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>add-source</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>scala-test-compile</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>compile</phase>
             <goals>
               <goal>compile</goal>
-              <goal>testCompile</goal>
             </goals>
           </execution>
         </executions>
