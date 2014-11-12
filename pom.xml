@@ -24,6 +24,7 @@
   <version>1.1-SNAPSHOT</version>
   <name>Korean Text Processing Utilities</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
+  <description>Scala library to process Korean text</description>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
