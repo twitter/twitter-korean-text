@@ -3,7 +3,7 @@
 ## twitter-korean-text [![Build Status](https://secure.travis-ci.org/twitter/twitter-korean-text.png?branch=master)](http://travis-ci.org/twitter/twitter-korean-text)
 트위터 한국어 분석기
 
-Scala library to process Korean text. twitter-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text).
+Scala library to process Korean text with a Java wrapper. twitter-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text).
 
 스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석, 스테밍을 지원하고 있습니다. 참여하시고 싶은 분은 [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text)에 가입해 주세요. 사용법을 알고자 하시는 초보부터 코드에 참여하고 싶으신 분들까지 모두 환영합니다. 
 
@@ -121,6 +121,8 @@ public class JavaTwitterKoreanTextExample {
 ## Running Tests
 
 `mvn test` will run our unit tests
+
+모든 유닛 테스트를 실행하려면 `mvn test`를 이용해 주세요.
 
 ## Tools
 
