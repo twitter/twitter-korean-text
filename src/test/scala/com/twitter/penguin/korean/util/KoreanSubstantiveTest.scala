@@ -43,6 +43,7 @@ class KoreanSubstantiveTest extends FunSuite {
     assert(!isJosaAttachable('플', '와'))
     assert(!isJosaAttachable('플', '야'))
     assert(!isJosaAttachable('플', '여'))
+    assert(!isJosaAttachable('플', '라'))
 
     //에프은
     assert(!isJosaAttachable('프', '은'))
@@ -58,6 +59,7 @@ class KoreanSubstantiveTest extends FunSuite {
     assert(isJosaAttachable('프', '와'))
     assert(isJosaAttachable('프', '야'))
     assert(isJosaAttachable('프', '여'))
+    assert(isJosaAttachable('프', '라'))
   }
 
   test("isName should return false if input length is not 3") {
