@@ -30,7 +30,7 @@ object KoreanSubstantive {
 
   val JOSA_HEAD_FOR_CODA: Set[Char] = Set('은', '이', '을', '과', '아')
 
-  val JOSA_HEAD_FOR_NO_CODA: Set[Char] = Set('는', '가', '를', '와', '야', '여')
+  val JOSA_HEAD_FOR_NO_CODA: Set[Char] = Set('는', '가', '를', '와', '야', '여', '라')
 
 
   protected[korean] def isJosaAttachable(prevChar: Char, headChar: Char): Boolean = {
