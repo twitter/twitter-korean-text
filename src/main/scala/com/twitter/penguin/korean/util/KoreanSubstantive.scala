@@ -39,6 +39,9 @@ object KoreanSubstantive {
   }
 
   protected[korean] def isName(chunk: CharSequence): Boolean = {
+    if (nameDictionay('full_name).contains(chunk) ||
+      nameDictionay('given_name).contains(chunk)) return true
+
     if (chunk.length() != 3) return false
     nameDictionay('family_name).contains(chunk.charAt(0).toString) &&
       nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
@@ -61,10 +64,9 @@ object KoreanSubstantive {
    */
   protected[korean] def isKoreanNameVariation(chunk: CharSequence): Boolean = {
     val nounDict = koreanDictionary(Noun)
-    def isValidNoun(s: String) = nounDict.contains(s) || isName(s)
 
     val s = chunk.toString
-    if (isValidNoun(s)) return false
+    if (isName(s)) return true
     if (s.length < 3) return false
 
     val decomposed = s.map { c: Char => decomposeHangul(c)}
@@ -81,7 +83,7 @@ object KoreanSubstantive {
       case (hc: HangulChar, i: Int) => composeHangul(hc)
     }.mkString("")
 
-    Seq(recovered, recovered.init).exists(isValidNoun)
+    Seq(recovered, recovered.init).exists(isName)
   }
 
   /**

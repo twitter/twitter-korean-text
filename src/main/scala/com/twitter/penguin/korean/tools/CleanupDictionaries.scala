@@ -68,7 +68,6 @@ object CleanUpDictionaries {
           word: String => out.write((word + "\n").getBytes)
         }
         out.close()
-
     }
   }
 }

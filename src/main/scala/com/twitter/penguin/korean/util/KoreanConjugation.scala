@@ -29,6 +29,7 @@ import scala.collection.JavaConversions._
 object KoreanConjugation {
   // ㅋ, ㅎ for 잨ㅋㅋㅋㅋ 잔댛ㅎㅎㅎㅎ
   private[this] val CODAS_COMMON = Seq('ㅂ', 'ㅆ', 'ㄹ', 'ㄴ', 'ㅁ')
+  private[this] val CODAS_FOR_CONTRACTION = Seq('ㅆ', 'ㄹ', 'ㅁ') // 파랗다 -> 파래, 파램, 파랠, 파랬
   private[this] val CODAS_NO_PAST = Seq('ㅂ', 'ㄹ', 'ㄴ', 'ㅁ')
 
   private[this] val CODAS_SLANG_CONSONANT = Seq('ㅋ', 'ㅎ')
@@ -156,7 +157,7 @@ object KoreanConjugation {
             Seq(lastCharString)
 
         // 만들다, 알다, 풀다
-        case HangulChar(o: Char, v: Char, 'ㄹ') if v == 'ㅡ' || v == 'ㅏ' || v == 'ㅜ' =>
+        case HangulChar(o: Char, v: Char, 'ㄹ') if (o == 'ㅁ' && v == 'ㅓ') || v == 'ㅡ' || v == 'ㅏ' || v == 'ㅜ' =>
           addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_2 ++ PRE_EOMI_3 ++ PRE_EOMI_RESPECT) ++
             Seq(composeHangul(o, v, 'ㄻ').toString,
               composeHangul(o, v, 'ㄴ').toString,
@@ -199,10 +200,13 @@ object KoreanConjugation {
           CODAS_COMMON.map(composeHangul(o, 'ㅗ', _).toString) ++
             Seq(composeHangul(o, 'ㅘ', ' ').toString, composeHangul(o, 'ㅗ', ' ').toString, lastCharString)
 
-        // 파랗다, 퍼렇다
+        // 파랗다, 퍼렇다, 어떻다
         case HangulChar(o: Char, v: Char, 'ㅎ') if isAdjective =>
           CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
-            Seq(composeHangul(o, v, ' ').toString, lastCharString)
+            CODAS_FOR_CONTRACTION.map(composeHangul(o, 'ㅐ', _).toString) ++
+            Seq(composeHangul(o, 'ㅐ', ' ').toString,
+              composeHangul(o, v, ' ').toString,
+              lastCharString)
 
         // 1 char with coda, 작다
         case HangulChar(o: Char, v: Char, c: Char) if word.length == 1 =>

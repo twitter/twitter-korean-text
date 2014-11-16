@@ -143,7 +143,8 @@ object KoreanDictionaryProvider {
 
   val nameDictionay = Map(
     'family_name -> readWords("substantives/family_names.txt"),
-    'given_name -> readWords("substantives/given_names.txt")
+    'given_name -> readWords("substantives/given_names.txt"),
+    'full_name -> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")
   )
 
   val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {

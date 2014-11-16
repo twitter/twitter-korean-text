@@ -110,6 +110,7 @@ class KoreanSubstantiveTest extends FunSuite {
     assert(isKoreanNameVariation("은벼리"))
     assert(isKoreanNameVariation("귀여미"))
     assert(isKoreanNameVariation("루하니"))
+    assert(isKoreanNameVariation("이오니"))
 
     assert(!isKoreanNameVariation("이"))
 
@@ -126,7 +127,6 @@ class KoreanSubstantiveTest extends FunSuite {
     assert(!isKoreanNameVariation("사람이"))
     assert(!isKoreanNameVariation("사람이니"))
     assert(!isKoreanNameVariation("유하기"))
-    assert(!isKoreanNameVariation("이오니"))
   }
 
   test("collapseNouns should collapse single-length nouns correctly") {
