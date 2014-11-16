@@ -103,6 +103,32 @@ class KoreanSubstantiveTest extends FunSuite {
     assert(!isKoreanNumber("조삼모사"))
   }
 
+  test("isKoreanNameVariation should correctly identify removed null consonanats") {
+    assert(isKoreanNameVariation("호혀니"))
+    assert(isKoreanNameVariation("혜지니"))
+    assert(isKoreanNameVariation("빠수니"))
+    assert(isKoreanNameVariation("은벼리"))
+    assert(isKoreanNameVariation("귀여미"))
+    assert(isKoreanNameVariation("루하니"))
+
+    assert(!isKoreanNameVariation("이"))
+
+    assert(!isKoreanNameVariation("장미"))
+    assert(!isKoreanNameVariation("별이"))
+    assert(!isKoreanNameVariation("꼬치"))
+    assert(!isKoreanNameVariation("꽃이"))
+    assert(!isKoreanNameVariation("팔티"))
+    assert(!isKoreanNameVariation("감미"))
+    assert(!isKoreanNameVariation("고미"))
+
+    assert(!isKoreanNameVariation("가라찌"))
+    assert(!isKoreanNameVariation("귀요미"))
+    assert(!isKoreanNameVariation("사람이"))
+    assert(!isKoreanNameVariation("사람이니"))
+    assert(!isKoreanNameVariation("유하기"))
+    assert(!isKoreanNameVariation("이오니"))
+  }
+
   test("collapseNouns should collapse single-length nouns correctly") {
     assert(
       collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun), KoreanToken("토", Noun)))

@@ -238,7 +238,7 @@ object KoreanTokenizer {
             case t: PossibleTrie =>
               val candidateToAdd =
                 if (t.curTrie.curPos == Noun && !koreanDictionary(Noun).contains(word.toCharArray)) {
-                  val unknown = !isName(word) && !isKoreanNumber(word)
+                  val unknown = !isName(word) && !isKoreanNumber(word) && !isKoreanNameVariation(word)
                   ParsedChunk(Seq(KoreanToken(word, Noun, unknown)), t.words)
                 } else {
                   ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos)), t.words)

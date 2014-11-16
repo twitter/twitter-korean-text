@@ -27,15 +27,15 @@ import org.scalatest.junit.JUnitRunner
 class HangulTest extends FunSuite {
 
   test("decomposeKoreanChar should decompose full Korean chars correctly") {
-    assert(decomposeHangul('간') ==('ㄱ', 'ㅏ', 'ㄴ'))
-    assert(decomposeHangul('관') ==('ㄱ', 'ㅘ', 'ㄴ'))
-    assert(decomposeHangul('꼃') ==('ㄲ', 'ㅕ', 'ㅀ'))
+    assert(decomposeHangul('간') == HangulChar('ㄱ', 'ㅏ', 'ㄴ'))
+    assert(decomposeHangul('관') == HangulChar('ㄱ', 'ㅘ', 'ㄴ'))
+    assert(decomposeHangul('꼃') == HangulChar('ㄲ', 'ㅕ', 'ㅀ'))
   }
 
   test("decomposeKoreanChar should decompose full no coda chars correctly") {
-    assert(decomposeHangul('가') ==('ㄱ', 'ㅏ', ' '))
-    assert(decomposeHangul('과') ==('ㄱ', 'ㅘ', ' '))
-    assert(decomposeHangul('껴') ==('ㄲ', 'ㅕ', ' '))
+    assert(decomposeHangul('가') == HangulChar('ㄱ', 'ㅏ', ' '))
+    assert(decomposeHangul('과') == HangulChar('ㄱ', 'ㅘ', ' '))
+    assert(decomposeHangul('껴') == HangulChar('ㄲ', 'ㅕ', ' '))
   }
 
   test("decomposeKoreanChar should raise an exception if input is invalud") {

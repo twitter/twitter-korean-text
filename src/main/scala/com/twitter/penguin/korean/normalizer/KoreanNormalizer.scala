@@ -112,17 +112,17 @@ object KoreanNormalizer {
       return chunk
     }
 
-    val (o, v, c) = decomposeHangul(lastTwoHead)
+    val hc = decomposeHangul(lastTwoHead)
 
     val newHead = new StringBuilder()
       .append(chunk.subSequence(0, chunk.length() - 2))
-      .append(composeHangul(o, v))
+      .append(composeHangul(hc.onset, hc.vowel))
 
-    if (c == 'ㄴ' &&
+    if (hc.coda == 'ㄴ' &&
       (last == '데' || last == '가' || last == '지') &&
       koreanDictionary(Noun).contains(newHead)
     ) {
-      val mid = if (v == 'ㅡ') "은" else "인"
+      val mid = if (hc.vowel == 'ㅡ') "은" else "인"
       newHead + mid + last
     } else {
       chunk
@@ -147,23 +147,23 @@ object KoreanNormalizer {
     val init = s.subSequence(0, s.length() - 1)
     val secondToLastDecomposed = init match {
       case si: CharSequence if si.length > 0 =>
-        val (onset, vowel, coda) = decomposeHangul(si.charAt(si.length() - 1))
-        if (coda == ' ') Some((onset, vowel, coda)) else None
+        val hc = decomposeHangul(si.charAt(si.length() - 1))
+        if (hc.coda == ' ') Some(hc) else None
       case _ => None
     }
 
     decomposeHangul(s.charAt(s.length() - 1)) match {
-      case (o: Char, v: Char, c: Char) if c == 'ㅋ' || c == 'ㅎ' =>
+      case hc: HangulChar if hc.coda == 'ㅋ' || hc.coda == 'ㅎ' =>
         new StringBuilder()
           .append(init)
-          .append(composeHangul(o, v))
-      case (o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined &&
+          .append(composeHangul(hc.onset, hc.vowel))
+      case HangulChar(o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined &&
         (v == toNormalize.charAt(0)) &&
         Hangul.CODA_MAP.contains(o) =>
-        val (onset, vowel, coda) = secondToLastDecomposed.get
+        val hc = secondToLastDecomposed.get
         new StringBuilder()
           .append(init.subSequence(0, init.length() - 1))
-          .append(composeHangul(onset, vowel, o))
+          .append(composeHangul(hc.onset, hc.vowel, o))
       case _ => s
     }
   }

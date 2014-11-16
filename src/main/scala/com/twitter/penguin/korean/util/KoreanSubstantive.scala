@@ -53,6 +53,36 @@ object KoreanSubstantive {
       case (output, i) => output && NUMBER_LAST_CHARS.contains(chunk.charAt(i).toInt)
     }
 
+  /**
+   * Check if this chunk is an 'ㅇ' omitted variation of a noun (우혀니 -> 우현, 우현이, 빠순이 -> 빠순, 빠순이)
+   *
+   * @param chunk input chunk
+   * @return true if the chunk is an 'ㅇ' omitted variation
+   */
+  protected[korean] def isKoreanNameVariation(chunk: CharSequence): Boolean = {
+    val nounDict = koreanDictionary(Noun)
+    def isValidNoun(s: String) = nounDict.contains(s) || isName(s)
+
+    val s = chunk.toString
+    if (isValidNoun(s)) return false
+    if (s.length < 3) return false
+
+    val decomposed = s.map { c: Char => decomposeHangul(c)}
+    val lastChar = decomposed.last
+    if (!Hangul.CODA_MAP.contains(lastChar.onset)) return false
+    if (lastChar.onset == 'ㅇ' || lastChar.vowel != 'ㅣ' || lastChar.coda != ' ') return false
+    if (decomposed.init.last.coda != ' ') return false
+
+    // Recover missing 'ㅇ' (우혀니 -> 우현, 우현이, 빠순이 -> 빠순, 빠순이)
+    val recovered = decomposed.zipWithIndex.map{
+      case (hc: HangulChar, i: Int) if i == s.length -1 =>'이'
+      case (hc: HangulChar, i: Int) if i == s.length -2 =>
+        composeHangul(HangulChar(hc.onset, hc.vowel, decomposed.last.onset))
+      case (hc: HangulChar, i: Int) => composeHangul(hc)
+    }.mkString("")
+
+    Seq(recovered, recovered.init).exists(isValidNoun)
+  }
 
   /**
    * Collapse all the one-char nouns into one unknown noun
@@ -73,5 +103,4 @@ object KoreanSubstantive {
     }
     nodes.reverse.toSeq
   }
-
 }

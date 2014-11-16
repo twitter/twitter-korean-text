@@ -88,7 +88,7 @@ object KoreanConjugation {
 
       val expandedLast: Seq[String] = lastCharDecomposed match {
         // 하다, special case
-        case ('ㅎ', 'ㅏ', ' ') =>
+        case HangulChar('ㅎ', 'ㅏ', ' ') =>
           val endings = if (isAdjective) Seq("합", "해", "히", "") else Seq("합", "해")
           addPreEomi(lastChar, PRE_EOMI_COMMON ++ PRE_EOMI_2 ++ PRE_EOMI_6 ++ PRE_EOMI_RESPECT) ++
             CODAS_COMMON.map {
@@ -98,7 +98,7 @@ object KoreanConjugation {
             addPreEomi('해', PRE_EOMI_1_1) ++ endings
 
         // 쏘다
-        case (o: Char, 'ㅗ', ' ') =>
+        case HangulChar(o: Char, 'ㅗ', ' ') =>
           addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_6) ++
             CODAS_NO_PAST.map(composeHangul(o, 'ㅗ', _).toString) ++
             Seq(composeHangul(o, 'ㅘ', ' ').toString,
@@ -106,7 +106,7 @@ object KoreanConjugation {
               lastCharString)
 
         // 맞추다, 겨누다, 재우다,
-        case (o: Char, 'ㅜ', ' ') =>
+        case HangulChar(o: Char, 'ㅜ', ' ') =>
           addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_2 ++ PRE_EOMI_6) ++
             CODAS_NO_PAST.map(composeHangul(o, 'ㅜ', _).toString) ++
             Seq(composeHangul(o, 'ㅝ').toString,
@@ -115,7 +115,7 @@ object KoreanConjugation {
 
 
         // 치르다, 구르다, 굴르다, 뜨다, 모으다, 고르다, 골르다
-        case (o: Char, 'ㅡ', ' ') =>
+        case HangulChar(o: Char, 'ㅡ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅡ', _).toString) ++
             Seq(composeHangul(o, 'ㅝ').toString,
               composeHangul(o, 'ㅓ').toString,
@@ -126,37 +126,37 @@ object KoreanConjugation {
               lastCharString)
 
         // 사귀다
-        case ('ㄱ', 'ㅟ', ' ') =>
+        case HangulChar('ㄱ', 'ㅟ', ' ') =>
           CODAS_NO_PAST.map(composeHangul('ㄱ', 'ㅟ', _).toString) ++
             Seq(composeHangul('ㄱ', 'ㅕ', ' ').toString, composeHangul('ㄱ', 'ㅕ', 'ㅆ').toString) ++
             Seq(lastCharString)
 
         // 쥐다
-        case (o: Char, 'ㅟ', ' ') =>
+        case HangulChar(o: Char, 'ㅟ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅟ', _).toString) ++
             Seq(lastCharString)
 
         // 마시다, 엎드리다, 치다, 이다
-        case (o: Char, 'ㅣ', ' ') =>
+        case HangulChar(o: Char, 'ㅣ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
             Seq(composeHangul(o, 'ㅕ', ' ').toString,
               composeHangul(o, 'ㅕ', 'ㅆ').toString,
               lastCharString)
 
         // 꿰다, 꾀다
-        case (o: Char, v: Char, ' ') if v == 'ㅞ' || v == 'ㅚ' || v == 'ㅙ' =>
+        case HangulChar(o: Char, v: Char, ' ') if v == 'ㅞ' || v == 'ㅚ' || v == 'ㅙ' =>
           CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
             Seq(lastCharString)
 
 
         // All other vowel endings: 둘러서다, 켜다, 세다, 캐다
-        case (o: Char, v: Char, ' ') =>
+        case HangulChar(o: Char, v: Char, ' ') =>
           CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
             addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_1 ++ PRE_EOMI_6) ++
             Seq(lastCharString)
 
         // 만들다, 알다, 풀다
-        case (o: Char, v: Char, 'ㄹ') if v == 'ㅡ' || v == 'ㅏ' || v == 'ㅜ' =>
+        case HangulChar(o: Char, v: Char, 'ㄹ') if v == 'ㅡ' || v == 'ㅏ' || v == 'ㅜ' =>
           addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_2 ++ PRE_EOMI_3 ++ PRE_EOMI_RESPECT) ++
             Seq(composeHangul(o, v, 'ㄻ').toString,
               composeHangul(o, v, 'ㄴ').toString,
@@ -164,48 +164,48 @@ object KoreanConjugation {
               lastCharString)
 
         // 낫다
-        case (o: Char, 'ㅏ', 'ㅅ') =>
+        case HangulChar(o: Char, 'ㅏ', 'ㅅ') =>
           addPreEomi(composeHangul(o, 'ㅏ'), PRE_EOMI_3 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
             Seq(lastCharString)
 
         // 묻다
-        case ('ㅁ', 'ㅜ', 'ㄷ') =>
+        case HangulChar('ㅁ', 'ㅜ', 'ㄷ') =>
           Seq(composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString,
             lastCharString)
 
         // 붇다
-        case (o: Char, 'ㅜ', 'ㄷ') =>
+        case HangulChar(o: Char, 'ㅜ', 'ㄷ') =>
           addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_2 ++ PRE_EOMI_1_4 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
             Seq(composeHangul(o, 'ㅜ', 'ㄹ').toString,
               lastCharString)
 
         // 눕다
-        case (o: Char, 'ㅜ', 'ㅂ') =>
+        case HangulChar(o: Char, 'ㅜ', 'ㅂ') =>
           addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_4 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
             Seq(lastCharString)
 
         // 간지럽다, 갑작스럽다 -> 갑작스런
-        case (o: Char, 'ㅓ', 'ㅂ') if isAdjective =>
+        case HangulChar(o: Char, 'ㅓ', 'ㅂ') if isAdjective =>
           addPreEomi(composeHangul(o, 'ㅓ', ' '), PRE_EOMI_1_4 ++ PRE_EOMI_7) ++
             Seq(composeHangul(o, 'ㅓ', ' ').toString, composeHangul(o, 'ㅓ', 'ㄴ').toString, lastCharString)
 
         // 아름답다, 가볍다, 덥다, 간지럽다
-        case (o: Char, v: Char, 'ㅂ') if isAdjective =>
+        case HangulChar(o: Char, v: Char, 'ㅂ') if isAdjective =>
           addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_1_4 ++ PRE_EOMI_7) ++
             Seq(composeHangul(o, v, ' ').toString, lastCharString)
 
         // 놓다
-        case (o: Char, 'ㅗ', 'ㅎ') =>
+        case HangulChar(o: Char, 'ㅗ', 'ㅎ') =>
           CODAS_COMMON.map(composeHangul(o, 'ㅗ', _).toString) ++
             Seq(composeHangul(o, 'ㅘ', ' ').toString, composeHangul(o, 'ㅗ', ' ').toString, lastCharString)
 
         // 파랗다, 퍼렇다
-        case (o: Char, v: Char, 'ㅎ') if isAdjective =>
+        case HangulChar(o: Char, v: Char, 'ㅎ') if isAdjective =>
           CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
             Seq(composeHangul(o, v, ' ').toString, lastCharString)
 
         // 1 char with coda, 작다
-        case (o: Char, v: Char, c: Char) if word.length == 1 =>
+        case HangulChar(o: Char, v: Char, c: Char) if word.length == 1 =>
           addPreEomi(lastChar, PRE_EOMI_COMMON ++ PRE_EOMI_1_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
             Seq(lastCharString)
 
@@ -237,14 +237,14 @@ object KoreanConjugation {
    */
   def addTypoEndings(word: String, applyToOneChar: Boolean = true): Seq[String] = {
     decomposeHangul(word.last) match {
-      case (o: Char, v: Char, ' ') if applyToOneChar || word.length > 1 =>
+      case HangulChar(o: Char, v: Char, ' ') if applyToOneChar || word.length > 1 =>
         Seq(word) ++
           CODAS_SLANG_CONSONANT.map(word.init + composeHangul(o, v, _))
-      case (o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) && word.length > 1 =>
+      case HangulChar(o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) && word.length > 1 =>
         val doubleCoda = DOUBLE_CODAS(c)
         Seq(word) ++
           CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, doubleCoda.first) + composeHangul(doubleCoda.second, _))
-      case (o: Char, v: Char, c: Char) if word.length > 1 =>
+      case HangulChar(o: Char, v: Char, c: Char) if word.length > 1 =>
         Seq(word) ++
           CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, ' ') + composeHangul(c, _))
       case _ => Seq(word)

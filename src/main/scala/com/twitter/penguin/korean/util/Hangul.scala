@@ -24,6 +24,8 @@ package com.twitter.penguin.korean.util
  */
 object Hangul {
 
+  case class HangulChar(onset: Char, vowel: Char, coda: Char)
+
   val HANGUL_BASE = 0xAC00
 
   val ONSET_BASE = 21 * 28
@@ -75,12 +77,12 @@ object Hangul {
    * @param c A Korean character
    * @return (onset: Char, vowel: Char, coda: Char)
    */
-  def decomposeHangul(c: Char): (Char, Char, Char) = {
+  def decomposeHangul(c: Char): HangulChar = {
     require(!ONSET_MAP.contains(c) && !VOWEL_MAP.contains(c) && !CODA_MAP.contains(c),
       "Input character is not a valid Korean character")
 
     val u = c - HANGUL_BASE
-    (ONSET_LIST(u / ONSET_BASE),
+    HangulChar(ONSET_LIST(u / ONSET_BASE),
       VOWEL_LIST((u % ONSET_BASE) / VOWEL_BASE),
       CODA_LIST(u % VOWEL_BASE))
   }
@@ -109,4 +111,13 @@ object Hangul {
       (VOWEL_MAP(vowel) * VOWEL_BASE) +
       CODA_MAP(coda)).toChar
   }
+
+  /**
+   * Compose a Korean character from the provided onset(초성), vowel(중성), and coda(종성).
+   *
+   * @param hc HangulChar(onset, vowel, coda)
+   * @return A Korean character
+   */
+  def composeHangul(hc: HangulChar): Char =
+    composeHangul(hc.onset, hc.vowel, hc.coda)
 }
