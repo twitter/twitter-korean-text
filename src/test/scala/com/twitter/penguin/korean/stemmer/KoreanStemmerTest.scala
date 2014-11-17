@@ -34,7 +34,8 @@ class KoreanStemmerTest extends FunSuite {
     KoreanToken("새롭다", Adjective),
     KoreanToken("스테밍", Noun),
     KoreanToken("을", Josa),
-    KoreanToken("추가하다", Verb),
+    KoreanToken("추가", Noun),
+    KoreanToken("하다", Verb),
     KoreanToken(".", Punctuation)
   )
 
@@ -50,13 +51,13 @@ class KoreanStemmerTest extends FunSuite {
     assert(
       KoreanStemmer.stemPredicates(
         KoreanTokenizer.tokenize(sampleText1)
-      ).flatten === sampleStems1
+      ) === sampleStems1
     )
 
     assert(
       KoreanStemmer.stemPredicates(
         KoreanTokenizer.tokenize(sampleText2)
-      ).flatten === sampleStems2
+      ) === sampleStems2
     )
   }
 

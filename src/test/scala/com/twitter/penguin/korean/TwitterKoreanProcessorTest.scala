@@ -84,14 +84,14 @@ class TwitterKoreanProcessorTest extends FunSuite {
       tokenize("이태민 복근있다..!!!!!!  11자...ㅋㅋㅋㅋ 요뎡왕댜는 복근 따위 없어도돼 얼굴이 대신하니까!!!! ").mkString(" ")
         === "이태민Noun 복근Noun 있다Adjective ..!!!!!!Punctuation 11Number 자Noun " +
         "...Punctuation ㅋㅋKoreanParticle 요정Noun 왕자Noun 는Josa 복근Noun 따위Noun " +
-        "없다Adjective 돼다Verb 얼굴Noun 이Josa 대신하다Verb !!!!Punctuation"
+        "없다Adjective 돼다Verb 얼굴Noun 이Josa 대신Noun 하다Verb !!!!Punctuation"
     )
 
     assert(
       tokenize("축하드리구요 부상얼른얼른 나으셔서 더좋은모습계속계속 보여주세요!! 얼른 부산오십쇼!! 보고싶습니다!!! 사랑해여 김캡틴♥♥♥").mkString(" ")
         === "축하Noun 드리다Verb 부상Noun 얼른얼른Adverb 낫다Verb 더Noun 좋다Adjective 모습Noun 계속계속Adverb 보이다Verb " +
         "!!Punctuation 얼른Noun 부산Noun 오십Noun 쇼Noun !!Punctuation 보다Verb " +
-        "!!!Punctuation 사랑하다Verb 김Noun 캡틴Noun ♥♥♥Foreign"
+        "!!!Punctuation 사랑Noun 하다Verb 김Noun 캡틴Noun ♥♥♥Foreign"
     )
 
     assert(

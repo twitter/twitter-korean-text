@@ -117,7 +117,7 @@ object TwitterKoreanProcessor {
   def tokenize(text: CharSequence, normalizization: Boolean = true, stemming: Boolean = true): Seq[KoreanToken] = {
     val normalized = if (normalizization) KoreanNormalizer.normalize(text) else text
     val tokenized = KoreanTokenizer.tokenize(normalized)
-    if (stemming) KoreanStemmer.stemPredicates(tokenized).flatten else tokenized
+    if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
   }
 
   /**
