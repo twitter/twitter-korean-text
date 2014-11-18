@@ -39,7 +39,7 @@ mvn compile
 
 Open 'pom.xml' from your favorite IDE.
 
-[설치 튜토리얼](https://groups.google.com/forum/#!topic/twitter-korean-text/hAq-9ctfZ6M)
+[설치 튜토리얼과 Q&A](https://groups.google.com/forum/#!topic/twitter-korean-text/hAq-9ctfZ6M)
 
 ## Usage 사용 방법
 
