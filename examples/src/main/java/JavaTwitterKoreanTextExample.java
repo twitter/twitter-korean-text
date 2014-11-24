@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-package examples.java;
-
 import java.util.List;
 
 import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
@@ -37,6 +35,20 @@ public class JavaTwitterKoreanTextExample {
     // output: [한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle]
 
 
+    // Tokenize without stemmer
+    processor = new TwitterKoreanProcessorJava.Builder()
+            .disableStemmer()
+            .build();
+
+    parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    System.out.println(parsedStrings);
+    // output: [한국어, 를, 처리, 하는, 예시, 입, 니다, ㅋㅋ]
+
+    parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    System.out.println(parsed);
+    // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle]
+
+
     // Tokenize with neither normalization nor stemmer
     processor = new TwitterKoreanProcessorJava.Builder()
         .disableNormalizer()
@@ -50,7 +62,5 @@ public class JavaTwitterKoreanTextExample {
     parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
     // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle]
-
-
   }
 }
