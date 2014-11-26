@@ -1,9 +1,26 @@
 ## twitter-korean-text [![Build Status](https://secure.travis-ci.org/twitter/twitter-korean-text.png?branch=master)](http://travis-ci.org/twitter/twitter-korean-text)
-트위터 한국어 분석기
+트위터 한국어 처리기
 
 Scala library to process Korean text with a Java wrapper. twitter-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text).
 
-스칼라로 쓰여진 한국어 분석기입니다. 현재 텍스트 정규화와 형태소 분석, 스테밍을 지원하고 있습니다. 참여하시고 싶은 분은 [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text)에 가입해 주세요. 사용법을 알고자 하시는 초보부터 코드에 참여하고 싶으신 분들까지 모두 환영합니다. 
+스칼라로 쓰여진 한국어 처리기입니다. 현재 텍스트 정규화와 형태소 분석, 스테밍을 지원하고 있습니다. 참여하시고 싶은 분은 [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text)에 가입해 주세요. 사용법을 알고자 하시는 초보부터 코드에 참여하고 싶으신 분들까지 모두 환영합니다. 
+
+twitter-korean-text의 목표는 스타트업 기업들과 연구하는 학생들이 한국어 처리기를 만드는데 시간과 비용을 중복 투자 하지 않고 빅데이터 등에서 간단한 한국어 처리를 통해 데이터를 추출하고자 할 때 사용하도록 하는 데에 있습니다. 완전한 수준의 형태소 분석을 지향하지는 않습니다.
+
+현재 twitter-korean-text에서는 normalization, tokenization, stemming 이렇게 세가지 기능을 지원합니다. 
+
+1. 정규화 normalization (입니닼ㅋㅋ -> 입니다 ㅋㅋ)
+
+한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ -> 한국어를 처리하는 예시입니다 ㅋㅋ
+
+2. 토큰화 tokenization
+
+한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi ㅋㅋKoreanParticle
+
+3. 어근화 stemming (입니다 -> 이다)
+
+한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle
+
 
 ### Try here
 
