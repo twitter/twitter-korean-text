@@ -82,6 +82,50 @@ object KoreanPos extends Enumeration {
     'v' -> VerbPrefix,
     's' -> Suffix
   )
+
+  case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
+
+  val selfNode = KoreanPosTrie(null, null, ending = None)
+
+  protected[korean] def buildTrie(s: String): List[KoreanPosTrie] = {
+    def isFinal(rest: String): Boolean = {
+      val isNextOptional = rest.foldLeft(true) {
+        case (output: Boolean, c: Char) if c == '+' || c == '1' => false
+        case (output: Boolean, c: Char) => output
+      }
+      rest.length == 0 || isNextOptional
+    }
+
+    if (s.length < 2) {
+      return List()
+    }
+
+    val pos = shortCut(s.charAt(0))
+    val rule = s.charAt(1)
+    val rest = if (s.length > 1) {
+      s.slice(2, s.length)
+    } else {
+      ""
+    }
+
+    val end: Option[KoreanPos] = if (isFinal(rest)) Some(Noun) else None
+
+    rule match {
+      case '+' =>
+        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end))
+      case '*' =>
+        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end)) ++ buildTrie(rest)
+      case '1' =>
+        List(KoreanPosTrie(pos, buildTrie(rest), end))
+      case '0' =>
+        List(KoreanPosTrie(pos, buildTrie(rest), end)) ++ buildTrie(rest)
+    }
+  }
+
+  protected[korean] def getTrie(sequences: List[String]): List[KoreanPosTrie] =
+    sequences.foldLeft(List[KoreanPosTrie]()) {
+      (results: List[KoreanPosTrie], s: String) => buildTrie(s) ::: results
+    }
 }
 
 

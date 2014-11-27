@@ -25,10 +25,10 @@ import com.twitter.penguin.korean.TwitterKoreanProcessor._
  */
 object KoreanTokenizerSandbox {
   def main(args: Array[String]) {
-    val s = "거기에있는것은자기마음이원하는행복한시간입니다굿나잇잘자고좋은꿈행복한꿈꾸세요"
+    val s = "멋지게 사는 싱글 친구들의 sns글을 보며 부러워하다, 난 어차피 결혼 안했어도 능력이 딸려서 저렇게 멋지게 살진 못했겠구나 하는 깨닳음을 얻었다. 어차피 이러나 저러나 망한 인생이라니!! 오 차라리 마음이 편함ㅋㅋ"
 
     println(
-      tokenize(s).mkString(" ")
+      tokenize(s, stemming = false).mkString(" ")
     )
   }
 }
