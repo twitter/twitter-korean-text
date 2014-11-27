@@ -111,10 +111,10 @@ object KoreanDictionaryProvider {
     new CharArraySet(10000, false)
   }
 
-  val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
+  lazy val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
     readWordFreqs("freq/entity-freq.txt.gz")
 
-  val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
+  lazy val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
     var map: collection.mutable.Map[KoreanPos, CharArraySet] =
       new java.util.HashMap[KoreanPos, CharArraySet]
 
@@ -141,17 +141,16 @@ object KoreanDictionaryProvider {
     map
   }
 
-  val nameDictionay = Map(
+  lazy val nameDictionay = Map(
     'family_name -> readWords("substantives/family_names.txt"),
     'given_name -> readWords("substantives/given_names.txt"),
     'full_name -> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")
   )
 
-  val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
+  lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
     case (key: String, value: String) => key.length
   }
 
-  // using lazy val as this is not used unless stemmer is enabled.
   lazy val predicateStems = {
     def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
       words.flatMap {

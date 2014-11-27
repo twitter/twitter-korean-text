@@ -66,7 +66,7 @@ object KoreanPos extends Enumeration {
   Korean, Foreign, Number, KoreanParticle, Alpha,
   Punctuation, Hashtag, ScreenName, Email, URL, CashTag = Value
 
-  val shortCut = Map(
+  lazy val shortCut = Map(
     'N' -> Noun,
     'V' -> Verb,
     'J' -> Adjective,

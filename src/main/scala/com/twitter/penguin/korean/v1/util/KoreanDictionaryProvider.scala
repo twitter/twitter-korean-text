@@ -21,10 +21,9 @@ package com.twitter.penguin.korean.v1.util
 import java.io.{FileInputStream, InputStream}
 import java.util.zip.GZIPInputStream
 
+import com.twitter.penguin.korean.util.CharArraySet
 import com.twitter.penguin.korean.v1.util.KoreanConjugation._
 import com.twitter.penguin.korean.v1.util.KoreanPos._
-import org.apache.lucene.analysis.util.CharArraySet
-import org.apache.lucene.util.Version
 import org.apache.thrift.protocol.TBinaryProtocol
 import org.apache.thrift.transport.TIOStreamTransport
 
@@ -111,13 +110,13 @@ object KoreanDictionaryProvider {
 
 
   protected[korean] def newCharArraySet: CharArraySet = {
-    new CharArraySet(Version.LUCENE_44, 10000, false)
+    new CharArraySet(10000, false)
   }
 
-  val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
+  lazy val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
     readWordFreqs("freq/entity-freq.txt.gz")
 
-  val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
+  lazy val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
     var map: collection.mutable.Map[KoreanPos, CharArraySet] =
       new java.util.HashMap[KoreanPos, CharArraySet]
 
@@ -144,12 +143,12 @@ object KoreanDictionaryProvider {
     map
   }
 
-  val nameDictionay = Map(
+  lazy val nameDictionay = Map(
     'family_name -> readWords("substantives/family_names.txt"),
     'given_name -> readWords("substantives/given_names.txt")
   )
 
-  val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
+  lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
     case (key: String, value: String) => key.length
   }
 }

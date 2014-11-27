@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.twitter.penguin.korean.tools
+package com.twitter.penguin.korean.v1.tools
 
 import java.io.FileOutputStream
 import java.util.zip.GZIPOutputStream

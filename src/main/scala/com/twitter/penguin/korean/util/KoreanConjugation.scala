@@ -81,7 +81,7 @@ object KoreanConjugation {
    * @return Set of conjugated words
    */
   protected[korean] def conjugatePredicated(words: Set[String], isAdjective: Boolean): Set[String] = {
-    val expanded = words.flatMap { word: String =>
+    lazy val expanded = words.flatMap { word: String =>
       val init = word.init
       val lastChar = word.last
       val lastCharString = lastChar.toString

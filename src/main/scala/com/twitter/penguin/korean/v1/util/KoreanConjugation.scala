@@ -18,9 +18,9 @@
 
 package com.twitter.penguin.korean.v1.util
 
+import com.twitter.penguin.korean.util.CharArraySet
 import com.twitter.penguin.korean.v1.util.Hangul._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
-import org.apache.lucene.analysis.util.CharArraySet
 
 import scala.collection.JavaConversions._
 
@@ -66,7 +66,7 @@ object KoreanConjugation {
    * @return CharArraySet with conjugated words.
    */
   protected[korean] def conjugatePredicates(words: Set[String], isAdjective: Boolean = false): CharArraySet = {
-    val expanded = words.flatMap { word: String =>
+    lazy val expanded = words.flatMap { word: String =>
       val init = word.init
       val lastChar = word.last
       val lastCharString = lastChar.toString
@@ -199,7 +199,7 @@ object KoreanConjugation {
       expandedLast.map(init + _)
     }
 
-    val newSet = newCharArraySet
+    lazy val newSet = newCharArraySet
     newSet.addAll(expanded)
     newSet
   }
