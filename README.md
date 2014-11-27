@@ -28,9 +28,12 @@ twitter-korean-text의 목표는 스타트업 기업들과 연구하는 학생�
 * 한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어, 처리, 예시, 처리하는 예시
 
 
-### Try here
+### Try this here
 
-Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
+Gunja Agrawal kindly created a test API webpage for this project (this uses v1.0 which provides lower accuracy and no stemming): [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
+
+Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다. (v1.0으로 현재의 성능과는 차이가 있습니다.)
+[http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
 
 ### Maven
