@@ -16,13 +16,14 @@
  * limitations under the License.
  */
 
-package com.twitter.penguin.korean.util
+package com.twitter.penguin.korean.v1.util
 
 import java.io.{FileInputStream, InputStream}
 import java.util.zip.GZIPInputStream
 
-import com.twitter.penguin.korean.util.KoreanConjugation._
-import com.twitter.penguin.korean.util.KoreanPos._
+import com.twitter.penguin.korean.util.CharArraySet
+import com.twitter.penguin.korean.v1.util.KoreanConjugation._
+import com.twitter.penguin.korean.v1.util.KoreanPos._
 import org.apache.thrift.protocol.TBinaryProtocol
 import org.apache.thrift.transport.TIOStreamTransport
 
@@ -36,9 +37,9 @@ object KoreanDictionaryProvider {
   private[this] def readStreamByLine(stream: InputStream, filename: String): Iterator[String] = {
     require(stream != null, "Resource not loaded: " + filename)
     Source.fromInputStream(stream)(io.Codec("UTF-8"))
-      .getLines()
-      .map(_.trim)
-      .filter(_.length > 0)
+        .getLines()
+        .map(_.trim)
+        .filter(_.length > 0)
   }
 
   private[this] def readWordFreqs(filename: String): collection.mutable.Map[CharSequence, Float] = {
@@ -107,6 +108,7 @@ object KoreanDictionaryProvider {
     new TBinaryProtocol(new TIOStreamTransport(in))
   }
 
+
   protected[korean] def newCharArraySet: CharArraySet = {
     new CharArraySet(10000, false)
   }
@@ -124,17 +126,17 @@ object KoreanDictionaryProvider {
       "noun/slangs.txt", "noun/company_names.txt",
       "noun/foreign.txt", "noun/geolocations.txt", "noun/profane.txt",
       "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
-      "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt"
+      "noun/wikipedia_title_nouns.txt", "noun/pokemon.txt"
     )
-    map += Verb -> conjugatePredicatesToCharArraySet(readWordsAsSet("verb/verb.txt"))
-    map += Adjective -> conjugatePredicatesToCharArraySet(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+    map += Verb -> conjugatePredicates(readWordsAsSet("verb/verb.txt"))
+    map += Adjective -> conjugatePredicates(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
     map += Adverb -> readWords("adverb/adverb.txt")
-    map += Determiner -> readWords("auxiliary/determiner.txt")
-    map += Exclamation -> readWords("auxiliary/exclamation.txt")
+    map += Determiner -> readWords("aux/determiner.txt")
+    map += Exclamation -> readWords("aux/exclamation.txt")
     map += Josa -> readWords("josa/josa.txt")
     map += Eomi -> readWords("verb/eomi.txt")
     map += PreEomi -> readWords("verb/pre_eomi.txt")
-    map += Conjunction -> readWords("auxiliary/conjunctions.txt")
+    map += Conjunction -> readWords("aux/conjunctions.txt")
     map += NounPrefix -> readWords("substantives/noun_prefix.txt")
     map += VerbPrefix -> readWords("verb/verb_prefix.txt")
     map += Suffix -> readWords("substantives/suffix.txt")
@@ -143,27 +145,11 @@ object KoreanDictionaryProvider {
 
   lazy val nameDictionay = Map(
     'family_name -> readWords("substantives/family_names.txt"),
-    'given_name -> readWords("substantives/given_names.txt"),
-    'full_name -> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")
+    'given_name -> readWords("substantives/given_names.txt")
   )
 
   lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
     case (key: String, value: String) => key.length
-  }
-
-  lazy val predicateStems = {
-    def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
-      words.flatMap {
-        word: String => conjugatePredicated(Set(word), isAdjective).map {
-          conjugated => (conjugated.toString, word + "다")
-        }
-      }.toMap
-    }
-
-    Map(
-      Verb -> getConjugationMap(readWordsAsSet("verb/verb.txt"), isAdjective = false),
-      Adjective -> getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
-    )
   }
 }
 
