@@ -235,192 +235,6 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#PREFERRED_PATTERN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PREFERRED_PATTERN:Seq[com.twitter.penguin.korean.util.KoreanPos.Value]"></a>
-      <a id="PREFERRED_PATTERN:Seq[util.KoreanPos.Value]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">PREFERRED_PATTERN</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="../util/KoreanPos$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">util.KoreanPos.Value</a>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#SequenceDefinition" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="SequenceDefinition:List[String]"></a>
-      <a id="SequenceDefinition:List[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">SequenceDefinition</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="java.lang.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">0 for optional, 1 for required
-* for optional repeatable, + for required repeatable</p><div class="fullcomment"><div class="comment cmt"><p>0 for optional, 1 for required
-* for optional repeatable, + for required repeatable</p><p>Substantive: 체언 (초거대기업의)
-Predicate: 용언 (하였었습니다, 개예뻤었다)
-Modifier: 수식언 (모르는 할수도있는 보이기도하는 예뻐 예쁜 완전 레알 초인간적인 잘 잘한)
-Standalone: 독립언
-Functional: 관계언 (조사)</p><p>N Noun: 명사 (Nouns, Pronouns, Company Names, Proper Noun, Person Names, Numerals, Standalone, Dependent)
-V Verb: 동사 (하, 먹, 자, 차)
-J Adjective: 형용사 (예쁘다, 크다, 작다)
-A Adverb: 부사 (잘, 매우, 빨리, 반드시, 과연)
-D Determiner: 관형사 (새, 헌, 참, 첫, 이, 그, 저)
-E Exclamation: 감탄사 (헐, ㅋㅋㅋ, 어머나, 얼씨구)</p><p>C Conjunction: 접속사</p><p>j SubstantiveJosa: 조사 (의, 에, 에서)
-l AdverbialJosa: 부사격 조사 (~인, ~의, ~일)
-e Eomi: 어말어미 (다, 요, 여, 하댘ㅋㅋ)
-r PreEomi: 선어말어미 (었)</p><p>p NounPrefix: 접두사 ('초'대박)
-v VerbPrefix: 동사 접두어 ('쳐'먹어)
-s Suffix: 접미사 (~적)
-</p></div></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#TOP_N_PER_STATE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TOP_N_PER_STATE:Int"></a>
-      <a id="TOP_N_PER_STATE:Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">TOP_N_PER_STATE</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_ALL_NOUN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_ALL_NOUN:Float"></a>
-      <a id="WEIGHT_ALL_NOUN:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_ALL_NOUN</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_DETERMINER" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_DETERMINER:Float"></a>
-      <a id="WEIGHT_DETERMINER:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_DETERMINER</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_EXACT_MATCH" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_EXACT_MATCH:Float"></a>
-      <a id="WEIGHT_EXACT_MATCH:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_EXACT_MATCH</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_FREQ" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_FREQ:Float"></a>
-      <a id="WEIGHT_FREQ:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_FREQ</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_POS_UNKNOWNS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_POS_UNKNOWNS:Float"></a>
-      <a id="WEIGHT_POS_UNKNOWNS:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_POS_UNKNOWNS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_PREFFERED_PATTERN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_PREFFERED_PATTERN:Float"></a>
-      <a id="WEIGHT_PREFFERED_PATTERN:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_PREFFERED_PATTERN</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_TOKENS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_TOKENS:Float"></a>
-      <a id="WEIGHT_TOKENS:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_TOKENS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_UNKNOWNS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_UNKNOWNS:Float"></a>
-      <a id="WEIGHT_UNKNOWNS:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_UNKNOWNS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_UNKNOWN_COVERAGE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_UNKNOWN_COVERAGE:Float"></a>
-      <a id="WEIGHT_UNKNOWN_COVERAGE:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_UNKNOWN_COVERAGE</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#WEIGHT_WORDS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="WEIGHT_WORDS:Float"></a>
-      <a id="WEIGHT_WORDS:Float"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">WEIGHT_WORDS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -589,7 +403,7 @@ s Suffix: 접미사 (~적)
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#selfNode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#selfNode" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="selfNode:com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie"></a>
       <a id="selfNode:KoreanPosTrie"></a>
       <h4 class="signature">
@@ -601,7 +415,7 @@ s Suffix: 접미사 (~적)
         <span class="name">selfNode</span><span class="result">: <a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a></span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
