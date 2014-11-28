@@ -33,8 +33,8 @@ import scala.io.Source
  * Program arguments example = "~/korean_201407_100"
  */
 object BatchGetUnknownNouns {
-  val LOG = Logger.getLogger(getClass.getSimpleName)
-  val VERBOSE = true
+  private val LOG = Logger.getLogger(getClass.getSimpleName)
+  private val VERBOSE = true
 
   case class ChunkWithTweet(chunk: String, tweet: String)
 

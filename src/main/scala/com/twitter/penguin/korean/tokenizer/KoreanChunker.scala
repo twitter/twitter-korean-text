@@ -29,7 +29,7 @@ import com.twitter.penguin.korean.util.KoreanPos._
  * Split input text into Korean Chunks (어절)
  */
 object KoreanChunker {
-  val POS_PATTERNS = Map(
+  private val POS_PATTERNS = Map(
     Korean -> """([가-힣]+)""".r.pattern,
     Alpha -> """(\p{Alpha}+)""".r.pattern,
     Number -> """(\p{Digit}+)""".r.pattern,
@@ -42,8 +42,8 @@ object KoreanChunker {
     CashTag -> Regex.VALID_CASHTAG
   )
 
-  val CHUNKING_ORDER = Seq(URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
-  val SPACE_REGEX_STRING = "\\s"
+  private val CHUNKING_ORDER = Seq(URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
+  private val SPACE_REGEX_STRING = "\\s"
 
   protected[korean] def getChunks(input: String): Seq[String] = {
     chunk(input).map(_.text)
