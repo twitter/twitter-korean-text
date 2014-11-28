@@ -1,0 +1,722 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>KoreanTokenizer - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer</title>
+          <meta name="description" content="KoreanTokenizer - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer" />
+          <meta name="keywords" content="KoreanTokenizer Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer$';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean.v1">v1</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer">tokenizer</a></p>
+        <h1>KoreanTokenizer</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">KoreanTokenizer</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides Korean tokenization.</p><p>Chunk: 어절 - 공백으로 구분되어 있는 단위 (사랑하는사람을)
+Word: 단어 - 하나의 문장 구성 요소 (사랑하는, 사람을)
+Token: 토큰 - 형태소와 비슷한 단위이지만 문법적으로 정확하지는 않음 (사랑, 하는, 사람, 을)</p><p>Whenever there is an updates in the behavior of KoreanParser,
+the initial cache has to be updated by running tools.CreateInitialCache.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer"><span>KoreanTokenizer</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CandidateParseextendsProductwithSerializable"></a>
+      <a id="CandidateParse:CandidateParse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanTokenizer$$CandidateParse.html"><span class="name">CandidateParse</span></a><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="KoreanPosTrieextendsProductwithSerializable"></a>
+      <a id="KoreanPosTrie:KoreanPosTrie"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanTokenizer$$KoreanPosTrie.html"><span class="name">KoreanPosTrie</span></a><span class="params">(<span name="curPos">curPos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.v1.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.v1.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="nextTrie">nextTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="KoreanTokenextendsProductwithSerializable"></a>
+      <a id="KoreanToken:KoreanToken"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanTokenizer$$KoreanToken.html"><span class="name">KoreanToken</span></a><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.v1.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.v1.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.ParsedChunk" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParsedChunkextendsProductwithSerializable"></a>
+      <a id="ParsedChunk:ParsedChunk"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanTokenizer$$ParsedChunk.html"><span class="name">ParsedChunk</span></a><span class="params">(<span name="posNodes">posNodes: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>, <span name="words">words: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A candidate parse for a chunk.</p>
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.ParsedChunkWithMinScore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParsedChunkWithMinScoreextendsProductwithSerializable"></a>
+      <a id="ParsedChunkWithMinScore:ParsedChunkWithMinScore"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanTokenizer$$ParsedChunkWithMinScore.html"><span class="name">ParsedChunkWithMinScore</span></a><span class="params">(<span name="parsedChunk">parsedChunk: <span class="extype" name="scala.Option">Option</span>[<a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a>]</span>, <span name="score">score: <span class="extype" name="scala.Float">Float</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PossibleTrieextendsProductwithSerializable"></a>
+      <a id="PossibleTrie:PossibleTrie"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanTokenizer$$PossibleTrie.html"><span class="name">PossibleTrie</span></a><span class="params">(<span name="curTrie">curTrie: <a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a></span>, <span name="words">words: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:AnyRef):Boolean"></a>
+      <a id="!=(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:AnyRef):Boolean"></a>
+      <a id="==(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#PREFERRED_PATTERN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PREFERRED_PATTERN:Seq[com.twitter.penguin.korean.v1.util.KoreanPos.Value]"></a>
+      <a id="PREFERRED_PATTERN:Seq[util.KoreanPos.Value]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PREFERRED_PATTERN</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[<a href="../util/KoreanPos$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.v1.util.KoreanPos.Value">util.KoreanPos.Value</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#SequenceDefinition" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SequenceDefinition:List[String]"></a>
+      <a id="SequenceDefinition:List[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SequenceDefinition</span><span class="result">: <span class="extype" name="scala.collection.immutable.List">List</span>[<span class="extype" name="java.lang.String">String</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">0 for optional, 1 for required
+* for optional repeatable, + for required repeatable</p><div class="fullcomment"><div class="comment cmt"><p>0 for optional, 1 for required
+* for optional repeatable, + for required repeatable</p><p>Substantive: 체언 (초거대기업의)
+Predicate: 용언 (하였었습니다, 개예뻤었다)
+Modifier: 수식언 (모르는 할수도있는 보이기도하는 예뻐 예쁜 완전 레알 초인간적인 잘 잘한)
+Standalone: 독립언
+Functional: 관계언 (조사)</p><p>N Noun: 명사 (Nouns, Pronouns, Company Names, Proper Noun, Person Names, Numerals, Standalone, Dependent)
+V Verb: 동사 (하, 먹, 자, 차)
+J Adjective: 형용사 (예쁘다, 크다, 작다)
+A Adverb: 부사 (잘, 매우, 빨리, 반드시, 과연)
+D Determiner: 관형사 (새, 헌, 참, 첫, 이, 그, 저)
+E Exclamation: 감탄사 (헐, ㅋㅋㅋ, 어머나, 얼씨구)</p><p>C Conjunction: 접속사</p><p>j SubstantiveJosa: 조사 (의, 에, 에서)
+l AdverbialJosa: 부사격 조사 (~인, ~의, ~일)
+e Eomi: 어말어미 (다, 요, 여, 하댘ㅋㅋ)
+r PreEomi: 선어말어미 (었)</p><p>p NounPrefix: 접두사 ('초'대박)
+v VerbPrefix: 동사 접두어 ('쳐'먹어)
+s Suffix: 접미사 (~적)
+</p></div></div>
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#TOP_N_PER_STATE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TOP_N_PER_STATE:Int"></a>
+      <a id="TOP_N_PER_STATE:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">TOP_N_PER_STATE</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_ALL_NOUN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_ALL_NOUN:Float"></a>
+      <a id="WEIGHT_ALL_NOUN:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_ALL_NOUN</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_EXACT_MATCH" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_EXACT_MATCH:Float"></a>
+      <a id="WEIGHT_EXACT_MATCH:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_EXACT_MATCH</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_FREQ" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_FREQ:Float"></a>
+      <a id="WEIGHT_FREQ:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_FREQ</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_POS_UNKNOWNS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_POS_UNKNOWNS:Float"></a>
+      <a id="WEIGHT_POS_UNKNOWNS:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_POS_UNKNOWNS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_PREFFERED_PATTERN" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_PREFFERED_PATTERN:Float"></a>
+      <a id="WEIGHT_PREFFERED_PATTERN:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_PREFFERED_PATTERN</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_TOKENS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_TOKENS:Float"></a>
+      <a id="WEIGHT_TOKENS:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_TOKENS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_UNKNOWNS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_UNKNOWNS:Float"></a>
+      <a id="WEIGHT_UNKNOWNS:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_UNKNOWNS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_UNKNOWN_COVERAGE" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_UNKNOWN_COVERAGE:Float"></a>
+      <a id="WEIGHT_UNKNOWN_COVERAGE:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_UNKNOWN_COVERAGE</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#WEIGHT_WORDS" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WEIGHT_WORDS:Float"></a>
+      <a id="WEIGHT_WORDS:Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WEIGHT_WORDS</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#buildTrie" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="buildTrie(s:String):List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie]"></a>
+      <a id="buildTrie(String):List[KoreanPosTrie]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">buildTrie</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#selfNode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="selfNode:com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie"></a>
+      <a id="selfNode:KoreanPosTrie"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">selfNode</span><span class="result">: <a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer#tokenize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="tokenize(text:CharSequence):Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken]"></a>
+      <a id="tokenize(CharSequence):Seq[KoreanToken]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Parse Korean text into a sequence of KoreanTokens
+</p><div class="fullcomment"><div class="comment cmt"><p>Parse Korean text into a sequence of KoreanTokens
+</p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input Korean chunk</p></dd><dt>returns</dt><dd class="cmt"><p>sequence of KoreanTokens
+</p></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
+    </body>
+      </html>

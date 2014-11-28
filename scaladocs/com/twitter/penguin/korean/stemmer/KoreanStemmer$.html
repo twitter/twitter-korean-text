@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanStemmer - Korean Text Processing Utilities 2.2-SNAPSHOT API - com.twitter.penguin.korean.stemmer.KoreanStemmer</title>
-          <meta name="description" content="KoreanStemmer - Korean Text Processing Utilities 2.2 - SNAPSHOT API - com.twitter.penguin.korean.stemmer.KoreanStemmer" />
-          <meta name="keywords" content="KoreanStemmer Korean Text Processing Utilities 2.2 SNAPSHOT API com.twitter.penguin.korean.stemmer.KoreanStemmer" />
+          <title>KoreanStemmer - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.stemmer.KoreanStemmer</title>
+          <meta name="description" content="KoreanStemmer - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.stemmer.KoreanStemmer" />
+          <meta name="keywords" content="KoreanStemmer Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.stemmer.KoreanStemmer" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -180,6 +180,19 @@
       </span>
       </h4>
       
+    </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#EndingsForNouns" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EndingsForNouns:scala.collection.immutable.Set[String]"></a>
+      <a id="EndingsForNouns:Set[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">EndingsForNouns</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="java.lang.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#Predicates" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Predicates:scala.collection.immutable.Set[com.twitter.penguin.korean.util.KoreanPos.Value]"></a>
       <a id="Predicates:Set[util.KoreanPos.Value]"></a>
@@ -348,7 +361,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#stem" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#stem" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="stem(text:CharSequence):com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens"></a>
       <a id="stem(CharSequence):StemmedTextWithTokens"></a>
       <h4 class="signature">
@@ -360,20 +373,42 @@
         <span class="name">stem</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <a href="KoreanStemmer$$StemmedTextWithTokens.html" class="extype" name="com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens">StemmedTextWithTokens</a></span>
       </span>
       </h4>
-      
-    </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#stemPredicates" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="stemPredicates(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]):Seq[Option[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]"></a>
-      <a id="stemPredicates(Seq[KoreanToken]):Seq[Option[KoreanToken]]"></a>
+      <p class="shortcomment cmt">Stem tokens
+</p><div class="fullcomment"><div class="comment cmt"><p>Stem tokens
+</p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input text</p></dd><dt>returns</dt><dd class="cmt"><p>StemmedTextWithTokens
+</p></dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#stemPredicates" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="stemPredicates(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
+      <a id="stemPredicates(Seq[KoreanToken]):Seq[KoreanToken]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">stemPredicates</span><span class="params">(<span name="tokens">tokens: <span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Option">Option</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]]</span>
+        <span class="name">stemPredicates</span><span class="params">(<span name="tokens">tokens: <span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Removes Ending tokens recovering the root form of predicates
+</p><div class="fullcomment"><div class="comment cmt"><p>Removes Ending tokens recovering the root form of predicates
+</p></div><dl class="paramcmts block"><dt class="param">tokens</dt><dd class="cmt"><p>A sequence of tokens</p></dd><dt>returns</dt><dd class="cmt"><p>A list of Korean tokens
+</p></dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.stemmer.KoreanStemmer#stemPredicatesCore" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="stemPredicatesCore(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]):Seq[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]"></a>
+      <a id="stemPredicatesCore(Seq[KoreanToken]):Seq[Seq[KoreanToken]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stemPredicatesCore</span><span class="params">(<span name="tokens">tokens: <span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Removes Ending tokens recovering the root form of predicates
+</p><div class="fullcomment"><div class="comment cmt"><p>Removes Ending tokens recovering the root form of predicates
+</p></div><dl class="paramcmts block"><dt class="param">tokens</dt><dd class="cmt"><p>A sequence of tokens</p></dd><dt>returns</dt><dd class="cmt"><p>A list of Korean tokens
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

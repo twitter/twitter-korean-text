@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>Hangul - Korean Text Processing Utilities 2.2-SNAPSHOT API - com.twitter.penguin.korean.util.Hangul</title>
-          <meta name="description" content="Hangul - Korean Text Processing Utilities 2.2 - SNAPSHOT API - com.twitter.penguin.korean.util.Hangul" />
-          <meta name="keywords" content="Hangul Korean Text Processing Utilities 2.2 SNAPSHOT API com.twitter.penguin.korean.util.Hangul" />
+          <title>Hangul - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.util.Hangul</title>
+          <meta name="description" content="Hangul - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.util.Hangul" />
+          <meta name="keywords" content="Hangul Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.util.Hangul" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -93,6 +93,19 @@ This object helps analyze Korean character by consonant and vowel level.
       </span>
       <span class="symbol">
         <a href="Hangul$$DoubleCoda.html"><span class="name">DoubleCoda</span></a><span class="params">(<span name="first">first: <span class="extype" name="scala.Char">Char</span></span>, <span name="second">second: <span class="extype" name="scala.Char">Char</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.util.Hangul.HangulChar" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HangulCharextendsProductwithSerializable"></a>
+      <a id="HangulChar:HangulChar"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Hangul$$HangulChar.html"><span class="name">HangulChar</span></a><span class="params">(<span name="onset">onset: <span class="extype" name="scala.Char">Char</span></span>, <span name="vowel">vowel: <span class="extype" name="scala.Char">Char</span></span>, <span name="coda">coda: <span class="extype" name="scala.Char">Char</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -331,6 +344,21 @@ This object helps analyze Korean character by consonant and vowel level.
               
         </dd></dl></div>
     </li><li name="com.twitter.penguin.korean.util.Hangul#composeHangul" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="composeHangul(hc:com.twitter.penguin.korean.util.Hangul.HangulChar):Char"></a>
+      <a id="composeHangul(HangulChar):Char"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">composeHangul</span><span class="params">(<span name="hc">hc: <a href="Hangul$$HangulChar.html" class="extype" name="com.twitter.penguin.korean.util.Hangul.HangulChar">HangulChar</a></span>)</span><span class="result">: <span class="extype" name="scala.Char">Char</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Compose a Korean character from the provided onset(초성), vowel(중성), and coda(종성).</p><div class="fullcomment"><div class="comment cmt"><p>Compose a Korean character from the provided onset(초성), vowel(중성), and coda(종성).
+</p></div><dl class="paramcmts block"><dt class="param">hc</dt><dd class="cmt"><p>HangulChar(onset, vowel, coda)</p></dd><dt>returns</dt><dd class="cmt"><p>A Korean character
+</p></dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.Hangul#composeHangul" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="composeHangul(onset:Char,vowel:Char,coda:Char):Char"></a>
       <a id="composeHangul(Char,Char,Char):Char"></a>
       <h4 class="signature">
@@ -346,15 +374,15 @@ This object helps analyze Korean character by consonant and vowel level.
 </p></div><dl class="paramcmts block"><dt class="param">onset</dt><dd class="cmt"><p>초성</p></dd><dt class="param">vowel</dt><dd class="cmt"><p>중성</p></dd><dt class="param">coda</dt><dd class="cmt"><p>종성</p></dd><dt>returns</dt><dd class="cmt"><p>A Korean character
 </p></dd></dl></div>
     </li><li name="com.twitter.penguin.korean.util.Hangul#decomposeHangul" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decomposeHangul(c:Char):(Char,Char,Char)"></a>
-      <a id="decomposeHangul(Char):(Char,Char,Char)"></a>
+      <a id="decomposeHangul(c:Char):com.twitter.penguin.korean.util.Hangul.HangulChar"></a>
+      <a id="decomposeHangul(Char):HangulChar"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decomposeHangul</span><span class="params">(<span name="c">c: <span class="extype" name="scala.Char">Char</span></span>)</span><span class="result">: (<span class="extype" name="scala.Char">Char</span>, <span class="extype" name="scala.Char">Char</span>, <span class="extype" name="scala.Char">Char</span>)</span>
+        <span class="name">decomposeHangul</span><span class="params">(<span name="c">c: <span class="extype" name="scala.Char">Char</span></span>)</span><span class="result">: <a href="Hangul$$HangulChar.html" class="extype" name="com.twitter.penguin.korean.util.Hangul.HangulChar">HangulChar</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Decompose a Korean character to onset(초성), vowel(중성), and coda(종성).</p><div class="fullcomment"><div class="comment cmt"><p>Decompose a Korean character to onset(초성), vowel(중성), and coda(종성).

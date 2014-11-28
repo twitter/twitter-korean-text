@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanSubstantive - Korean Text Processing Utilities 2.2-SNAPSHOT API - com.twitter.penguin.korean.util.KoreanSubstantive</title>
-          <meta name="description" content="KoreanSubstantive - Korean Text Processing Utilities 2.2 - SNAPSHOT API - com.twitter.penguin.korean.util.KoreanSubstantive" />
-          <meta name="keywords" content="KoreanSubstantive Korean Text Processing Utilities 2.2 SNAPSHOT API com.twitter.penguin.korean.util.KoreanSubstantive" />
+          <title>KoreanSubstantive - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.util.KoreanSubstantive</title>
+          <meta name="description" content="KoreanSubstantive - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.util.KoreanSubstantive" />
+          <meta name="keywords" content="KoreanSubstantive Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.util.KoreanSubstantive" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -348,6 +348,22 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.KoreanSubstantive#isKoreanNameVariation" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isKoreanNameVariation(chunk:CharSequence):Boolean"></a>
+      <a id="isKoreanNameVariation(CharSequence):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isKoreanNameVariation</span><span class="params">(<span name="chunk">chunk: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Check if this chunk is an 'ㅇ' omitted variation of a noun (우혀니 -&gt; 우현, 우현이, 빠순이 -&gt; 빠순, 빠순이)
+</p><div class="fullcomment"><div class="comment cmt"><p>Check if this chunk is an 'ㅇ' omitted variation of a noun (우혀니 -&gt; 우현, 우현이, 빠순이 -&gt; 빠순, 빠순이)
+</p></div><dl class="paramcmts block"><dt class="param">chunk</dt><dd class="cmt"><p>input chunk</p></dd><dt>returns</dt><dd class="cmt"><p>true if the chunk is an 'ㅇ' omitted variation
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="com.twitter.penguin.korean.util.KoreanSubstantive#isKoreanNumber" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isKoreanNumber(chunk:CharSequence):Boolean"></a>
       <a id="isKoreanNumber(CharSequence):Boolean"></a>
