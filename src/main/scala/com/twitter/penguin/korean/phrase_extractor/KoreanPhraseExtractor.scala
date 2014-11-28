@@ -56,7 +56,11 @@ object KoreanPhraseExtractor {
 
   val collapseTrie = KoreanPos.getTrie(CollapsingRules)
 
-  case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos)
+  case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos) {
+    override def toString(): String = {
+      this.tokens.map(_.text).mkString("") + pos
+    }
+  }
 
   def collapsePos(tokens: Seq[KoreanToken],
                   trie: List[KoreanPosTrie] = collapseTrie,
