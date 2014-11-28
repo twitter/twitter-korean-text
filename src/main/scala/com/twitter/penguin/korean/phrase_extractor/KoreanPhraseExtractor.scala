@@ -50,24 +50,20 @@ object KoreanPhraseExtractor {
     "A1" -> Adverb,
     "j1" -> Josa,
     "C1" -> Conjunction,
-    "E+" -> Exclamation
+    "E+" -> Exclamation,
+    "o1" -> Others
   )
 
   val collapseTrie = KoreanPos.getTrie(CollapsingRules)
 
-  case class Phrase(tokens: Seq[KoreanToken], pos: KoreanPos)
+  case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos)
 
   def collapsePos(tokens: Seq[KoreanToken],
                   trie: List[KoreanPosTrie] = collapseTrie,
-                  finalTokens: Seq[Phrase] = Seq(),
+                  finalTokens: Seq[KoreanPhrase] = Seq(),
                   curTokens: Seq[KoreanToken] = Seq(),
                   ending: Option[KoreanPos] = None)
-  : Seq[Phrase] = {
-    println(tokens)
-    println(finalTokens)
-    println(curTokens)
-    println(ending)
-    println
+  : Seq[KoreanPhrase] = {
     if (tokens.length == 0) {
       return finalTokens
     }
@@ -77,7 +73,7 @@ object KoreanPhraseExtractor {
     val newSeq = if (ending.isDefined) {
       collapsePos(
         tokens,
-        finalTokens = finalTokens :+ Phrase(curTokens, ending.get),
+        finalTokens = finalTokens :+ KoreanPhrase(curTokens, ending.get),
         curTokens = Seq()
       )
     } else Seq()
@@ -85,10 +81,11 @@ object KoreanPhraseExtractor {
     val output = trie.flatMap {
       case t: KoreanPosTrie if t.curPos == h.pos =>
         collapsePos(tokens.tail, t.nextTrie, finalTokens, curTokens :+ h, t.ending)
+      case t: KoreanPosTrie if t.curPos == Others && OtherPoses.contains(h.pos) =>
+        collapsePos(tokens.tail, finalTokens = finalTokens :+ KoreanPhrase(Seq(h), h.pos))
       case t: KoreanPosTrie => Seq()
     }
 
-    println(newSeq ++ output)
     newSeq ++ output
   }
 

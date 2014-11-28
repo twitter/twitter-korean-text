@@ -65,7 +65,14 @@ object KoreanPos extends Enumeration {
   // Chunk level POS
   Korean, Foreign, Number, KoreanParticle, Alpha,
   Punctuation, Hashtag, ScreenName,
-  Email, URL, CashTag, Space = Value
+  Email, URL, CashTag,
+
+  // Functional POS
+  Space, Others = Value
+
+  val OtherPoses = Set(Korean, Foreign, Number, KoreanParticle, Alpha,
+    Punctuation, Hashtag, ScreenName,
+    Email, URL, CashTag, Space)
 
   val shortCut = Map(
     'N' -> Noun,
@@ -81,7 +88,9 @@ object KoreanPos extends Enumeration {
     'r' -> PreEomi,
     'p' -> NounPrefix,
     'v' -> VerbPrefix,
-    's' -> Suffix
+    's' -> Suffix,
+
+    'o' -> Others
   )
 
   case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
