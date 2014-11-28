@@ -28,9 +28,9 @@ import com.twitter.penguin.korean.util.KoreanPos._
  */
 object KoreanSubstantive {
 
-  val JOSA_HEAD_FOR_CODA: Set[Char] = Set('은', '이', '을', '과', '아')
+  private val JOSA_HEAD_FOR_CODA: Set[Char] = Set('은', '이', '을', '과', '아')
 
-  val JOSA_HEAD_FOR_NO_CODA: Set[Char] = Set('는', '가', '를', '와', '야', '여', '라')
+  private val JOSA_HEAD_FOR_NO_CODA: Set[Char] = Set('는', '가', '를', '와', '야', '여', '라')
 
 
   protected[korean] def isJosaAttachable(prevChar: Char, headChar: Char): Boolean = {
@@ -47,8 +47,8 @@ object KoreanSubstantive {
       nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
   }
 
-  val NUMBER_CHARS = "일이삼사오육칠팔구천백십해경조억만".map(_.toInt).toSet
-  val NUMBER_LAST_CHARS = "일이삼사오육칠팔구천백십해경조억만원배분초".map(_.toInt).toSet
+  private val NUMBER_CHARS = "일이삼사오육칠팔구천백십해경조억만".map(_.toInt).toSet
+  private val NUMBER_LAST_CHARS = "일이삼사오육칠팔구천백십해경조억만원배분초".map(_.toInt).toSet
 
   protected[korean] def isKoreanNumber(chunk: CharSequence): Boolean =
     (0 to chunk.length() - 1).foldLeft(true) {

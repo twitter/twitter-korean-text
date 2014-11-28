@@ -30,9 +30,9 @@ twitter-korean-text의 목표는 빅데이터 등에서 간단한 한국어 처�
 
 ### Try this here
 
-Gunja Agrawal kindly created a test API webpage for this project (this uses v1.0 which provides lower accuracy and no stemming): [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
+Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
-Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다. (v1.0으로 현재의 성능과는 차이가 있습니다.)
+Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다. 
 [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
 

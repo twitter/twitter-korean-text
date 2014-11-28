@@ -38,20 +38,20 @@ import scala.collection.mutable
  * the initial cache has to be updated by running tools.CreateInitialCache.
  */
 object KoreanTokenizer {
-  val TOP_N_PER_STATE = 3
+  private val TOP_N_PER_STATE = 3
 
-  val WEIGHT_TOKENS = 0.18f
-  val WEIGHT_UNKNOWNS = 0.3f
-  val WEIGHT_WORDS = 0.3f
-  val WEIGHT_UNKNOWN_COVERAGE = 0.5f
-  val WEIGHT_FREQ = 0.2f
-  val WEIGHT_POS_UNKNOWNS = 10.0f
-  val WEIGHT_EXACT_MATCH = 0.5f
-  val WEIGHT_ALL_NOUN = 0.1f
-  val WEIGHT_PREFFERED_PATTERN = 0.6f
-  val WEIGHT_DETERMINER = -0.01f
+  private val WEIGHT_TOKENS = 0.18f
+  private val WEIGHT_UNKNOWNS = 0.3f
+  private val WEIGHT_WORDS = 0.3f
+  private val WEIGHT_UNKNOWN_COVERAGE = 0.5f
+  private val WEIGHT_FREQ = 0.2f
+  private val WEIGHT_POS_UNKNOWNS = 10.0f
+  private val WEIGHT_EXACT_MATCH = 0.5f
+  private val WEIGHT_ALL_NOUN = 0.1f
+  private val WEIGHT_PREFFERED_PATTERN = 0.6f
+  private val WEIGHT_DETERMINER = -0.01f
 
-  val PREFERRED_PATTERN = Seq(Noun, Josa)
+  private val PREFERRED_PATTERN = Seq(Noun, Josa)
 
   /**
    * A candidate parse for a chunk.
@@ -135,7 +135,7 @@ object KoreanTokenizer {
    * v VerbPrefix: 동사 접두어 ('쳐'먹어)
    * s Suffix: 접미사 (~적)
    */
-  val SequenceDefinition = Map(
+  private val SequenceDefinition = Map(
     // Substantive
     "D0p*N1s0j0" -> Noun,
     // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다, 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
@@ -149,7 +149,7 @@ object KoreanTokenizer {
     "j1" -> Josa
   )
 
-  val koreanPosTrie = KoreanPos.getTrie(SequenceDefinition)
+  private val koreanPosTrie = KoreanPos.getTrie(SequenceDefinition)
 
   case class ParsedChunkWithMinScore(parsedChunk: Option[ParsedChunk], score: Float)
 

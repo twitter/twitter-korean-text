@@ -26,38 +26,38 @@ object Hangul {
 
   case class HangulChar(onset: Char, vowel: Char, coda: Char)
 
-  val HANGUL_BASE = 0xAC00
+  private val HANGUL_BASE = 0xAC00
 
-  val ONSET_BASE = 21 * 28
-  val VOWEL_BASE = 28
+  private val ONSET_BASE = 21 * 28
+  private val VOWEL_BASE = 28
 
 
-  val ONSET_LIST = List(
+  private val ONSET_LIST = List(
     'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ',
     'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
   )
 
-  val VOWEL_LIST = List(
+  private val VOWEL_LIST = List(
     'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ',
     'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ',
     'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ',
     'ㅡ', 'ㅢ', 'ㅣ'
   )
 
-  val CODA_LIST = List(
+  private val CODA_LIST = List(
     ' ', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ',
     'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ',
     'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ',
     'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
   )
 
-  val ONSET_MAP = ONSET_LIST.zipWithIndex.toMap
-  val VOWEL_MAP = VOWEL_LIST.zipWithIndex.toMap
-  val CODA_MAP = CODA_LIST.zipWithIndex.toMap
+  private val ONSET_MAP = ONSET_LIST.zipWithIndex.toMap
+  private val VOWEL_MAP = VOWEL_LIST.zipWithIndex.toMap
+  protected[korean] val CODA_MAP = CODA_LIST.zipWithIndex.toMap
 
   case class DoubleCoda(first: Char, second: Char)
 
-  val DOUBLE_CODAS = Map(
+  protected[korean] val DOUBLE_CODAS = Map(
     'ㄳ' -> DoubleCoda('ㄱ', 'ㅅ'),
     'ㄵ' -> DoubleCoda('ㄴ', 'ㅈ'),
     'ㄶ' -> DoubleCoda('ㄴ', 'ㅎ'),

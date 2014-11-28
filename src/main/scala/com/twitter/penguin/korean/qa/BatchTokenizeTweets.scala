@@ -35,9 +35,9 @@ object BatchTokenizeTweets {
 
   case class ParseTime(time: Long, chunk: String)
 
-  val LOG = Logger.getLogger(getClass.getSimpleName)
-  val VERBOSE = true
-  val NON_NOUNS = Set(KoreanPos.Adjective, KoreanPos.Adverb, KoreanPos.Verb)
+  private val LOG = Logger.getLogger(getClass.getSimpleName)
+  private val VERBOSE = true
+  private val NON_NOUNS = Set(KoreanPos.Adjective, KoreanPos.Adverb, KoreanPos.Verb)
 
   def main(args: Array[String]) {
     if (args.length != 1) {
@@ -87,7 +87,7 @@ object BatchTokenizeTweets {
       ))
   }
 
-  def parseToString(parsed: Seq[KoreanToken]): String = {
+  private def parseToString(parsed: Seq[KoreanToken]): String = {
     parsed.map {
       case t if t.unknown => t.text.toString + t.pos + "*"
       case t => t.text + t.pos.toString

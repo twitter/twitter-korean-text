@@ -40,7 +40,7 @@ object KoreanNormalizer {
 
   private[this] case class Segment(text: String, matchData: Option[Match])
 
-  val CODA_N_EXCPETION = "은는운인텐근른픈닌든던".toSet
+  private[this] val CODA_N_EXCPETION = "은는운인텐근른픈닌든던".toSet
 
   /**
    * Normalize Korean CharSequence text

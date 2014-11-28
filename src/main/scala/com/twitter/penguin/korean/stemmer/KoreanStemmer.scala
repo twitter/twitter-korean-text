@@ -9,10 +9,10 @@ import com.twitter.penguin.korean.util.KoreanPos._
  * Stems Adjectives and Verbs: 새로운 스테밍을 추가했었다. -> 새롭다 + 스테밍 + 을 + 추가하다
  */
 object KoreanStemmer {
-  val Endings = Set(Eomi, PreEomi)
-  val Predicates = Set(Verb, Adjective)
+  private val Endings = Set(Eomi, PreEomi)
+  private val Predicates = Set(Verb, Adjective)
 
-  val EndingsForNouns = Set("하다", "되다", "없다")
+  private val EndingsForNouns = Set("하다", "되다", "없다")
 
   case class StemmedTextWithTokens(text: CharSequence, tokens: Seq[KoreanToken])
 
@@ -49,7 +49,6 @@ object KoreanStemmer {
     
     stemmed.map {
       case Some(token) if validNounHeading(token) =>
-
         val heading = token.text.take(token.text.length - 2)
         val ending = token.text.takeRight(2)
 
@@ -57,7 +56,6 @@ object KoreanStemmer {
           KoreanToken(heading, Noun),
           KoreanToken(ending, token.pos)
         )
-
       case Some(token) => Seq(token)
       case None => Seq()
     }
