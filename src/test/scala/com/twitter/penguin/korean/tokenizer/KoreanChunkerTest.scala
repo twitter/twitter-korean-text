@@ -55,6 +55,35 @@ class KoreanChunkerTest extends FunSuite {
     )
   }
 
+  test("getChunks should correctly split a string into Korean-sensitive chunks with spaces") {
+    assert(
+      getChunks("안녕? iphone6안녕? 세상아?", keepSpace = true)
+        === Seq("안녕", "?", " ", "iphone", "6", "안녕", "?", " ", "세상아", "?")
+    )
+
+    assert(
+      getChunks("This is an 한국어가 섞인 English tweet.", keepSpace = true)
+        === Seq("This", " ", "is", " ", "an", " ", "한국어가", " ", "섞인", " ", "English", " ", "tweet", ".")
+    )
+
+    assert(
+      getChunks("이 日本것은 日本語Eng", keepSpace = true)
+        === Seq("이", " ", "日本", "것은", " ", "日本語", "Eng")
+    )
+
+    assert(
+      getChunks("무효이며", keepSpace = true)
+        === Seq("무효이며")
+    )
+
+    assert(
+      getChunks("#해쉬태그 이라는 것 #hash @hello 123 이런이런 #여자최애캐_5명으로_취향을_드러내자", keepSpace = true)
+        === Seq("#해쉬태그", " ", "이라는", " ", "것", " ", "#hash", " ", "@hello", " ",
+        "123", " ", "이런이런", " ", "#여자최애캐_5명으로_취향을_드러내자")
+    )
+  }
+
+
   test("getChunkTokens should correctly find chunks with correct POS tags") {
     assert(
       chunk("한국어와 English와 1234와 pic.twitter.com " +

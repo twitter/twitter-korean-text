@@ -135,15 +135,18 @@ object KoreanTokenizer {
    * v VerbPrefix: 동사 접두어 ('쳐'먹어)
    * s Suffix: 접미사 (~적)
    */
-  val SequenceDefinition = List(
+  val SequenceDefinition = Map(
     // Substantive
-    "D0p*N1s0j0",
+    "D0p*N1s0j0" -> Noun,
     // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다, 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
-    "v*V1r*e0", "v*J1r*e0",
+    "v*V1r*e0" -> Verb,
+    "v*J1r*e0" -> Adjective,
     // Modifier 부사
-    "A1",
+    "A1" -> Adverb,
     // Standalone
-    "C1", "E+", "j1"
+    "C1" -> Conjunction,
+    "E+" -> Exclamation,
+    "j1" -> Josa
   )
 
   val koreanPosTrie = KoreanPos.getTrie(SequenceDefinition)
@@ -229,8 +232,8 @@ object KoreanTokenizer {
    * @param text Input Korean chunk
    * @return sequence of KoreanTokens
    */
-  def tokenize(text: CharSequence): Seq[KoreanToken] = {
-    chunk(text).flatMap {
+  def tokenize(text: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
+    chunk(text, keepSpace).flatMap {
       case token: KoreanToken if token.pos == Korean =>
         // Get the best parse of each chunk
         val parsed = parseKoreanChunk(token.text)

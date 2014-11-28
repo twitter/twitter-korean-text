@@ -34,11 +34,13 @@ import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
 public class TwitterKoreanProcessorJava {
   private boolean stemmerEnabled;
   private boolean normalizerEnabled;
+  private boolean keepSpaceEnabled;
 
-  private TwitterKoreanProcessorJava(boolean normalizerEnabled, boolean stemmerEnabled) {
+  private TwitterKoreanProcessorJava(boolean normalizerEnabled, boolean stemmerEnabled, boolean keepSpaceEnabled) {
     // Use the builder to instantiate this
     this.stemmerEnabled = stemmerEnabled;
     this.normalizerEnabled = normalizerEnabled;
+    this.keepSpaceEnabled = keepSpaceEnabled;
   }
 
   /**
@@ -70,7 +72,7 @@ public class TwitterKoreanProcessorJava {
    */
   public List<KoreanToken> tokenize(CharSequence text) {
     Seq<KoreanToken> tokenized = TwitterKoreanProcessor.tokenize(
-        text, normalizerEnabled, stemmerEnabled
+        text, normalizerEnabled, stemmerEnabled, keepSpaceEnabled
     );
     return JavaConversions.seqAsJavaList(tokenized);
   }
@@ -83,7 +85,7 @@ public class TwitterKoreanProcessorJava {
    */
   public List<String> tokenizeToStrings(CharSequence text) {
     Seq<String> tokenized = TwitterKoreanProcessor.tokenizeToStrings(
-        text, normalizerEnabled, stemmerEnabled
+        text, normalizerEnabled, stemmerEnabled, keepSpaceEnabled
     );
     return JavaConversions.seqAsJavaList(tokenized);
   }
@@ -117,6 +119,7 @@ public class TwitterKoreanProcessorJava {
   public static final class Builder {
     private boolean normalizerEnabled = true;
     private boolean stemmerEnabled = true;
+    private boolean keepSpaceEnabled = false;
 
     public Builder disableNormalizer() {
       normalizerEnabled = false;
@@ -128,8 +131,13 @@ public class TwitterKoreanProcessorJava {
       return this;
     }
 
+    public Builder enableKeepSpace() {
+      keepSpaceEnabled = true;
+      return this;
+    }
+
     public TwitterKoreanProcessorJava build() {
-      return new TwitterKoreanProcessorJava(normalizerEnabled, stemmerEnabled);
+      return new TwitterKoreanProcessorJava(normalizerEnabled, stemmerEnabled, keepSpaceEnabled);
     }
   }
 }

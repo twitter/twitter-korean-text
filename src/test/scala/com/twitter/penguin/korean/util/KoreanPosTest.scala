@@ -28,7 +28,7 @@ class KoreanPosTest extends FunSuite  {
   test("buildTrie should build Trie correctly for initial optionals with final non-optionals") {
     // 0 -> 1
     assert(
-      buildTrie("p0N1") === List(
+      buildTrie("p0N1", Noun) === List(
         KoreanPosTrie(NounPrefix, List(
           KoreanPosTrie(Noun, List(), ending = Some(Noun))
         ), ending = None),
@@ -37,7 +37,7 @@ class KoreanPosTest extends FunSuite  {
     )
     // * -> +
     assert(
-      buildTrie("p*N+") === List(
+      buildTrie("p*N+", Noun) === List(
         KoreanPosTrie(NounPrefix, List(
           selfNode,
           KoreanPosTrie(Noun, List(selfNode), ending = Some(Noun))
@@ -49,7 +49,7 @@ class KoreanPosTest extends FunSuite  {
   test("buildTrie should build Trie correctly for initial optionals with multiple non-optionals") {
     // 0 -> 0 -> 1
     assert(
-      buildTrie("p0N0s1") === List(
+      buildTrie("p0N0s1", Noun) === List(
         KoreanPosTrie(NounPrefix, List(
           KoreanPosTrie(Noun, List(
             KoreanPosTrie(Suffix, List(), ending = Some(Noun))
@@ -66,7 +66,7 @@ class KoreanPosTest extends FunSuite  {
   test("buildTrie should build Trie correctly for initial non-optionals with final non-optionals") {
     // 1 -> +
     assert(
-      buildTrie("p1N+") === List(
+      buildTrie("p1N+", Noun) === List(
         KoreanPosTrie(NounPrefix, List(
           KoreanPosTrie(Noun, List(
             selfNode
@@ -76,7 +76,7 @@ class KoreanPosTest extends FunSuite  {
     )
     // + -> 1
     assert(
-      buildTrie("N+s1") === List(
+      buildTrie("N+s1", Noun) === List(
         KoreanPosTrie(Noun, List(
           selfNode,
           KoreanPosTrie(Suffix, List(), ending = Some(Noun))
@@ -88,7 +88,7 @@ class KoreanPosTest extends FunSuite  {
   test("buildTrie should build Trie correctly for initial non-optionals with final optionals") {
     // 1 -> *
     assert(
-      buildTrie("p1N*") === List(
+      buildTrie("p1N*", Noun) === List(
         KoreanPosTrie(NounPrefix, List(
           KoreanPosTrie(Noun, List(
             selfNode
@@ -98,7 +98,7 @@ class KoreanPosTest extends FunSuite  {
     )
     // + -> 0
     assert(
-      buildTrie("N+s0") === List(
+      buildTrie("N+s0", Noun) === List(
         KoreanPosTrie(Noun, List(
           selfNode,
           KoreanPosTrie(Suffix, List(), ending = Some(Noun))
@@ -109,13 +109,13 @@ class KoreanPosTest extends FunSuite  {
   test("buildTrie should build Trie correctly for initial non-optionals with multiple non-optionals") {
     // + -> + -> 0
     assert(
-      buildTrie("A+V+A0") === List(
+      buildTrie("A+V+A0", Verb) === List(
         KoreanPosTrie(Adverb, List(
           selfNode,
           KoreanPosTrie(Verb, List(
             selfNode,
-            KoreanPosTrie(Adverb, List(), ending = Some(Noun))
-          ), ending = Some(Noun))
+            KoreanPosTrie(Adverb, List(), ending = Some(Verb))
+          ), ending = Some(Verb))
         ), ending = None)
       )
     )

@@ -72,8 +72,8 @@ object TwitterKoreanProcessor {
    * @param stem option to enable the stemmer
    * @return A sequence of token strings.
    */
-  def tokenizeToStrings(text: CharSequence, normalize: Boolean = true, stem: Boolean = true): Seq[String] = {
-    tokenize(text, normalize, stem).map(_.text.toString)
+  def tokenizeToStrings(text: CharSequence, normalize: Boolean = true, stem: Boolean = true, keepSpace: Boolean = false): Seq[String] = {
+    tokenize(text, normalize, stem, keepSpace).map(_.text.toString)
   }
 
   /**
@@ -114,9 +114,12 @@ object TwitterKoreanProcessor {
    * @param stemming option to enable the stemmer
    * @return A sequence of KoreanTokens.
    */
-  def tokenize(text: CharSequence, normalizization: Boolean = true, stemming: Boolean = true): Seq[KoreanToken] = {
+  def tokenize(text: CharSequence,
+               normalizization: Boolean = true,
+               stemming: Boolean = true,
+               keepSpace: Boolean = false): Seq[KoreanToken] = {
     val normalized = if (normalizization) KoreanNormalizer.normalize(text) else text
-    val tokenized = KoreanTokenizer.tokenize(normalized)
+    val tokenized = KoreanTokenizer.tokenize(normalized, keepSpace)
     if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
   }
 

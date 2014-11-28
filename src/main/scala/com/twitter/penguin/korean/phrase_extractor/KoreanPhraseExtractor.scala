@@ -2,6 +2,7 @@ package com.twitter.penguin.korean.phrase_extractor
 
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos
+import com.twitter.penguin.korean.util.KoreanPos._
 
 /**
  * KoreanPhraseExtractor extracts suitable phrases for trending topics.
@@ -39,23 +40,65 @@ object KoreanPhraseExtractor {
    * v VerbPrefix: 동사 접두어 ('쳐'먹어)
    * s Suffix: 접미사 (~적)
    */
-  val CollapsingRules = List(
+  val CollapsingRules = Map(
     // Substantive
-    "D0p*N1s0",
+    "D0p*N1s0" -> Noun,
     // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다, 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
-    "v*V1r*e0", "v*J1r*e0",
+    "v*V1r*e0" -> Verb,
+    "v*J1r*e0" -> Adjective,
     // Standalone
-    "A1", "j0", "C1", "E+", "j1"
+    "A1" -> Adverb,
+    "j1" -> Josa,
+    "C1" -> Conjunction,
+    "E+" -> Exclamation
   )
 
   val collapseTrie = KoreanPos.getTrie(CollapsingRules)
+
+  case class Phrase(tokens: Seq[KoreanToken], pos: KoreanPos)
+
+  def collapsePos(tokens: Seq[KoreanToken],
+                  trie: List[KoreanPosTrie] = collapseTrie,
+                  finalTokens: Seq[Phrase] = Seq(),
+                  curTokens: Seq[KoreanToken] = Seq(),
+                  ending: Option[KoreanPos] = None)
+  : Seq[Phrase] = {
+    println(tokens)
+    println(finalTokens)
+    println(curTokens)
+    println(ending)
+    println
+    if (tokens.length == 0) {
+      return finalTokens
+    }
+
+    val h = tokens.head
+
+    val newSeq = if (ending.isDefined) {
+      collapsePos(
+        tokens,
+        finalTokens = finalTokens :+ Phrase(curTokens, ending.get),
+        curTokens = Seq()
+      )
+    } else Seq()
+
+    val output = trie.flatMap {
+      case t: KoreanPosTrie if t.curPos == h.pos =>
+        collapsePos(tokens.tail, t.nextTrie, finalTokens, curTokens :+ h, t.ending)
+      case t: KoreanPosTrie => Seq()
+    }
+
+    println(newSeq ++ output)
+    newSeq ++ output
+  }
+
   /**
    * Find suitable phrases
    *
    * @param tokens A sequence of tokens
    * @return A list of Korean tokens
    */
-//  def extractPhrases(tokens: Seq[KoreanToken]): Seq[Seq[KoreanToken]] = {
-//
-//  }
+  //  def extractPhrases(tokens: Seq[KoreanToken]): Seq[Seq[KoreanToken]] = {
+  //
+  //  }
 }

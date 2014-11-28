@@ -64,7 +64,8 @@ object KoreanPos extends Enumeration {
 
   // Chunk level POS
   Korean, Foreign, Number, KoreanParticle, Alpha,
-  Punctuation, Hashtag, ScreenName, Email, URL, CashTag = Value
+  Punctuation, Hashtag, ScreenName,
+  Email, URL, CashTag, Space = Value
 
   val shortCut = Map(
     'N' -> Noun,
@@ -87,7 +88,7 @@ object KoreanPos extends Enumeration {
 
   val selfNode = KoreanPosTrie(null, null, ending = None)
 
-  protected[korean] def buildTrie(s: String): List[KoreanPosTrie] = {
+  protected[korean] def buildTrie(s: String, ending_pos: KoreanPos): List[KoreanPosTrie] = {
     def isFinal(rest: String): Boolean = {
       val isNextOptional = rest.foldLeft(true) {
         case (output: Boolean, c: Char) if c == '+' || c == '1' => false
@@ -108,23 +109,24 @@ object KoreanPos extends Enumeration {
       ""
     }
 
-    val end: Option[KoreanPos] = if (isFinal(rest)) Some(Noun) else None
+    val end: Option[KoreanPos] = if (isFinal(rest)) Some(ending_pos) else None
 
     rule match {
       case '+' =>
-        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end))
+        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest, ending_pos), end))
       case '*' =>
-        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end)) ++ buildTrie(rest)
+        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest, ending_pos), end)) ++ buildTrie(rest, ending_pos)
       case '1' =>
-        List(KoreanPosTrie(pos, buildTrie(rest), end))
+        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end))
       case '0' =>
-        List(KoreanPosTrie(pos, buildTrie(rest), end)) ++ buildTrie(rest)
+        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end)) ++ buildTrie(rest, ending_pos)
     }
   }
 
-  protected[korean] def getTrie(sequences: List[String]): List[KoreanPosTrie] =
+  protected[korean] def getTrie(sequences: Map[String, KoreanPos]): List[KoreanPosTrie] =
     sequences.foldLeft(List[KoreanPosTrie]()) {
-      (results: List[KoreanPosTrie], s: String) => buildTrie(s) ::: results
+      case (results: List[KoreanPosTrie], (s: String, ending_pos: KoreanPos)) =>
+        buildTrie(s, ending_pos) ::: results
     }
 }
 
