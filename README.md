@@ -35,6 +35,7 @@ Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaa
 Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다. 
 [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
+Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
 
 ### Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
