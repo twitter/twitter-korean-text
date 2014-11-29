@@ -46,12 +46,12 @@ public abstract class CharacterUtils {
   /**
    * Returns the code point at the given index of the {@link CharSequence}.
    *
-   * @param seq a character sequence
+   * @param seq    a character sequence
    * @param offset the offset to the char values in the chars array to be converted
    * @return the Unicode code point at the given index
-   * @throws NullPointerException - if the sequence is null.
+   * @throws NullPointerException      - if the sequence is null.
    * @throws IndexOutOfBoundsException - if the value offset is negative or not less than the length of
-   * the character sequence.
+   *                                   the character sequence.
    */
   public abstract int codePointAt(final CharSequence seq, final int offset);
 
@@ -59,14 +59,14 @@ public abstract class CharacterUtils {
    * Returns the code point at the given index of the char array where only elements
    * with index less than the limit are used.
    *
-   * @param chars a character array
+   * @param chars  a character array
    * @param offset the offset to the char values in the chars array to be converted
-   * @param limit the index afer the last element that should be used to calculate
-   * codepoint.
+   * @param limit  the index afer the last element that should be used to calculate
+   *               codepoint.
    * @return the Unicode code point at the given index
-   * @throws NullPointerException - if the array is null.
+   * @throws NullPointerException      - if the array is null.
    * @throws IndexOutOfBoundsException - if the value offset is negative or not less than the length of
-   * the char array.
+   *                                   the char array.
    */
   public abstract int codePointAt(final char[] chars, final int offset, final int limit);
 
@@ -96,7 +96,7 @@ public abstract class CharacterUtils {
    *
    * @param buffer the char buffer to lowercase
    * @param offset the offset to start at
-   * @param limit the max char in the buffer to lower case
+   * @param limit  the max char in the buffer to lower case
    */
   public final void toLowerCase(final char[] buffer, final int offset, final int limit) {
     assert buffer.length >= limit;
@@ -114,7 +114,7 @@ public abstract class CharacterUtils {
    *
    * @param buffer the char buffer to UPPERCASE
    * @param offset the offset to start at
-   * @param limit the max char in the buffer to lower case
+   * @param limit  the max char in the buffer to lower case
    */
   public final void toUpperCase(final char[] buffer, final int offset, final int limit) {
     assert buffer.length >= limit;
@@ -176,8 +176,8 @@ public abstract class CharacterUtils {
    * verified by checking whether <code>buffer.getLength() &gt; 0</code>.
    * </p>
    *
-   * @param buffer the buffer to fill.
-   * @param reader the reader to read characters from.
+   * @param buffer   the buffer to fill.
+   * @param reader   the reader to read characters from.
    * @param numChars the number of chars to read
    * @return <code>false</code> if and only if reader.read returned -1 while trying to fill the buffer
    * @throws IOException if the reader throws an {@link IOException}.

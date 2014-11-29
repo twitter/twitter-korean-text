@@ -76,9 +76,9 @@ object KoreanSubstantive {
     if (decomposed.init.last.coda != ' ') return false
 
     // Recover missing 'ㅇ' (우혀니 -> 우현, 우현이, 빠순이 -> 빠순, 빠순이)
-    val recovered = decomposed.zipWithIndex.map{
-      case (hc: HangulChar, i: Int) if i == s.length -1 =>'이'
-      case (hc: HangulChar, i: Int) if i == s.length -2 =>
+    val recovered = decomposed.zipWithIndex.map {
+      case (hc: HangulChar, i: Int) if i == s.length - 1 => '이'
+      case (hc: HangulChar, i: Int) if i == s.length - 2 =>
         composeHangul(HangulChar(hc.onset, hc.vowel, decomposed.last.onset))
       case (hc: HangulChar, i: Int) => composeHangul(hc)
     }.mkString("")

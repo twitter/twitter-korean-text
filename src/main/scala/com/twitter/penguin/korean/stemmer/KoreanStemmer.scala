@@ -38,15 +38,15 @@ object KoreanStemmer {
 
     def validNounHeading(token: KoreanToken): Boolean = {
       val heading = token.text.take(token.text.length - 2)
-      
+
       val validLength = token.text.length > 2
       val validPos = token.pos == Verb
       val validEndings = EndingsForNouns.contains(token.text.takeRight(2))
       val validNouns = koreanDictionary(Noun).contains(heading)
 
-      validLength && validPos && validEndings && validNouns 
+      validLength && validPos && validEndings && validNouns
     }
-    
+
     stemmed.map {
       case Some(token) if validNounHeading(token) =>
         val heading = token.text.take(token.text.length - 2)

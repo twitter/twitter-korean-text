@@ -40,7 +40,7 @@ object KoreanPhraseExtractor {
    * v VerbPrefix: 동사 접두어 ('쳐'먹어)
    * s Suffix: 접미사 (~적)
    */
-  val CollapsingRules = Map(
+  private val CollapsingRules = Map(
     // Substantive
     "D0p*N1s0" -> Noun,
     // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다, 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
@@ -54,7 +54,7 @@ object KoreanPhraseExtractor {
     "o1" -> Others
   )
 
-  val collapseTrie = KoreanPos.getTrie(CollapsingRules)
+  private val collapseTrie = KoreanPos.getTrie(CollapsingRules)
 
   case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos) {
     override def toString(): String = {

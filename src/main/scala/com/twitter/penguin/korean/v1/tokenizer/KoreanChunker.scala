@@ -53,7 +53,7 @@ object KoreanChunker {
   private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
     def disjoint(that: ChunkMatch): Boolean = {
       (that.start < this.start && that.end <= this.start) ||
-          (that.start >= this.end && that.end > this.end)
+        (that.start >= this.end && that.end > this.end)
     }
   }
 
@@ -96,10 +96,9 @@ object KoreanChunker {
    * @param pos KoreanPos to attach to the unmatched chunk
    * @return list of ChunkMatches
    */
-  private[this] def fillInUnmatched(
-      text: String,
-      chunks: Array[ChunkMatch],
-      pos: KoreanPos.Value): List[ChunkMatch] = {
+  private[this] def fillInUnmatched(text: String,
+                                    chunks: Array[ChunkMatch],
+                                    pos: KoreanPos.Value): List[ChunkMatch] = {
 
     // Add Foreign for unmatched parts
     val (chunksWithForeign, prevEnd) = chunks.foldLeft((List[ChunkMatch](), 0)) {
@@ -142,8 +141,8 @@ object KoreanChunker {
    */
   def chunk(input: CharSequence): Seq[KoreanToken] = {
     input.toString
-        .split(SPACE_REGEX_STRING)
-        .flatMap(splitChunks)
-        .map(m => KoreanToken(m.text, m.pos))
+      .split(SPACE_REGEX_STRING)
+      .flatMap(splitChunks)
+      .map(m => KoreanToken(m.text, m.pos))
   }
 }

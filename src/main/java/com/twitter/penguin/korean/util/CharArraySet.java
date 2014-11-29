@@ -56,9 +56,9 @@ public class CharArraySet extends AbstractSet<Object> {
   /**
    * Create set with enough capacity to hold startSize terms
    *
-   * @param startSize the initial capacity
+   * @param startSize  the initial capacity
    * @param ignoreCase <code>false</code> if and only if the set should be case sensitive
-   * otherwise <code>true</code>.
+   *                   otherwise <code>true</code>.
    */
   public CharArraySet(int startSize, boolean ignoreCase) {
     this(new CharArrayMap<>(startSize, ignoreCase));
@@ -67,9 +67,9 @@ public class CharArraySet extends AbstractSet<Object> {
   /**
    * Creates a set from a Collection of objects.
    *
-   * @param c a collection whose elements to be placed into the set
+   * @param c          a collection whose elements to be placed into the set
    * @param ignoreCase <code>false</code> if and only if the set should be case sensitive
-   * otherwise <code>true</code>.
+   *                   otherwise <code>true</code>.
    */
   public CharArraySet(Collection<?> c, boolean ignoreCase) {
     this(c.size(), ignoreCase);

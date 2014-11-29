@@ -47,7 +47,7 @@ object KoreanChunker {
   private val SPACE_REGEX_DELIMITER_KEEP_SPACES = """((?<=\s+)|(?=\s+))"""
   private val SPACE_REGEX_DELIMITER = """\s+"""
 
-  protected[korean] def getChunks(input: String, keepSpace: Boolean = false ): Seq[String] = {
+  protected[korean] def getChunks(input: String, keepSpace: Boolean = false): Seq[String] = {
     chunk(input, keepSpace).map(_.text)
   }
 

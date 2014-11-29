@@ -52,9 +52,9 @@ public class CharArrayMap<V> extends AbstractMap<Object, V> {
   /**
    * Create map with enough capacity to hold startSize terms
    *
-   * @param startSize the initial capacity
+   * @param startSize  the initial capacity
    * @param ignoreCase <code>false</code> if and only if the set should be case sensitive
-   * otherwise <code>true</code>.
+   *                   otherwise <code>true</code>.
    */
   public CharArrayMap(int startSize, boolean ignoreCase) {
     this.ignoreCase = ignoreCase;
@@ -69,9 +69,9 @@ public class CharArrayMap<V> extends AbstractMap<Object, V> {
   /**
    * Creates a map from the mappings in another map.
    *
-   * @param c a map whose mappings to be copied
+   * @param c          a map whose mappings to be copied
    * @param ignoreCase <code>false</code> if and only if the set should be case sensitive
-   * otherwise <code>true</code>.
+   *                   otherwise <code>true</code>.
    */
   public CharArrayMap(Map<?, ? extends V> c, boolean ignoreCase) {
     this(c.size(), ignoreCase);
