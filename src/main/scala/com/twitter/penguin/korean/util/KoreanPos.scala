@@ -72,7 +72,7 @@ object KoreanPos extends Enumeration {
 
   val OtherPoses = Set(Korean, Foreign, Number, KoreanParticle, Alpha,
     Punctuation, Hashtag, ScreenName,
-    Email, URL, CashTag, Space)
+    Email, URL, CashTag)
 
   val shortCut = Map(
     'N' -> Noun,
