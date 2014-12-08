@@ -45,14 +45,14 @@ class TwitterKoreanProcessorTest extends FunSuite {
 
   test("tokenizeToStrings should tokenize without normalization or stemming") {
     assert(tokenizeToStrings("한국어가 있는 Sentence", normalize = false, stem = false)
-      === Seq("한국어", "가", "있", "는", "Sentence"))
+      === Seq("한국어", "가", "있는", "Sentence"))
     assert(tokenizeToStrings("지각하겠닼ㅋㅋㅋㅋㅋ 그쵸", normalize = false, stem = false)
       === Seq("지각", "하겠", "닼", "ㅋㅋㅋㅋㅋ", "그", "쵸"))
   }
 
   test("tokenizeToStrings should tokenize with normalization") {
     assert(tokenizeToStrings("한국어가 있는 Sentence", normalize = true, stem = false)
-      === Seq("한국어", "가", "있", "는", "Sentence"))
+      === Seq("한국어", "가", "있는", "Sentence"))
     assert(tokenizeToStrings("지각하겠닼ㅋㅋㅋㅋㅋ 그쵸", normalize = true, stem = false)
       === Seq("지각", "하겠", "다", "ㅋㅋ", "그렇", "죠"))
   }
@@ -107,8 +107,7 @@ class TwitterKoreanProcessorTest extends FunSuite {
         === Seq(
         KoreanSegment(0, 3, KoreanToken("한국어", Noun)),
         KoreanSegment(3, 1, KoreanToken("가", Josa)),
-        KoreanSegment(5, 1, KoreanToken("있", Adjective)),
-        KoreanSegment(6, 1, KoreanToken("는", Eomi)),
+        KoreanSegment(5, 2, KoreanToken("있는", Adjective)),
         KoreanSegment(8, 8, KoreanToken("Sentence", Alpha))
       )
     )
