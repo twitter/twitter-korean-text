@@ -82,6 +82,8 @@ object KoreanPos extends Enumeration {
     'v' -> VerbPrefix,
     's' -> Suffix
   )
+
+  val Predicates = Set(Verb, Adjective)
 }
 
 
