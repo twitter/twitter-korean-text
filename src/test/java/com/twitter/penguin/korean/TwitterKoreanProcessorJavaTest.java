@@ -44,7 +44,7 @@ public class TwitterKoreanProcessorJavaTest {
     );
     assertEquals(
         "[이런Adjective, 생각Noun, 을Josa, 하는Verb, 게Noun, 정말로Adverb, " +
-            "말Noun, 이Josa, 되Verb, 니Eomi, ㅋㅋKoreanParticle]",
+            "말Noun, 이Josa, 되니Verb, ㅋㅋKoreanParticle]",
         processorNormalization.tokenize(text).toString()
     );
     assertEquals(
@@ -67,7 +67,7 @@ public class TwitterKoreanProcessorJavaTest {
         processor.tokenizeToStrings(text).toString()
     );
     assertEquals(
-        "[이런, 생각, 을, 하는, 게, 정말로, 말, 이, 되, 니, ㅋㅋ]",
+        "[이런, 생각, 을, 하는, 게, 정말로, 말, 이, 되니, ㅋㅋ]",
         processorNormalization.tokenizeToStrings(text).toString()
     );
     assertEquals(
@@ -86,7 +86,7 @@ public class TwitterKoreanProcessorJavaTest {
     Iterable<TwitterKoreanProcessor.KoreanSegment> segements = processor.tokenizeWithIndex(text);
     assertEquals(
         "[KoreanSegment(0,4,아름다운Adjective), KoreanSegment(5,3,트위터Noun), " +
-            "KoreanSegment(8,1,를Josa), KoreanSegment(10,2,만들Verb), KoreanSegment(12,1,어Eomi), " +
+            "KoreanSegment(8,1,를Josa), KoreanSegment(10,3,만들어Verb), " +
             "KoreanSegment(14,2,보자Verb), KoreanSegment(16,1,.Punctuation)]",
         segements.toString()
     );
