@@ -23,7 +23,7 @@ import java.util.zip.GZIPOutputStream
 
 import com.twitter.penguin.korean.v1.TwitterKoreanProcessor
 import TwitterKoreanProcessor._
-import com.twitter.penguin.korean.thriftscala._
+import com.twitter.penguin.korean.v1.thriftscala._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
 import org.apache.thrift.protocol.TBinaryProtocol
 import org.apache.thrift.transport.TIOStreamTransport

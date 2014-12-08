@@ -18,8 +18,6 @@
 
 package com.twitter.penguin.korean.util
 
-import com.twitter.penguin.korean.thriftscala.ConjugationGoldenset
-import com.twitter.penguin.korean.tools.ParsingExample
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 import org.junit.runner.RunWith
