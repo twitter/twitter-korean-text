@@ -290,7 +290,7 @@ class KoreanTokenizerTest extends FunSuite {
 
     assert(
       tokenize("아이럴수가").mkString(", ") ===
-          "아Adverb, 이럴Adjective, 수PreEomi, 가Eomi"
+          "아Exclamation, 이럴Adjective, 수PreEomi, 가Eomi"
     )
   }
 
