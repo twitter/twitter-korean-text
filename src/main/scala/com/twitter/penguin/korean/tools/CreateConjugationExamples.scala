@@ -19,52 +19,40 @@
 package com.twitter.penguin.korean.tools
 
 import java.io.FileOutputStream
-import java.util.zip.GZIPOutputStream
 
-import com.twitter.penguin.korean.thriftscala.{ConjugationGoldenset, ConjugationItem}
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import org.apache.thrift.protocol.TBinaryProtocol
-import org.apache.thrift.transport.TIOStreamTransport
 
-import scala.collection.JavaConversions._
-
+case class ConjugationExample(word: String, conjugations: Seq[String])
 /**
  * Create Korean predicate expansion goldenset from adjective and verb resources.
  * The first argument is the test resource directory.
  */
-object CreateConjugationGoldenset {
+object CreateConjugationExamples {
   def main(args: Array[String]) {
     System.err.println("Reading the verbs and adjectives..")
 
-    def updateConjugateGoldenset(file: String, isAdj: Boolean, outputFileName: String) {
+    def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {
       System.err.println("Writing the expansion goldenset in " + outputFileName)
 
       val outputPath = "src/test/resources/com/twitter/penguin/korean/util/" + outputFileName
-      val out = new GZIPOutputStream(new FileOutputStream(outputPath))
-
-      val binaryOut = new TBinaryProtocol(new TIOStreamTransport(out));
+      val out = new FileOutputStream(outputPath)
 
       val words = readWordsAsSeq(file)
       val goldenset = words.map(word =>
-        ConjugationItem(word, conjugatePredicatesToCharArraySet(Set(word), isAdj).map {
-          case charArray: Array[Char] => new String(charArray)
-        }.toSet)
+        ConjugationExample(word, conjugatePredicated(Set(word), isAdj).toSeq.sorted)
       )
 
-      ConjugationGoldenset(goldenset).write(binaryOut)
+      goldenset.foreach{
+        c => out.write(
+          "%s\t%s\n".format(c.word, c.conjugations.mkString(", ")).getBytes
+        )
+      }
 
       out.close()
-
-      System.err.println("Testing the expansion goldenset in " + outputPath)
-
-      val input = readGzipTBininaryFromFile(outputPath)
-      val loaded = ConjugationGoldenset.decode(input).goldenset
-
-      assert(loaded.equals(goldenset))
     }
 
-    updateConjugateGoldenset("adjective/adjective.txt", isAdj = true, "adj_conjugate.gz")
-    updateConjugateGoldenset("verb/verb.txt", isAdj = false, "verb_conjugate.gz")
+    updateConjugateExamples("adjective/adjective.txt", isAdj = true, "adj_conjugate.txt")
+    updateConjugateExamples("verb/verb.txt", isAdj = false, "verb_conjugate.txt")
   }
 }
