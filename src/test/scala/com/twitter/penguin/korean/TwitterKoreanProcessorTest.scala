@@ -192,24 +192,22 @@ class TwitterKoreanProcessorTest extends FunSuite {
 
   test("tokenize should correctly tokenize the goldenset") {
     assert({
-      val input = readGzipTBininaryFromResource("goldenset.txt.gz")
-      val loaded = ParsingGoldenset.decode(input).goldenset
+      val input = readFileByLineFromResources("current_parsing.txt")
 
-      val (parseTimes, hasErrors) = loaded.foldLeft((List[ParseTime](), true)) {
-        case ((l: List[ParseTime], output: Boolean), ti: ParseItem) =>
-          val chunk = ti.chunk
-          val oldTokens = ti.parse.map {
-            kt => KoreanToken(kt.text, KoreanPos(kt.pos), kt.unknown)
-          }
+      val (parseTimes, hasErrors) = input.foldLeft((List[ParseTime](), true)) {
+        case ((l: List[ParseTime], output: Boolean), line: String) =>
+          val s = line.split("\t")
+          val (chunk, parse) = (s(0), s(1))
+          val oldTokens = parse
           val t0 = System.currentTimeMillis()
-          val newTokens = TwitterKoreanProcessor.tokenize(chunk)
+          val newTokens = TwitterKoreanProcessor.tokenize(chunk).mkString(" ")
           val t1 = System.currentTimeMillis()
 
           val oldParseMatches = oldTokens == newTokens
 
           if (!oldParseMatches) {
             System.err.println("Goldenset Match Error: %s (%s) -> (%s)".format(
-              chunk, oldTokens.mkString(" "), newTokens.mkString(" ")))
+              chunk, oldTokens, newTokens))
           }
 
           (ParseTime(t1 - t0, chunk) :: l, output && oldParseMatches)
