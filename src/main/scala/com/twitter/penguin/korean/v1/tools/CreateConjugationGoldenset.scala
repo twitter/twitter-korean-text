@@ -21,7 +21,7 @@ package com.twitter.penguin.korean.v1.tools
 import java.io.FileOutputStream
 import java.util.zip.GZIPOutputStream
 
-import com.twitter.penguin.korean.thriftscala.{ConjugationGoldenset, ConjugationItem}
+import com.twitter.penguin.korean.v1.thriftscala.{ConjugationGoldenset, ConjugationItem}
 import com.twitter.penguin.korean.v1.util.KoreanConjugation._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
 import org.apache.thrift.protocol.TBinaryProtocol
@@ -32,9 +32,6 @@ import scala.collection.JavaConversions._
 /**
  * Create Korean predicate expansion goldenset from adjective and verb resources.
  * The first argument is the test resource directory.
- *
- * usage: ./pants goal run src/scala/com/twitter/penguin/korean/tools:create_conjugation_goldenset
- * --jvm-run-args="/Users/hohyonryu/workspace/penguin-binaries/tests/com/twitter/penguin/korean"
  */
 object CreateConjugationGoldenset {
   def main(args: Array[String]) {

@@ -38,7 +38,7 @@ import scala.collection.mutable
  * the initial cache has to be updated by running tools.CreateInitialCache.
  */
 object KoreanTokenizer {
-  private val TOP_N_PER_STATE = 3
+  private val TOP_N_PER_STATE = 4
 
   private val WEIGHT_TOKENS = 0.18f
   private val WEIGHT_UNKNOWNS = 0.3f
@@ -65,15 +65,15 @@ object KoreanTokenizer {
     }
 
     lazy val score = countTokens * WEIGHT_TOKENS +
-      countUnknowns * WEIGHT_UNKNOWNS +
-      words * WEIGHT_WORDS +
-      getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
-      getFreqScore * WEIGHT_FREQ +
-      countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
-      isExactMatch * WEIGHT_EXACT_MATCH +
-      isAllNouns * WEIGHT_ALL_NOUN +
-      isPreferredPattern * WEIGHT_PREFFERED_PATTERN +
-      countPos(Determiner) * WEIGHT_DETERMINER
+        countUnknowns * WEIGHT_UNKNOWNS +
+        words * WEIGHT_WORDS +
+        getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
+        getFreqScore * WEIGHT_FREQ +
+        countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
+        isExactMatch * WEIGHT_EXACT_MATCH +
+        isAllNouns * WEIGHT_ALL_NOUN +
+        isPreferredPattern * WEIGHT_PREFFERED_PATTERN +
+        countPos(Determiner) * WEIGHT_DETERMINER
 
     lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown}
     lazy val countTokens = this.posNodes.size
@@ -196,22 +196,21 @@ object KoreanTokenizer {
 
           possiblePoses.view.filter { t =>
             t.curTrie.curPos == Noun || koreanDictionary(t.curTrie.curPos).contains(word.toCharArray)
-          }.map {
-            case t: PossibleTrie =>
-              val candidateToAdd =
-                if (t.curTrie.curPos == Noun && !koreanDictionary(Noun).contains(word.toCharArray)) {
-                  val unknown = !isName(word) && !isKoreanNumber(word) && !isKoreanNameVariation(word)
-                  ParsedChunk(Seq(KoreanToken(word, Noun, unknown)), t.words)
-                } else {
-                  ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos)), t.words)
-                }
-
-              val nextTrie = t.curTrie.nextTrie.map {
-                case nt: KoreanPosTrie if nt == selfNode => t.curTrie
-                case nt: KoreanPosTrie => nt
+          }.map { case t: PossibleTrie =>
+            val candidateToAdd =
+              if (t.curTrie.curPos == Noun && !koreanDictionary(Noun).contains(word.toCharArray)) {
+                val unknown = !isName(word) && !isKoreanNumber(word) && !isKoreanNameVariation(word)
+                ParsedChunk(Seq(KoreanToken(word, Noun, unknown)), t.words)
+              } else {
+                ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos)), t.words)
               }
 
-              CandidateParse(solution.parse ++ candidateToAdd, nextTrie, t.curTrie.ending)
+            val nextTrie = t.curTrie.nextTrie.map {
+              case nt: KoreanPosTrie if nt == selfNode => t.curTrie
+              case nt: KoreanPosTrie => nt
+            }
+
+            CandidateParse(solution.parse ++ candidateToAdd, nextTrie, t.curTrie.ending)
           }
       }
 

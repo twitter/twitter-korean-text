@@ -21,10 +21,8 @@ package com.twitter.penguin.korean
 import java.util.logging.{Level, Logger}
 
 import com.twitter.penguin.korean.TwitterKoreanProcessor.{tokenize, _}
-import com.twitter.penguin.korean.thriftscala.{ParseItem, ParsingGoldenset}
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import com.twitter.penguin.korean.util.KoreanPos
 import com.twitter.penguin.korean.util.KoreanPos._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
@@ -45,14 +43,14 @@ class TwitterKoreanProcessorTest extends FunSuite {
 
   test("tokenizeToStrings should tokenize without normalization or stemming") {
     assert(tokenizeToStrings("한국어가 있는 Sentence", normalize = false, stem = false)
-      === Seq("한국어", "가", "있", "는", "Sentence"))
+      === Seq("한국어", "가", "있는", "Sentence"))
     assert(tokenizeToStrings("지각하겠닼ㅋㅋㅋㅋㅋ 그쵸", normalize = false, stem = false)
       === Seq("지각", "하겠", "닼", "ㅋㅋㅋㅋㅋ", "그", "쵸"))
   }
 
   test("tokenizeToStrings should tokenize with normalization") {
     assert(tokenizeToStrings("한국어가 있는 Sentence", normalize = true, stem = false)
-      === Seq("한국어", "가", "있", "는", "Sentence"))
+      === Seq("한국어", "가", "있는", "Sentence"))
     assert(tokenizeToStrings("지각하겠닼ㅋㅋㅋㅋㅋ 그쵸", normalize = true, stem = false)
       === Seq("지각", "하겠", "다", "ㅋㅋ", "그렇", "죠"))
   }
@@ -107,8 +105,7 @@ class TwitterKoreanProcessorTest extends FunSuite {
         === Seq(
         KoreanSegment(0, 3, KoreanToken("한국어", Noun)),
         KoreanSegment(3, 1, KoreanToken("가", Josa)),
-        KoreanSegment(5, 1, KoreanToken("있", Adjective)),
-        KoreanSegment(6, 1, KoreanToken("는", Eomi)),
+        KoreanSegment(5, 2, KoreanToken("있는", Adjective)),
         KoreanSegment(8, 8, KoreanToken("Sentence", Alpha))
       )
     )
@@ -193,24 +190,22 @@ class TwitterKoreanProcessorTest extends FunSuite {
 
   test("tokenize should correctly tokenize the goldenset") {
     assert({
-      val input = readGzipTBininaryFromResource("goldenset.txt.gz")
-      val loaded = ParsingGoldenset.decode(input).goldenset
+      val input = readFileByLineFromResources("current_parsing.txt")
 
-      val (parseTimes, hasErrors) = loaded.foldLeft((List[ParseTime](), true)) {
-        case ((l: List[ParseTime], output: Boolean), ti: ParseItem) =>
-          val chunk = ti.chunk
-          val oldTokens = ti.parse.map {
-            kt => KoreanToken(kt.text, KoreanPos(kt.pos), kt.unknown)
-          }
+      val (parseTimes, hasErrors) = input.foldLeft((List[ParseTime](), true)) {
+        case ((l: List[ParseTime], output: Boolean), line: String) =>
+          val s = line.split("\t")
+          val (chunk, parse) = (s(0), s(1))
+          val oldTokens = parse
           val t0 = System.currentTimeMillis()
-          val newTokens = TwitterKoreanProcessor.tokenize(chunk)
+          val newTokens = TwitterKoreanProcessor.tokenize(chunk).mkString(" ")
           val t1 = System.currentTimeMillis()
 
           val oldParseMatches = oldTokens == newTokens
 
           if (!oldParseMatches) {
             System.err.println("Goldenset Match Error: %s (%s) -> (%s)".format(
-              chunk, oldTokens.mkString(" "), newTokens.mkString(" ")))
+              chunk, oldTokens, newTokens))
           }
 
           (ParseTime(t1 - t0, chunk) :: l, output && oldParseMatches)

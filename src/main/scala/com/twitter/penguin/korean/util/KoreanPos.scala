@@ -137,6 +137,8 @@ object KoreanPos extends Enumeration {
       case (results: List[KoreanPosTrie], (s: String, ending_pos: KoreanPos)) =>
         buildTrie(s, ending_pos) ::: results
     }
+
+  val Predicates = Set(Verb, Adjective)
 }
 
 

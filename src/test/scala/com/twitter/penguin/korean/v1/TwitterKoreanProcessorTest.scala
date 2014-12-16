@@ -20,7 +20,7 @@ package com.twitter.penguin.korean.v1
 
 import java.util.logging.{Level, Logger}
 
-import com.twitter.penguin.korean.thriftscala.{ParseItem, ParsingGoldenset}
+import com.twitter.penguin.korean.v1.thriftscala.{ParseItem, ParsingGoldenset}
 import com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
 import com.twitter.penguin.korean.v1.util.KoreanPos

@@ -22,7 +22,7 @@ class KoreanPhraseExtractorTest extends FunSuite {
             "Josa주 Noun목적Noun으로 Josa블랙프라이데이 Noun쇼핑Noun을 Josa한다Verb.Punctuation")
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(text2)).mkString("") ===
-        "결정Noun했어Verb.Punctuation 마키 Noun코레Noun썸 Noun사주시는 Verb분께는 Verb허니버터칩 Noun" +
+        "결정Noun했어Verb.Punctuation 마키 Noun코레썸 Noun사주시는 Verb분께는 Verb허니버터칩 Noun" +
             "한 봉지Noun를 Josa선물할 Verb것Noun이다Josa.Punctuation")
   }
 
@@ -37,14 +37,14 @@ class KoreanPhraseExtractorTest extends FunSuite {
         "블랙프라이데이, 이날 미국의 수백만 소비자들, 수백만 소비자들, " +
             "크리스마스 선물, 할인된 가격, 주 목적, 블랙프라이데이 쇼핑, 수백만, 소비자들, 크리스마스")
     assert(KoreanPhraseExtractor.extractPhrases(text2).mkString(", ") ===
-        "마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 허니버터칩 한 봉지, 허니버터칩, 한 봉지")
+        "마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 허니버터칩 한 봉지, 코레썸, 허니버터칩, 한 봉지")
     assert(KoreanPhraseExtractor.extractPhrases(text3).mkString(", ") ===
         "새 고용 형태, 중규직, 정규직, 상규직, 비정규직, 하규직, 창조적")
   }
 
-  test("extractPhrases should extracts long noun-only phrases") {
-    assert(KoreanPhraseExtractor.extractPhrases("허니버터칩" * 100).mkString(", ") ===
-      "")
+  test("extractPhrases should extract long noun-only phrases in reasonable time") {
+    assert(KoreanPhraseExtractor.extractPhrases("허니버터칩정규직크리스마스" * 50).mkString(", ") ===
+        "")
   }
 
-  }
+}

@@ -19,47 +19,43 @@
 package com.twitter.penguin.korean.tools
 
 import java.io.FileOutputStream
-import java.util.zip.GZIPOutputStream
 
 import com.twitter.penguin.korean.TwitterKoreanProcessor._
-import com.twitter.penguin.korean.thriftscala._
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import org.apache.thrift.protocol.TBinaryProtocol
-import org.apache.thrift.transport.TIOStreamTransport
 
+case class ParsingExample(text: String, parse: Seq[KoreanToken])
 /**
  * Create Korean Parsing goldenset from the goldenset resource that contains goldenset chunks.
  * The first argument is a gzipped output file.
  */
-object CreateParsingGoldenset {
+object CreateParsingExamples {
   def main(args: Array[String]) {
     System.err.println("Reading the goldenset..")
 
-    val parsed = readFileByLineFromResources("goldenset.txt").flatMap {
+    val parsedPairs = readFileByLineFromResources("example_chunks.txt").flatMap {
       case line if line.length > 0 =>
         val chunk = line.trim
         val parsed = tokenize(chunk)
-        Some(ParseItem(chunk, parsed.map(p => KoreanTokenThrift(p.text, p.pos.id, p.unknown))))
+        Some(ParsingExample(chunk, parsed))
       case line => None
-    }.toSeq
+    }.toSet
 
 
-    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz"
+    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_parsing.txt"
 
     System.err.println("Writing the new goldenset to " + outputFile)
 
-    val out = new GZIPOutputStream(new FileOutputStream(outputFile))
-    val binaryOut = new TBinaryProtocol(new TIOStreamTransport(out))
-    ParsingGoldenset(parsed).write(binaryOut)
+    val out = new FileOutputStream(outputFile)
+    parsedPairs.foreach{
+      p =>
+        out.write(p.text.getBytes)
+        out.write("\t".getBytes)
+        out.write(p.parse.mkString(" ").getBytes)
+        out.write("\n".getBytes)
+    }
     out.close()
 
     System.err.println("Testing the new goldenset " + outputFile)
-
-    val input = readGzipTBininaryFromFile(outputFile)
-    val loaded = ParsingGoldenset.decode(input).goldenset
-
-    assert(loaded.equals(parsed))
-
-    System.err.println("Updated goldenset in " + outputFile)
   }
 }

@@ -187,6 +187,16 @@ class KoreanTokenizerTest extends FunSuite {
       tokenize("이승기가") ===
         List(KoreanToken("이승기", Noun), KoreanToken("가", Josa))
     )
+
+    assert(
+      tokenize("야이건뭐").mkString(", ") ===
+          "야Exclamation, 이건Noun, 뭐Noun"
+    )
+
+    assert(
+      tokenize("아이럴수가").mkString(", ") ===
+          "아Exclamation, 이럴Adjective, 수PreEomi, 가Eomi"
+    )
   }
 
   test("tokenize should be able to tokenize long non-space-correctable ones") {
