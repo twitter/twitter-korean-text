@@ -67,7 +67,7 @@ object KoreanSubstantive {
 
     val s = chunk.toString
     if (isName(s)) return true
-    if (s.length < 3) return false
+    if (s.length < 3 || s.length > 5) return false
 
     val decomposed = s.map { c: Char => decomposeHangul(c)}
     val lastChar = decomposed.last
