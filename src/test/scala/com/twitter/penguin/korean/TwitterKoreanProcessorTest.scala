@@ -97,6 +97,11 @@ class TwitterKoreanProcessorTest extends FunSuite {
         === "와아아Exclamation 페르세우스Noun 유성우Noun 가Josa 친창Noun* 에Josa " +
         "떨어지다Verb !!!!Punctuation 별Noun 이다Josa !!!Punctuation"
     )
+
+    assert(
+      tokenize("'넥서스' 갤럭시 Galaxy S5").mkString(" ")
+          === "'Punctuation 넥서스Noun 'Punctuation 갤럭시Noun GalaxyAlpha SAlpha 5Number"
+    )
   }
 
   test("tokenizeTexWithIndex should correctly return indices of each token") {

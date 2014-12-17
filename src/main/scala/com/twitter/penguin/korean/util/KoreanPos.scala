@@ -39,6 +39,8 @@ package com.twitter.penguin.korean.util
  * v VerbPrefix: 동사 접두어 ('쳐'먹어)
  * s Suffix: 접미사 (~적)
  *
+ * f Foreign: 한글이 아닌 문자들
+ *
  * 지시사는 Derterminant로 대체하기로 함
  * Derterminant is used for demonstratives.
  *
@@ -89,6 +91,9 @@ object KoreanPos extends Enumeration {
     'p' -> NounPrefix,
     'v' -> VerbPrefix,
     's' -> Suffix,
+
+    'a' -> Alpha,
+    'n' -> Number,
 
     'o' -> Others
   )
