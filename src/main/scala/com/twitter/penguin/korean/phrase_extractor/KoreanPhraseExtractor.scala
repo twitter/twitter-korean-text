@@ -1,14 +1,9 @@
 package com.twitter.penguin.korean.phrase_extractor
 
 import com.twitter.penguin.korean.TwitterKoreanProcessor
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
-import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import com.twitter.penguin.korean.util.KoreanSubstantive._
-import com.twitter.penguin.korean.util.{Hangul, KoreanPos}
 import com.twitter.penguin.korean.util.KoreanPos._
-
-import scala.collection.mutable
+import com.twitter.penguin.korean.util.{Hangul, KoreanPos}
 
 /**
  * KoreanPhraseExtractor extracts suitable phrases for trending topics.
@@ -17,15 +12,18 @@ import scala.collection.mutable
  * 2. Find suitable phrases
  */
 object KoreanPhraseExtractor {
-  private val minCharsPerPhraseChunkWithoutSpaces = 3
-  private val minPhrasesPerPhraseChunk = 2
+  private val MinCharsPerPhraseChunkWithoutSpaces = 3
+  private val MinPhrasesPerPhraseChunk = 3
 
-  private val maxPhrasesPerPhraseChunk = 8
+  private val MaxCharsPerPhraseChunkWithoutSpaces = 30
+  private val MaxPhrasesPerPhraseChunk = 8
 
   private val ModifyingPredicateEndings: Set[Char] = Set('ㄹ', 'ㄴ')
-  private val PhraseTokens = Set(Noun, Conjunction, Space)
+  private val PhraseTokens = Set(Noun, Space)
   private val ConjunctionJosa = Set("와", "과", "의")
   type KoreanPhraseChunk = Seq[KoreanPhrase]
+
+  private val PhraseHeadTailPoses = Set(Noun, Alpha, Number)
 
   /**
    * 0 for optional, 1 for required
@@ -65,17 +63,14 @@ object KoreanPhraseExtractor {
     "v*V1r*e0" -> Verb,
     "v*J1r*e0" -> Adjective
   )
-
-  private val COLLAPSE_TRIE = KoreanPos.getTrie(COLLAPSING_RULES)
-
-  private val PHRASE_HEAD_TAIL_POSES = Set(Noun, Alpha, Number)
+  private val CollapseTrie = KoreanPos.getTrie(COLLAPSING_RULES)
 
   private def trimPhraseChunk(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
     def trimNonNouns: Seq[KoreanPhrase] = {
       phrases
-          .dropWhile(t => !PHRASE_HEAD_TAIL_POSES.contains(t.pos))
+          .dropWhile(t => !PhraseHeadTailPoses.contains(t.pos))
           .reverse
-          .dropWhile(t => !PHRASE_HEAD_TAIL_POSES.contains(t.pos))
+          .dropWhile(t => !PhraseHeadTailPoses.contains(t.pos))
           .reverse
     }
 
@@ -110,9 +105,19 @@ object KoreanPhraseExtractor {
 
     def isRightLength: Boolean = {
       val phraseChunkWithoutSpaces: Seq[KoreanPhrase] = phraseChunk.filter(_.pos != Space)
-      phraseChunkWithoutSpaces.length <= maxPhrasesPerPhraseChunk &&
-          (phraseChunkWithoutSpaces.length >= minPhrasesPerPhraseChunk ||
-              phraseChunkWithoutSpaces.map(_.getTextLength).sum >= minCharsPerPhraseChunkWithoutSpaces)
+
+      def checkMaxLength: Boolean = {
+        phraseChunkWithoutSpaces.length <= MaxPhrasesPerPhraseChunk &&
+            phraseChunkWithoutSpaces.map(_.getTextLength).sum <= MaxCharsPerPhraseChunkWithoutSpaces
+      }
+
+      def checkMinLength: Boolean = {
+        phraseChunkWithoutSpaces.length >= MinPhrasesPerPhraseChunk ||
+            (phraseChunkWithoutSpaces.length < MinPhrasesPerPhraseChunk &&
+                phraseChunkWithoutSpaces.map(_.getTextLength).sum >= MinCharsPerPhraseChunkWithoutSpaces)
+      }
+
+      checkMaxLength && checkMinLength
     }
 
     isRightLength && notEndingInNonPhraseSuffix
@@ -148,7 +153,7 @@ object KoreanPhraseExtractor {
       }
     }
 
-    tokens.foldLeft(PhraseBuffer(List[KoreanPhrase](), COLLAPSE_TRIE, None)) {
+    tokens.foldLeft(PhraseBuffer(List[KoreanPhrase](), CollapseTrie, None)) {
       case (output, token) if output.curTrie.exists(_.curPos == token.pos) =>
         val (ct, nt) = getTries(token, output.curTrie)
 
@@ -157,7 +162,7 @@ object KoreanPhraseExtractor {
             List(KoreanPhrase(List(token), ct.ending.getOrElse(Noun))),
             nt, ct.ending
           )
-        } else if (output.curTrie == COLLAPSE_TRIE) {
+        } else if (output.curTrie == CollapseTrie) {
           PhraseBuffer(
             List(KoreanPhrase(List(token), ct.ending.getOrElse(Noun))),
             nt, ct.ending
@@ -169,8 +174,8 @@ object KoreanPhraseExtractor {
             nt, ct.ending
           )
         }
-      case (output, token) if COLLAPSE_TRIE.exists(_.curPos == token.pos) =>
-        val (ct, nt) = getTries(token, COLLAPSE_TRIE)
+      case (output, token) if CollapseTrie.exists(_.curPos == token.pos) =>
+        val (ct, nt) = getTries(token, CollapseTrie)
 
         PhraseBuffer(
           output.phrases :+ KoreanPhrase(List(token), ct.ending.getOrElse(Noun)),
@@ -185,7 +190,7 @@ object KoreanPhraseExtractor {
   }
 
   protected def getCandidatePhraseChunks(phrases: KoreanPhraseChunk): Seq[KoreanPhraseChunk] = {
-    def isPhraseCandidate(phrase: KoreanPhrase): Boolean = {
+    def isNonNounPhraseCandidate(phrase: KoreanPhrase): Boolean = {
       val trimmed = trimPhrase(phrase)
 
       // 하는, 할인된, 할인될
@@ -193,14 +198,15 @@ object KoreanPhraseExtractor {
         (trimmed.pos == Verb || trimmed.pos == Adjective) &&
             ModifyingPredicateEndings.contains(Hangul.decomposeHangul(trimmed.tokens.last.text.last).coda)
 
-      // 과, 와, 의
-      def isConjuctionJosa: Boolean =
-        trimmed.pos == Josa && ConjunctionJosa.contains(trimmed.tokens.last.text)
+      // 과, 와, 의, 그리고
+      def isConjuction: Boolean =
+        trimmed.pos == Josa && ConjunctionJosa.contains(trimmed.tokens.last.text) ||
+            trimmed.pos == Conjunction
 
       def isAlphaNumeric: Boolean =
         trimmed.pos == Alpha || trimmed.pos == Number
 
-      isAlphaNumeric || PhraseTokens.contains(phrase.pos) || isModifyingPredicate || isConjuctionJosa
+      isAlphaNumeric || isModifyingPredicate || isConjuction
     }
 
     def collapseNounPhrases(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
@@ -218,14 +224,26 @@ object KoreanPhraseExtractor {
     }
 
     def collapsePhrases(phrases: KoreanPhraseChunk): Seq[KoreanPhraseChunk] = {
-      val (output, buffer) = phrases.foldLeft((Seq[KoreanPhraseChunk](), Seq[KoreanPhrase]())) {
-        case ((output, buffer), phrase) if isPhraseCandidate(phrase) =>
-          (output, buffer :+ phrase)
+      def addPhraseToBuffer(phrase: KoreanPhrase, buffer: Seq[KoreanPhraseChunk]): Seq[KoreanPhraseChunk] = {
+        buffer.map(b => b :+ phrase)
+      }
+
+      def newBuffer: Seq[Seq[KoreanPhrase]] = Seq(Seq[KoreanPhrase]())
+
+      val (output, buffer) = phrases.foldLeft(
+        (Seq[KoreanPhraseChunk](), newBuffer)
+      ) {
+        case ((output, buffer), phrase) if PhraseTokens.contains(phrase.pos) =>
+          (output, addPhraseToBuffer(phrase, buffer))
+        case ((output, buffer), phrase) if buffer.length > 0 && isNonNounPhraseCandidate(phrase) =>
+          (output ++ buffer, addPhraseToBuffer(phrase, buffer :+ Seq[KoreanPhrase]()))
+        case ((output, buffer), phrase) if isNonNounPhraseCandidate(phrase) =>
+          (output, addPhraseToBuffer(phrase, buffer))
         case ((output, buffer), phrase) if buffer.length > 0 =>
-          (output :+ buffer, Seq[KoreanPhrase]())
+          (output ++ buffer, newBuffer)
         case ((output, buffer), phrase) => (output, buffer)
       }
-      if (buffer.length > 0) output :+ buffer else output
+      if (buffer.length > 0) output ++ buffer else output
     }
 
     def getSingleTokenNouns: Seq[KoreanPhraseChunk] = {
@@ -233,14 +251,13 @@ object KoreanPhraseExtractor {
         phrase =>
           val trimmed = trimPhrase(phrase)
           phrase.pos == Noun &&
-              (trimmed.getTextLength >= minCharsPerPhraseChunkWithoutSpaces ||
-                  trimmed.tokens.length >= minPhrasesPerPhraseChunk)
+              (trimmed.getTextLength >= MinCharsPerPhraseChunkWithoutSpaces ||
+                  trimmed.tokens.length >= MinPhrasesPerPhraseChunk)
       }.map(phrase => Seq(trimPhrase(phrase)))
     }
 
-    val phraseCollapsed = collapsePhrases(
-      collapseNounPhrases(phrases)
-    )
+    val nounPhrases: KoreanPhraseChunk = collapseNounPhrases(phrases)
+    val phraseCollapsed = collapsePhrases(nounPhrases)
 
     (phraseCollapsed.map(trimPhraseChunk) ++ getSingleTokenNouns).distinct
   }
@@ -252,13 +269,12 @@ object KoreanPhraseExtractor {
    * @return A list of KoreanPhrase
    */
   def extractPhrases(tokens: Seq[KoreanToken]): Seq[KoreanPhrase] = {
-
     val collapsed = collapsePos(tokens)
     val candidates = getCandidatePhraseChunks(collapsed)
 
     val permutatedCandidates = candidates.flatMap {
-      case phrases if phrases.length > minPhrasesPerPhraseChunk =>
-        (0 to phrases.length - minPhrasesPerPhraseChunk).map {
+      case phrases if phrases.length > MinPhrasesPerPhraseChunk =>
+        (0 to phrases.length - MinPhrasesPerPhraseChunk).map {
           i => trimPhraseChunk(phrases.slice(i, phrases.length))
         }
       case phrases => Seq(phrases)

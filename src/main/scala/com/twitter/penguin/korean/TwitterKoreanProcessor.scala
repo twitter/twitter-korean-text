@@ -19,6 +19,7 @@
 package com.twitter.penguin.korean
 
 import com.twitter.penguin.korean.normalizer.KoreanNormalizer
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
@@ -121,6 +122,10 @@ object TwitterKoreanProcessor {
     val normalized = if (normalizization) KoreanNormalizer.normalize(text) else text
     val tokenized = KoreanTokenizer.tokenize(normalized, keepSpace)
     if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
+  }
+
+  def extractPhrases(text: CharSequence): Seq[CharSequence] = {
+    KoreanPhraseExtractor.extractPhrases(text)
   }
 
   /**

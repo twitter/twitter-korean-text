@@ -13,12 +13,13 @@ class KoreanPhraseExtractorTest extends FunSuite {
   val sampleText = List[SampleTextPair](
     SampleTextPair(
       "블랙프라이데이: 이날 미국의 수백만 소비자들은 크리스마스 선물을 할인된 가격에 사는 것을 주 목적으로 블랙프라이데이 쇼핑을 한다.",
-      "블랙프라이데이, 이날 미국의 수백만 소비자들, 미국의 수백만 소비자들, 수백만 소비자들, 소비자들, 크리스마스 선물, " +
-          "할인된 가격, 주 목적, 블랙프라이데이 쇼핑, 수백만, 크리스마스"
+      "블랙프라이데이, 이날 미국, 이날 미국의 수백만 소비자들, 미국의 수백만 소비자들, 수백만 소비자들, 크리스마스 선물, " +
+          "할인된 가격, 주 목적, 블랙프라이데이 쇼핑, 수백만, 소비자들, 크리스마스"
     ),
     SampleTextPair(
       "결정했어. 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지를 선물할 것이다.",
-      "허니버터칩 한 봉지, 한 봉지, 코레썸, 허니버터칩"
+      "마키 코레썸, 마키 코레썸 사주시는 분께는 허니버터칩, 코레썸 사주시는 분께는 허니버터칩, 허니버터칩, " +
+          "마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 코레썸 사주시는 분께는 허니버터칩 한 봉지, 허니버터칩 한 봉지, 코레썸"
     ),
     SampleTextPair(
       "[단독]정부, 새 고용 형태 ＇중규직＇ 만든다 http://durl.me/7sm553  / 이름도 바뀌겟군. 정규직은 상규직, " +
@@ -27,7 +28,7 @@ class KoreanPhraseExtractorTest extends FunSuite {
     ),
     SampleTextPair(
       "키? ...난 절대 키가 작은 게 아냐. 이소자키나 츠루기가 비정상적으로 큰거야. 1학년이 그렇게 큰 게 말이 돼!? ",
-      "난 절대 키, 절대 키, 이소자키, 츠루기, 비정상적, 1학년"
+      "난 절대 키, 절대 키, 이소자키, 츠루기, 1학년"
     ),
     SampleTextPair(
       "전 카를로스 백덤도 잡기로 잡아본 적 있어요 :)",
@@ -35,15 +36,15 @@ class KoreanPhraseExtractorTest extends FunSuite {
     ),
     SampleTextPair(
       "나 별 병신같은 커뮤갔다가 어이없어서 저격쐈는데 그걸로 저격같은 엄청난 병크를 일으키다니!",
-      "나 별 병신같은 커뮤, 별 병신같은 커뮤, 병신같은 커뮤, 저격같은 엄청난 병크"
+      "나 별 병신, 별 병신, 나 별 병신같은 커뮤, 별 병신같은 커뮤, 병신같은 커뮤, 저격같은 엄청난 병크"
     ),
     SampleTextPair(
-      "Samsung Galaxy S5와 iPhone 6의 경쟁",
-      "Samsung Galaxy S5와 iPhone 6의 경쟁, iPhone 6의 경쟁, Samsung, Galaxy, iPhone"
+      "Galaxy S5와 iPhone 6의 경쟁",
+      "Galaxy S5와 iPhone 6의 경쟁, iPhone 6의 경쟁, Galaxy, iPhone"
     )
   )
 
-  val superLongText: String = "허니버터칩 정규직 크리스마스 " * 50
+  val superLongText: String = "허니버터칩정규직크리스마스" * 50
 
   def time[R](block: => R): Long = {
     val t0 = System.currentTimeMillis()
@@ -65,13 +66,13 @@ class KoreanPhraseExtractorTest extends FunSuite {
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(1).text)).mkString("") ===
         "결정Noun했어Verb.Punctuation Space마키Noun Space코레썸Noun Space사주시는Verb Space분께는Verb" +
-            " Space허니버터칩Verb Space한Noun 봉지Noun를Josa Space선물할Verb Space것Noun이다Josa.Punctuation")
+            " Space허니버터칩Noun Space한Verb Space봉지Noun를Josa Space선물할Verb Space것Noun이다Josa.Punctuation")
   }
 
   test("extractPhrases correctly extracts phrases") {
     assert(KoreanPhraseExtractor.extractPhrases(tokenize(sampleText(0).text)).mkString(", ") ===
-        "블랙프라이데이Noun, 이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, 수백만 소비자들Noun, " +
-            "소비자들Noun, 크리스마스 선물Noun, 할인된 가격Noun, 주 목적Noun, 블랙프라이데이 쇼핑Noun, 수백만Noun, 크리스마스Noun")
+        "블랙프라이데이Noun, 이날 미국Noun, 이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, 수백만 소비자들Noun, " +
+            "크리스마스 선물Noun, 할인된 가격Noun, 주 목적Noun, 블랙프라이데이 쇼핑Noun, 수백만Noun, 소비자들Noun, 크리스마스Noun")
   }
 
   test("extractPhrases correctly extracts phrases from a string") {
@@ -82,8 +83,7 @@ class KoreanPhraseExtractorTest extends FunSuite {
   }
 
   test("extractPhrases should extract long noun-only phrases in reasonable time") {
-    assert(KoreanPhraseExtractor.extractPhrases(superLongText).mkString(", ") ===
-        "크리스마스 허니버터칩 정규직 크리스마스, 허니버터칩 정규직 크리스마스, 정규직 크리스마스, 허니버터칩, 정규직, 크리스마스")
+    assert(KoreanPhraseExtractor.extractPhrases(superLongText).mkString(", ") === "허니버터칩, 정규직, 크리스마스")
     assert(time(KoreanPhraseExtractor.extractPhrases(superLongText)) < 1000)
   }
 
