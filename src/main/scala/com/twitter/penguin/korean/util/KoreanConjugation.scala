@@ -141,16 +141,6 @@ object KoreanConjugation {
               addPreEomi(lastChar, PRE_EOMI_2 ++ PRE_EOMI_6) ++
               Seq(lastCharString)
 
-        // 아니다, 합니다
-        case HangulChar('ㄴ', 'ㅣ', ' ') =>
-          CODAS_NO_PAST.map(composeHangul('ㄴ', 'ㅣ', _).toString) ++
-              addPreEomi(lastChar, PRE_EOMI_2 ++ PRE_EOMI_6) ++
-              Seq(composeHangul('ㄴ', 'ㅣ', 'ㅂ') + "니",
-                composeHangul('ㄴ', 'ㅕ', ' ').toString,
-                composeHangul('ㄴ', 'ㅑ', ' ').toString,
-                composeHangul('ㄴ', 'ㅕ', 'ㅆ').toString,
-                lastCharString)
-
         // 마시다, 엎드리다, 치다, 이다
         case HangulChar(o: Char, 'ㅣ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
