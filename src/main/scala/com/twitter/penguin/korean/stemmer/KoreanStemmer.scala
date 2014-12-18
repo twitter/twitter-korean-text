@@ -20,7 +20,7 @@ object KoreanStemmer {
    * Removes Ending tokens recovering the root form of predicates
    *
    * @param tokens A sequence of tokens
-   * @return A sequence of Korean tokens
+   * @return A sequence of collapsed Korean tokens ([새, 로, 운, 사람] -> [[새, 로, 운].], 사람)
    */
   def stemPredicatesCore(tokens: Seq[KoreanToken]): Seq[Seq[KoreanToken]] = {
     if (!tokens.exists(t => t.pos == Verb || t.pos == Adjective)) {
