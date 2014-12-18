@@ -65,7 +65,7 @@ class KoreanPhraseExtractorTest extends FunSuite {
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(1).text)).mkString("") ===
         "결정Noun했어Verb.Punctuation Space마키Noun Space코레썸Noun Space사주시는Verb Space분께는Verb" +
-            " Space허니버터칩Noun Space한Noun 봉지Noun를Josa Space선물할Verb Space것Noun이다Josa.Punctuation")
+            " Space허니버터칩Verb Space한Noun 봉지Noun를Josa Space선물할Verb Space것Noun이다Josa.Punctuation")
   }
 
   test("extractPhrases correctly extracts phrases") {
