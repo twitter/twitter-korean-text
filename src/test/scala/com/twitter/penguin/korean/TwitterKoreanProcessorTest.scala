@@ -67,6 +67,8 @@ class TwitterKoreanProcessorTest extends FunSuite {
       === Seq("한국어", "가", "있다", "Sentence"))
     assert(tokenizeToStrings("지각하겠닼ㅋㅋㅋㅋㅋ 그쵸")
       === Seq("지각", "하다", "ㅋㅋ", "그렇다"))
+    assert(tokenizeToStrings("라고만")
+        === Seq("라고만"))
   }
 
   test("tokenizeToStrings should tokenize Korean tweets correctly") {
@@ -157,7 +159,7 @@ class TwitterKoreanProcessorTest extends FunSuite {
     )
   }
 
-  test("tokenize should tokenize a long chunk within 0.5 sec") {
+  test("tokenize should tokenize a long chunk within reasonable time") {
     // Ignore the first one to exclude the loading time.
     time(tokenize("아그리고선생님"))
 
@@ -176,6 +178,9 @@ class TwitterKoreanProcessorTest extends FunSuite {
     assert(
       time(tokenize("감동적인강남카지노브라보카지노라오스카지노강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 1000
     )
+    assert(
+      time(tokenize("마키코레썸크리스마스블랙프라이데이" * 100)) < 10000
+    )
   }
 
   test("tokenizeToStrings should tokenize company names correctly") {
@@ -193,7 +198,7 @@ class TwitterKoreanProcessorTest extends FunSuite {
     )
   }
 
-  test("tokenize should correctly tokenize the goldenset") {
+  test("tokenize should correctly tokenize the example set") {
     assert({
       val input = readFileByLineFromResources("current_parsing.txt")
 

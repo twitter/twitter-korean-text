@@ -38,7 +38,8 @@ import scala.collection.mutable
  * the initial cache has to be updated by running tools.CreateInitialCache.
  */
 object KoreanTokenizer {
-  private val TOP_N_PER_STATE = 4
+  private val TOP_N_PER_STATE = 5
+  private val MAX_TRACE_BACK = 5
 
   private val WEIGHT_TOKENS = 0.18f
   private val WEIGHT_UNKNOWNS = 0.3f
@@ -166,6 +167,14 @@ object KoreanTokenizer {
    */
   private[this] def parseKoreanChunk(chunk: String): Seq[KoreanToken] = {
 
+    // Direct match
+    koreanDictionary.foreach{
+      case (pos, dict) =>
+        if (dict.contains(chunk)) {
+          return Seq(KoreanToken(chunk, pos))
+        }
+    }
+
     // Buffer for solutions
     val solutions: mutable.Map[Int, List[CandidateParse]] = new java.util.HashMap[Int, List[CandidateParse]]
 
@@ -180,7 +189,7 @@ object KoreanTokenizer {
     // Find N best parses per state
     for (
       end <- 1 to chunk.length;
-      start <- end - 1 to(0, -1)
+      start <- end - 1 to(Seq(end - MAX_TRACE_BACK, 0).max, -1)
     ) {
       val word = chunk.slice(start, end)
 
