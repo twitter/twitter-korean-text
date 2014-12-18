@@ -141,7 +141,7 @@ object KoreanConjugation {
               addPreEomi(lastChar, PRE_EOMI_2 ++ PRE_EOMI_6) ++
               Seq(lastCharString)
 
-        // 마시다, 엎드리다, 치다, 이다
+        // 마시다, 엎드리다, 치다, 이다, 아니다
         case HangulChar(o: Char, 'ㅣ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
               addPreEomi(lastChar, PRE_EOMI_2 ++ PRE_EOMI_6) ++
@@ -247,7 +247,7 @@ object KoreanConjugation {
       expanded
     } else {
       // Edge cases: these more likely to be a conjugation of an adjective than a verb
-      expanded -- Set("아니", "아냐", "입", "입니", "나는")
+      expanded -- Set("아니", "입", "입니", "나는")
     }
   }
 
