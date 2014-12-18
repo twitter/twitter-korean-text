@@ -39,7 +39,7 @@ import scala.collection.mutable
  */
 object KoreanTokenizer {
   private val TOP_N_PER_STATE = 5
-  private val MAX_TRACE_BACK = 5
+  private val MAX_TRACE_BACK = 10
 
   private val WEIGHT_TOKENS = 0.18f
   private val WEIGHT_UNKNOWNS = 0.3f

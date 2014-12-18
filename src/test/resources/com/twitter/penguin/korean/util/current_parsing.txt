@@ -5772,7 +5772,7 @@
 사양안하고	사양Noun 안Noun 하고Josa
 뭘하지	뭘Noun 하다Verb
 우승은	우승Noun 은Josa
-아메리칸허슬라이프	아메리칸Noun 허슬Noun 라이프Noun
+아메리칸허슬라이프	아메리칸허슬Noun 라이프Noun
 타팬빼고	타팬Noun 빼다Verb
 관련이	관련Noun 이Josa
 동시에	동시Noun 에Josa
@@ -10798,7 +10798,7 @@
 묻었다	묻다Verb
 논현페티쉬	논현Noun 페티쉬Noun
 않으셨어요	않다Verb 셨Noun* 어요Noun
-제국의아이들이	제국Noun 의Josa 아이Noun 들Suffix 이Josa
+제국의아이들이	제국의아이들Noun 이Josa
 헐나도	허다Verb
 넘이뻐	넘다Verb 이쁘다Adjective
 뿌우우	뿌우우Noun*
@@ -11703,7 +11703,7 @@
 위해서는	위Noun 하다Verb
 낫겠어	낫다Verb
 요주의	요Noun 주의Noun
-샌프란시스코에서	새다Verb 프란시스코Noun 에서Josa
+샌프란시스코에서	샌프란시스코Noun 에서Josa
 날이라	날Noun 이라Josa
 주문해야지	주문Noun 하다Verb
 쾌적하게	쾌적Noun 하다Verb
@@ -12050,7 +12050,7 @@
 울컥해서	울컥Adverb 하다Verb
 괴물캐라서	괴물Noun 캐Noun 라서Josa
 입금날짜	입금Noun 날짜Noun
-해쥬거떠나쉐여	해Noun 쥬거떠나쉐Noun* 여Josa
+해쥬거떠나쉐여	해쥬거떠나쉐Noun* 여Josa
 멋사님이	멋사Noun* 님Suffix 이Josa
 놀라게	놀라다Verb
 문제야	문제Noun 야Josa
@@ -13208,7 +13208,7 @@
 결과를	결과Noun 를Josa
 생활은	생활Noun 은Josa
 미성년자는	미성년Noun 자Suffix 는Josa
-아안빠졸기엽다	아안Noun 빠졸기엽Noun* 다Josa
+아안빠졸기엽다	아안빠졸기엽Noun* 다Josa
 일했었는데	일Noun 하다Verb
 말이지	말Noun 이지Noun
 공유하다보면	공유Noun 하다Verb 보다Verb
@@ -13925,7 +13925,7 @@
 그려봤습니다	그리다Verb 보다Verb
 방문보다	방문Noun 보다Josa
 일어나서	일어나서Noun
-온라인마케팅을	온라인Noun 마케팅Noun 을Josa
+온라인마케팅을	온라인마케팅Noun 을Josa
 내사랑	내사Noun 랑Josa
 대행진	대행Noun 진Noun
 폴씨님이	폴씨Noun* 님Suffix 이Josa
@@ -14979,7 +14979,7 @@
 콘서트같은건	콘서트Noun 같다Adjective
 삼각관계	삼각관계Noun
 알리바바	알리바바Noun
-큰빗이끼벌레가	크다Verb 빗Noun 이끼Noun 벌레Noun 가Josa
+큰빗이끼벌레가	큰빗이끼벌레Noun 가Josa
 신뢰가	신뢰Noun 가Josa
 아시면	아시Noun 면Josa
 뜻이다	뜻Noun 이다Josa
@@ -15845,7 +15845,7 @@
 별따기	별Noun 따다Verb
 글여왔어여	글Noun 여Josa 오다Verb
 터져서	터지다Verb
-시티브레이크에서	시티Noun 브레이크Noun 에서Josa
+시티브레이크에서	시티브레이크Noun 에서Josa
 끌어서	끌다Verb
 다름이	다르다Adjective
 손뻗어	손Noun 뻗다Verb
@@ -20834,7 +20834,7 @@
 부채랑	부채Noun 랑Josa
 시간입니다	시간Noun 이다Adjective
 레진코믹스에서	레진코믹스Noun 에서Josa
-제국의아이들도	제국Noun 의Josa 아이Noun 들Suffix 도Josa
+제국의아이들도	제국의아이들Noun 도Josa
 들어있는	들다Verb
 프로미넌스	프로미넌스Noun
 달아서	달다Verb
@@ -23707,7 +23707,7 @@
 망했네	망Noun 하다Verb
 페레라	페레Noun* 라Josa
 아바타일	아바Noun 타일Noun
-빠람빠람빠람빰빰	빠람빠Noun* 람Noun 빰빰Noun*
+빠람빠람빠람빰빰	빠람빠람빰빰Noun*
 담백한	담Noun 백Suffix 한Josa
 제레미	제레미Noun
 남녀노소	남녀Noun 노소Noun
@@ -25360,7 +25360,7 @@
 안보고	안보Noun 고Josa
 자료제출	자료Noun 제출Noun
 문의는	문의Noun 는Josa
-제국의아이들은	제국Noun 의Josa 아이Noun 들Suffix 은Josa
+제국의아이들은	제국의아이들Noun 은Josa
 큰오빠	크다Verb 오빠Noun
 늦으면	늦다Verb
 원내대표를	원내대표Noun 를Josa
@@ -34350,7 +34350,7 @@
 같수니만	같다Adjective
 힘겨운	힘겹다Adjective
 이쯤되면	이쯤Noun 되다Verb
-동영상코미디빅리그	동영상Noun 코미디Noun 빅리그Noun
+동영상코미디빅리그	동영상Noun 코미디빅리그Noun
 어떤분이세요	어떻다Adjective 불다Verb
 후회하는	후회Noun 하다Verb
 접속밍키넷	접속Noun 밍키넷Noun
@@ -39107,7 +39107,7 @@
 못본다니	못VerbPrefix 보다Verb
 유가족들은	유가족Noun 들Suffix 은Josa
 깨끗이	깨끗이Adverb
-온라인카지노주소	온라인Noun 카지노Noun 주소Noun
+온라인카지노주소	온라인카지노Noun 주소Noun
 싶은걸	싶다Verb
 질문에	질문Noun 에Josa
 신문광고를	신문Noun 광고Noun 를Josa
@@ -41471,7 +41471,7 @@
 외치면서	외치다Verb
 알리고	알리Noun 고Josa
 또랑이	또Noun 랑Josa 이Determiner
-때까지만이라도	때Noun 까지Noun 만이라도Josa
+때까지만이라도	때Noun 까지만이라도Josa
 낼부터	낼Noun 부터Josa
 뚜드려	뚜Noun 드리다Verb
 소리줄이고	소리Noun 줄Noun 이고Josa
