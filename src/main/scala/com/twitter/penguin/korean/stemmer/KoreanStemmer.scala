@@ -20,9 +20,13 @@ object KoreanStemmer {
    * Removes Ending tokens recovering the root form of predicates
    *
    * @param tokens A sequence of tokens
-   * @return A list of Korean tokens
+   * @return A sequence of Korean tokens
    */
   def stemPredicatesCore(tokens: Seq[KoreanToken]): Seq[Seq[KoreanToken]] = {
+    if (!tokens.exists(t => t.pos == Verb || t.pos == Adjective)) {
+      return tokens.map(t => Seq(t));
+    }
+
     val stemmed = tokens.map {
       case token: KoreanToken if Endings.contains(token.pos) => None
       case token: KoreanToken if Predicates.contains(token.pos) =>

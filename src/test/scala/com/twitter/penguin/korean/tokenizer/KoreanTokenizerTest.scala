@@ -262,6 +262,11 @@ class KoreanTokenizerTest extends FunSuite {
       tokenize("안녕ㅋㅋ") ===
         List(KoreanToken("안녕", Noun), KoreanToken("ㅋㅋ", KoreanParticle))
     )
+
+    assert(
+      tokenize("라고만") ===
+          List(KoreanToken("라고만", Eomi))
+    )
   }
 
   test("tokenize should handle unknown nouns") {

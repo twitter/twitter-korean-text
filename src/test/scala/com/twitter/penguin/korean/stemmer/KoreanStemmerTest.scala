@@ -46,6 +46,8 @@ class KoreanStemmerTest extends FunSuite {
     KoreanToken("..", Punctuation)
   )
 
+  val sampleText3 = "라고만"
+  val sampleStems3 = Seq(KoreanToken("라고만", Eomi))
 
   test("stemPredicates should stem predicates from Korean tokens") {
     assert(
@@ -58,6 +60,12 @@ class KoreanStemmerTest extends FunSuite {
       KoreanStemmer.stemPredicates(
         KoreanTokenizer.tokenize(sampleText2)
       ) === sampleStems2
+    )
+
+    assert(
+      KoreanStemmer.stemPredicates(
+        KoreanTokenizer.tokenize(sampleText3)
+      ) === sampleStems3
     )
   }
 
