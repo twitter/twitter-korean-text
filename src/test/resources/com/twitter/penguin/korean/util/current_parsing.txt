@@ -1018,7 +1018,6 @@
 파고드는	파고Noun 들다Verb
 또랑이	또Noun 랑Josa 이Determiner
 보드여	보드Noun 여Josa
-온라인마케팅을	온라인Noun 마케팅Noun 을Josa
 비밀이다	비밀Noun 이다Josa
 국어책읽기	국어Noun 책Noun 읽다Verb
 해야한다고	하다Verb 하다Verb
@@ -1355,6 +1354,7 @@
 애꿏은	애꿏Noun* 은Josa
 비밀이야	비밀Noun 이야Josa
 아래쪽	아래쪽Noun
+제국의아이들은	제국의아이들Noun 은Josa
 오산이야	오산Noun 이야Josa
 현지언니	현지Noun 언니Suffix
 수건으로	수건Noun 으로Josa
@@ -1568,6 +1568,7 @@
 우습다	울다Verb
 넘어간	넘어가다Verb
 온몸을	온몸Noun 을Josa
+온라인카지노주소	온라인카지노Noun 주소Noun
 지키려고	지키다Verb
 싶었구나	싶다Verb
 제임스	제임스Noun
@@ -3928,7 +3929,6 @@
 코스가	코스Noun 가Josa
 병살은	병살Noun 은Josa
 카이가	카이Noun 가Josa
-비정상적으로	비정Noun 상적Noun 으로Josa
 어울려	어울리다Verb
 찾으면	찾다Verb
 명함을	명함Noun 을Josa
@@ -4124,6 +4124,7 @@
 아름다워서	아름답다Adjective
 착해서	착하다Adjective
 영향력에	영향력Noun 에Josa
+시티브레이크에서	시티브레이크Noun 에서Josa
 없는거죠	없다Adjective
 구미야	구미Noun 야Josa
 준비로	준비Noun 로Josa
@@ -5342,6 +5343,7 @@
 불만을	불만Noun 을Josa
 레진코믹스에서	레진코믹스Noun 에서Josa
 남캐가	남캐Noun* 가Josa
+제국의아이들도	제국의아이들Noun 도Josa
 남뉴로새끼는	남뉴Noun* 로Josa 새끼Noun 는Josa
 먹었다고	먹다Verb
 많으시죠	많다Adjective
@@ -8872,6 +8874,7 @@
 카를로스	카를로스Noun
 들리고	들리다Verb
 늦더라도	늦다Verb
+제국의아이들이	제국의아이들Noun 이Josa
 샤방샤방	샤방샤방Noun*
 비집고	비Noun 집다Verb
 환영입니다	환영Noun 이다Adjective
@@ -11825,7 +11828,6 @@
 등신대를	등신대Noun 를Josa
 소리에	소리Noun 에Josa
 못하도록	못VerbPrefix 하다Verb
-샌프란시스코에서	새다Verb 프란시스코Noun 에서Josa
 시키는건지	시키다Verb 건지다Verb
 떠들어	떠들다Verb
 안본사이에	안VerbPrefix 보다Verb 사이Noun 에Josa
@@ -12416,6 +12418,7 @@
 부탁드리며	부탁드리다Adjective
 짐꾼들	짐꾼Noun 들Suffix
 보스방	보스Noun 방Noun
+아메리칸허슬라이프	아메리칸허슬Noun 라이프Noun
 째깍째깍	째깍Noun 째깍Noun
 간식으로	간식Noun 으로Josa
 얘드라	얘드Noun* 라Josa
@@ -14587,6 +14590,7 @@
 컴그림은	컴Noun 그림Noun 은Josa
 내탐라에	내Determiner 탐라Noun 에Josa
 자리도	자리Noun 도Josa
+아안빠졸기엽다	아안빠졸기엽Noun* 다Josa
 해야하는지	하다Verb
 꿈만같아서	꿈Noun 만Josa 같다Adjective
 아니여서	아니다Adjective
@@ -17587,7 +17591,6 @@
 중요한데	중요하다Adjective
 저거랑	저Determiner 거Noun 랑Josa
 운명이	운명Noun 이Josa
-비정상	비정Noun 상Suffix
 별하나	별하나Noun
 남자인가	남자Noun 인가Josa
 못들음	못VerbPrefix 들다Verb
@@ -18115,7 +18118,6 @@
 받아왔다	받다Verb 오다Verb
 때로는	때로는Noun
 야야야	야야Noun
-시티브레이크에서	시티Noun 브레이크Noun 에서Josa
 그러네	그렇다Adjective
 잤어요	자다Verb
 칼슘의	칼슘Noun 의Josa
@@ -18465,7 +18467,6 @@
 이영호가	이영호Noun 가Josa
 치느님이	치Noun 느님Noun 이Josa
 시작하겠어요	시작Noun 하다Verb
-빠람빠람빠람빰빰	빠람빠Noun* 람Noun 빰빰Noun*
 무더위	무더위Noun
 성스러운	성Noun 스러운Josa
 이들의	이Noun 들Suffix 의Josa
@@ -18679,7 +18680,6 @@
 잘해줬는데	잘VerbPrefix 해주다Verb
 스탠딩	스탠딩Noun*
 준다거나	주다Verb
-아메리칸허슬라이프	아메리칸Noun 허슬Noun 라이프Noun
 피해야지	피Noun 하다Verb
 공부하는	공부Noun 하다Verb
 그렇다	그렇다Adjective
@@ -18852,6 +18852,7 @@
 비단이도	비단Noun 이Suffix 도Josa
 되어간다	되어다Verb 간다Noun
 지켜줘야	지키다Verb
+큰빗이끼벌레가	큰빗이끼벌레Noun 가Josa
 많았어요	많다Adjective
 산타가	산타Noun 가Josa
 파이리	파이리Noun
@@ -20816,7 +20817,6 @@
 무조림	무Noun 조림Noun
 또봐요	또봐Noun* 요Josa
 그냥해야지	그냥Noun 하다Verb
-해쥬거떠나쉐여	해Noun 쥬거떠나쉐Noun* 여Josa
 그림자	그림자Noun
 어른이라고	어른Noun 이라고Josa
 대화하는	대화Noun 하다Verb
@@ -25896,7 +25896,6 @@
 아시면서	알다Verb
 곰돌이	곰돌이Noun
 반응은	반응Noun 은Josa
-온라인카지노주소	온라인Noun 카지노Noun 주소Noun
 세월이	세월Noun 이Josa
 거리도	거리Noun 도Josa
 귀찮은게	귀찮다Adjective 은Noun 게Josa
@@ -26214,7 +26213,6 @@
 직거래시	직거래Noun 시Noun
 믿을만한	믿다Verb
 후보자	후보자Noun
-제국의아이들도	제국Noun 의Josa 아이Noun 들Suffix 도Josa
 에반게리온	에반게리온Noun
 다담주에	다담Noun 주Noun 에Josa
 따뜻함을	따뜻하다Adjective
@@ -27449,7 +27447,6 @@
 엔조이	엔조이Noun
 멘소래담	멘소래담Noun
 눈에만	눈Noun 에만Josa
-제국의아이들이	제국Noun 의Josa 아이Noun 들Suffix 이Josa
 아트리	아트리Noun
 후반을	후반Noun 을Josa
 대선개입	대선Noun 개입Noun
@@ -28070,6 +28067,7 @@
 내려놓는다	내려놓다Verb
 음식과	음식Noun 과Josa
 찬찬히	찬찬히Adverb
+때까지만이라도	때Noun 까지만이라도Josa
 세제를	세제Noun 를Josa
 앞뒤로	앞뒤Noun 로Josa
 못마시고	못VerbPrefix 말다Verb
@@ -29354,7 +29352,6 @@
 바다에서	바다Noun 에서Josa
 안에는	안Noun 에는Josa
 확인하러	확인Noun 하다Verb
-동영상코미디빅리그	동영상Noun 코미디Noun 빅리그Noun
 그림과	그림Noun 과Josa
 저한테도	저Noun 한테Josa 도Noun
 달아둔	달Noun 아Josa 두다Verb
@@ -29598,6 +29595,7 @@
 최고봉은	최고봉Noun 은Josa
 고맙습니다	고맙다Adjective
 고릴라가	고릴라Noun 가Josa
+비정상적으로	비정상Noun 적Suffix 으로Josa
 연예인이라도	연예인Noun 이라도Josa
 이랬더니	이랬더니Conjunction
 그러게	그렇다Adjective
@@ -31157,6 +31155,7 @@
 깨끗하게	깨끗하다Adjective
 생략한다	생략Noun 하다Verb
 촬영한겁니다	촬영Noun 한Josa 겁니다Verb
+빠람빠람빠람빰빰	빠람빠람빰빰Noun*
 일본식	일본Noun 식Suffix
 올리브영	올리브영Noun
 것뿐이지요	것Noun 뿐이다Adjective
@@ -31355,6 +31354,7 @@
 노란모자	노랗다Adjective 모자Noun
 반응하면	반응Noun 하다Verb
 당시엔	당시Noun 엔Josa
+온라인마케팅을	온라인마케팅Noun 을Josa
 시원해	시원하다Adjective
 흐흐흐	흐흐Noun
 못봐요	못VerbPrefix 보다Verb
@@ -33462,7 +33462,6 @@
 설문을	설문Noun 을Josa
 후보로	후보Noun 로Josa
 행복하다고	행복하다Adjective
-큰빗이끼벌레가	크다Verb 빗Noun 이끼Noun 벌레Noun 가Josa
 하지만	하지만Conjunction
 걸이나	걸이Noun 나Josa
 생긴게	생기다Verb
@@ -33527,6 +33526,7 @@
 결정했고	결정Noun 하다Verb
 두분은	두Determiner 분Noun 은Josa
 오지않는	오지Noun 않다Verb
+해쥬거떠나쉐여	해쥬거떠나쉐Noun* 여Josa
 한번더	한번Noun 더Noun
 문구가	문구Noun 가Josa
 연말에	연말Noun 에Josa
@@ -33955,7 +33955,6 @@
 마이카제	마이Noun 카제Noun
 디시인사이드	디시인사이드Noun
 그것만	그것Noun 만Josa
-아안빠졸기엽다	아안Noun 빠졸기엽Noun* 다Josa
 움찔움찔	움찔움찔Adverb
 락이가	락Noun 이Suffix 가Josa
 차리고	차리다Verb
@@ -36463,6 +36462,7 @@
 엄빠가	엄빠Noun 가Josa
 사냥이	사냥Noun 이Josa
 떠오르지	떠오르다Verb
+비정상	비정상Noun
 못보니	못VerbPrefix 보다Verb
 뽀뽀를	뽀뽀Noun 를Josa
 쓰겠습니다	쓰다Verb
@@ -40861,6 +40861,7 @@
 다름없다	다름없다Adjective
 물질적	물질Noun 적Suffix
 차곡차곡	차곡차곡Noun
+동영상코미디빅리그	동영상Noun 코미디빅리그Noun
 겁페는	겁페Noun 는Josa
 분신자살하고	분신Noun 자살Noun 하다Verb
 다물고	다Adverb 물Noun 고Josa
@@ -41130,7 +41131,6 @@
 수박도	수박도Noun
 이거시	이Determiner 것Noun 이Josa
 미친귀여움	미치다Adjective 귀엽다Adjective 움Noun
-제국의아이들은	제국Noun 의Josa 아이Noun 들Suffix 은Josa
 마셔라	마시다Verb
 재미로	재미Noun 로Josa
 가려다가	가다Verb
@@ -42204,7 +42204,6 @@
 소리여	소리Noun 여Josa
 베리굿	베리Noun 굿Noun
 찬열이랑	찬열Noun 이랑Josa
-때까지만이라도	때Noun 까지Noun 만이라도Josa
 바람처럼	바람Noun 처럼Josa
 돈내고	돈Noun 내다Verb
 대학을	대학Noun 을Josa
@@ -42487,6 +42486,7 @@
 올려진	올리다Verb
 동정하지	동정Noun 하다Verb
 지겹다	지겹다Adjective
+샌프란시스코에서	샌프란시스코Noun 에서Josa
 서양야동	서양Noun 야동Noun
 바라보면	바라보다Verb
 방안을	방안Noun 을Josa
