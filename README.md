@@ -27,7 +27,7 @@ twitter-korean-text의 목표는 빅데이터 등에서 간단한 한국어 처�
 
 * 한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어, 처리, 예시, 처리하는 예시
 
-### Try this here
+## Try it here
 
 Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
@@ -36,7 +36,7 @@ Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다.
 
 Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
 
-### Maven
+## Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
 
 Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
@@ -51,7 +51,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
 
 The maven site is available here http://twitter.github.io/twitter-korean-text/ and scaladocs are here http://twitter.github.io/twitter-korean-text/scaladocs/
 
-### Python Wrapper
+## Python Wrapper
 
 [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
 
@@ -143,7 +143,7 @@ public class JavaTwitterKoreanTextExample {
 ```
 
 
-### Basics
+## Basics
 
 [TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) is the central object that provides interface for all the features.
 
