@@ -45,7 +45,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>[<Put the latest version number here>](https://github.com/twitter/twitter-korean-text/releases)</version>
+    <version>2.3.2</version>
   <dependency>
 ```
 
