@@ -152,22 +152,22 @@ class TwitterKoreanProcessorTest extends TestBase {
     time(tokenize("아그리고선생님"))
 
     assert(
-      time(tokenize("아그리고선생님")) < 1000
+      time(tokenize("아그리고선생님")) < 10000
     )
     assert(
-      time(tokenize("아그리고선생님이사람의정말귀여운헐쵸귀여운개루루엄청작아서귀엽다안녕ㅋㅋ")) < 1000
+      time(tokenize("아그리고선생님이사람의정말귀여운헐쵸귀여운개루루엄청작아서귀엽다안녕ㅋㅋ")) < 10000
     )
     assert(
-      time(tokenize("강원랜드잭팟이용하세요")) < 1000
+      time(tokenize("강원랜드잭팟이용하세요")) < 10000
     )
     assert(
-      time(tokenize("강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 1000
+      time(tokenize("강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 10000
     )
     assert(
-      time(tokenize("감동적인강남카지노브라보카지노라오스카지노강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 1000
+      time(tokenize("감동적인강남카지노브라보카지노라오스카지노강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟강원랜드잭팟")) < 10000
     )
     assert(
-      time(tokenize("마키코레썸크리스마스블랙프라이데이" * 100)) < 10000
+      time(tokenize("마키코레썸크리스마스블랙프라이데이" * 100)) < 100000
     )
   }
 
