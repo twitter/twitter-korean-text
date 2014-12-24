@@ -97,8 +97,6 @@ object KoreanTokenizer {
     def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
   }
 
-  case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Boolean)
-
   case class KoreanToken(text: String, pos: KoreanPos, unknown: Boolean = false) {
     override def toString: String = {
       val unknownStar = if (unknown) "*" else ""
@@ -138,67 +136,30 @@ object KoreanTokenizer {
    * v VerbPrefix: 동사 접두어 ('쳐'먹어)
    * s Suffix: 접미사 (~적)
    */
-  private val SequenceDefinition = List(
+  private val SequenceDefinition = Map(
     // Substantive
-    "D0p*N1s0j0",
-    // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다
-    "v*V1r*e0", "v*J1r*e0",
-    // Modifier 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
-    "A1",
+    "D0p*N1s0j0" -> Noun,
+    // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다, 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
+    "v*V1r*e0" -> Verb,
+    "v*J1r*e0" -> Adjective,
+    // Modifier 부사
+    "A1" -> Adverb,
     // Standalone
-    "C1", "E+", "j1"
+    "C1" -> Conjunction,
+    "E+" -> Exclamation,
+    "j1" -> Josa
   )
 
-  protected[korean] val selfNode = KoreanPosTrie(null, null, ending = false)
-
-  protected[korean] def buildTrie(s: String): List[KoreanPosTrie] = {
-    def isFinal(rest: String): Boolean = {
-      val isNextOptional = rest.foldLeft(true) {
-        case (output: Boolean, c: Char) if c == '+' || c == '1' => false
-        case (output: Boolean, c: Char) => output
-      }
-      rest.length == 0 || isNextOptional
-    }
-
-    if (s.length < 2) {
-      return List()
-    }
-
-    val pos = shortCut(s.charAt(0))
-    val rule = s.charAt(1)
-    val rest = if (s.length > 1) {
-      s.slice(2, s.length)
-    } else {
-      ""
-    }
-
-    val end: Boolean = isFinal(rest)
-
-    rule match {
-      case '+' =>
-        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end))
-      case '*' =>
-        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end)) ++ buildTrie(rest)
-      case '1' =>
-        List(KoreanPosTrie(pos, buildTrie(rest), end))
-      case '0' =>
-        List(KoreanPosTrie(pos, buildTrie(rest), end)) ++ buildTrie(rest)
-    }
-  }
-
-  private[this] val koreanPosTrie: List[KoreanPosTrie] =
-    SequenceDefinition.foldLeft(List[KoreanPosTrie]()) {
-      (results: List[KoreanPosTrie], s: String) => buildTrie(s) ::: results
-    }
+  private val koreanPosTrie = KoreanPos.getTrie(SequenceDefinition)
 
   case class ParsedChunkWithMinScore(parsedChunk: Option[ParsedChunk], score: Float)
 
-  case class CandidateParse(parse: ParsedChunk, curTrie: List[KoreanPosTrie], ending: Boolean)
+  case class CandidateParse(parse: ParsedChunk, curTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
 
   case class PossibleTrie(curTrie: KoreanPosTrie, words: Int)
 
   /**
-   * Recursively find the best parse.
+   * Find the best parse using dynamic programming.
    *
    * @param chunk Input chunk. The input has to be entirely. Check for input validity is skipped
    *              for performance optimization. This method is private and is called only by tokenize.
@@ -207,7 +168,7 @@ object KoreanTokenizer {
   private[this] def parseKoreanChunk(chunk: String): Seq[KoreanToken] = {
 
     // Direct match
-    koreanDictionary.foreach{
+    koreanDictionary.foreach {
       case (pos, dict) =>
         if (dict.contains(chunk)) {
           return Seq(KoreanToken(chunk, pos))
@@ -221,7 +182,7 @@ object KoreanTokenizer {
     solutions += 0 -> List(
       CandidateParse(
         ParsedChunk(Seq[KoreanToken](), 1),
-        koreanPosTrie, ending = false
+        koreanPosTrie, ending = None
       )
     )
 
@@ -236,7 +197,7 @@ object KoreanTokenizer {
 
       val candidates = curSolutions.flatMap {
         solution =>
-          val possiblePoses: Seq[PossibleTrie] = if (solution.ending) {
+          val possiblePoses: Seq[PossibleTrie] = if (solution.ending.isDefined) {
             solution.curTrie.map(t => PossibleTrie(t, 0)) ++ koreanPosTrie.map(t => PossibleTrie(t, 1))
           } else {
             solution.curTrie.map(t => PossibleTrie(t, 0))
@@ -279,8 +240,8 @@ object KoreanTokenizer {
    * @param text Input Korean chunk
    * @return sequence of KoreanTokens
    */
-  def tokenize(text: CharSequence): Seq[KoreanToken] = {
-    chunk(text).flatMap {
+  def tokenize(text: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
+    chunk(text, keepSpace).flatMap {
       case token: KoreanToken if token.pos == Korean =>
         // Get the best parse of each chunk
         val parsed = parseKoreanChunk(token.text)

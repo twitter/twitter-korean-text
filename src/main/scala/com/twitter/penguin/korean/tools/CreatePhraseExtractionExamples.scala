@@ -21,42 +21,41 @@ package com.twitter.penguin.korean.tools
 import java.io.FileOutputStream
 
 import com.twitter.penguin.korean.TwitterKoreanProcessor._
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 
 /**
- * Create Korean Parsing examples.
+ * Create Korean Phrase Extraction Examples.
  */
-object CreateParsingExamples {
+object CreatePhraseExtractionExamples {
 
-  case class ParsingExample(text: String, parse: Seq[KoreanToken])
+  case class PhraseExample(text: String, phrases: Seq[CharSequence])
 
   def main(args: Array[String]) {
-    System.err.println("Reading the goldenset..")
+    System.err.println("Reading the sample tweets..")
 
-    val parsedPairs = readFileByLineFromResources("example_chunks.txt").flatMap {
+    val phrasePairs = readFileByLineFromResources("example_tweets.txt").flatMap {
       case line if line.length > 0 =>
         val chunk = line.trim
-        val parsed = tokenize(chunk)
-        Some(ParsingExample(chunk, parsed))
+        val phrases = extractPhrases(chunk)
+        Some(PhraseExample(chunk, phrases))
       case line => None
     }.toSet
 
 
-    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_parsing.txt"
+    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_phrases.txt"
 
-    System.err.println("Writing the new goldenset to " + outputFile)
+    System.err.println("Writing the new phrases to " + outputFile)
 
     val out = new FileOutputStream(outputFile)
-    parsedPairs.foreach {
+    phrasePairs.foreach {
       p =>
         out.write(p.text.getBytes)
         out.write("\t".getBytes)
-        out.write(p.parse.mkString("/").getBytes)
+        out.write(p.phrases.mkString("/").getBytes)
         out.write("\n".getBytes)
     }
     out.close()
 
-    System.err.println("Testing the new goldenset " + outputFile)
+    System.err.println("Testing the new phrases " + outputFile)
   }
 }

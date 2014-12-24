@@ -39,21 +39,23 @@ object KoreanChunker {
     Email -> """([\p{Alnum}\.\-_]+@[\p{Alnum}\.]+)""".r.pattern,
     Hashtag -> Regex.VALID_HASHTAG,
     ScreenName -> Regex.VALID_MENTION_OR_LIST,
-    CashTag -> Regex.VALID_CASHTAG
+    CashTag -> Regex.VALID_CASHTAG,
+    Space -> """\s+""".r.pattern
   )
 
-  private val CHUNKING_ORDER = Seq(URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
-  private val SPACE_REGEX_STRING = "\\s"
+  private val CHUNKING_ORDER = Seq(Space, URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
+  private val SPACE_REGEX_DELIMITER_KEEP_SPACES = """((?<=\s+)|(?=\s+))"""
+  private val SPACE_REGEX_DELIMITER = """\s+"""
 
-  protected[korean] def getChunks(input: String): Seq[String] = {
-    chunk(input).map(_.text)
+  protected[korean] def getChunks(input: String, keepSpace: Boolean = false): Seq[String] = {
+    chunk(input, keepSpace).map(_.text)
   }
 
 
   private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
     def disjoint(that: ChunkMatch): Boolean = {
       (that.start < this.start && that.end <= this.start) ||
-        (that.start >= this.end && that.end > this.end)
+          (that.start >= this.end && that.end > this.end)
     }
   }
 
@@ -75,15 +77,16 @@ object KoreanChunker {
     }
   }
 
-  private[this] def splitChunks(text: String): List[ChunkMatch] = {
-    val chunks = text.split(SPACE_REGEX_STRING).flatMap(s =>
+  private[this] def splitChunks(text: String, keepSpace: Boolean = false): List[ChunkMatch] = {
+    val splitRegex = if (keepSpace) SPACE_REGEX_DELIMITER_KEEP_SPACES else SPACE_REGEX_DELIMITER
+    val chunks = text.split(splitRegex).flatMap { s =>
       CHUNKING_ORDER.foldLeft(List[ChunkMatch]()) {
         (l, pos) =>
           val m = POS_PATTERNS(pos).matcher(s)
 
           findAllPatterns(m, pos).filter(cm => l.forall(cm.disjoint)) ::: l
       }
-    ).sortBy(cm => cm.start)
+    }.sortBy(cm => cm.start)
 
     fillInUnmatched(text, chunks, Foreign)
   }
@@ -96,10 +99,9 @@ object KoreanChunker {
    * @param pos KoreanPos to attach to the unmatched chunk
    * @return list of ChunkMatches
    */
-  private[this] def fillInUnmatched(
-                                     text: String,
-                                     chunks: Array[ChunkMatch],
-                                     pos: KoreanPos.Value): List[ChunkMatch] = {
+  private[this] def fillInUnmatched(text: String,
+                                    chunks: Seq[ChunkMatch],
+                                    pos: KoreanPos.Value): List[ChunkMatch] = {
 
     // Add Foreign for unmatched parts
     val (chunksWithForeign, prevEnd) = chunks.foldLeft((List[ChunkMatch](), 0)) {
@@ -140,10 +142,11 @@ object KoreanChunker {
    * @param input input string
    * @return sequence of KoreanTokens
    */
-  def chunk(input: CharSequence): Seq[KoreanToken] = {
+  def chunk(input: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
+    val splitRegex = if (keepSpace) SPACE_REGEX_DELIMITER_KEEP_SPACES else SPACE_REGEX_DELIMITER
     input.toString
-      .split(SPACE_REGEX_STRING)
-      .flatMap(splitChunks)
-      .map(m => KoreanToken(m.text, m.pos))
+        .split(splitRegex)
+        .flatMap(s => splitChunks(s, keepSpace))
+        .map(m => KoreanToken(m.text, m.pos))
   }
 }

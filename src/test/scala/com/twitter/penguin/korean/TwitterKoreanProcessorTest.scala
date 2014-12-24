@@ -20,26 +20,14 @@ package com.twitter.penguin.korean
 
 import java.util.logging.{Level, Logger}
 
+import com.twitter.penguin.korean.TestBase._
 import com.twitter.penguin.korean.TwitterKoreanProcessor.{tokenize, _}
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class TwitterKoreanProcessorTest extends FunSuite {
+class TwitterKoreanProcessorTest extends TestBase {
   val LOG = Logger.getLogger(getClass.getSimpleName)
-
-  case class ParseTime(time: Long, chunk: String)
-
-  def time[R](block: => R): Long = {
-    val t0 = System.currentTimeMillis()
-    block
-    val t1 = System.currentTimeMillis()
-    t1 - t0
-  }
 
   test("tokenizeToStrings should tokenize without normalization or stemming") {
     assert(tokenizeToStrings("한국어가 있는 Sentence", normalize = false, stem = false)
@@ -98,6 +86,11 @@ class TwitterKoreanProcessorTest extends FunSuite {
       tokenize("와아아 페르세우스 유성우가 친창에 떨어진다!!!! 별이다!!!").mkString(" ")
         === "와아아Exclamation 페르세우스Noun 유성우Noun 가Josa 친창Noun* 에Josa " +
         "떨어지다Verb !!!!Punctuation 별Noun 이다Josa !!!Punctuation"
+    )
+
+    assert(
+      tokenize("'넥서스' 갤럭시 Galaxy S5").mkString(" ")
+          === "'Punctuation 넥서스Noun 'Punctuation 갤럭시Noun GalaxyAlpha SAlpha 5Number"
     )
   }
 
@@ -194,42 +187,9 @@ class TwitterKoreanProcessorTest extends FunSuite {
   }
 
   test("tokenize should correctly tokenize the example set") {
-    assert({
-      val input = readFileByLineFromResources("current_parsing.txt")
-
-      val (parseTimes, hasErrors) = input.foldLeft((List[ParseTime](), true)) {
-        case ((l: List[ParseTime], output: Boolean), line: String) =>
-          val s = line.split("\t")
-          val (chunk, parse) = (s(0), s(1))
-          val oldTokens = parse
-          val t0 = System.currentTimeMillis()
-          val newTokens = TwitterKoreanProcessor.tokenize(chunk).mkString(" ")
-          val t1 = System.currentTimeMillis()
-
-          val oldParseMatches = oldTokens == newTokens
-
-          if (!oldParseMatches) {
-            System.err.println("Goldenset Match Error: %s (%s) -> (%s)".format(
-              chunk, oldTokens, newTokens))
-          }
-
-          (ParseTime(t1 - t0, chunk) :: l, output && oldParseMatches)
-      }
-
-      val averageTime = parseTimes.map(_.time).sum.toDouble / parseTimes.size
-      val maxItem = parseTimes.maxBy(_.time)
-
-      LOG.log(Level.INFO, ("Parsed %d chunks. \n" +
-        "       Total time: %d ms \n" +
-        "       Average time: %.2f ms \n" +
-        "       Max time: %d ms, %s").format(
-          parseTimes.size,
-          parseTimes.map(_.time).sum,
-          averageTime,
-          maxItem.time,
-          maxItem.chunk
-        ))
-      hasErrors
-    }, "Some parses did not match the goldenset.")
+    assertExamples(
+      "current_parsing.txt", LOG,
+      TwitterKoreanProcessor.tokenize(_).mkString("/")
+    )
   }
 }

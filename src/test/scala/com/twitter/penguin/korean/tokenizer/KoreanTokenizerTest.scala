@@ -18,109 +18,11 @@
 
 package com.twitter.penguin.korean.tokenizer
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer._
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanTokenizerTest extends FunSuite {
-  test("buildTrie should build Trie correctly for initial optionals with final non-optionals") {
-    // 0 -> 1
-    assert(
-      buildTrie("p0N1") === List(
-        KoreanPosTrie(NounPrefix, List(
-          KoreanPosTrie(Noun, List(), ending = true)
-        ), ending = false),
-        KoreanPosTrie(Noun, List(), ending = true)
-      )
-    )
-    // * -> +
-    assert(
-      buildTrie("p*N+") === List(
-        KoreanPosTrie(NounPrefix, List(
-          selfNode,
-          KoreanPosTrie(Noun, List(selfNode), ending = true)
-        ), ending = false),
-        KoreanPosTrie(Noun, List(selfNode), ending = true)
-      )
-    )
-  }
-  test("buildTrie should build Trie correctly for initial optionals with multiple non-optionals") {
-    // 0 -> 0 -> 1
-    assert(
-      buildTrie("p0N0s1") === List(
-        KoreanPosTrie(NounPrefix, List(
-          KoreanPosTrie(Noun, List(
-            KoreanPosTrie(Suffix, List(), ending = true)
-          ), ending = false),
-          KoreanPosTrie(Suffix, List(), ending = true)
-        ), ending = false),
-        KoreanPosTrie(Noun, List(
-          KoreanPosTrie(Suffix, List(), ending = true)
-        ), ending = false),
-        KoreanPosTrie(Suffix, List(), ending = true)
-      )
-    )
-  }
-  test("buildTrie should build Trie correctly for initial non-optionals with final non-optionals") {
-    // 1 -> +
-    assert(
-      buildTrie("p1N+") === List(
-        KoreanPosTrie(NounPrefix, List(
-          KoreanPosTrie(Noun, List(
-            selfNode
-          ), ending = true)
-        ), ending = false)
-      )
-    )
-    // + -> 1
-    assert(
-      buildTrie("N+s1") === List(
-        KoreanPosTrie(Noun, List(
-          selfNode,
-          KoreanPosTrie(Suffix, List(), ending = true)
-        ), ending = false)
-      )
-    )
-  }
-
-  test("buildTrie should build Trie correctly for initial non-optionals with final optionals") {
-    // 1 -> *
-    assert(
-      buildTrie("p1N*") === List(
-        KoreanPosTrie(NounPrefix, List(
-          KoreanPosTrie(Noun, List(
-            selfNode
-          ), ending = true)
-        ), ending = true)
-      )
-    )
-    // + -> 0
-    assert(
-      buildTrie("N+s0") === List(
-        KoreanPosTrie(Noun, List(
-          selfNode,
-          KoreanPosTrie(Suffix, List(), ending = true)
-        ), ending = true)
-      )
-    )
-  }
-  test("buildTrie should build Trie correctly for initial non-optionals with multiple non-optionals") {
-    // + -> + -> 0
-    assert(
-      buildTrie("A+V+A0") === List(
-        KoreanPosTrie(Adverb, List(
-          selfNode,
-          KoreanPosTrie(Verb, List(
-            selfNode,
-            KoreanPosTrie(Adverb, List(), ending = true)
-          ), ending = true)
-        ), ending = false)
-      )
-    )
-  }
+class KoreanTokenizerTest extends TestBase {
 
   val parsedChunk = ParsedChunk(
     List(KoreanToken("하", Noun), KoreanToken("하", Noun), KoreanToken("하", Noun)), 1

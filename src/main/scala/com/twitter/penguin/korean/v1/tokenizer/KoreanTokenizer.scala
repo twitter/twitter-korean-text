@@ -72,7 +72,7 @@ object KoreanTokenizer {
         isAllNouns * WEIGHT_ALL_NOUN +
         isPreferredPattern * WEIGHT_PREFFERED_PATTERN
 
-    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
+    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown}
     lazy val countTokens = this.posNodes.size
 
     lazy val isExactMatch = if (this.posNodes.size == 1) 0 else 1
@@ -90,7 +90,7 @@ object KoreanTokenizer {
       case (output: Float, p: KoreanToken) => output + 1.0f
     } / this.posNodes.size
 
-    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos }
+    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
   }
 
   case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Boolean)

@@ -107,9 +107,9 @@ object Hangul {
     require(onset != ' ' && vowel != ' ', "Input characters are not valid")
 
     (HANGUL_BASE +
-      (ONSET_MAP(onset) * ONSET_BASE) +
-      (VOWEL_MAP(vowel) * VOWEL_BASE) +
-      CODA_MAP(coda)).toChar
+        (ONSET_MAP(onset) * ONSET_BASE) +
+        (VOWEL_MAP(vowel) * VOWEL_BASE) +
+        CODA_MAP(coda)).toChar
   }
 
   /**

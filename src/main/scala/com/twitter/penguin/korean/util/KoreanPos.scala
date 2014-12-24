@@ -39,6 +39,8 @@ package com.twitter.penguin.korean.util
  * v VerbPrefix: 동사 접두어 ('쳐'먹어)
  * s Suffix: 접미사 (~적)
  *
+ * f Foreign: 한글이 아닌 문자들
+ *
  * 지시사는 Derterminant로 대체하기로 함
  * Derterminant is used for demonstratives.
  *
@@ -64,7 +66,15 @@ object KoreanPos extends Enumeration {
 
   // Chunk level POS
   Korean, Foreign, Number, KoreanParticle, Alpha,
-  Punctuation, Hashtag, ScreenName, Email, URL, CashTag = Value
+  Punctuation, Hashtag, ScreenName,
+  Email, URL, CashTag,
+
+  // Functional POS
+  Space, Others = Value
+
+  val OtherPoses = Set(Korean, Foreign, Number, KoreanParticle, Alpha,
+    Punctuation, Hashtag, ScreenName,
+    Email, URL, CashTag)
 
   val shortCut = Map(
     'N' -> Noun,
@@ -80,8 +90,58 @@ object KoreanPos extends Enumeration {
     'r' -> PreEomi,
     'p' -> NounPrefix,
     'v' -> VerbPrefix,
-    's' -> Suffix
+    's' -> Suffix,
+
+    'a' -> Alpha,
+    'n' -> Number,
+
+    'o' -> Others
   )
+
+  case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
+
+  val selfNode = KoreanPosTrie(null, null, ending = None)
+
+  protected[korean] def buildTrie(s: String, ending_pos: KoreanPos): List[KoreanPosTrie] = {
+    def isFinal(rest: String): Boolean = {
+      val isNextOptional = rest.foldLeft(true) {
+        case (output: Boolean, c: Char) if c == '+' || c == '1' => false
+        case (output: Boolean, c: Char) => output
+      }
+      rest.length == 0 || isNextOptional
+    }
+
+    if (s.length < 2) {
+      return List()
+    }
+
+    val pos = shortCut(s.charAt(0))
+    val rule = s.charAt(1)
+    val rest = if (s.length > 1) {
+      s.slice(2, s.length)
+    } else {
+      ""
+    }
+
+    val end: Option[KoreanPos] = if (isFinal(rest)) Some(ending_pos) else None
+
+    rule match {
+      case '+' =>
+        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest, ending_pos), end))
+      case '*' =>
+        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest, ending_pos), end)) ++ buildTrie(rest, ending_pos)
+      case '1' =>
+        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end))
+      case '0' =>
+        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end)) ++ buildTrie(rest, ending_pos)
+    }
+  }
+
+  protected[korean] def getTrie(sequences: Map[String, KoreanPos]): List[KoreanPosTrie] =
+    sequences.foldLeft(List[KoreanPosTrie]()) {
+      case (results: List[KoreanPosTrie], (s: String, ending_pos: KoreanPos)) =>
+        buildTrie(s, ending_pos) ::: results
+    }
 
   val Predicates = Set(Verb, Adjective)
 }

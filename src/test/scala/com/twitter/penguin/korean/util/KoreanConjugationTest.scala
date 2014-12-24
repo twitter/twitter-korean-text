@@ -18,27 +18,27 @@
 
 package com.twitter.penguin.korean.util
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
 import scala.collection.JavaConversions._
 
-@RunWith(classOf[JUnitRunner])
-class KoreanConjugationTest extends FunSuite {
+class KoreanConjugationTest extends TestBase {
 
   def matchGoldenset(predicate: String, newExpanded: CharArraySet, examples: String): Boolean = {
     val newExpandedString = newExpanded.map { case word: Array[Char] => new String(word)}.toSeq.sorted.mkString(", ")
     val isSameToGoldenset = newExpandedString == examples
     if (!isSameToGoldenset) {
+      val prevSet = examples.split(", ").toSet
+      val newSet = newExpandedString.split(", ").toSet
+
       System.err.println(("%s:\n" +
-          "  Previous: %s\n" +
-          "  New: %s").format(
+          "  Previous Only: %s\n" +
+          "  New Only: %s").format(
             predicate,
-            examples,
-            newExpandedString
+            (prevSet -- newSet).toSeq.sorted.mkString(", "),
+            (newSet -- prevSet).toSeq.sorted.mkString(", ")
           ))
     }
     isSameToGoldenset

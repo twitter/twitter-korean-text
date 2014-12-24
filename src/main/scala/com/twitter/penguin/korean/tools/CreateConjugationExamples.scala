@@ -23,12 +23,14 @@ import java.io.FileOutputStream
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 
-case class ConjugationExample(word: String, conjugations: Seq[String])
 /**
  * Create Korean predicate expansion goldenset from adjective and verb resources.
  * The first argument is the test resource directory.
  */
 object CreateConjugationExamples {
+
+  case class ConjugationExample(word: String, conjugations: Seq[String])
+
   def main(args: Array[String]) {
     System.err.println("Reading the verbs and adjectives..")
 
@@ -43,7 +45,7 @@ object CreateConjugationExamples {
         ConjugationExample(word, conjugatePredicated(Set(word), isAdj).toSeq.sorted)
       )
 
-      goldenset.foreach{
+      goldenset.foreach {
         c => out.write(
           "%s\t%s\n".format(c.word, c.conjugations.mkString(", ")).getBytes
         )

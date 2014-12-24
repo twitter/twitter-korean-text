@@ -35,16 +35,16 @@ object KoreanSubstantive {
 
   protected[korean] def isJosaAttachable(prevChar: Char, headChar: Char): Boolean = {
     (hasCoda(prevChar) && !JOSA_HEAD_FOR_NO_CODA.contains(headChar)) ||
-      (!hasCoda(prevChar) && !JOSA_HEAD_FOR_CODA.contains(headChar))
+        (!hasCoda(prevChar) && !JOSA_HEAD_FOR_CODA.contains(headChar))
   }
 
   protected[korean] def isName(chunk: CharSequence): Boolean = {
     if (nameDictionay('full_name).contains(chunk) ||
-      nameDictionay('given_name).contains(chunk)) return true
+        nameDictionay('given_name).contains(chunk)) return true
 
     if (chunk.length() != 3) return false
     nameDictionay('family_name).contains(chunk.charAt(0).toString) &&
-      nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
+        nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
   }
 
   private val NUMBER_CHARS = "일이삼사오육칠팔구천백십해경조억만".map(_.toInt).toSet
@@ -67,7 +67,7 @@ object KoreanSubstantive {
 
     val s = chunk.toString
     if (isName(s)) return true
-    if (s.length < 3) return false
+    if (s.length < 3 || s.length > 5) return false
 
     val decomposed = s.map { c: Char => decomposeHangul(c)}
     val lastChar = decomposed.last
@@ -76,9 +76,9 @@ object KoreanSubstantive {
     if (decomposed.init.last.coda != ' ') return false
 
     // Recover missing 'ㅇ' (우혀니 -> 우현, 우현이, 빠순이 -> 빠순, 빠순이)
-    val recovered = decomposed.zipWithIndex.map{
-      case (hc: HangulChar, i: Int) if i == s.length -1 =>'이'
-      case (hc: HangulChar, i: Int) if i == s.length -2 =>
+    val recovered = decomposed.zipWithIndex.map {
+      case (hc: HangulChar, i: Int) if i == s.length - 1 => '이'
+      case (hc: HangulChar, i: Int) if i == s.length - 2 =>
         composeHangul(HangulChar(hc.onset, hc.vowel, decomposed.last.onset))
       case (hc: HangulChar, i: Int) => composeHangul(hc)
     }.mkString("")

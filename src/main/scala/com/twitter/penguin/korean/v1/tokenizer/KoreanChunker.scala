@@ -96,10 +96,9 @@ object KoreanChunker {
    * @param pos KoreanPos to attach to the unmatched chunk
    * @return list of ChunkMatches
    */
-  private[this] def fillInUnmatched(
-      text: String,
-      chunks: Array[ChunkMatch],
-      pos: KoreanPos.Value): List[ChunkMatch] = {
+  private[this] def fillInUnmatched(text: String,
+                                    chunks: Array[ChunkMatch],
+                                    pos: KoreanPos.Value): List[ChunkMatch] = {
 
     // Add Foreign for unmatched parts
     val (chunksWithForeign, prevEnd) = chunks.foldLeft((List[ChunkMatch](), 0)) {

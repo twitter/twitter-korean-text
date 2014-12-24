@@ -18,16 +18,13 @@
 
 package com.twitter.penguin.korean.stemmer
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanStemmerTest extends FunSuite {
+class KoreanStemmerTest extends TestBase {
 
   val sampleText1 = "새로운 스테밍을 추가했었다."
   val sampleStems1 = Seq(

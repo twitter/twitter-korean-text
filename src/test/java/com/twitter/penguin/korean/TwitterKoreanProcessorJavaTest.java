@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 
 public class TwitterKoreanProcessorJavaTest {
   TwitterKoreanProcessorJava processor = new TwitterKoreanProcessorJava.Builder().build();
+  TwitterKoreanProcessorJava processorWithSpace = new TwitterKoreanProcessorJava.Builder().enableKeepSpace().build();
+
   TwitterKoreanProcessorJava processorNormalization = new TwitterKoreanProcessorJava.Builder()
       .disableStemmer()
       .build();
@@ -43,6 +45,12 @@ public class TwitterKoreanProcessorJavaTest {
         processor.tokenize(text).toString()
     );
     assertEquals(
+        "[이렇다Adjective,  Space, 생각Noun, 을Josa,  Space, 하다Verb,  Space, " +
+            "게Noun,  Space, 정말로Adverb,  Space, 말Noun, 이Josa, " +
+            " Space, 되다Verb, ㅋㅋKoreanParticle]",
+        processorWithSpace.tokenize(text).toString()
+    );
+    assertEquals(
         "[이런Adjective, 생각Noun, 을Josa, 하는Verb, 게Noun, 정말로Adverb, " +
             "말Noun, 이Josa, 되니Verb, ㅋㅋKoreanParticle]",
         processorNormalization.tokenize(text).toString()
@@ -65,6 +73,10 @@ public class TwitterKoreanProcessorJavaTest {
     assertEquals(
         "[이렇다, 생각, 을, 하다, 게, 정말로, 말, 이, 되다, ㅋㅋ]",
         processor.tokenizeToStrings(text).toString()
+    );
+    assertEquals(
+        "[이렇다,  , 생각, 을,  , 하다,  , 게,  , 정말로,  , 말, 이,  , 되다, ㅋㅋ]",
+        processorWithSpace.tokenizeToStrings(text).toString()
     );
     assertEquals(
         "[이런, 생각, 을, 하는, 게, 정말로, 말, 이, 되니, ㅋㅋ]",
@@ -104,6 +116,11 @@ public class TwitterKoreanProcessorJavaTest {
             "KoreanSegment(16,1,.Punctuation))",
         segements.segments().toString()
     );
+  }
 
+  @Test
+  public void testPhraseExtractor() {
+    String text = "아름다운 트위터를 만들어 보자.";
+    assertEquals("[트위터]", processor.extractPhrases(text).toString());
   }
 }

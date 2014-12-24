@@ -29,8 +29,8 @@ import scala.collection.JavaConversions._
 object KoreanConjugation {
   // ㅋ, ㅎ for 잨ㅋㅋㅋㅋ 잔댛ㅎㅎㅎㅎ
   private[this] val CODAS_COMMON = Seq('ㅂ', 'ㅆ', 'ㄹ', 'ㄴ', 'ㅁ')
-  private[this] val CODAS_FOR_CONTRACTION = Seq('ㅆ', 'ㄹ', 'ㅁ')
   // 파랗다 -> 파래, 파램, 파랠, 파랬
+  private[this] val CODAS_FOR_CONTRACTION = Seq('ㅆ', 'ㄹ', 'ㅁ')
   private[this] val CODAS_NO_PAST = Seq('ㅂ', 'ㄹ', 'ㄴ', 'ㅁ')
 
   private[this] val CODAS_SLANG_CONSONANT = Seq('ㅋ', 'ㅎ')
@@ -144,7 +144,7 @@ object KoreanConjugation {
         // 마시다, 엎드리다, 치다, 이다, 아니다
         case HangulChar(o: Char, 'ㅣ', ' ') =>
           CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
-              addPreEomi(lastChar, PRE_EOMI_2 ++ PRE_EOMI_6) ++
+              addPreEomi(lastChar, PRE_EOMI_1_2 ++ PRE_EOMI_2 ++ PRE_EOMI_6) ++
               Seq(composeHangul(o, 'ㅣ', 'ㅂ') + "니",
                 composeHangul(o, 'ㅕ', ' ').toString,
                 composeHangul(o, 'ㅕ', 'ㅆ').toString,

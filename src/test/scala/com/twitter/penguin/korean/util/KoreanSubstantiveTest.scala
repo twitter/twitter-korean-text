@@ -18,15 +18,12 @@
 
 package com.twitter.penguin.korean.util
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
 import com.twitter.penguin.korean.util.KoreanSubstantive._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanSubstantiveTest extends FunSuite {
+class KoreanSubstantiveTest extends TestBase {
 
   test("isJosaAttachable") {
     //애플은
