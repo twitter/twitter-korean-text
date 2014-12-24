@@ -119,50 +119,50 @@ class KoreanTokenizerTest extends TestBase {
   test("tokenize should return expected tokens") {
     assert(
       tokenize("개루루야") ===
-        List(KoreanToken("개", Noun), KoreanToken("루루", Noun), KoreanToken("야", Josa))
+          List(KoreanToken("개", Noun), KoreanToken("루루", Noun), KoreanToken("야", Josa))
     )
 
     assert(
       tokenize("쵸귀여운") ===
-        List(KoreanToken("쵸", VerbPrefix), KoreanToken("귀여운", Adjective))
+          List(KoreanToken("쵸", VerbPrefix), KoreanToken("귀여운", Adjective))
     )
 
     assert(
       tokenize("이사람의") ===
-        List(KoreanToken("이", Determiner), KoreanToken("사람", Noun), KoreanToken("의", Josa))
+          List(KoreanToken("이", Determiner), KoreanToken("사람", Noun), KoreanToken("의", Josa))
     )
 
     assert(
       tokenize("엄청작아서귀엽다") ===
-        List(
-          KoreanToken("엄청", Adverb),
-          KoreanToken("작아", Adjective), KoreanToken("서", Eomi),
-          KoreanToken("귀엽", Adjective), KoreanToken("다", Eomi))
+          List(
+            KoreanToken("엄청", Adverb),
+            KoreanToken("작아", Adjective), KoreanToken("서", Eomi),
+            KoreanToken("귀엽", Adjective), KoreanToken("다", Eomi))
     )
 
     assert(
       tokenize("안녕하셨어요") ===
-        List(
-          KoreanToken("안녕하셨", Adjective), KoreanToken("어요", Eomi)
-        )
+          List(
+            KoreanToken("안녕하셨", Adjective), KoreanToken("어요", Eomi)
+          )
     )
 
     assert(
       tokenize("쵸귀여운개루루") ===
-        List(
-          KoreanToken("쵸", VerbPrefix), KoreanToken("귀여운", Adjective),
-          KoreanToken("개", Noun), KoreanToken("루루", Noun)
-        )
+          List(
+            KoreanToken("쵸", VerbPrefix), KoreanToken("귀여운", Adjective),
+            KoreanToken("개", Noun), KoreanToken("루루", Noun)
+          )
     )
 
     assert(
       tokenize("그리고") ===
-        List(KoreanToken("그리고", Conjunction))
+          List(KoreanToken("그리고", Conjunction))
     )
 
     assert(
       tokenize("안녕ㅋㅋ") ===
-        List(KoreanToken("안녕", Noun), KoreanToken("ㅋㅋ", KoreanParticle))
+          List(KoreanToken("안녕", Noun), KoreanToken("ㅋㅋ", KoreanParticle))
     )
 
     assert(
@@ -174,20 +174,20 @@ class KoreanTokenizerTest extends TestBase {
   test("tokenize should handle unknown nouns") {
     assert(
       tokenize("개컁컁아") ===
-        List(KoreanToken("개컁컁", Noun, unknown = true), KoreanToken("아", Josa))
+          List(KoreanToken("개컁컁", Noun, unknown = true), KoreanToken("아", Josa))
     )
 
     assert(
       tokenize("안녕하세요쿛툐캬님") ===
-        List(KoreanToken("안녕하세", Adjective), KoreanToken("요", Eomi),
-          KoreanToken("쿛툐캬", Noun, unknown = true), KoreanToken("님", Suffix))
+          List(KoreanToken("안녕하세", Adjective), KoreanToken("요", Eomi),
+            KoreanToken("쿛툐캬", Noun, unknown = true), KoreanToken("님", Suffix))
     )
   }
 
   test("tokenize should handle edge cases") {
     assert(
       tokenize("이승기가") ===
-        List(KoreanToken("이승기", Noun), KoreanToken("가", Josa))
+          List(KoreanToken("이승기", Noun), KoreanToken("가", Josa))
     )
 
     assert(
@@ -204,9 +204,9 @@ class KoreanTokenizerTest extends TestBase {
   test("tokenize should be able to tokenize long non-space-correctable ones") {
     assert(
       tokenize("훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌")
-        .map(_.text).mkString(" ") ===
-        "훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 " +
-          "훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌"
+          .map(_.text).mkString(" ") ===
+          "훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 " +
+              "훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌"
     )
   }
 }

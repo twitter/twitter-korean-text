@@ -21,10 +21,8 @@ package com.twitter.penguin.korean.v1
 import java.util.logging.{Level, Logger}
 
 import com.twitter.penguin.korean.v1.TwitterKoreanProcessor.{tokenize, _}
-import com.twitter.penguin.korean.v1.thriftscala.{ParseItem, ParsingGoldenset}
 import com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
-import com.twitter.penguin.korean.v1.util.KoreanPos
 import com.twitter.penguin.korean.v1.util.KoreanPos._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
@@ -152,24 +150,23 @@ class TwitterKoreanProcessorTest extends FunSuite {
 
   test("tokenizeWithNormalization should correctly tokenize the goldenset") {
     assert({
-      val input = readGzipTBininaryFromResource("goldenset.txt.gz")
-      val loaded = ParsingGoldenset.decode(input).goldenset
+      val input = readFileByLineFromResources("current_parsing.txt")
 
-      val (parseTimes, hasErrors) = loaded.foldLeft((List[ParseTime](), true)) {
-        case ((l: List[ParseTime], output: Boolean), ti: ParseItem) =>
-          val chunk = ti.chunk
-          val oldTokens = ti.parse.map {
-            kt => KoreanToken(kt.text, KoreanPos(kt.pos), kt.unknown)
-          }
+      val (parseTimes, hasErrors) = input.foldLeft((List[ParseTime](), true)) {
+        case ((l: List[ParseTime], output: Boolean), line: String) =>
+          val s = line.split("\t")
+          val (chunk, parse) = (s(0), if (s.length == 2) s(1) else "")
+
+          val oldTokens = parse
           val t0 = System.currentTimeMillis()
-          val newTokens = TwitterKoreanProcessor.tokenizeWithNormalization(chunk)
+          val newTokens = TwitterKoreanProcessor.tokenize(chunk).mkString("/")
           val t1 = System.currentTimeMillis()
 
           val oldParseMatches = oldTokens == newTokens
 
           if (!oldParseMatches) {
-            System.err.println("Goldenset Match Error: %s (%s) -> (%s)".format(
-              chunk, oldTokens.mkString(" "), newTokens.mkString(" ")))
+            System.err.println("Example set match error: %s \n  %s -> %s".format(
+              chunk, oldTokens, newTokens))
           }
 
           (ParseTime(t1 - t0, chunk) :: l, output && oldParseMatches)
@@ -189,6 +186,6 @@ class TwitterKoreanProcessorTest extends FunSuite {
             maxItem.chunk
           ))
       hasErrors
-    }, "Some parses did not match the goldenset.")
+    }, "Some parses did not match the example set.")
   }
 }

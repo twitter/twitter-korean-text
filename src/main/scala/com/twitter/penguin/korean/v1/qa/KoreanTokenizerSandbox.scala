@@ -19,7 +19,7 @@
 package com.twitter.penguin.korean.v1.qa
 
 import com.twitter.penguin.korean.v1.TwitterKoreanProcessor
-import TwitterKoreanProcessor._
+import com.twitter.penguin.korean.v1.TwitterKoreanProcessor._
 
 /**
  * A simple testing tool to try Korean tokenization.

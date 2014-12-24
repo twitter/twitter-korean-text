@@ -69,11 +69,11 @@ class KoreanStemmerTest extends TestBase {
   test("stem should transform the original text along with the tokens") {
     assert(
       KoreanStemmer.stem(sampleText1)
-        === StemmedTextWithTokens((new StringBuilder).append("새롭다 스테밍을 추가하다."), sampleStems1)
+          === StemmedTextWithTokens((new StringBuilder).append("새롭다 스테밍을 추가하다."), sampleStems1)
     )
     assert(
       KoreanStemmer.stem(sampleText2)
-        === StemmedTextWithTokens((new StringBuilder).append("그렇다 사람 없다.."), sampleStems2)
+          === StemmedTextWithTokens((new StringBuilder).append("그렇다 사람 없다.."), sampleStems2)
     )
   }
 

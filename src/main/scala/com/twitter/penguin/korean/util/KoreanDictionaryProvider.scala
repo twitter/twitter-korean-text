@@ -18,13 +18,11 @@
 
 package com.twitter.penguin.korean.util
 
-import java.io.{FileInputStream, InputStream}
+import java.io.InputStream
 import java.util.zip.GZIPInputStream
 
 import com.twitter.penguin.korean.util.KoreanConjugation._
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.apache.thrift.protocol.TBinaryProtocol
-import org.apache.thrift.transport.TIOStreamTransport
 
 import scala.collection.JavaConversions._
 import scala.io.Source
@@ -95,16 +93,6 @@ object KoreanDictionaryProvider {
       }
       , filename
     )
-  }
-
-  protected[korean] def readGzipTBininaryFromFile(filename: String): TBinaryProtocol = {
-    val in = new GZIPInputStream(new FileInputStream(filename))
-    new TBinaryProtocol(new TIOStreamTransport(in))
-  }
-
-  protected[korean] def readGzipTBininaryFromResource(filename: String): TBinaryProtocol = {
-    val in = new GZIPInputStream(getClass.getResourceAsStream(filename))
-    new TBinaryProtocol(new TIOStreamTransport(in))
   }
 
   protected[korean] def newCharArraySet: CharArraySet = {
