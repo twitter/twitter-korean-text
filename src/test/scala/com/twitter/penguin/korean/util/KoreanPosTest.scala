@@ -21,7 +21,7 @@ package com.twitter.penguin.korean.util
 import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.util.KoreanPos._
 
-class KoreanPosTest extends TestBase  {
+class KoreanPosTest extends TestBase {
   test("buildTrie should build Trie correctly for initial optionals with final non-optionals") {
     // 0 -> 1
     assert(

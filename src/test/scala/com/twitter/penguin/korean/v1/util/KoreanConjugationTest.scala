@@ -19,8 +19,6 @@
 package com.twitter.penguin.korean.v1.util
 
 import com.twitter.penguin.korean.util.CharArraySet
-import com.twitter.penguin.korean.v1.thriftscala.ConjugationGoldenset
-import com.twitter.penguin.korean.v1.util.KoreanConjugation._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
@@ -31,41 +29,50 @@ import scala.collection.JavaConversions._
 @RunWith(classOf[JUnitRunner])
 class KoreanConjugationTest extends FunSuite {
 
-  def matchGoldenset(predicate: String, newExpanded: CharArraySet, goldensetExpanded: Set[String]): Boolean = {
-    val newExpandedScalaSet = newExpanded.map { case word: Array[Char] => new String(word) }
-    val isSameToGoldenset = newExpandedScalaSet == goldensetExpanded
+  def matchGoldenset(predicate: String, newExpanded: CharArraySet, examples: String): Boolean = {
+    val newExpandedString = newExpanded.map { case word: Array[Char] => new String(word)}.toSeq.sorted.mkString(", ")
+    val isSameToGoldenset = newExpandedString == examples
     if (!isSameToGoldenset) {
+      val prevSet = examples.split(", ").toSet
+      val newSet = newExpandedString.split(", ").toSet
+
       System.err.println(("%s:\n" +
-          "  Common: %s\n" +
-          "  Goldenset only: %s\n" +
-          "  Newset only: %s").format(
+          "  Previous Only: %s\n" +
+          "  New Only: %s").format(
             predicate,
-            goldensetExpanded.intersect(newExpandedScalaSet).mkString(" "),
-            goldensetExpanded.diff(newExpandedScalaSet).mkString(" "),
-            newExpandedScalaSet.diff(goldensetExpanded).mkString(" ")
+            (prevSet -- newSet).toSeq.sorted.mkString(", "),
+            (newSet -- prevSet).toSeq.sorted.mkString(", ")
           ))
     }
     isSameToGoldenset
   }
 
   def assertConjugations(filename: String, isAdjective: Boolean) {
-    val input = readGzipTBininaryFromResource(filename)
-    val loaded: Seq[(String, Set[String])] = ConjugationGoldenset.decode(input).goldenset.map(ci => (ci.chunk, ci.conjugation.toSet))
+    val input = readFileByLineFromResources(filename)
+    val loaded: Seq[(String, String)] = input.toSeq.map {
+      s =>
+        val sp = s.split("\t")
+        (sp(0), sp(1))
+    }
 
     assert(
       loaded.foldLeft(true) {
-        case (output: Boolean, (predicate: String, goldensetExpanded: Set[String])) =>
-          matchGoldenset(predicate, conjugatePredicates(Set(predicate), isAdjective), goldensetExpanded) && output
+        case (output: Boolean, (predicate: String, goldensetExpanded: String)) =>
+          matchGoldenset(
+            predicate,
+            KoreanConjugation.conjugatePredicates(Set(predicate), isAdjective),
+            goldensetExpanded
+          ) && output
       }
     )
   }
 
   test("conjugatePredicates should expand codas of verbs correctly") {
-    assertConjugations("verb_conjugate.gz", isAdjective = false)
+    assertConjugations("verb_conjugate.txt", isAdjective = false)
   }
 
   test("conjugatePredicates should expand codas of adjectives correctly") {
-    assertConjugations("adj_conjugate.gz", isAdjective = true)
+    assertConjugations("adj_conjugate.txt", isAdjective = true)
   }
 }
 

@@ -19,10 +19,11 @@
 package com.twitter.penguin.korean.v1.qa
 
 import java.util.logging.Logger
+
+import com.twitter.penguin.korean.v1.TwitterKoreanProcessor
 import com.twitter.penguin.korean.v1.tokenizer.KoreanChunker._
 import com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer._
 import com.twitter.penguin.korean.v1.util.KoreanPos
-import com.twitter.penguin.korean.v1.TwitterKoreanProcessor
 
 import scala.io.Source
 
