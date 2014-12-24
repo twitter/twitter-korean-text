@@ -1,4 +1,5 @@
 language: java
+sudo: false
 script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean deploy --settings settings.xml || mvn clean verify --settings settings.xml"
 jdk:
 - openjdk7
