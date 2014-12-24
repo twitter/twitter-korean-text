@@ -24,11 +24,12 @@ import com.twitter.penguin.korean.TwitterKoreanProcessor._
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 
-case class ParsingExample(text: String, parse: Seq[KoreanToken])
 /**
  * Create Korean Parsing examples.
  */
 object CreateParsingExamples {
+  case class ParsingExample(text: String, parse: Seq[KoreanToken])
+
   def main(args: Array[String]) {
     System.err.println("Reading the goldenset..")
 
@@ -50,7 +51,7 @@ object CreateParsingExamples {
       p =>
         out.write(p.text.getBytes)
         out.write("\t".getBytes)
-        out.write(p.parse.mkString(" ").getBytes)
+        out.write(p.parse.mkString("/").getBytes)
         out.write("\n".getBytes)
     }
     out.close()

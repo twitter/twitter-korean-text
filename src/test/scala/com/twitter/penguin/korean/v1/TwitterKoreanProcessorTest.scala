@@ -20,12 +20,12 @@ package com.twitter.penguin.korean.v1
 
 import java.util.logging.{Level, Logger}
 
+import com.twitter.penguin.korean.v1.TwitterKoreanProcessor.{tokenize, _}
 import com.twitter.penguin.korean.v1.thriftscala.{ParseItem, ParsingGoldenset}
 import com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer._
 import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
 import com.twitter.penguin.korean.v1.util.KoreanPos
 import com.twitter.penguin.korean.v1.util.KoreanPos._
-import com.twitter.penguin.korean.v1.TwitterKoreanProcessor.{tokenize, _}
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner

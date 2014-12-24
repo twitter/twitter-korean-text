@@ -18,13 +18,10 @@
 
 package com.twitter.penguin.korean.util
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanPosTest extends FunSuite  {
+class KoreanPosTest extends TestBase  {
   test("buildTrie should build Trie correctly for initial optionals with final non-optionals") {
     // 0 -> 1
     assert(

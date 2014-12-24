@@ -18,13 +18,10 @@
 
 package com.twitter.penguin.korean.util
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.util.Hangul._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class HangulTest extends FunSuite {
+class HangulTest extends TestBase {
 
   test("decomposeKoreanChar should decompose full Korean chars correctly") {
     assert(decomposeHangul('간') == HangulChar('ㄱ', 'ㅏ', 'ㄴ'))

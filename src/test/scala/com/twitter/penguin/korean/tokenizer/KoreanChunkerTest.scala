@@ -18,15 +18,12 @@
 
 package com.twitter.penguin.korean.tokenizer
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.tokenizer.KoreanChunker._
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanChunkerTest extends FunSuite {
+class KoreanChunkerTest extends TestBase {
 
   test("getChunks should correctly split a string into Korean-sensitive chunks") {
     assert(

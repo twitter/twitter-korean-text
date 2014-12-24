@@ -18,13 +18,10 @@
 
 package com.twitter.penguin.korean.normalizer
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.normalizer.KoreanNormalizer._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanNormalizerTest extends FunSuite {
+class KoreanNormalizerTest extends TestBase {
 
   test("normalize should normalize ㅋㅋ ㅎㅎ ㅠㅜ chunks") {
     assert(normalize("안됔ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ내 심장을 가격했엌ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")

@@ -1,25 +1,25 @@
 package com.twitter.penguin.korean.phrase_extractor
 
-import com.twitter.penguin.korean.TwitterKoreanProcessor
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
+import java.util.logging.Logger
 
-@RunWith(classOf[JUnitRunner])
-class KoreanPhraseExtractorTest extends FunSuite {
+import com.twitter.penguin.korean.TestBase._
+import com.twitter.penguin.korean.{TestBase, TwitterKoreanProcessor}
+
+class KoreanPhraseExtractorTest extends TestBase {
+  val LOG = Logger.getLogger(getClass.getSimpleName)
 
   case class SampleTextPair(text: String, phrases: String)
 
   val sampleText = List[SampleTextPair](
     SampleTextPair(
       "블랙프라이데이: 이날 미국의 수백만 소비자들은 크리스마스 선물을 할인된 가격에 사는 것을 주 목적으로 블랙프라이데이 쇼핑을 한다.",
-      "블랙프라이데이, 이날 미국, 이날 미국의 수백만 소비자들, 미국의 수백만 소비자들, 수백만 소비자들, 크리스마스 선물, " +
-          "할인된 가격, 주 목적, 블랙프라이데이 쇼핑, 수백만, 소비자들, 크리스마스"
+      "블랙프라이데이, 이날 미국, 이날 미국의 수백만 소비자들, 미국의 수백만 소비자들, 수백만 소비자들, " +
+          "소비자들, 크리스마스 선물, 할인된 가격, 주 목적, 블랙프라이데이 쇼핑, 수백만, 크리스마스"
     ),
     SampleTextPair(
       "결정했어. 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지를 선물할 것이다.",
-      "마키 코레썸, 마키 코레썸 사주시는 분께는 허니버터칩, 코레썸 사주시는 분께는 허니버터칩, 허니버터칩, " +
-          "마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 코레썸 사주시는 분께는 허니버터칩 한 봉지, 허니버터칩 한 봉지, 코레썸"
+      "마키 코레썸, 코레썸, 마키 코레썸 사주시는 분께는 허니버터칩, 코레썸 사주시는 분께는 허니버터칩, 허니버터칩, " +
+          "마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 코레썸 사주시는 분께는 허니버터칩 한 봉지, 허니버터칩 한 봉지"
     ),
     SampleTextPair(
       "[단독]정부, 새 고용 형태 ＇중규직＇ 만든다 http://durl.me/7sm553  / 이름도 바뀌겟군. 정규직은 상규직, " +
@@ -28,7 +28,7 @@ class KoreanPhraseExtractorTest extends FunSuite {
     ),
     SampleTextPair(
       "키? ...난 절대 키가 작은 게 아냐. 이소자키나 츠루기가 비정상적으로 큰거야. 1학년이 그렇게 큰 게 말이 돼!? ",
-      "난 절대 키, 절대 키, 이소자키, 츠루기, 1학년"
+      "난 절대 키, 절대 키, 이소자키, 츠루기, 1학년, 게 말"
     ),
     SampleTextPair(
       "전 카를로스 백덤도 잡기로 잡아본 적 있어요 :)",
@@ -72,7 +72,7 @@ class KoreanPhraseExtractorTest extends FunSuite {
   test("extractPhrases correctly extracts phrases") {
     assert(KoreanPhraseExtractor.extractPhrases(tokenize(sampleText(0).text)).mkString(", ") ===
         "블랙프라이데이Noun, 이날 미국Noun, 이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, 수백만 소비자들Noun, " +
-            "크리스마스 선물Noun, 할인된 가격Noun, 주 목적Noun, 블랙프라이데이 쇼핑Noun, 수백만Noun, 소비자들Noun, 크리스마스Noun")
+            "소비자들Noun, 크리스마스 선물Noun, 할인된 가격Noun, 주 목적Noun, 블랙프라이데이 쇼핑Noun, 수백만Noun, 크리스마스Noun")
   }
 
   test("extractPhrases correctly extracts phrases from a string") {
@@ -87,4 +87,10 @@ class KoreanPhraseExtractorTest extends FunSuite {
     assert(time(KoreanPhraseExtractor.extractPhrases(superLongText)) < 1000)
   }
 
+  test("extractPhrases should correctly extract the example set") {
+    assertExamples(
+      "current_phrases.txt", LOG,
+      TwitterKoreanProcessor.extractPhrases(_).mkString("/")
+    )
+  }
 }

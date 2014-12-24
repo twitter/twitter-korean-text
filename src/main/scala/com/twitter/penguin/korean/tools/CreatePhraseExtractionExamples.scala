@@ -23,12 +23,12 @@ import java.io.FileOutputStream
 import com.twitter.penguin.korean.TwitterKoreanProcessor._
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 
-case class PhraseExample(text: String, phrases: Seq[CharSequence])
-
 /**
  * Create Korean Phrase Extraction Examples.
  */
 object CreatePhraseExtractionExamples {
+  case class PhraseExample(text: String, phrases: Seq[CharSequence])
+
   def main(args: Array[String]) {
     System.err.println("Reading the sample tweets..")
 

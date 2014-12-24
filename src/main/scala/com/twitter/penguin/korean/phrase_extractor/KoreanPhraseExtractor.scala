@@ -13,7 +13,7 @@ import com.twitter.penguin.korean.util.{Hangul, KoreanPos}
  */
 object KoreanPhraseExtractor {
   private val MinCharsPerPhraseChunkWithoutSpaces = 3
-  private val MinPhrasesPerPhraseChunk = 3
+  private val MinPhrasesPerPhraseChunk = 2
 
   private val MaxCharsPerPhraseChunkWithoutSpaces = 30
   private val MaxPhrasesPerPhraseChunk = 8

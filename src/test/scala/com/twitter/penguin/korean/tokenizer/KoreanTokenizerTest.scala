@@ -18,14 +18,11 @@
 
 package com.twitter.penguin.korean.tokenizer
 
+import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer._
 import com.twitter.penguin.korean.util.KoreanPos._
-import org.junit.runner.RunWith
-import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
-class KoreanTokenizerTest extends FunSuite {
+class KoreanTokenizerTest extends TestBase {
 
   val parsedChunk = ParsedChunk(
     List(KoreanToken("하", Noun), KoreanToken("하", Noun), KoreanToken("하", Noun)), 1
