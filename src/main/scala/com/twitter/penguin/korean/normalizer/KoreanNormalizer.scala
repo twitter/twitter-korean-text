@@ -103,11 +103,11 @@ object KoreanNormalizer {
 
     // Exception cases
     if (koreanDictionary(Noun).contains(chunk) ||
-      koreanDictionary(Conjunction).contains(chunk) ||
-      koreanDictionary(Adverb).contains(chunk) ||
-      koreanDictionary(Noun).contains(lastTwo) ||
-      lastTwoHead < '가' || lastTwoHead > '힣' ||
-      CODA_N_EXCPETION.contains(lastTwoHead)
+        koreanDictionary(Conjunction).contains(chunk) ||
+        koreanDictionary(Adverb).contains(chunk) ||
+        koreanDictionary(Noun).contains(lastTwo) ||
+        lastTwoHead < '가' || lastTwoHead > '힣' ||
+        CODA_N_EXCPETION.contains(lastTwoHead)
     ) {
       return chunk
     }
@@ -115,12 +115,12 @@ object KoreanNormalizer {
     val hc = decomposeHangul(lastTwoHead)
 
     val newHead = new StringBuilder()
-      .append(chunk.subSequence(0, chunk.length() - 2))
-      .append(composeHangul(hc.onset, hc.vowel))
+        .append(chunk.subSequence(0, chunk.length() - 2))
+        .append(composeHangul(hc.onset, hc.vowel))
 
     if (hc.coda == 'ㄴ' &&
-      (last == '데' || last == '가' || last == '지') &&
-      koreanDictionary(Noun).contains(newHead)
+        (last == '데' || last == '가' || last == '지') &&
+        koreanDictionary(Noun).contains(newHead)
     ) {
       val mid = if (hc.vowel == 'ㅡ') "은" else "인"
       newHead + mid + last
@@ -134,8 +134,8 @@ object KoreanNormalizer {
     val toNormalize = m.group(2)
 
     val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) ||
-      koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||
-      koreanDictionary(Eomi).contains(chunk.takeRight(2))) {
+        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||
+        koreanDictionary(Eomi).contains(chunk.takeRight(2))) {
       chunk
     } else {
       normalizeEmotionAttachedChunk(chunk, toNormalize)
@@ -155,15 +155,15 @@ object KoreanNormalizer {
     decomposeHangul(s.charAt(s.length() - 1)) match {
       case hc: HangulChar if hc.coda == 'ㅋ' || hc.coda == 'ㅎ' =>
         new StringBuilder()
-          .append(init)
-          .append(composeHangul(hc.onset, hc.vowel))
+            .append(init)
+            .append(composeHangul(hc.onset, hc.vowel))
       case HangulChar(o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined &&
-        (v == toNormalize.charAt(0)) &&
-        Hangul.CODA_MAP.contains(o) =>
+          (v == toNormalize.charAt(0)) &&
+          Hangul.CODA_MAP.contains(o) =>
         val hc = secondToLastDecomposed.get
         new StringBuilder()
-          .append(init.subSequence(0, init.length() - 1))
-          .append(composeHangul(hc.onset, hc.vowel, o))
+            .append(init.subSequence(0, init.length() - 1))
+            .append(composeHangul(hc.onset, hc.vowel, o))
       case _ => s
     }
   }

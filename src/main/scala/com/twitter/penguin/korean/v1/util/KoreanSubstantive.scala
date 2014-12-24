@@ -35,13 +35,13 @@ object KoreanSubstantive {
 
   protected[korean] def isJosaAttachable(prevChar: Char, headChar: Char): Boolean = {
     (hasCoda(prevChar) && !JOSA_HEAD_FOR_NO_CODA.contains(headChar)) ||
-      (!hasCoda(prevChar) && !JOSA_HEAD_FOR_CODA.contains(headChar))
+        (!hasCoda(prevChar) && !JOSA_HEAD_FOR_CODA.contains(headChar))
   }
 
   protected[korean] def isName(chunk: CharSequence): Boolean = {
     if (chunk.length() != 3) return false
     nameDictionay('family_name).contains(chunk.charAt(0).toString) &&
-      nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
+        nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
   }
 
   val NUMBER_CHARS = "일이삼사오육칠팔구천백십해경조억만".map(_.toInt).toSet

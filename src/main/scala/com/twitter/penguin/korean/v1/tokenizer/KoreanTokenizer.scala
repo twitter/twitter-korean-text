@@ -63,14 +63,14 @@ object KoreanTokenizer {
     }
 
     lazy val score = countTokens * WEIGHT_TOKENS +
-      countUnknowns * WEIGHT_UNKNOWNS +
-      words * WEIGHT_WORDS +
-      getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
-      getFreqScore * WEIGHT_FREQ +
-      countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
-      isExactMatch * WEIGHT_EXACT_MATCH +
-      isAllNouns * WEIGHT_ALL_NOUN +
-      isPreferredPattern * WEIGHT_PREFFERED_PATTERN
+        countUnknowns * WEIGHT_UNKNOWNS +
+        words * WEIGHT_WORDS +
+        getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
+        getFreqScore * WEIGHT_FREQ +
+        countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
+        isExactMatch * WEIGHT_EXACT_MATCH +
+        isAllNouns * WEIGHT_ALL_NOUN +
+        isPreferredPattern * WEIGHT_PREFFERED_PATTERN
 
     lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown}
     lazy val countTokens = this.posNodes.size

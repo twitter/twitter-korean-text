@@ -28,6 +28,7 @@ import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
  * Create Korean Parsing examples.
  */
 object CreateParsingExamples {
+
   case class ParsingExample(text: String, parse: Seq[KoreanToken])
 
   def main(args: Array[String]) {
@@ -47,7 +48,7 @@ object CreateParsingExamples {
     System.err.println("Writing the new goldenset to " + outputFile)
 
     val out = new FileOutputStream(outputFile)
-    parsedPairs.foreach{
+    parsedPairs.foreach {
       p =>
         out.write(p.text.getBytes)
         out.write("\t".getBytes)

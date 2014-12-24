@@ -27,6 +27,7 @@ import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
  * Create Korean Phrase Extraction Examples.
  */
 object CreatePhraseExtractionExamples {
+
   case class PhraseExample(text: String, phrases: Seq[CharSequence])
 
   def main(args: Array[String]) {
@@ -46,7 +47,7 @@ object CreatePhraseExtractionExamples {
     System.err.println("Writing the new phrases to " + outputFile)
 
     val out = new FileOutputStream(outputFile)
-    phrasePairs.foreach{
+    phrasePairs.foreach {
       p =>
         out.write(p.text.getBytes)
         out.write("\t".getBytes)

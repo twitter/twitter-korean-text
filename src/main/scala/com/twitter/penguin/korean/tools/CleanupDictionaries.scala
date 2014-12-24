@@ -29,10 +29,10 @@ object CleanUpDictionaries {
 
   private[this] def readWords(filename: String): Set[String] = {
     Source.fromFile(filename)(io.Codec("UTF-8"))
-      .getLines()
-      .map(_.trim)
-      .filter(_.length > 0)
-      .toSet
+        .getLines()
+        .map(_.trim)
+        .filter(_.length > 0)
+        .toSet
   }
 
   private val RESOURCES_TO_CLEANUP = Seq(

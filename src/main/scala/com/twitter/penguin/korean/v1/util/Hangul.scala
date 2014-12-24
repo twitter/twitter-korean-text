@@ -81,8 +81,8 @@ object Hangul {
 
     val u = c - HANGUL_BASE
     (ONSET_LIST(u / ONSET_BASE),
-      VOWEL_LIST((u % ONSET_BASE) / VOWEL_BASE),
-      CODA_LIST(u % VOWEL_BASE))
+        VOWEL_LIST((u % ONSET_BASE) / VOWEL_BASE),
+        CODA_LIST(u % VOWEL_BASE))
   }
 
   /**
@@ -105,8 +105,8 @@ object Hangul {
     require(onset != ' ' && vowel != ' ', "Input characters are not valid")
 
     (HANGUL_BASE +
-      (ONSET_MAP(onset) * ONSET_BASE) +
-      (VOWEL_MAP(vowel) * VOWEL_BASE) +
-      CODA_MAP(coda)).toChar
+        (ONSET_MAP(onset) * ONSET_BASE) +
+        (VOWEL_MAP(vowel) * VOWEL_BASE) +
+        CODA_MAP(coda)).toChar
   }
 }

@@ -55,7 +55,7 @@ object KoreanChunker {
   private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
     def disjoint(that: ChunkMatch): Boolean = {
       (that.start < this.start && that.end <= this.start) ||
-        (that.start >= this.end && that.end > this.end)
+          (that.start >= this.end && that.end > this.end)
     }
   }
 
@@ -145,8 +145,8 @@ object KoreanChunker {
   def chunk(input: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
     val splitRegex = if (keepSpace) SPACE_REGEX_DELIMITER_KEEP_SPACES else SPACE_REGEX_DELIMITER
     input.toString
-      .split(splitRegex)
-      .flatMap(s => splitChunks(s, keepSpace))
-      .map(m => KoreanToken(m.text, m.pos))
+        .split(splitRegex)
+        .flatMap(s => splitChunks(s, keepSpace))
+        .map(m => KoreanToken(m.text, m.pos))
   }
 }

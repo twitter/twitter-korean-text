@@ -168,7 +168,7 @@ object KoreanTokenizer {
   private[this] def parseKoreanChunk(chunk: String): Seq[KoreanToken] = {
 
     // Direct match
-    koreanDictionary.foreach{
+    koreanDictionary.foreach {
       case (pos, dict) =>
         if (dict.contains(chunk)) {
           return Seq(KoreanToken(chunk, pos))

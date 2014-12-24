@@ -28,6 +28,7 @@ import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
  * The first argument is the test resource directory.
  */
 object CreateConjugationExamples {
+
   case class ConjugationExample(word: String, conjugations: Seq[String])
 
   def main(args: Array[String]) {
@@ -44,7 +45,7 @@ object CreateConjugationExamples {
         ConjugationExample(word, conjugatePredicated(Set(word), isAdj).toSeq.sorted)
       )
 
-      goldenset.foreach{
+      goldenset.foreach {
         c => out.write(
           "%s\t%s\n".format(c.word, c.conjugations.mkString(", ")).getBytes
         )

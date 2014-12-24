@@ -36,9 +36,9 @@ object KoreanDictionaryProvider {
   private[this] def readStreamByLine(stream: InputStream, filename: String): Iterator[String] = {
     require(stream != null, "Resource not loaded: " + filename)
     Source.fromInputStream(stream)(io.Codec("UTF-8"))
-      .getLines()
-      .map(_.trim)
-      .filter(_.length > 0)
+        .getLines()
+        .map(_.trim)
+        .filter(_.length > 0)
   }
 
   private[this] def readWordFreqs(filename: String): collection.mutable.Map[CharSequence, Float] = {
