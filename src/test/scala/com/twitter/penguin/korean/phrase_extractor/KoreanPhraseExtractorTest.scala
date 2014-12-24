@@ -84,7 +84,7 @@ class KoreanPhraseExtractorTest extends TestBase {
 
   test("extractPhrases should extract long noun-only phrases in reasonable time") {
     assert(KoreanPhraseExtractor.extractPhrases(superLongText).mkString(", ") === "허니버터칩, 정규직, 크리스마스")
-    assert(time(KoreanPhraseExtractor.extractPhrases(superLongText)) < 1000)
+    assert(time(KoreanPhraseExtractor.extractPhrases(superLongText)) < 10000)
   }
 
   test("extractPhrases should correctly extract the example set") {
