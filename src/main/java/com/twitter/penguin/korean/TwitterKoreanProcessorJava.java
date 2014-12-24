@@ -114,6 +114,18 @@ public class TwitterKoreanProcessorJava {
   }
 
   /**
+   * Extract phrases from Korean input text
+   *
+   * @param text Input text.
+   * @return List of phrase CharSequences.
+   */
+  public List<CharSequence> extractPhrases(CharSequence text) {
+    return JavaConversions.seqAsJavaList(
+        TwitterKoreanProcessor.extractPhrases(text)
+    );
+  }
+
+  /**
    * Builder for TwitterKoreanProcessorJava
    */
   public static final class Builder {

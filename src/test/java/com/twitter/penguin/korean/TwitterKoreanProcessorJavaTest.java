@@ -116,6 +116,11 @@ public class TwitterKoreanProcessorJavaTest {
             "KoreanSegment(16,1,.Punctuation))",
         segements.segments().toString()
     );
+  }
 
+  @Test
+  public void testPhraseExtractor() {
+    String text = "아름다운 트위터를 만들어 보자.";
+    assertEquals("[트위터]", processor.extractPhrases(text).toString());
   }
 }
