@@ -47,6 +47,5 @@ object ScalaTwitterKoreanTextExample {
     val phrases: Seq[CharSequence] = TwitterKoreanProcessor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(phrases)
     // List(한국어, 처리하는 예시)
-
   }
 }
