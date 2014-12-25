@@ -23,12 +23,16 @@ import com.twitter.penguin.korean.TwitterKoreanProcessor._
 /**
  * A simple testing tool to try Korean tokenization.
  */
-object KoreanTokenizerSandbox {
+object KoreanProcessorSandbox {
   def main(args: Array[String]) {
-    val s = "기분이었음"
+    val s = "한국어를 처리하는 예시입니다 ㅋㅋ"
 
     println(
       tokenize(s, stemming = false).mkString(" ")
+    )
+
+    println(
+      extractPhrases(s)
     )
   }
 }
