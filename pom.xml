@@ -117,6 +117,11 @@
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <version>2.7</version>
       </plugin>
+      <plugin>
+        <groupId>org.scoverage</groupId>
+        <artifactId>scoverage-maven-plugin</artifactId>
+        <version>${scoverage.plugin.version}</version>
+      </plugin>
     </plugins>
   </reporting>
   <build>
@@ -186,11 +191,26 @@
         <configuration>
           <scalaVersion>${scala.version}</scalaVersion>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
         <version>3.0.1</version>
+        <configuration>
+          <coberturaReports>
+            <param>${project.build.directory}/cobertura.xml</param>
+          </coberturaReports>
+          <sourceDirectories>
+            <param>${basedir}</param>
+          </sourceDirectories>
+        </configuration>
       </plugin>
     </plugins>
   </build>
