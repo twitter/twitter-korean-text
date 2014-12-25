@@ -2764,7 +2764,6 @@
 사려고	사려Noun/고Josa
 새정련	새Noun/정련Noun
 컴그림위주	컴Noun/그림Noun/위주Noun
-사실저도	사실Noun/저도Noun
 조윤의	조윤Noun*/의Josa
 후비암들	후비암Noun*/들Suffix
 멍청이	멍청이Noun
@@ -8121,6 +8120,7 @@
 안봐도	안VerbPrefix/보다Verb
 창으로	창Noun/으로Josa
 말했던	말Noun/하다Verb
+저돈데	저Determiner/돈데Noun*
 부르러	부르다Verb
 많아져서	많아지다Verb
 아니니까	아니다Adjective
@@ -8367,7 +8367,6 @@
 내옷은	내Determiner/옷Noun/은Josa
 옴브라	옴Noun/브라Noun
 멤버중에	멤버Noun/중Suffix/에Josa
-앗저도해보고싶어요	앗Noun/저도Noun/해보다Verb
 풀려있다면	풀다Verb
 발견하신분	발견Noun/하다Verb/분Noun
 돌아온다	돌아오다Verb
@@ -11142,7 +11141,6 @@
 계약해서	계약Noun/해서Josa
 코난이	코난Noun/이Josa
 음식을	음식Noun/을Josa
-이도저도	이도Noun/저도Noun
 타이틀	타이틀Noun
 있겠구나	있다Adjective
 여성캐디에	여성Noun/캐디Noun/에Josa
@@ -11836,7 +11834,6 @@
 제목도	제목Noun/도Josa
 저까지	저Noun/까지Josa
 막히는	막히다Verb
-저도요	저도Noun/요Josa
 멍청하게	멍청하다Adjective
 존댓말을	존댓말Noun/을Josa
 이것은	이Determiner/것Noun/은Josa
@@ -14832,6 +14829,7 @@
 재빨리	재빨리Adverb
 세컨드	세컨드Noun*
 성공을	성공Noun/을Josa
+사실저도	사실Noun/저Determiner/도Noun
 챙겼나	챙기다Verb
 놀래라	놀Noun/래Josa/라Josa
 노래할게	노래Noun/하다Verb
@@ -16772,7 +16770,6 @@
 이것을	이Determiner/것Noun/을Josa
 사람으로	사람Noun/으로Josa
 슬퍼졌다	슬프다Adjective
-저돈데	저도Noun/인데Josa
 울니까	울Noun/니까Josa
 죽는건	죽다Verb
 맛깔나게	맛깔Noun/나다Verb
@@ -21792,6 +21789,7 @@
 실패해서	실패Noun/하다Verb
 날아가지	날아가다Verb
 찾아도	찾다Verb
+저도요	저Determiner/도Noun/요Josa
 이중인격혐오라던지	이중인격Noun/혐오Noun/라Josa/던지다Verb
 집까지	집Noun/까지Josa
 이것봐	이Determiner/것봐Noun*
@@ -24243,6 +24241,7 @@
 꽃으로도	꽃Noun/으로도Josa
 않으세요	않다Verb
 혜리도	혜리Noun/도Josa
+앗저도해보고싶어요	앗Noun/저Determiner/도해Noun/보다Verb
 본거야	보다Verb
 품으로	품Noun/으로Josa
 레버쿠젠	레버쿠젠Noun
@@ -29550,6 +29549,7 @@
 무사귀환	무사Noun/귀환Noun
 블레이드	블레이드Noun
 눈가에	눈가Noun/에Josa
+이도저도	이도Noun/저Determiner/도Noun
 신나여	신다Verb
 싫어하는거	싫어하다Adjective
 후자는	후자Noun/는Josa

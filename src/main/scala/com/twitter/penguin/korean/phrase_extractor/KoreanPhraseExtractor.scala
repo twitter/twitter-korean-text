@@ -12,8 +12,8 @@ import com.twitter.penguin.korean.util.{Hangul, KoreanPos}
  * 2. Find suitable phrases
  */
 object KoreanPhraseExtractor {
-  private val MinCharsPerPhraseChunkWithoutSpaces = 3
-  private val MinPhrasesPerPhraseChunk = 2
+  private val MinCharsPerPhraseChunkWithoutSpaces = 2
+  private val MinPhrasesPerPhraseChunk = 3
 
   private val MaxCharsPerPhraseChunkWithoutSpaces = 30
   private val MaxPhrasesPerPhraseChunk = 8
@@ -117,7 +117,11 @@ object KoreanPhraseExtractor {
                 phraseChunkWithoutSpaces.map(_.getTextLength).sum >= MinCharsPerPhraseChunkWithoutSpaces)
       }
 
-      checkMaxLength && checkMinLength
+      def checkMinLengthPerToken: Boolean = {
+        phraseChunkWithoutSpaces.exists(_.getTextLength > 1)
+      }
+
+      checkMaxLength && checkMinLength && checkMinLengthPerToken
     }
 
     isRightLength && notEndingInNonPhraseSuffix
