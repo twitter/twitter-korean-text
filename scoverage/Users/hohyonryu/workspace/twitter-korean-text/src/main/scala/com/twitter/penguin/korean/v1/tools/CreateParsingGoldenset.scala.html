@@ -61,7 +61,7 @@
 </span>36 <span style=''>    System.err.println("Reading the goldenset..")
 </span>37 <span style=''>
 </span>38 <span style=''>    val parsedPairs = readFileByLineFromResources("example_chunks.txt").flatMap {
-</span>39 <span style=''>      case line if line.length > 0 =>
+</span>39 <span style=''>      case line if line.length </span><span style='background: #F0ADAD'>></span><span style=''> 0 =>
 </span>40 <span style=''>        val chunk = line.trim
 </span>41 <span style=''>        val parsed = tokenize(chunk)
 </span>42 <span style=''>        Some(ParsingExample(chunk, parsed))
@@ -71,7 +71,7 @@
 </span>46 <span style=''>
 </span>47 <span style=''>    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/v1/util/current_parsing.txt"
 </span>48 <span style=''>
-</span>49 <span style=''>    System.err.println("Writing the new goldenset to " + outputFile)
+</span>49 <span style=''>    System.err.println("Writing the new goldenset to " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFile)
 </span>50 <span style=''>
 </span>51 <span style=''>    val out = new FileOutputStream(outputFile)
 </span>52 <span style=''>    parsedPairs.foreach {
@@ -83,7 +83,7 @@
 </span>58 <span style=''>    }
 </span>59 <span style=''>    out.close()
 </span>60 <span style=''>
-</span>61 <span style=''>    System.err.println("Testing the new goldenset " + outputFile)
+</span>61 <span style=''>    System.err.println("Testing the new goldenset " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFile)
 </span>62 <span style=''>  }
 </span>63 <span style=''>}
 </span></pre>

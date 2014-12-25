@@ -64,17 +64,17 @@
 </span>39 <span style=''>  case class ChunkWithTweet(chunk: String, tweet: String)
 </span>40 <span style=''>
 </span>41 <span style=''>  def main(args: Array[String]) {
-</span>42 <span style=''>    if (args.length != 1) {
+</span>42 <span style=''>    if (args.length </span><span style='background: #F0ADAD'>!=</span><span style=''> 1) {
 </span>43 <span style=''>      println("The first arg should be an input file path of Korean tweets.")
 </span>44 <span style=''>      return
 </span>45 <span style=''>    }
 </span>46 <span style=''>    val chunksWithUnknowns = Source.fromFile(args(0)).getLines().foldLeft(List[ChunkWithTweet]()) {
-</span>47 <span style=''>      case (l: List[ChunkWithTweet], line: String) if line.trim.length > 5 =>
+</span>47 <span style=''>      case (l: List[ChunkWithTweet], line: String) if line.trim.length </span><span style='background: #F0ADAD'>></span><span style=''> 5 =>
 </span>48 <span style=''>        chunk(line).flatMap {
 </span>49 <span style=''>          case t: KoreanToken if t.pos == KoreanPos.Korean && tokenize(t.text).exists(_.unknown) =>
 </span>50 <span style=''>            Some(ChunkWithTweet(t.text, line.trim))
 </span>51 <span style=''>          case t: KoreanToken => None
-</span>52 <span style=''>        }.toList ::: l
+</span>52 <span style=''>        }.toList </span><span style='background: #F0ADAD'>:::</span><span style=''> l
 </span>53 <span style=''>      case (l: List[ChunkWithTweet], line: String) => l
 </span>54 <span style=''>    }.toSet
 </span>55 <span style=''>
@@ -85,7 +85,7 @@
 </span>60 <span style=''>            .tokenize(chunkWithTweet.tweet)
 </span>61 <span style=''>            .mkString(" "))
 </span>62 <span style=''>
-</span>63 <span style=''>        println(chunkWithTweet.chunk + ": " +
+</span>63 <span style=''>        println(chunkWithTweet.chunk </span><span style='background: #F0ADAD'>+ ": " +</span><span style=''>
 </span>64 <span style=''>            tokenize(chunkWithTweet.chunk).mkString(" "))
 </span>65 <span style=''>        println()
 </span>66 <span style=''>    }
@@ -108,23 +108,7 @@
           36
         </td>
         <td>
-          453
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.util.logging.Logger.getLogger
-        </td>
-        <td style="background: #F0ADAD">
-          java.util.logging.Logger.getLogger(BatchGetUnknownNouns.this.getClass().getSimpleName())
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          452
+          454
         </td>
         <td>
           Apply
@@ -137,10 +121,26 @@
         </td>
       </tr><tr>
         <td>
+          36
+        </td>
+        <td>
+          455
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.logging.Logger.getLogger
+        </td>
+        <td style="background: #F0ADAD">
+          java.util.logging.Logger.getLogger(BatchGetUnknownNouns.this.getClass().getSimpleName())
+        </td>
+      </tr><tr>
+        <td>
           37
         </td>
         <td>
-          454
+          456
         </td>
         <td>
           Literal
@@ -165,30 +165,17 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          ()
+          {
+  scala.this.Predef.println(&quot;The first arg should be an input file path of Korean tweets.&quot;);
+  return ()
+}
         </td>
       </tr><tr>
         <td>
           42
         </td>
         <td>
-          459
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          42
-        </td>
-        <td>
-          455
+          457
         </td>
         <td>
           Apply
@@ -204,7 +191,7 @@
           42
         </td>
         <td>
-          458
+          462
         </td>
         <td>
           Block
@@ -213,17 +200,30 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          {
-  scala.this.Predef.println(&quot;The first arg should be an input file path of Korean tweets.&quot;);
-  return ()
-}
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          461
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
         </td>
       </tr><tr>
         <td>
           43
         </td>
         <td>
-          456
+          458
         </td>
         <td>
           Apply
@@ -239,7 +239,7 @@
           44
         </td>
         <td>
-          457
+          459
         </td>
         <td>
           Literal
@@ -255,64 +255,7 @@
           46
         </td>
         <td>
-          469
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String](x0$1, x1$1) match {
-  case (_1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], _2: String)(List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
-    &lt;synthetic&gt; val x$2: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet] = com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk(line, com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk$default$2).flatMap[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet, Seq[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
-  case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Korean).&amp;&amp;(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(t.text, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2).exists(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.unknown))) =&gt; scala.this.Option.option2Iterable[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](scala.Some.apply[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](BatchGetUnknownNouns.this.ChunkWithTweet.apply(t.text, line.trim())))
-  case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
-}))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]).toList;
-    l.:::[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](x$2)
-  }
-  case (_1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], _2: String)(List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet])), (line @ (_: String))) =&gt; l
-}
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
           463
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.collection.immutable.Nil
-        </td>
-        <td style="background: #F0ADAD">
-          immutable.this.Nil
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          462
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.io.LowPriorityCodecImplicits.fallbackSystemCodec
-        </td>
-        <td style="background: #F0ADAD">
-          io.this.Codec.fallbackSystemCodec
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          461
         </td>
         <td>
           Apply
@@ -328,7 +271,7 @@
           46
         </td>
         <td>
-          464
+          465
         </td>
         <td>
           Apply
@@ -337,14 +280,55 @@
           scala.Tuple2.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String](x0$1, x1$1)
+          scala.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String](x0$1, x1$1)
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          470
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String](x0$1, x1$1) match {
+  case (_1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], _2: String)(List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
+    &lt;synthetic&gt; &lt;artifact&gt; val x$2: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet] = com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk(line, com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk$default$2).flatMap[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet, Seq[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+  case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Korean).&amp;&amp;(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(t.text, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2).exists(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.unknown))) =&gt; scala.this.Option.option2Iterable[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](scala.Some.apply[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](BatchGetUnknownNouns.this.ChunkWithTweet.apply(t.text, line.trim())))
+  case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
+}))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]).toList;
+    l.:::[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](x$2)
+  }
+  case (_1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], _2: String)(List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet])), (line @ (_: String))) =&gt; l
+}
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          464
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.Nil
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.Nil
         </td>
       </tr><tr>
         <td>
           47
         </td>
         <td>
-          465
+          466
         </td>
         <td>
           Apply
@@ -360,7 +344,7 @@
           52
         </td>
         <td>
-          467
+          468
         </td>
         <td>
           Block
@@ -370,7 +354,7 @@
         </td>
         <td style="background: #F0ADAD">
           case (_1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], _2: String)(List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
-  &lt;synthetic&gt; val x$2: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet] = com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk(line, com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk$default$2).flatMap[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet, Seq[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+  &lt;synthetic&gt; &lt;artifact&gt; val x$2: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet] = com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk(line, com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk$default$2).flatMap[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet, Seq[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
   case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Korean).&amp;&amp;(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(t.text, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2).exists(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.unknown))) =&gt; scala.this.Option.option2Iterable[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](scala.Some.apply[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](BatchGetUnknownNouns.this.ChunkWithTweet.apply(t.text, line.trim())))
   case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
 }))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]).toList;
@@ -382,7 +366,7 @@
           52
         </td>
         <td>
-          466
+          467
         </td>
         <td>
           Apply
@@ -398,7 +382,7 @@
           53
         </td>
         <td>
-          468
+          469
         </td>
         <td>
           Ident
@@ -414,7 +398,7 @@
           54
         </td>
         <td>
-          470
+          471
         </td>
         <td>
           TypeApply
@@ -423,9 +407,9 @@
           scala.collection.TraversableOnce.toSet
         </td>
         <td style="background: #F0ADAD">
-          scala.io.Source.fromFile(args.apply(0))(io.this.Codec.fallbackSystemCodec).getLines().foldLeft[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](immutable.this.Nil)(((x0$1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], x1$1: String) =&gt; scala.this.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String](x0$1, x1$1) match {
+          scala.io.Source.fromFile(args.apply(0))(io.this.Codec.fallbackSystemCodec).getLines().foldLeft[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](immutable.this.Nil)(((x0$1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], x1$1: String) =&gt; scala.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String](x0$1, x1$1) match {
   case (_1: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], _2: String)(List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
-    &lt;synthetic&gt; val x$2: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet] = com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk(line, com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk$default$2).flatMap[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet, Seq[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+    &lt;synthetic&gt; &lt;artifact&gt; val x$2: List[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet] = com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk(line, com.twitter.penguin.korean.tokenizer.KoreanChunker.chunk$default$2).flatMap[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet, Seq[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
   case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Korean).&amp;&amp;(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(t.text, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2).exists(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.unknown))) =&gt; scala.this.Option.option2Iterable[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](scala.Some.apply[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet](BatchGetUnknownNouns.this.ChunkWithTweet.apply(t.text, line.trim())))
   case (t @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
 }))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet]).toList;
@@ -445,22 +429,6 @@
           Select
         </td>
         <td>
-          scala.math.Ordering.String
-        </td>
-        <td style="background: #F0ADAD">
-          math.this.Ordering.String
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          471
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
           com.twitter.penguin.korean.qa.BatchGetUnknownNouns.ChunkWithTweet.chunk
         </td>
         <td style="background: #F0ADAD">
@@ -471,7 +439,7 @@
           56
         </td>
         <td>
-          482
+          483
         </td>
         <td>
           Apply
@@ -489,26 +457,26 @@
         </td>
       </tr><tr>
         <td>
-          58
+          56
         </td>
         <td>
-          474
+          473
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Predef.println
+          scala.math.Ordering.String
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.println(chunkWithTweet.tweet)
+          math.this.Ordering.String
         </td>
       </tr><tr>
         <td>
           58
         </td>
         <td>
-          473
+          474
         </td>
         <td>
           Select
@@ -521,10 +489,26 @@
         </td>
       </tr><tr>
         <td>
+          58
+        </td>
+        <td>
+          475
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(chunkWithTweet.tweet)
+        </td>
+      </tr><tr>
+        <td>
           59
         </td>
         <td>
-          476
+          477
         </td>
         <td>
           Apply
@@ -540,7 +524,7 @@
           61
         </td>
         <td>
-          475
+          476
         </td>
         <td>
           Apply
@@ -556,23 +540,7 @@
           63
         </td>
         <td>
-          480
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.println
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.println(chunkWithTweet.chunk.+(&quot;: &quot;).+(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(chunkWithTweet.chunk, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2).mkString(&quot; &quot;)))
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          477
+          478
         </td>
         <td>
           Literal
@@ -588,7 +556,23 @@
           63
         </td>
         <td>
-          479
+          481
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(chunkWithTweet.chunk.+(&quot;: &quot;).+(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(chunkWithTweet.chunk, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2).mkString(&quot; &quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          480
         </td>
         <td>
           Apply
@@ -604,7 +588,7 @@
           64
         </td>
         <td>
-          478
+          479
         </td>
         <td>
           Apply
@@ -620,7 +604,7 @@
           65
         </td>
         <td>
-          481
+          482
         </td>
         <td>
           Apply

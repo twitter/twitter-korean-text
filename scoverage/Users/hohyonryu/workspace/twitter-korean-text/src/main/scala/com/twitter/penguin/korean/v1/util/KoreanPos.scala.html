@@ -92,20 +92,20 @@
 </span>67 <span style=''>  Punctuation, Hashtag, ScreenName, Email, URL, CashTag = Value
 </span>68 <span style=''>
 </span>69 <span style=''>  lazy val shortCut = Map(
-</span>70 <span style=''>    'N' -> Noun,
-</span>71 <span style=''>    'V' -> Verb,
-</span>72 <span style=''>    'J' -> Adjective,
-</span>73 <span style=''>    'A' -> Adverb,
-</span>74 <span style=''>    'D' -> Determiner,
-</span>75 <span style=''>    'E' -> Exclamation,
-</span>76 <span style=''>    'C' -> Conjunction,
+</span>70 <span style=''>    'N' </span><span style='background: #AEF1AE'>-></span><span style=''> Noun,
+</span>71 <span style=''>    'V' </span><span style='background: #AEF1AE'>-></span><span style=''> Verb,
+</span>72 <span style=''>    'J' </span><span style='background: #AEF1AE'>-></span><span style=''> Adjective,
+</span>73 <span style=''>    'A' </span><span style='background: #AEF1AE'>-></span><span style=''> Adverb,
+</span>74 <span style=''>    'D' </span><span style='background: #AEF1AE'>-></span><span style=''> Determiner,
+</span>75 <span style=''>    'E' </span><span style='background: #AEF1AE'>-></span><span style=''> Exclamation,
+</span>76 <span style=''>    'C' </span><span style='background: #AEF1AE'>-></span><span style=''> Conjunction,
 </span>77 <span style=''>
-</span>78 <span style=''>    'j' -> Josa,
-</span>79 <span style=''>    'e' -> Eomi,
-</span>80 <span style=''>    'r' -> PreEomi,
-</span>81 <span style=''>    'p' -> NounPrefix,
-</span>82 <span style=''>    'v' -> VerbPrefix,
-</span>83 <span style=''>    's' -> Suffix
+</span>78 <span style=''>    'j' </span><span style='background: #AEF1AE'>-></span><span style=''> Josa,
+</span>79 <span style=''>    'e' </span><span style='background: #AEF1AE'>-></span><span style=''> Eomi,
+</span>80 <span style=''>    'r' </span><span style='background: #AEF1AE'>-></span><span style=''> PreEomi,
+</span>81 <span style=''>    'p' </span><span style='background: #AEF1AE'>-></span><span style=''> NounPrefix,
+</span>82 <span style=''>    'v' </span><span style='background: #AEF1AE'>-></span><span style=''> VerbPrefix,
+</span>83 <span style=''>    's' </span><span style='background: #AEF1AE'>-></span><span style=''> Suffix
 </span>84 <span style=''>  )
 </span>85 <span style=''>}
 </span></pre>
@@ -533,7 +533,7 @@
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.Map.apply[Char, com.twitter.penguin.korean.v1.util.KoreanPos.Value](scala.this.Predef.any2ArrowAssoc[Char]('N').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Noun), scala.this.Predef.any2ArrowAssoc[Char]('V').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Verb), scala.this.Predef.any2ArrowAssoc[Char]('J').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adjective), scala.this.Predef.any2ArrowAssoc[Char]('A').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adverb), scala.this.Predef.any2ArrowAssoc[Char]('D').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Determiner), scala.this.Predef.any2ArrowAssoc[Char]('E').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Exclamation), scala.this.Predef.any2ArrowAssoc[Char]('C').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Conjunction), scala.this.Predef.any2ArrowAssoc[Char]('j').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Josa), scala.this.Predef.any2ArrowAssoc[Char]('e').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Eomi), scala.this.Predef.any2ArrowAssoc[Char]('r').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.PreEomi), scala.this.Predef.any2ArrowAssoc[Char]('p').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.NounPrefix), scala.this.Predef.any2ArrowAssoc[Char]('v').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.VerbPrefix), scala.this.Predef.any2ArrowAssoc[Char]('s').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Suffix))
+          scala.this.Predef.Map.apply[Char, com.twitter.penguin.korean.v1.util.KoreanPos.Value](scala.this.Predef.ArrowAssoc[Char]('N').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Noun), scala.this.Predef.ArrowAssoc[Char]('V').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Verb), scala.this.Predef.ArrowAssoc[Char]('J').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adjective), scala.this.Predef.ArrowAssoc[Char]('A').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adverb), scala.this.Predef.ArrowAssoc[Char]('D').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Determiner), scala.this.Predef.ArrowAssoc[Char]('E').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Exclamation), scala.this.Predef.ArrowAssoc[Char]('C').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Conjunction), scala.this.Predef.ArrowAssoc[Char]('j').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Josa), scala.this.Predef.ArrowAssoc[Char]('e').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Eomi), scala.this.Predef.ArrowAssoc[Char]('r').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.PreEomi), scala.this.Predef.ArrowAssoc[Char]('p').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.NounPrefix), scala.this.Predef.ArrowAssoc[Char]('v').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.VerbPrefix), scala.this.Predef.ArrowAssoc[Char]('s').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Suffix))
         </td>
       </tr><tr>
         <td>
@@ -549,7 +549,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('N').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Noun)
+          scala.this.Predef.ArrowAssoc[Char]('N').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Noun)
         </td>
       </tr><tr>
         <td>
@@ -597,7 +597,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('V').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Verb)
+          scala.this.Predef.ArrowAssoc[Char]('V').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Verb)
         </td>
       </tr><tr>
         <td>
@@ -645,7 +645,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('J').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adjective)
+          scala.this.Predef.ArrowAssoc[Char]('J').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adjective)
         </td>
       </tr><tr>
         <td>
@@ -693,7 +693,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('A').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adverb)
+          scala.this.Predef.ArrowAssoc[Char]('A').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Adverb)
         </td>
       </tr><tr>
         <td>
@@ -741,7 +741,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('D').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Determiner)
+          scala.this.Predef.ArrowAssoc[Char]('D').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Determiner)
         </td>
       </tr><tr>
         <td>
@@ -789,7 +789,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('E').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Exclamation)
+          scala.this.Predef.ArrowAssoc[Char]('E').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Exclamation)
         </td>
       </tr><tr>
         <td>
@@ -837,7 +837,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('C').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Conjunction)
+          scala.this.Predef.ArrowAssoc[Char]('C').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Conjunction)
         </td>
       </tr><tr>
         <td>
@@ -885,7 +885,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('j').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Josa)
+          scala.this.Predef.ArrowAssoc[Char]('j').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Josa)
         </td>
       </tr><tr>
         <td>
@@ -933,7 +933,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('e').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Eomi)
+          scala.this.Predef.ArrowAssoc[Char]('e').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Eomi)
         </td>
       </tr><tr>
         <td>
@@ -981,7 +981,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('r').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.PreEomi)
+          scala.this.Predef.ArrowAssoc[Char]('r').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.PreEomi)
         </td>
       </tr><tr>
         <td>
@@ -1029,7 +1029,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('p').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.NounPrefix)
+          scala.this.Predef.ArrowAssoc[Char]('p').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.NounPrefix)
         </td>
       </tr><tr>
         <td>
@@ -1077,7 +1077,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('v').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.VerbPrefix)
+          scala.this.Predef.ArrowAssoc[Char]('v').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.VerbPrefix)
         </td>
       </tr><tr>
         <td>
@@ -1125,7 +1125,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('s').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Suffix)
+          scala.this.Predef.ArrowAssoc[Char]('s').-&gt;[com.twitter.penguin.korean.v1.util.KoreanPos.Value](KoreanPos.this.Suffix)
         </td>
       </tr><tr>
         <td>

@@ -59,13 +59,13 @@
 </span>34 <span style=''>
 </span>35 <span style=''>
 </span>36 <span style=''>  protected[korean] def isJosaAttachable(prevChar: Char, headChar: Char): Boolean = {
-</span>37 <span style=''>    (hasCoda(prevChar) && !JOSA_HEAD_FOR_NO_CODA.contains(headChar)) ||
-</span>38 <span style=''>        (!hasCoda(prevChar) && !JOSA_HEAD_FOR_CODA.contains(headChar))
+</span>37 <span style=''>    (hasCoda(prevChar) && !JOSA_HEAD_FOR_NO_CODA.contains(headChar)) </span><span style='background: #AEF1AE'>||</span><span style=''>
+</span>38 <span style=''>        (!hasCoda(prevChar) </span><span style='background: #AEF1AE'>&&</span><span style=''> !JOSA_HEAD_FOR_CODA.contains(headChar))
 </span>39 <span style=''>  }
 </span>40 <span style=''>
 </span>41 <span style=''>  protected[korean] def isName(chunk: CharSequence): Boolean = {
-</span>42 <span style=''>    if (chunk.length() != 3) return false
-</span>43 <span style=''>    nameDictionay('family_name).contains(chunk.charAt(0).toString) &&
+</span>42 <span style=''>    if (chunk.length() </span><span style='background: #AEF1AE'>!=</span><span style=''> 3) return false
+</span>43 <span style=''>    nameDictionay('family_name).contains(chunk.charAt(0).toString) </span><span style='background: #AEF1AE'>&&</span><span style=''>
 </span>44 <span style=''>        nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
 </span>45 <span style=''>  }
 </span>46 <span style=''>
@@ -73,9 +73,9 @@
 </span>48 <span style=''>  val NUMBER_LAST_CHARS = "일이삼사오육칠팔구천백십해경조억만원배분초".map(_.toInt).toSet
 </span>49 <span style=''>
 </span>50 <span style=''>  protected[korean] def isKoreanNumber(chunk: CharSequence): Boolean =
-</span>51 <span style=''>    (0 to chunk.length() - 1).foldLeft(true) {
-</span>52 <span style=''>      case (output, i) if i < chunk.length() - 1 => output && NUMBER_CHARS.contains(chunk.charAt(i).toInt)
-</span>53 <span style=''>      case (output, i) => output && NUMBER_LAST_CHARS.contains(chunk.charAt(i).toInt)
+</span>51 <span style=''>    (0 to chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1).foldLeft(true) {
+</span>52 <span style=''>      case (output, i) if i </span><span style='background: #AEF1AE'>< chunk.length() -</span><span style=''> 1 => output </span><span style='background: #AEF1AE'>&&</span><span style=''> NUMBER_CHARS.contains(chunk.charAt(i).toInt)
+</span>53 <span style=''>      case (output, i) => output </span><span style='background: #AEF1AE'>&&</span><span style=''> NUMBER_LAST_CHARS.contains(chunk.charAt(i).toInt)
 </span>54 <span style=''>    }
 </span>55 <span style=''>
 </span>56 <span style=''>
@@ -541,7 +541,7 @@
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Boolean, Int](x0$1, x1$1)
+          scala.Tuple2.apply[Boolean, Int](x0$1, x1$1)
         </td>
       </tr><tr>
         <td>
@@ -557,7 +557,7 @@
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.intWrapper(0).to(chunk.length().-(1)).foldLeft[Boolean](true)(((x0$1: Boolean, x1$1: Int) =&gt; scala.this.Tuple2.apply[Boolean, Int](x0$1, x1$1) match {
+          scala.this.Predef.intWrapper(0).to(chunk.length().-(1)).foldLeft[Boolean](true)(((x0$1: Boolean, x1$1: Int) =&gt; scala.Tuple2.apply[Boolean, Int](x0$1, x1$1) match {
   case (_1: Boolean, _2: Int)(Boolean, Int)((output @ _), (i @ _)) if i.&lt;(chunk.length().-(1)) =&gt; output.&amp;&amp;(KoreanSubstantive.this.NUMBER_CHARS.contains(chunk.charAt(i).toInt))
   case (_1: Boolean, _2: Int)(Boolean, Int)((output @ _), (i @ _)) =&gt; output.&amp;&amp;(KoreanSubstantive.this.NUMBER_LAST_CHARS.contains(chunk.charAt(i).toInt))
 }))
@@ -576,7 +576,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Boolean, Int](x0$1, x1$1) match {
+          scala.Tuple2.apply[Boolean, Int](x0$1, x1$1) match {
   case (_1: Boolean, _2: Int)(Boolean, Int)((output @ _), (i @ _)) if i.&lt;(chunk.length().-(1)) =&gt; output.&amp;&amp;(KoreanSubstantive.this.NUMBER_CHARS.contains(chunk.charAt(i).toInt))
   case (_1: Boolean, _2: Int)(Boolean, Int)((output @ _), (i @ _)) =&gt; output.&amp;&amp;(KoreanSubstantive.this.NUMBER_LAST_CHARS.contains(chunk.charAt(i).toInt))
 }

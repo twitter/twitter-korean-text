@@ -58,11 +58,11 @@
 </span>33 <span style=''> */
 </span>34 <span style=''>object KoreanDictionaryProvider {
 </span>35 <span style=''>  private[this] def readStreamByLine(stream: InputStream, filename: String): Iterator[String] = {
-</span>36 <span style=''>    require(stream != null, "Resource not loaded: " + filename)
+</span>36 <span style=''>    require(stream </span><span style='background: #AEF1AE'>!=</span><span style=''> null, "Resource not loaded: " </span><span style='background: #F0ADAD'>+</span><span style=''> filename)
 </span>37 <span style=''>    Source.fromInputStream(stream)(io.Codec("UTF-8"))
 </span>38 <span style=''>        .getLines()
 </span>39 <span style=''>        .map(_.trim)
-</span>40 <span style=''>        .filter(_.length > 0)
+</span>40 <span style=''>        .filter(_.length </span><span style='background: #AEF1AE'>></span><span style=''> 0)
 </span>41 <span style=''>  }
 </span>42 <span style=''>
 </span>43 <span style=''>  private[this] def readWordFreqs(filename: String): collection.mutable.Map[CharSequence, Float] = {
@@ -72,7 +72,7 @@
 </span>47 <span style=''>    readFileByLineFromResources(filename).foreach {
 </span>48 <span style=''>      case line => if (line.contains("\t")) {
 </span>49 <span style=''>        val data = line.split("\t")
-</span>50 <span style=''>        freqMap += (data(0) -> data(1).slice(0, 6).toFloat)
+</span>50 <span style=''>        freqMap </span><span style='background: #AEF1AE'>+=</span><span style=''> (data(0) </span><span style='background: #AEF1AE'>-></span><span style=''> data(1).slice(0, 6).toFloat)
 </span>51 <span style=''>      }
 </span>52 <span style=''>    }
 </span>53 <span style=''>    freqMap
@@ -132,7 +132,7 @@
 </span>107 <span style=''>    var map: collection.mutable.Map[KoreanPos, CharArraySet] =
 </span>108 <span style=''>      new java.util.HashMap[KoreanPos, CharArraySet]
 </span>109 <span style=''>
-</span>110 <span style=''>    map += Noun -> readWords(
+</span>110 <span style=''>    map </span><span style='background: #AEF1AE'>+= Noun -></span><span style=''> readWords(
 </span>111 <span style=''>      "noun/nouns.txt", "noun/entities.txt", "noun/spam.txt",
 </span>112 <span style=''>      "noun/names.txt", "noun/twitter.txt", "noun/lol.txt",
 </span>113 <span style=''>      "noun/slangs.txt", "noun/company_names.txt",
@@ -140,24 +140,24 @@
 </span>115 <span style=''>      "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
 </span>116 <span style=''>      "noun/wikipedia_title_nouns.txt", "noun/pokemon.txt"
 </span>117 <span style=''>    )
-</span>118 <span style=''>    map += Verb -> conjugatePredicates(readWordsAsSet("verb/verb.txt"))
-</span>119 <span style=''>    map += Adjective -> conjugatePredicates(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
-</span>120 <span style=''>    map += Adverb -> readWords("adverb/adverb.txt")
-</span>121 <span style=''>    map += Determiner -> readWords("aux/determiner.txt")
-</span>122 <span style=''>    map += Exclamation -> readWords("aux/exclamation.txt")
-</span>123 <span style=''>    map += Josa -> readWords("josa/josa.txt")
-</span>124 <span style=''>    map += Eomi -> readWords("verb/eomi.txt")
-</span>125 <span style=''>    map += PreEomi -> readWords("verb/pre_eomi.txt")
-</span>126 <span style=''>    map += Conjunction -> readWords("aux/conjunctions.txt")
-</span>127 <span style=''>    map += NounPrefix -> readWords("substantives/noun_prefix.txt")
-</span>128 <span style=''>    map += VerbPrefix -> readWords("verb/verb_prefix.txt")
-</span>129 <span style=''>    map += Suffix -> readWords("substantives/suffix.txt")
+</span>118 <span style=''>    map </span><span style='background: #AEF1AE'>+= Verb -></span><span style=''> conjugatePredicates(readWordsAsSet("verb/verb.txt"))
+</span>119 <span style=''>    map </span><span style='background: #AEF1AE'>+= Adjective -></span><span style=''> conjugatePredicates(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+</span>120 <span style=''>    map </span><span style='background: #AEF1AE'>+= Adverb -></span><span style=''> readWords("adverb/adverb.txt")
+</span>121 <span style=''>    map </span><span style='background: #AEF1AE'>+= Determiner -></span><span style=''> readWords("aux/determiner.txt")
+</span>122 <span style=''>    map </span><span style='background: #AEF1AE'>+= Exclamation -></span><span style=''> readWords("aux/exclamation.txt")
+</span>123 <span style=''>    map </span><span style='background: #AEF1AE'>+= Josa -></span><span style=''> readWords("josa/josa.txt")
+</span>124 <span style=''>    map </span><span style='background: #AEF1AE'>+= Eomi -></span><span style=''> readWords("verb/eomi.txt")
+</span>125 <span style=''>    map </span><span style='background: #AEF1AE'>+= PreEomi -></span><span style=''> readWords("verb/pre_eomi.txt")
+</span>126 <span style=''>    map </span><span style='background: #AEF1AE'>+= Conjunction -></span><span style=''> readWords("aux/conjunctions.txt")
+</span>127 <span style=''>    map </span><span style='background: #AEF1AE'>+= NounPrefix -></span><span style=''> readWords("substantives/noun_prefix.txt")
+</span>128 <span style=''>    map </span><span style='background: #AEF1AE'>+= VerbPrefix -></span><span style=''> readWords("verb/verb_prefix.txt")
+</span>129 <span style=''>    map </span><span style='background: #AEF1AE'>+= Suffix -></span><span style=''> readWords("substantives/suffix.txt")
 </span>130 <span style=''>    map
 </span>131 <span style=''>  }
 </span>132 <span style=''>
 </span>133 <span style=''>  lazy val nameDictionay = Map(
-</span>134 <span style=''>    'family_name -> readWords("substantives/family_names.txt"),
-</span>135 <span style=''>    'given_name -> readWords("substantives/given_names.txt")
+</span>134 <span style=''>    'family_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("substantives/family_names.txt"),
+</span>135 <span style=''>    'given_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("substantives/given_names.txt")
 </span>136 <span style=''>  )
 </span>137 <span style=''>
 </span>138 <span style=''>  lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
@@ -337,7 +337,7 @@
   case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
     {
       val data: Array[String] = line.split(&quot;\t&quot;);
-      freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+      freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
     }
   else
     ()
@@ -361,7 +361,7 @@
   case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
     {
       val data: Array[String] = line.split(&quot;\t&quot;);
-      freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+      freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
     }
   else
     ()
@@ -399,7 +399,7 @@
         <td style="background: #AEF1AE">
           {
   val data: Array[String] = line.split(&quot;\t&quot;);
-  freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+  freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
 }
         </td>
       </tr><tr>
@@ -419,7 +419,7 @@
           case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
   {
     val data: Array[String] = line.split(&quot;\t&quot;);
-    freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+    freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
   }
 else
   ()
@@ -502,7 +502,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+          freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
         </td>
       </tr><tr>
         <td>
@@ -550,7 +550,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
+          scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
         </td>
       </tr><tr>
         <td>
@@ -717,10 +717,10 @@ else
           TypeApply
         </td>
         <td>
-          scala.Predef.conforms
+          scala.Predef.$conforms
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.conforms[(String, String)]
+          scala.this.Predef.$conforms[(String, String)]
         </td>
       </tr><tr>
         <td>
@@ -743,7 +743,7 @@ else
     val data: Array[String] = line.split(&quot; &quot;);
     scala.Tuple2.apply[String, String](data.apply(0), data.apply(1))
   }
-})).toMap[String, String](scala.this.Predef.conforms[(String, String)])
+})).toMap[String, String](scala.this.Predef.$conforms[(String, String)])
         </td>
       </tr><tr>
         <td>
@@ -775,7 +775,7 @@ else
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1)
+          scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1)
         </td>
       </tr><tr>
         <td>
@@ -807,7 +807,7 @@ else
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          filenames.foldLeft[scala.collection.immutable.Set[String]](scala.this.Predef.Set.apply[String]())(((x0$5: scala.collection.immutable.Set[String], x1$1: String) =&gt; scala.this.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
+          filenames.foldLeft[scala.collection.immutable.Set[String]](scala.this.Predef.Set.apply[String]())(((x0$5: scala.collection.immutable.Set[String], x1$1: String) =&gt; scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
   case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
 }))
         </td>
@@ -825,7 +825,7 @@ else
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
+          scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
   case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
 }
         </td>
@@ -1138,7 +1138,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Noun).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;, &quot;noun/pokemon.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Noun).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;, &quot;noun/pokemon.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1186,7 +1186,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Noun).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;, &quot;noun/pokemon.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Noun).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;, &quot;noun/pokemon.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1218,7 +1218,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates$default$2))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates$default$2))
         </td>
       </tr><tr>
         <td>
@@ -1282,7 +1282,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates$default$2)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates$default$2)))
         </td>
       </tr><tr>
         <td>
@@ -1314,7 +1314,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true))
         </td>
       </tr><tr>
         <td>
@@ -1362,7 +1362,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)))
         </td>
       </tr><tr>
         <td>
@@ -1410,7 +1410,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1442,7 +1442,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1474,7 +1474,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/determiner.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/determiner.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1490,7 +1490,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/determiner.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/determiner.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1522,7 +1522,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Exclamation).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/exclamation.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Exclamation).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/exclamation.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1570,7 +1570,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Exclamation).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/exclamation.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Exclamation).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/exclamation.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1618,7 +1618,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1634,7 +1634,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1666,7 +1666,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1682,7 +1682,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1714,7 +1714,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.PreEomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.PreEomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1762,7 +1762,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.PreEomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.PreEomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1794,7 +1794,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/conjunctions.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/conjunctions.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1826,7 +1826,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/conjunctions.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;aux/conjunctions.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1842,7 +1842,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -1874,7 +1874,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1906,7 +1906,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -1938,7 +1938,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -2002,7 +2002,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;)))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -2018,7 +2018,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -2034,7 +2034,7 @@ else
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.Map.apply[Symbol, com.twitter.penguin.korean.util.CharArraySet](scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;family_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;)), scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;given_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;)))
+          scala.this.Predef.Map.apply[Symbol, com.twitter.penguin.korean.util.CharArraySet](scala.this.Predef.ArrowAssoc[Symbol](scala.Symbol.apply(&quot;family_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;)), scala.this.Predef.ArrowAssoc[Symbol](scala.Symbol.apply(&quot;given_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;)))
         </td>
       </tr><tr>
         <td>
@@ -2066,7 +2066,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;family_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;))
+          scala.this.Predef.ArrowAssoc[Symbol](scala.Symbol.apply(&quot;family_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;))
         </td>
       </tr><tr>
         <td>
@@ -2114,7 +2114,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;given_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;))
+          scala.this.Predef.ArrowAssoc[Symbol](scala.Symbol.apply(&quot;given_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;))
         </td>
       </tr><tr>
         <td>

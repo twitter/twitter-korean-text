@@ -62,9 +62,9 @@
 </span>37 <span style=''>    System.err.println("Reading the verbs and adjectives..")
 </span>38 <span style=''>
 </span>39 <span style=''>    def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {
-</span>40 <span style=''>      System.err.println("Writing the expansion goldenset in " + outputFileName)
+</span>40 <span style=''>      System.err.println("Writing the expansion goldenset in " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFileName)
 </span>41 <span style=''>
-</span>42 <span style=''>      val outputPath = "src/test/resources/com/twitter/penguin/korean/v1/util/" + outputFileName
+</span>42 <span style=''>      val outputPath = "src/test/resources/com/twitter/penguin/korean/v1/util/" </span><span style='background: #F0ADAD'>+</span><span style=''> outputFileName
 </span>43 <span style=''>      val out = new FileOutputStream(outputPath)
 </span>44 <span style=''>
 </span>45 <span style=''>      val words = readWordsAsSeq(file)

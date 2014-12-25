@@ -77,10 +77,10 @@
 </span>52 <span style=''>  private[this] val PRE_EOMI_RESPECT = "세시실신셔습셨십".toSeq
 </span>53 <span style=''>
 </span>54 <span style=''>  // 모음 어말어미
-</span>55 <span style=''>  private[this] val PRE_EOMI_VOWEL = PRE_EOMI_COMMON ++ PRE_EOMI_2 ++ PRE_EOMI_3 ++ PRE_EOMI_RESPECT
+</span>55 <span style=''>  private[this] val PRE_EOMI_VOWEL = PRE_EOMI_COMMON </span><span style='background: #AEF1AE'>++ PRE_EOMI_2 ++ PRE_EOMI_3 ++</span><span style=''> PRE_EOMI_RESPECT
 </span>56 <span style=''>
 </span>57 <span style=''>  private[this] def addPreEomi(lastChar: Char, charsToAdd: Seq[Char]): Seq[String] = {
-</span>58 <span style=''>    charsToAdd.map(lastChar + _.toString)
+</span>58 <span style=''>    charsToAdd.map(lastChar </span><span style='background: #AEF1AE'>+</span><span style=''> _.toString)
 </span>59 <span style=''>  }
 </span>60 <span style=''>
 </span>61 <span style=''>  /**
@@ -101,25 +101,25 @@
 </span>76 <span style=''>        // 하다, special case
 </span>77 <span style=''>        case ('ㅎ', 'ㅏ', ' ') =>
 </span>78 <span style=''>          val endings = if (isAdjective) Seq("합", "해", "히", "") else Seq("합", "해")
-</span>79 <span style=''>          addPreEomi(lastChar, PRE_EOMI_COMMON ++ PRE_EOMI_2 ++ PRE_EOMI_6 ++ PRE_EOMI_RESPECT) ++
-</span>80 <span style=''>              CODAS_COMMON.map {
-</span>81 <span style=''>                case c: Char if c == 'ㅆ' => composeHangul('ㅎ', 'ㅐ', c).toString
-</span>82 <span style=''>                case c: Char => composeHangul('ㅎ', 'ㅏ', c).toString
-</span>83 <span style=''>              } ++ addPreEomi('하', PRE_EOMI_VOWEL ++ PRE_EOMI_1_5 ++ PRE_EOMI_6) ++
-</span>84 <span style=''>              addPreEomi('해', PRE_EOMI_1_1) ++ endings
+</span>79 <span style=''>          addPreEomi(lastChar, PRE_EOMI_COMMON </span><span style='background: #AEF1AE'>++ PRE_EOMI_2 ++ PRE_EOMI_6 ++</span><span style=''> PRE_EOMI_RESPECT) </span><span style='background: #AEF1AE'>++
+</span>80 <span style=''></span><span style='background: #AEF1AE'>              CODAS_COMMON.map {
+</span>81 <span style=''></span><span style='background: #AEF1AE'>                case c: Char if c == 'ㅆ' => composeHangul('ㅎ', 'ㅐ', c).toString
+</span>82 <span style=''></span><span style='background: #AEF1AE'>                case c: Char => composeHangul('ㅎ', 'ㅏ', c).toString
+</span>83 <span style=''></span><span style='background: #AEF1AE'>              } ++ addPreEomi('하', PRE_EOMI_VOWEL ++ PRE_EOMI_1_5 ++ PRE_EOMI_6) ++
+</span>84 <span style=''></span><span style='background: #AEF1AE'>              addPreEomi('해', PRE_EOMI_1_1) ++</span><span style=''> endings
 </span>85 <span style=''>
 </span>86 <span style=''>        // 쏘다
 </span>87 <span style=''>        case (o: Char, 'ㅗ', ' ') =>
-</span>88 <span style=''>          addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_6) ++
-</span>89 <span style=''>              CODAS_NO_PAST.map(composeHangul(o, 'ㅗ', _).toString) ++
+</span>88 <span style=''>          addPreEomi(lastChar, PRE_EOMI_VOWEL </span><span style='background: #AEF1AE'>++ PRE_EOMI_2 ++ PRE_EOMI_1_3 ++</span><span style=''> PRE_EOMI_6) </span><span style='background: #AEF1AE'>++
+</span>89 <span style=''></span><span style='background: #AEF1AE'>              CODAS_NO_PAST.map(composeHangul(o, 'ㅗ', _).toString) ++</span><span style=''>
 </span>90 <span style=''>              Seq(composeHangul(o, 'ㅘ', ' ').toString,
 </span>91 <span style=''>                composeHangul(o, 'ㅘ', 'ㅆ').toString,
 </span>92 <span style=''>                lastCharString)
 </span>93 <span style=''>
 </span>94 <span style=''>        // 맞추다, 겨누다, 재우다,
 </span>95 <span style=''>        case (o: Char, 'ㅜ', ' ') =>
-</span>96 <span style=''>          addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_2 ++ PRE_EOMI_6) ++
-</span>97 <span style=''>              CODAS_NO_PAST.map(composeHangul(o, 'ㅜ', _).toString) ++
+</span>96 <span style=''>          addPreEomi(lastChar, PRE_EOMI_VOWEL </span><span style='background: #AEF1AE'>++ PRE_EOMI_1_2 ++</span><span style=''> PRE_EOMI_6) </span><span style='background: #AEF1AE'>++
+</span>97 <span style=''></span><span style='background: #AEF1AE'>              CODAS_NO_PAST.map(composeHangul(o, 'ㅜ', _).toString) ++</span><span style=''>
 </span>98 <span style=''>              Seq(composeHangul(o, 'ㅝ').toString,
 </span>99 <span style=''>                composeHangul(o, 'ㅝ', 'ㅆ').toString,
 </span>100 <span style=''>                lastCharString)
@@ -127,7 +127,7 @@
 </span>102 <span style=''>
 </span>103 <span style=''>        // 치르다, 구르다, 굴르다, 뜨다, 모으다, 고르다, 골르다
 </span>104 <span style=''>        case (o: Char, 'ㅡ', ' ') =>
-</span>105 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅡ', _).toString) ++
+</span>105 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅡ', _).toString) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>106 <span style=''>              Seq(composeHangul(o, 'ㅝ').toString,
 </span>107 <span style=''>                composeHangul(o, 'ㅓ').toString,
 </span>108 <span style=''>                composeHangul(o, 'ㅏ').toString,
@@ -138,32 +138,32 @@
 </span>113 <span style=''>
 </span>114 <span style=''>        // 사귀다
 </span>115 <span style=''>        case (o: Char, 'ㅟ', ' ') =>
-</span>116 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅟ', _).toString) ++
-</span>117 <span style=''>              Seq(composeHangul(o, 'ㅕ', ' ').toString, composeHangul(o, 'ㅕ', 'ㅆ').toString) ++
+</span>116 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅟ', _).toString) </span><span style='background: #AEF1AE'>++
+</span>117 <span style=''></span><span style='background: #AEF1AE'>              Seq(composeHangul(o, 'ㅕ', ' ').toString, composeHangul(o, 'ㅕ', 'ㅆ').toString) ++</span><span style=''>
 </span>118 <span style=''>              Seq(lastCharString)
 </span>119 <span style=''>
 </span>120 <span style=''>        // 마시다, 엎드리다, 치다
 </span>121 <span style=''>        case (o: Char, 'ㅣ', ' ') =>
-</span>122 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
+</span>122 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>123 <span style=''>              Seq(composeHangul(o, 'ㅕ', ' ').toString,
 </span>124 <span style=''>                composeHangul(o, 'ㅕ', 'ㅆ').toString,
 </span>125 <span style=''>                lastCharString)
 </span>126 <span style=''>
 </span>127 <span style=''>        // 꿰다, 꾀다
-</span>128 <span style=''>        case (o: Char, v: Char, ' ') if v == 'ㅞ' || v == 'ㅚ' || v == 'ㅙ' =>
-</span>129 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
+</span>128 <span style=''>        case (o: Char, v: Char, ' ') if v </span><span style='background: #AEF1AE'>== 'ㅞ' || v == 'ㅚ' || v ==</span><span style=''> 'ㅙ' =>
+</span>129 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>130 <span style=''>              Seq(lastCharString)
 </span>131 <span style=''>
 </span>132 <span style=''>
 </span>133 <span style=''>        // All other vowel endings: 둘러서다, 켜다, 세다, 캐다
 </span>134 <span style=''>        case (o: Char, v: Char, ' ') =>
-</span>135 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
-</span>136 <span style=''>              addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_1 ++ PRE_EOMI_6) ++
+</span>135 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) </span><span style='background: #AEF1AE'>++
+</span>136 <span style=''></span><span style='background: #AEF1AE'>              addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_1 ++ PRE_EOMI_6) ++</span><span style=''>
 </span>137 <span style=''>              Seq(lastCharString)
 </span>138 <span style=''>
 </span>139 <span style=''>        // 만들다, 알다, 풀다
-</span>140 <span style=''>        case (o: Char, v: Char, 'ㄹ') if v == 'ㅡ' || v == 'ㅏ' || v == 'ㅜ' =>
-</span>141 <span style=''>          addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_2 ++ PRE_EOMI_3 ++ PRE_EOMI_RESPECT) ++
+</span>140 <span style=''>        case (o: Char, v: Char, 'ㄹ') if v </span><span style='background: #AEF1AE'>== 'ㅡ' || v == 'ㅏ' || v ==</span><span style=''> 'ㅜ' =>
+</span>141 <span style=''>          addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_2 </span><span style='background: #AEF1AE'>++ PRE_EOMI_3 ++</span><span style=''> PRE_EOMI_RESPECT) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>142 <span style=''>              Seq(composeHangul(o, v, 'ㄻ').toString,
 </span>143 <span style=''>                composeHangul(o, v, 'ㄴ').toString,
 </span>144 <span style=''>                composeHangul(o, v, ' ').toString,
@@ -171,7 +171,7 @@
 </span>146 <span style=''>
 </span>147 <span style=''>        // 낫다
 </span>148 <span style=''>        case (o: Char, 'ㅏ', 'ㅅ') =>
-</span>149 <span style=''>          addPreEomi(composeHangul(o, 'ㅏ'), PRE_EOMI_3 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>149 <span style=''>          addPreEomi(composeHangul(o, 'ㅏ'), PRE_EOMI_3 </span><span style='background: #AEF1AE'>++ PRE_EOMI_4 ++</span><span style=''> PRE_EOMI_5) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>150 <span style=''>              Seq(lastCharString)
 </span>151 <span style=''>
 </span>152 <span style=''>        // 묻다
@@ -181,38 +181,38 @@
 </span>156 <span style=''>
 </span>157 <span style=''>        // 붇다
 </span>158 <span style=''>        case (o: Char, 'ㅜ', 'ㄷ') =>
-</span>159 <span style=''>          addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_2 ++ PRE_EOMI_1_4 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>159 <span style=''>          addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_2 </span><span style='background: #AEF1AE'>++ PRE_EOMI_1_4 ++ PRE_EOMI_4 ++</span><span style=''> PRE_EOMI_5) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>160 <span style=''>              Seq(composeHangul(o, 'ㅜ', 'ㄹ').toString,
 </span>161 <span style=''>                lastCharString)
 </span>162 <span style=''>
 </span>163 <span style=''>        // 눕다
 </span>164 <span style=''>        case (o: Char, 'ㅜ', 'ㅂ') =>
-</span>165 <span style=''>          addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_4 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>165 <span style=''>          addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_4 </span><span style='background: #AEF1AE'>++ PRE_EOMI_4 ++</span><span style=''> PRE_EOMI_5) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>166 <span style=''>              Seq(lastCharString)
 </span>167 <span style=''>
 </span>168 <span style=''>        // 간지럽다, 갑작스럽다 -> 갑작스런
 </span>169 <span style=''>        case (o: Char, 'ㅓ', 'ㅂ') if isAdjective =>
-</span>170 <span style=''>          addPreEomi(composeHangul(o, 'ㅓ', ' '), PRE_EOMI_1_4 ++ PRE_EOMI_7) ++
+</span>170 <span style=''>          addPreEomi(composeHangul(o, 'ㅓ', ' '), PRE_EOMI_1_4 </span><span style='background: #AEF1AE'>++</span><span style=''> PRE_EOMI_7) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>171 <span style=''>              Seq(composeHangul(o, 'ㅓ', ' ').toString, composeHangul(o, 'ㅓ', 'ㄴ').toString, lastCharString)
 </span>172 <span style=''>
 </span>173 <span style=''>        // 아름답다, 가볍다, 덥다, 간지럽다
 </span>174 <span style=''>        case (o: Char, v: Char, 'ㅂ') if isAdjective =>
-</span>175 <span style=''>          addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_1_4 ++ PRE_EOMI_7) ++
+</span>175 <span style=''>          addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_1_4 </span><span style='background: #AEF1AE'>++</span><span style=''> PRE_EOMI_7) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>176 <span style=''>              Seq(composeHangul(o, v, ' ').toString, lastCharString)
 </span>177 <span style=''>
 </span>178 <span style=''>        // 놓다
 </span>179 <span style=''>        case (o: Char, 'ㅗ', 'ㅎ') =>
-</span>180 <span style=''>          CODAS_COMMON.map(composeHangul(o, 'ㅗ', _).toString) ++
+</span>180 <span style=''>          CODAS_COMMON.map(composeHangul(o, 'ㅗ', _).toString) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>181 <span style=''>              Seq(composeHangul(o, 'ㅘ', ' ').toString, composeHangul(o, 'ㅗ', ' ').toString, lastCharString)
 </span>182 <span style=''>
 </span>183 <span style=''>        // 파랗다, 퍼렇다
 </span>184 <span style=''>        case (o: Char, v: Char, 'ㅎ') if isAdjective =>
-</span>185 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
+</span>185 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>186 <span style=''>              Seq(composeHangul(o, v, ' ').toString, lastCharString)
 </span>187 <span style=''>
 </span>188 <span style=''>        // 1 char with coda, 작다
-</span>189 <span style=''>        case (o: Char, v: Char, c: Char) if word.length == 1 =>
-</span>190 <span style=''>          addPreEomi(lastChar, PRE_EOMI_COMMON ++ PRE_EOMI_1_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>189 <span style=''>        case (o: Char, v: Char, c: Char) if word.length </span><span style='background: #AEF1AE'>==</span><span style=''> 1 =>
+</span>190 <span style=''>          addPreEomi(lastChar, PRE_EOMI_COMMON </span><span style='background: #AEF1AE'>++ PRE_EOMI_1_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_4 ++</span><span style=''> PRE_EOMI_5) </span><span style='background: #AEF1AE'>++</span><span style=''>
 </span>191 <span style=''>              Seq(lastCharString)
 </span>192 <span style=''>
 </span>193 <span style=''>        // 부여잡다, 얻어맞다, 얻어먹다
@@ -221,7 +221,7 @@
 </span>196 <span style=''>
 </span>197 <span style=''>      }
 </span>198 <span style=''>
-</span>199 <span style=''>      expandedLast.map(init + _)
+</span>199 <span style=''>      expandedLast.map(init </span><span style='background: #AEF1AE'>+</span><span style=''> _)
 </span>200 <span style=''>    }
 </span>201 <span style=''>
 </span>202 <span style=''>    lazy val newSet = newCharArraySet
@@ -241,16 +241,16 @@
 </span>216 <span style=''>   */
 </span>217 <span style=''>  def addTypoEndings(word: String, applyToOneChar: Boolean = true): Seq[String] = {
 </span>218 <span style=''>    decomposeHangul(word.last) match {
-</span>219 <span style=''>      case (o: Char, v: Char, ' ') if applyToOneChar || word.length > 1 =>
-</span>220 <span style=''>        Seq(word) ++
-</span>221 <span style=''>            CODAS_SLANG_CONSONANT.map(word.init + composeHangul(o, v, _))
-</span>222 <span style=''>      case (o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) && word.length > 1 =>
+</span>219 <span style=''>      case (o: Char, v: Char, ' ') if applyToOneChar </span><span style='background: #F0ADAD'>|| word.length ></span><span style=''> 1 =>
+</span>220 <span style=''>        Seq(word) </span><span style='background: #F0ADAD'>++</span><span style=''>
+</span>221 <span style=''>            CODAS_SLANG_CONSONANT.map(word.init </span><span style='background: #F0ADAD'>+</span><span style=''> composeHangul(o, v, _))
+</span>222 <span style=''>      case (o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) </span><span style='background: #F0ADAD'>&& word.length ></span><span style=''> 1 =>
 </span>223 <span style=''>        val doubleCoda = DOUBLE_CODAS(c)
-</span>224 <span style=''>        Seq(word) ++
-</span>225 <span style=''>            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, doubleCoda.first) + composeHangul(doubleCoda.second, _))
-</span>226 <span style=''>      case (o: Char, v: Char, c: Char) if word.length > 1 =>
-</span>227 <span style=''>        Seq(word) ++
-</span>228 <span style=''>            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, ' ') + composeHangul(c, _))
+</span>224 <span style=''>        Seq(word) </span><span style='background: #F0ADAD'>++</span><span style=''>
+</span>225 <span style=''>            CODAS_SLANG_VOWEL.map(word.init </span><span style='background: #F0ADAD'>+ composeHangul(o, v, doubleCoda.first) +</span><span style=''> composeHangul(doubleCoda.second, _))
+</span>226 <span style=''>      case (o: Char, v: Char, c: Char) if word.length </span><span style='background: #F0ADAD'>></span><span style=''> 1 =>
+</span>227 <span style=''>        Seq(word) </span><span style='background: #F0ADAD'>++</span><span style=''>
+</span>228 <span style=''>            CODAS_SLANG_VOWEL.map(word.init </span><span style='background: #F0ADAD'>+ composeHangul(o, v, ' ') +</span><span style=''> composeHangul(c, _))
 </span>229 <span style=''>      case _ => Seq(word)
 </span>230 <span style=''>    }
 </span>231 <span style=''>  }

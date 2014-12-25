@@ -60,7 +60,7 @@
 </span>35 <span style=''>    System.err.println("Reading the goldenset..")
 </span>36 <span style=''>
 </span>37 <span style=''>    val parsedPairs = readFileByLineFromResources("example_chunks.txt").flatMap {
-</span>38 <span style=''>      case line if line.length > 0 =>
+</span>38 <span style=''>      case line if line.length </span><span style='background: #F0ADAD'>></span><span style=''> 0 =>
 </span>39 <span style=''>        val chunk = line.trim
 </span>40 <span style=''>        val parsed = tokenize(chunk)
 </span>41 <span style=''>        Some(ParsingExample(chunk, parsed))
@@ -70,7 +70,7 @@
 </span>45 <span style=''>
 </span>46 <span style=''>    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_parsing.txt"
 </span>47 <span style=''>
-</span>48 <span style=''>    System.err.println("Writing the new goldenset to " + outputFile)
+</span>48 <span style=''>    System.err.println("Writing the new goldenset to " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFile)
 </span>49 <span style=''>
 </span>50 <span style=''>    val out = new FileOutputStream(outputFile)
 </span>51 <span style=''>    parsedPairs.foreach {
@@ -82,7 +82,7 @@
 </span>57 <span style=''>    }
 </span>58 <span style=''>    out.close()
 </span>59 <span style=''>
-</span>60 <span style=''>    System.err.println("Testing the new goldenset " + outputFile)
+</span>60 <span style=''>    System.err.println("Testing the new goldenset " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFile)
 </span>61 <span style=''>  }
 </span>62 <span style=''>}
 </span></pre>
@@ -101,7 +101,7 @@
           35
         </td>
         <td>
-          1037
+          1039
         </td>
         <td>
           Apply
@@ -117,7 +117,23 @@
           37
         </td>
         <td>
-          1052
+          1040
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;example_chunks.txt&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1054
         </td>
         <td>
           Match
@@ -137,26 +153,10 @@
         </td>
       </tr><tr>
         <td>
-          37
-        </td>
-        <td>
-          1038
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;example_chunks.txt&quot;
-        </td>
-      </tr><tr>
-        <td>
           38
         </td>
         <td>
-          1048
+          1050
         </td>
         <td>
           Block
@@ -176,7 +176,7 @@
           38
         </td>
         <td>
-          1039
+          1041
         </td>
         <td>
           Apply
@@ -192,7 +192,7 @@
           39
         </td>
         <td>
-          1040
+          1042
         </td>
         <td>
           Apply
@@ -214,38 +214,6 @@
           Select
         </td>
         <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
-        </td>
-        <td style="background: #F0ADAD">
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          1042
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
-        </td>
-        <td style="background: #F0ADAD">
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          1041
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
           com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
         </td>
         <td style="background: #F0ADAD">
@@ -256,7 +224,7 @@
           40
         </td>
         <td>
-          1044
+          1046
         </td>
         <td>
           Apply
@@ -269,10 +237,58 @@
         </td>
       </tr><tr>
         <td>
+          40
+        </td>
+        <td>
+          1045
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1044
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+      </tr><tr>
+        <td>
           41
         </td>
         <td>
-          1046
+          1049
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.Option.option2Iterable
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)))
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1048
         </td>
         <td>
           Apply
@@ -288,7 +304,7 @@
           41
         </td>
         <td>
-          1045
+          1047
         </td>
         <td>
           Apply
@@ -301,10 +317,10 @@
         </td>
       </tr><tr>
         <td>
-          41
+          42
         </td>
         <td>
-          1047
+          1052
         </td>
         <td>
           ApplyImplicitView
@@ -313,14 +329,14 @@
           scala.Option.option2Iterable
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)))
+          scala.this.Option.option2Iterable[Nothing](scala.None)
         </td>
       </tr><tr>
         <td>
           42
         </td>
         <td>
-          1049
+          1051
         </td>
         <td>
           Select
@@ -336,7 +352,7 @@
           42
         </td>
         <td>
-          1051
+          1053
         </td>
         <td>
           Block
@@ -349,26 +365,10 @@
         </td>
       </tr><tr>
         <td>
-          42
-        </td>
-        <td>
-          1050
-        </td>
-        <td>
-          ApplyImplicitView
-        </td>
-        <td>
-          scala.Option.option2Iterable
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Option.option2Iterable[Nothing](scala.None)
-        </td>
-      </tr><tr>
-        <td>
           43
         </td>
         <td>
-          1053
+          1055
         </td>
         <td>
           TypeApply
@@ -391,7 +391,7 @@
           46
         </td>
         <td>
-          1054
+          1056
         </td>
         <td>
           Literal
@@ -407,23 +407,7 @@
           48
         </td>
         <td>
-          1055
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.+
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;Writing the new goldenset to &quot;.+(outputFile)
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          1056
+          1058
         </td>
         <td>
           Apply
@@ -436,10 +420,26 @@
         </td>
       </tr><tr>
         <td>
-          50
+          48
         </td>
         <td>
           1057
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Writing the new goldenset to &quot;.+(outputFile)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1059
         </td>
         <td>
           Apply
@@ -455,7 +455,7 @@
           51
         </td>
         <td>
-          1066
+          1068
         </td>
         <td>
           Apply
@@ -476,23 +476,7 @@
           53
         </td>
         <td>
-          1058
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.getBytes
-        </td>
-        <td style="background: #F0ADAD">
-          p.text.getBytes()
-        </td>
-      </tr><tr>
-        <td>
-          53
-        </td>
-        <td>
-          1059
+          1061
         </td>
         <td>
           Apply
@@ -505,10 +489,26 @@
         </td>
       </tr><tr>
         <td>
+          53
+        </td>
+        <td>
+          1060
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          p.text.getBytes()
+        </td>
+      </tr><tr>
+        <td>
           54
         </td>
         <td>
-          1061
+          1063
         </td>
         <td>
           Apply
@@ -524,7 +524,7 @@
           54
         </td>
         <td>
-          1060
+          1062
         </td>
         <td>
           Apply
@@ -540,23 +540,7 @@
           55
         </td>
         <td>
-          1063
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.io.FileOutputStream.write
-        </td>
-        <td style="background: #F0ADAD">
-          out.write(p.parse.mkString(&quot;/&quot;).getBytes())
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          1062
+          1064
         </td>
         <td>
           Apply
@@ -569,26 +553,26 @@
         </td>
       </tr><tr>
         <td>
-          56
+          55
         </td>
         <td>
-          1064
+          1065
         </td>
         <td>
           Apply
         </td>
         <td>
-          java.lang.String.getBytes
+          java.io.FileOutputStream.write
         </td>
         <td style="background: #F0ADAD">
-          &quot;\n&quot;.getBytes()
+          out.write(p.parse.mkString(&quot;/&quot;).getBytes())
         </td>
       </tr><tr>
         <td>
           56
         </td>
         <td>
-          1065
+          1067
         </td>
         <td>
           Apply
@@ -601,10 +585,26 @@
         </td>
       </tr><tr>
         <td>
+          56
+        </td>
+        <td>
+          1066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;\n&quot;.getBytes()
+        </td>
+      </tr><tr>
+        <td>
           58
         </td>
         <td>
-          1067
+          1069
         </td>
         <td>
           Apply
@@ -620,23 +620,7 @@
           60
         </td>
         <td>
-          1069
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.io.PrintStream.println
-        </td>
-        <td style="background: #F0ADAD">
-          java.this.lang.System.err.println(&quot;Testing the new goldenset &quot;.+(outputFile))
-        </td>
-      </tr><tr>
-        <td>
-          60
-        </td>
-        <td>
-          1068
+          1070
         </td>
         <td>
           Apply
@@ -646,6 +630,22 @@
         </td>
         <td style="background: #F0ADAD">
           &quot;Testing the new goldenset &quot;.+(outputFile)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1071
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(&quot;Testing the new goldenset &quot;.+(outputFile))
         </td>
       </tr>
     </table>

@@ -119,19 +119,19 @@
 </span>94 <span style=''>  }
 </span>95 <span style=''>
 </span>96 <span style=''>  protected[korean] def normalizeCodaN(chunk: CharSequence): CharSequence = {
-</span>97 <span style=''>    if (chunk.length < 2) return chunk
+</span>97 <span style=''>    if (chunk.length </span><span style='background: #AEF1AE'><</span><span style=''> 2) return chunk
 </span>98 <span style=''>
-</span>99 <span style=''>    val lastTwo = chunk.subSequence(chunk.length() - 2, chunk.length())
-</span>100 <span style=''>    val last = chunk.charAt(chunk.length() - 1)
+</span>99 <span style=''>    val lastTwo = chunk.subSequence(chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 2, chunk.length())
+</span>100 <span style=''>    val last = chunk.charAt(chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1)
 </span>101 <span style=''>
 </span>102 <span style=''>    val lastTwoHead = lastTwo.charAt(0)
 </span>103 <span style=''>
 </span>104 <span style=''>    // Exception cases
-</span>105 <span style=''>    if (koreanDictionary(Noun).contains(chunk) ||
-</span>106 <span style=''>        koreanDictionary(Conjunction).contains(chunk) ||
-</span>107 <span style=''>        koreanDictionary(Adverb).contains(chunk) ||
-</span>108 <span style=''>        koreanDictionary(Noun).contains(lastTwo) ||
-</span>109 <span style=''>        lastTwoHead < '가' || lastTwoHead > '힣' ||
+</span>105 <span style=''>    if (koreanDictionary(Noun).contains(chunk) </span><span style='background: #AEF1AE'>||
+</span>106 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Conjunction).contains(chunk) ||
+</span>107 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Adverb).contains(chunk) ||
+</span>108 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Noun).contains(lastTwo) ||
+</span>109 <span style=''></span><span style='background: #AEF1AE'>        lastTwoHead < '가' || lastTwoHead > '힣' ||</span><span style=''>
 </span>110 <span style=''>        CODA_N_EXCPETION.contains(lastTwoHead)
 </span>111 <span style=''>    ) {
 </span>112 <span style=''>      return chunk
@@ -140,15 +140,15 @@
 </span>115 <span style=''>    val hc = decomposeHangul(lastTwoHead)
 </span>116 <span style=''>
 </span>117 <span style=''>    val newHead = new StringBuilder()
-</span>118 <span style=''>        .append(chunk.subSequence(0, chunk.length() - 2))
+</span>118 <span style=''>        .append(chunk.subSequence(0, chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 2))
 </span>119 <span style=''>        .append(composeHangul(hc.onset, hc.vowel))
 </span>120 <span style=''>
-</span>121 <span style=''>    if (hc.coda == 'ㄴ' &&
-</span>122 <span style=''>        (last == '데' || last == '가' || last == '지') &&
+</span>121 <span style=''>    if (hc.coda </span><span style='background: #AEF1AE'>== 'ㄴ' &&
+</span>122 <span style=''></span><span style='background: #AEF1AE'>        (last == '데' || last == '가' || last == '지') &&</span><span style=''>
 </span>123 <span style=''>        koreanDictionary(Noun).contains(newHead)
 </span>124 <span style=''>    ) {
-</span>125 <span style=''>      val mid = if (hc.vowel == 'ㅡ') "은" else "인"
-</span>126 <span style=''>      newHead + mid + last
+</span>125 <span style=''>      val mid = if (hc.vowel </span><span style='background: #AEF1AE'>==</span><span style=''> 'ㅡ') "은" else "인"
+</span>126 <span style=''>      newHead </span><span style='background: #AEF1AE'>+ mid +</span><span style=''> last
 </span>127 <span style=''>    } else {
 </span>128 <span style=''>      chunk
 </span>129 <span style=''>    }
@@ -158,36 +158,36 @@
 </span>133 <span style=''>    val chunk = m.group(1)
 </span>134 <span style=''>    val toNormalize = m.group(2)
 </span>135 <span style=''>
-</span>136 <span style=''>    val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) ||
-</span>137 <span style=''>        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||
+</span>136 <span style=''>    val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) </span><span style='background: #AEF1AE'>||
+</span>137 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||</span><span style=''>
 </span>138 <span style=''>        koreanDictionary(Eomi).contains(chunk.takeRight(2))) {
 </span>139 <span style=''>      chunk
 </span>140 <span style=''>    } else {
 </span>141 <span style=''>      normalizeEmotionAttachedChunk(chunk, toNormalize)
 </span>142 <span style=''>    }
-</span>143 <span style=''>    normalizedChunk + toNormalize
+</span>143 <span style=''>    normalizedChunk </span><span style='background: #AEF1AE'>+</span><span style=''> toNormalize
 </span>144 <span style=''>  }
 </span>145 <span style=''>
 </span>146 <span style=''>  private[this] def normalizeEmotionAttachedChunk(s: CharSequence, toNormalize: CharSequence): CharSequence = {
-</span>147 <span style=''>    val init = s.subSequence(0, s.length() - 1)
+</span>147 <span style=''>    val init = s.subSequence(0, s.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1)
 </span>148 <span style=''>    val secondToLastDecomposed = init match {
-</span>149 <span style=''>      case si: CharSequence if si.length > 0 =>
-</span>150 <span style=''>        val hc = decomposeHangul(si.charAt(si.length() - 1))
-</span>151 <span style=''>        if (hc.coda == ' ') Some(hc) else None
+</span>149 <span style=''>      case si: CharSequence if si.length </span><span style='background: #AEF1AE'>></span><span style=''> 0 =>
+</span>150 <span style=''>        val hc = decomposeHangul(si.charAt(si.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1))
+</span>151 <span style=''>        if (hc.coda </span><span style='background: #AEF1AE'>==</span><span style=''> ' ') Some(hc) else None
 </span>152 <span style=''>      case _ => None
 </span>153 <span style=''>    }
 </span>154 <span style=''>
-</span>155 <span style=''>    decomposeHangul(s.charAt(s.length() - 1)) match {
-</span>156 <span style=''>      case hc: HangulChar if hc.coda == 'ㅋ' || hc.coda == 'ㅎ' =>
+</span>155 <span style=''>    decomposeHangul(s.charAt(s.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1)) match {
+</span>156 <span style=''>      case hc: HangulChar if hc.coda </span><span style='background: #AEF1AE'>== 'ㅋ' || hc.coda ==</span><span style=''> 'ㅎ' =>
 </span>157 <span style=''>        new StringBuilder()
 </span>158 <span style=''>            .append(init)
 </span>159 <span style=''>            .append(composeHangul(hc.onset, hc.vowel))
-</span>160 <span style=''>      case HangulChar(o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined &&
-</span>161 <span style=''>          (v == toNormalize.charAt(0)) &&
+</span>160 <span style=''>      case HangulChar(o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined </span><span style='background: #AEF1AE'>&&
+</span>161 <span style=''></span><span style='background: #AEF1AE'>          (v == toNormalize.charAt(0)) &&</span><span style=''>
 </span>162 <span style=''>          Hangul.CODA_MAP.contains(o) =>
 </span>163 <span style=''>        val hc = secondToLastDecomposed.get
 </span>164 <span style=''>        new StringBuilder()
-</span>165 <span style=''>            .append(init.subSequence(0, init.length() - 1))
+</span>165 <span style=''>            .append(init.subSequence(0, init.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1))
 </span>166 <span style=''>            .append(composeHangul(hc.onset, hc.vowel, o))
 </span>167 <span style=''>      case _ => s
 </span>168 <span style=''>    }
@@ -618,8 +618,8 @@
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.typoDictionaryByLength.foldLeft[CharSequence](chunk)(((x0$1: CharSequence, x1$1: (Int, scala.collection.immutable.Map[String,String])) =&gt; scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
-  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.typoDictionaryByLength.foldLeft[CharSequence](chunk)(((x0$1: CharSequence, x1$1: (Int, scala.collection.immutable.Map[String,String])) =&gt; scala.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
+  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
     case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
     case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
   }))
@@ -639,8 +639,8 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
-  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          scala.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
+  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
     case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
     case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
   }))
@@ -660,7 +660,7 @@
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1)
+          scala.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1)
         </td>
       </tr><tr>
         <td>
@@ -676,7 +676,7 @@
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
 }))
@@ -695,7 +695,7 @@
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[String, String](x0$2, x1$2)
+          scala.Tuple2.apply[String, String](x0$2, x1$2)
         </td>
       </tr><tr>
         <td>
@@ -711,7 +711,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          scala.Tuple2.apply[String, String](x0$2, x1$2) match {
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
 }
@@ -730,7 +730,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
 }))
@@ -1426,7 +1426,7 @@
     &quot;은&quot;
   else
     &quot;인&quot;;
-  scala.this.Predef.any2stringadd(newHead).+(mid).+(last)
+  scala.this.Predef.any2stringadd[StringBuilder](newHead).+(mid).+(last)
 }
         </td>
       </tr><tr>
@@ -1523,7 +1523,7 @@
           java.lang.String.+
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2stringadd(newHead).+(mid).+(last)
+          scala.this.Predef.any2stringadd[StringBuilder](newHead).+(mid).+(last)
         </td>
       </tr><tr>
         <td>
@@ -1760,10 +1760,10 @@
           Apply
         </td>
         <td>
-          scala.runtime.StringAdd.+
+          scala.Predef.any2stringadd.+
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2stringadd(normalizedChunk).+(toNormalize)
+          scala.this.Predef.any2stringadd[CharSequence](normalizedChunk).+(toNormalize)
         </td>
       </tr><tr>
         <td>

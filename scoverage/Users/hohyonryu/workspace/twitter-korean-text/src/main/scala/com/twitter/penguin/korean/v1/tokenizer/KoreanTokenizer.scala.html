@@ -84,38 +84,38 @@
 </span>59 <span style=''>   */
 </span>60 <span style=''>  case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int) {
 </span>61 <span style=''>    def ++(that: ParsedChunk) = {
-</span>62 <span style=''>      ParsedChunk(this.posNodes ++ that.posNodes, this.words + that.words)
+</span>62 <span style=''>      ParsedChunk(this.posNodes </span><span style='background: #AEF1AE'>++</span><span style=''> that.posNodes, this.words </span><span style='background: #AEF1AE'>+</span><span style=''> that.words)
 </span>63 <span style=''>    }
 </span>64 <span style=''>
-</span>65 <span style=''>    lazy val score = countTokens * WEIGHT_TOKENS +
-</span>66 <span style=''>        countUnknowns * WEIGHT_UNKNOWNS +
-</span>67 <span style=''>        words * WEIGHT_WORDS +
-</span>68 <span style=''>        getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
-</span>69 <span style=''>        getFreqScore * WEIGHT_FREQ +
-</span>70 <span style=''>        countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
-</span>71 <span style=''>        isExactMatch * WEIGHT_EXACT_MATCH +
-</span>72 <span style=''>        isAllNouns * WEIGHT_ALL_NOUN +
-</span>73 <span style=''>        isPreferredPattern * WEIGHT_PREFFERED_PATTERN
+</span>65 <span style=''>    lazy val score = countTokens </span><span style='background: #AEF1AE'>* WEIGHT_TOKENS +
+</span>66 <span style=''></span><span style='background: #AEF1AE'>        countUnknowns * WEIGHT_UNKNOWNS +
+</span>67 <span style=''></span><span style='background: #AEF1AE'>        words * WEIGHT_WORDS +
+</span>68 <span style=''></span><span style='background: #AEF1AE'>        getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
+</span>69 <span style=''></span><span style='background: #AEF1AE'>        getFreqScore * WEIGHT_FREQ +
+</span>70 <span style=''></span><span style='background: #AEF1AE'>        countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
+</span>71 <span style=''></span><span style='background: #AEF1AE'>        isExactMatch * WEIGHT_EXACT_MATCH +
+</span>72 <span style=''></span><span style='background: #AEF1AE'>        isAllNouns * WEIGHT_ALL_NOUN +
+</span>73 <span style=''></span><span style='background: #AEF1AE'>        isPreferredPattern *</span><span style=''> WEIGHT_PREFFERED_PATTERN
 </span>74 <span style=''>
 </span>75 <span style=''>    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown}
 </span>76 <span style=''>    lazy val countTokens = this.posNodes.size
 </span>77 <span style=''>
-</span>78 <span style=''>    lazy val isExactMatch = if (this.posNodes.size == 1) 0 else 1
-</span>79 <span style=''>    lazy val isAllNouns = if (this.posNodes.exists(_.pos != Noun)) 1 else 0
-</span>80 <span style=''>    lazy val isPreferredPattern = if (posNodes.size == 2 && posNodes.map(_.pos) == PREFERRED_PATTERN) 0 else 1
+</span>78 <span style=''>    lazy val isExactMatch = if (this.posNodes.size </span><span style='background: #AEF1AE'>==</span><span style=''> 1) 0 else 1
+</span>79 <span style=''>    lazy val isAllNouns = if (this.posNodes.exists(_.pos </span><span style='background: #AEF1AE'>!=</span><span style=''> Noun)) 1 else 0
+</span>80 <span style=''>    lazy val isPreferredPattern = if (posNodes.size </span><span style='background: #AEF1AE'>== 2 && posNodes.map(_.pos) ==</span><span style=''> PREFERRED_PATTERN) 0 else 1
 </span>81 <span style=''>
 </span>82 <span style=''>    lazy val posTieBreaker = this.posNodes.map(_.pos.id).sum
 </span>83 <span style=''>
 </span>84 <span style=''>    lazy val getUnknownCoverage = this.posNodes.foldLeft(0) {
-</span>85 <span style=''>      case (sum, p: KoreanToken) => if (p.unknown) sum + p.text.length else sum
+</span>85 <span style=''>      case (sum, p: KoreanToken) => if (p.unknown) sum </span><span style='background: #AEF1AE'>+</span><span style=''> p.text.length else sum
 </span>86 <span style=''>    }
 </span>87 <span style=''>
 </span>88 <span style=''>    lazy val getFreqScore = this.posNodes.foldLeft(0f) {
-</span>89 <span style=''>      case (output: Float, p: KoreanToken) if p.pos == Noun => output + (1f - koreanEntityFreq.getOrElse(p.text, 0f))
-</span>90 <span style=''>      case (output: Float, p: KoreanToken) => output + 1.0f
-</span>91 <span style=''>    } / this.posNodes.size
+</span>89 <span style=''>      case (output: Float, p: KoreanToken) if p.pos </span><span style='background: #AEF1AE'>==</span><span style=''> Noun => output </span><span style='background: #AEF1AE'>+</span><span style=''> (1f </span><span style='background: #AEF1AE'>-</span><span style=''> koreanEntityFreq.getOrElse(p.text, 0f))
+</span>90 <span style=''>      case (output: Float, p: KoreanToken) => output </span><span style='background: #AEF1AE'>+</span><span style=''> 1.0f
+</span>91 <span style=''>    } </span><span style='background: #AEF1AE'>/</span><span style=''> this.posNodes.size
 </span>92 <span style=''>
-</span>93 <span style=''>    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
+</span>93 <span style=''>    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos </span><span style='background: #AEF1AE'>==</span><span style=''> pos}
 </span>94 <span style=''>  }
 </span>95 <span style=''>
 </span>96 <span style=''>  case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Boolean)
@@ -123,7 +123,7 @@
 </span>98 <span style=''>  case class KoreanToken(text: String, pos: KoreanPos, unknown: Boolean = false) {
 </span>99 <span style=''>    override def toString: String = {
 </span>100 <span style=''>      val unknownStar = if (unknown) "*" else ""
-</span>101 <span style=''>      text + pos.toString + unknownStar
+</span>101 <span style=''>      text </span><span style='background: #AEF1AE'>+ pos.toString +</span><span style=''> unknownStar
 </span>102 <span style=''>    }
 </span>103 <span style=''>
 </span>104 <span style=''>    def copyWithNewPos(pos: KoreanPos): KoreanToken = {
@@ -175,19 +175,19 @@
 </span>150 <span style=''>  protected[korean] def buildTrie(s: String): List[KoreanPosTrie] = {
 </span>151 <span style=''>    def isFinal(rest: String): Boolean = {
 </span>152 <span style=''>      val isNextOptional = rest.foldLeft(true) {
-</span>153 <span style=''>        case (output: Boolean, c: Char) if c == '+' || c == '1' => false
+</span>153 <span style=''>        case (output: Boolean, c: Char) if c </span><span style='background: #AEF1AE'>== '+' || c ==</span><span style=''> '1' => false
 </span>154 <span style=''>        case (output: Boolean, c: Char) => output
 </span>155 <span style=''>      }
-</span>156 <span style=''>      rest.length == 0 || isNextOptional
+</span>156 <span style=''>      rest.length </span><span style='background: #AEF1AE'>== 0 ||</span><span style=''> isNextOptional
 </span>157 <span style=''>    }
 </span>158 <span style=''>
-</span>159 <span style=''>    if (s.length < 2) {
+</span>159 <span style=''>    if (s.length </span><span style='background: #AEF1AE'><</span><span style=''> 2) {
 </span>160 <span style=''>      return List()
 </span>161 <span style=''>    }
 </span>162 <span style=''>
 </span>163 <span style=''>    val pos = shortCut(s.charAt(0))
 </span>164 <span style=''>    val rule = s.charAt(1)
-</span>165 <span style=''>    val rest = if (s.length > 1) {
+</span>165 <span style=''>    val rest = if (s.length </span><span style='background: #AEF1AE'>></span><span style=''> 1) {
 </span>166 <span style=''>      s.slice(2, s.length)
 </span>167 <span style=''>    } else {
 </span>168 <span style=''>      ""
@@ -197,19 +197,19 @@
 </span>172 <span style=''>
 </span>173 <span style=''>    rule match {
 </span>174 <span style=''>      case '+' =>
-</span>175 <span style=''>        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end))
+</span>175 <span style=''>        List(KoreanPosTrie(pos, selfNode </span><span style='background: #AEF1AE'>::</span><span style=''> buildTrie(rest), end))
 </span>176 <span style=''>      case '*' =>
-</span>177 <span style=''>        List(KoreanPosTrie(pos, selfNode :: buildTrie(rest), end)) ++ buildTrie(rest)
+</span>177 <span style=''>        List(KoreanPosTrie(pos, selfNode </span><span style='background: #AEF1AE'>::</span><span style=''> buildTrie(rest), end)) </span><span style='background: #AEF1AE'>++</span><span style=''> buildTrie(rest)
 </span>178 <span style=''>      case '1' =>
 </span>179 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest), end))
 </span>180 <span style=''>      case '0' =>
-</span>181 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest), end)) ++ buildTrie(rest)
+</span>181 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest), end)) </span><span style='background: #AEF1AE'>++</span><span style=''> buildTrie(rest)
 </span>182 <span style=''>    }
 </span>183 <span style=''>  }
 </span>184 <span style=''>
 </span>185 <span style=''>  private[this] val koreanPosTrie: List[KoreanPosTrie] =
 </span>186 <span style=''>    SequenceDefinition.foldLeft(List[KoreanPosTrie]()) {
-</span>187 <span style=''>      (results: List[KoreanPosTrie], s: String) => buildTrie(s) ::: results
+</span>187 <span style=''>      (results: List[KoreanPosTrie], s: String) => buildTrie(s) </span><span style='background: #AEF1AE'>:::</span><span style=''> results
 </span>188 <span style=''>    }
 </span>189 <span style=''>
 </span>190 <span style=''>  case class ParsedChunkWithMinScore(parsedChunk: Option[ParsedChunk], score: Float)
@@ -231,7 +231,7 @@
 </span>206 <span style=''>    val solutions: mutable.Map[Int, List[CandidateParse]] = new java.util.HashMap[Int, List[CandidateParse]]
 </span>207 <span style=''>
 </span>208 <span style=''>    // Initial state
-</span>209 <span style=''>    solutions += 0 -> List(
+</span>209 <span style=''>    solutions </span><span style='background: #AEF1AE'>+= 0 -></span><span style=''> List(
 </span>210 <span style=''>      CandidateParse(
 </span>211 <span style=''>        ParsedChunk(Seq[KoreanToken](), 1),
 </span>212 <span style=''>        koreanPosTrie, ending = false
@@ -241,7 +241,7 @@
 </span>216 <span style=''>    // Find N best parses per state
 </span>217 <span style=''>    for (
 </span>218 <span style=''>      end <- 1 to chunk.length;
-</span>219 <span style=''>      start <- end - 1 to(0, -1)
+</span>219 <span style=''>      start <- end </span><span style='background: #AEF1AE'>-</span><span style=''> 1 to(0, -1)
 </span>220 <span style=''>    ) {
 </span>221 <span style=''>      val word = chunk.slice(start, end)
 </span>222 <span style=''>
@@ -250,35 +250,35 @@
 </span>225 <span style=''>      val candidates = curSolutions.flatMap {
 </span>226 <span style=''>        solution =>
 </span>227 <span style=''>          val possiblePoses: Seq[PossibleTrie] = if (solution.ending) {
-</span>228 <span style=''>            solution.curTrie.map(t => PossibleTrie(t, 0)) ++ koreanPosTrie.map(t => PossibleTrie(t, 1))
+</span>228 <span style=''>            solution.curTrie.map(t => PossibleTrie(t, 0)) </span><span style='background: #AEF1AE'>++</span><span style=''> koreanPosTrie.map(t => PossibleTrie(t, 1))
 </span>229 <span style=''>          } else {
 </span>230 <span style=''>            solution.curTrie.map(t => PossibleTrie(t, 0))
 </span>231 <span style=''>          }
 </span>232 <span style=''>
 </span>233 <span style=''>          possiblePoses.view.filter { t =>
-</span>234 <span style=''>            t.curTrie.curPos == Noun || koreanDictionary(t.curTrie.curPos).contains(word.toCharArray)
+</span>234 <span style=''>            t.curTrie.curPos </span><span style='background: #AEF1AE'>== Noun ||</span><span style=''> koreanDictionary(t.curTrie.curPos).contains(word.toCharArray)
 </span>235 <span style=''>          }.map {
 </span>236 <span style=''>            case t: PossibleTrie =>
 </span>237 <span style=''>              val candidateToAdd =
-</span>238 <span style=''>                if (t.curTrie.curPos == Noun && !koreanDictionary(Noun).contains(word.toCharArray)) {
-</span>239 <span style=''>                  val unknown = !isName(word) && !isKoreanNumber(word)
+</span>238 <span style=''>                if (t.curTrie.curPos </span><span style='background: #AEF1AE'>== Noun &&</span><span style=''> !koreanDictionary(Noun).contains(word.toCharArray)) {
+</span>239 <span style=''>                  val unknown = !isName(word) </span><span style='background: #AEF1AE'>&&</span><span style=''> !isKoreanNumber(word)
 </span>240 <span style=''>                  ParsedChunk(Seq(KoreanToken(word, Noun, unknown)), t.words)
 </span>241 <span style=''>                } else {
 </span>242 <span style=''>                  ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos)), t.words)
 </span>243 <span style=''>                }
 </span>244 <span style=''>
 </span>245 <span style=''>              val nextTrie = t.curTrie.nextTrie.map {
-</span>246 <span style=''>                case nt: KoreanPosTrie if nt == selfNode => t.curTrie
+</span>246 <span style=''>                case nt: KoreanPosTrie if nt </span><span style='background: #AEF1AE'>==</span><span style=''> selfNode => t.curTrie
 </span>247 <span style=''>                case nt: KoreanPosTrie => nt
 </span>248 <span style=''>              }
 </span>249 <span style=''>
-</span>250 <span style=''>              CandidateParse(solution.parse ++ candidateToAdd, nextTrie, t.curTrie.ending)
+</span>250 <span style=''>              CandidateParse(solution.parse </span><span style='background: #AEF1AE'>++</span><span style=''> candidateToAdd, nextTrie, t.curTrie.ending)
 </span>251 <span style=''>          }
 </span>252 <span style=''>      }
 </span>253 <span style=''>
 </span>254 <span style=''>      val currentSolutions = if (solutions.contains(end)) solutions(end) else List()
 </span>255 <span style=''>
-</span>256 <span style=''>      solutions += end -> (currentSolutions ++ candidates).sortBy {
+</span>256 <span style=''>      solutions </span><span style='background: #AEF1AE'>+= end -></span><span style=''> (currentSolutions ++ candidates).sortBy {
 </span>257 <span style=''>        c => (c.parse.score, c.parse.posTieBreaker)
 </span>258 <span style=''>      }.take(TOP_N_PER_STATE)
 </span>259 <span style=''>    }
@@ -295,7 +295,7 @@
 </span>270 <span style=''>   */
 </span>271 <span style=''>  def tokenize(text: CharSequence): Seq[KoreanToken] = {
 </span>272 <span style=''>    chunk(text).flatMap {
-</span>273 <span style=''>      case token: KoreanToken if token.pos == Korean =>
+</span>273 <span style=''>      case token: KoreanToken if token.pos </span><span style='background: #AEF1AE'>==</span><span style=''> Korean =>
 </span>274 <span style=''>        // Get the best parse of each chunk
 </span>275 <span style=''>        val parsed = parseKoreanChunk(token.text)
 </span>276 <span style=''>
@@ -1402,7 +1402,7 @@
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$1, x1$1)
+          scala.Tuple2.apply[Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$1, x1$1)
         </td>
       </tr><tr>
         <td>
@@ -1418,7 +1418,7 @@
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          this.posNodes.foldLeft[Int](0)(((x0$1: Int, x1$1: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken) =&gt; scala.this.Tuple2.apply[Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$1, x1$1) match {
+          this.posNodes.foldLeft[Int](0)(((x0$1: Int, x1$1: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken) =&gt; scala.Tuple2.apply[Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$1, x1$1) match {
   case (_1: Int, _2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)(Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)((sum @ _), (p @ (_: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken))) =&gt; if (p.unknown)
     sum.+(p.text.length())
   else
@@ -1455,7 +1455,7 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$1, x1$1) match {
+          scala.Tuple2.apply[Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$1, x1$1) match {
   case (_1: Int, _2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)(Int, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)((sum @ _), (p @ (_: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken))) =&gt; if (p.unknown)
     sum.+(p.text.length())
   else
@@ -1591,7 +1591,7 @@ else
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$2, x1$2)
+          scala.Tuple2.apply[Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$2, x1$2)
         </td>
       </tr><tr>
         <td>
@@ -1607,7 +1607,7 @@ else
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$2, x1$2) match {
+          scala.Tuple2.apply[Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$2, x1$2) match {
   case (_1: Float, _2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)(Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)((output @ (_: Float)), (p @ (_: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken))) if p.pos.==(com.twitter.penguin.korean.v1.util.KoreanPos.Noun) =&gt; output.+(1.0.-(com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanEntityFreq.getOrElse[Float](p.text, 0.0)))
   case (_1: Float, _2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)(Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)((output @ (_: Float)), (p @ (_: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken))) =&gt; output.+(1.0)
 }
@@ -1818,7 +1818,7 @@ else
           scala.Float./
         </td>
         <td style="background: #AEF1AE">
-          this.posNodes.foldLeft[Float](0.0)(((x0$2: Float, x1$2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken) =&gt; scala.this.Tuple2.apply[Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$2, x1$2) match {
+          this.posNodes.foldLeft[Float](0.0)(((x0$2: Float, x1$2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken) =&gt; scala.Tuple2.apply[Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](x0$2, x1$2) match {
   case (_1: Float, _2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)(Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)((output @ (_: Float)), (p @ (_: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken))) if p.pos.==(com.twitter.penguin.korean.v1.util.KoreanPos.Noun) =&gt; output.+(1.0.-(com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanEntityFreq.getOrElse[Float](p.text, 0.0)))
   case (_1: Float, _2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)(Float, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken)((output @ (_: Float)), (p @ (_: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken))) =&gt; output.+(1.0)
 }))./(this.posNodes.size)
@@ -2061,7 +2061,7 @@ else
           scala.collection.IndexedSeqOptimized.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(rest).foldLeft[Boolean](true)(((x0$3: Boolean, x1$3: Char) =&gt; scala.this.Tuple2.apply[Boolean, Char](x0$3, x1$3) match {
+          scala.this.Predef.augmentString(rest).foldLeft[Boolean](true)(((x0$3: Boolean, x1$3: Char) =&gt; scala.Tuple2.apply[Boolean, Char](x0$3, x1$3) match {
   case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) if c.==('+').||(c.==('1')) =&gt; false
   case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) =&gt; output
 }))
@@ -2080,7 +2080,7 @@ else
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Boolean, Char](x0$3, x1$3) match {
+          scala.Tuple2.apply[Boolean, Char](x0$3, x1$3) match {
   case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) if c.==('+').||(c.==('1')) =&gt; false
   case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) =&gt; output
 }
@@ -2099,7 +2099,7 @@ else
           scala.Tuple2.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[Boolean, Char](x0$3, x1$3)
+          scala.Tuple2.apply[Boolean, Char](x0$3, x1$3)
         </td>
       </tr><tr>
         <td>
@@ -2485,11 +2485,11 @@ else
         <td style="background: #AEF1AE">
           rule match {
   case '+' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-    &lt;synthetic&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+    &lt;synthetic&gt; &lt;artifact&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
     KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$4)
   }, end))
   case '*' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$5)
 }, end)).++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie]](KoreanTokenizer.this.buildTrie(rest))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie])
   case '1' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, KoreanTokenizer.this.buildTrie(rest), end))
@@ -2527,7 +2527,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           case '+' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$4)
 }, end))
         </td>
@@ -2546,7 +2546,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$4)
 }, end))
         </td>
@@ -2565,7 +2565,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$4: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$4)
 }, end)
         </td>
@@ -2616,7 +2616,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           case '*' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$5)
 }, end)).++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie]](KoreanTokenizer.this.buildTrie(rest))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie])
         </td>
@@ -2635,7 +2635,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$5)
 }, end)
         </td>
@@ -2654,7 +2654,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](KoreanTokenizer.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
+  &lt;synthetic&gt; &lt;artifact&gt; val x$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie = KoreanTokenizer.this.selfNode;
   KoreanTokenizer.this.buildTrie(rest).::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$5)
 }, end)).++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie]](KoreanTokenizer.this.buildTrie(rest))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie])
         </td>
@@ -2865,7 +2865,7 @@ else
         </td>
         <td style="background: #AEF1AE">
           KoreanTokenizer.this.SequenceDefinition.foldLeft[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie]](immutable.this.Nil)(((results: List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie], s: String) =&gt; {
-  &lt;synthetic&gt; val x$6: List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie] = KoreanTokenizer.this.buildTrie(s);
+  &lt;synthetic&gt; &lt;artifact&gt; val x$6: List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie] = KoreanTokenizer.this.buildTrie(s);
   results.:::[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie](x$6)
 }))
         </td>
@@ -2947,7 +2947,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          solutions.+=(scala.this.Predef.any2ArrowAssoc[Int](0).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse](KoreanTokenizer.this.CandidateParse.apply(KoreanTokenizer.this.ParsedChunk.apply(collection.this.Seq.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](), 1), KoreanTokenizer.this.koreanPosTrie, false))))
+          solutions.+=(scala.this.Predef.ArrowAssoc[Int](0).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse](KoreanTokenizer.this.CandidateParse.apply(KoreanTokenizer.this.ParsedChunk.apply(collection.this.Seq.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](), 1), KoreanTokenizer.this.koreanPosTrie, false))))
         </td>
       </tr><tr>
         <td>
@@ -2979,7 +2979,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Int](0).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse](KoreanTokenizer.this.CandidateParse.apply(KoreanTokenizer.this.ParsedChunk.apply(collection.this.Seq.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](), 1), KoreanTokenizer.this.koreanPosTrie, false)))
+          scala.this.Predef.ArrowAssoc[Int](0).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](immutable.this.List.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse](KoreanTokenizer.this.CandidateParse.apply(KoreanTokenizer.this.ParsedChunk.apply(collection.this.Seq.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](), 1), KoreanTokenizer.this.koreanPosTrie, false)))
         </td>
       </tr><tr>
         <td>
@@ -3136,7 +3136,7 @@ else
     solutions.apply(end)
   else
     immutable.this.Nil;
-  solutions.+=(scala.this.Predef.any2ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE)))
+  solutions.+=(scala.this.Predef.ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE)))
 }))))
         </td>
       </tr><tr>
@@ -3230,7 +3230,7 @@ else
     solutions.apply(end)
   else
     immutable.this.Nil;
-  solutions.+=(scala.this.Predef.any2ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE)))
+  solutions.+=(scala.this.Predef.ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE)))
 }))
         </td>
       </tr><tr>
@@ -3308,7 +3308,7 @@ else
           ApplyToImplicitArgs
         </td>
         <td>
-          scala.collection.TraversableLike.flatMap
+          scala.collection.immutable.List.flatMap
         </td>
         <td style="background: #AEF1AE">
           curSolutions.flatMap[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](((solution: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; {
@@ -3361,7 +3361,7 @@ else
           ApplyToImplicitArgs
         </td>
         <td>
-          scala.collection.TraversableLike.map
+          scala.collection.immutable.List.map
         </td>
         <td style="background: #AEF1AE">
           KoreanTokenizer.this.koreanPosTrie.map[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie]](((t: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie) =&gt; KoreanTokenizer.this.PossibleTrie.apply(t, 1)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie])
@@ -3489,7 +3489,7 @@ else
           ApplyToImplicitArgs
         </td>
         <td>
-          scala.collection.TraversableLike.map
+          scala.collection.immutable.List.map
         </td>
         <td style="background: #AEF1AE">
           solution.curTrie.map[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie, Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie]](((t: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie) =&gt; KoreanTokenizer.this.PossibleTrie.apply(t, 0)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie])
@@ -3537,7 +3537,7 @@ else
           Block
         </td>
         <td>
-          scala.collection.TraversableLike.map
+          scala.collection.immutable.List.map
         </td>
         <td style="background: #AEF1AE">
           solution.curTrie.map[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie, Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie]](((t: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie) =&gt; KoreanTokenizer.this.PossibleTrie.apply(t, 0)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.PossibleTrie])
@@ -4098,7 +4098,7 @@ else
           ApplyToImplicitArgs
         </td>
         <td>
-          scala.collection.TraversableLike.map
+          scala.collection.immutable.List.map
         </td>
         <td style="background: #AEF1AE">
           t.curTrie.nextTrie.map[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie]](((x0$5: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanPosTrie) =&gt; x0$5 match {
@@ -4328,7 +4328,7 @@ else
           scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          solutions.+=(scala.this.Predef.any2ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE)))
+          solutions.+=(scala.this.Predef.ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE)))
         </td>
       </tr><tr>
         <td>
@@ -4376,7 +4376,7 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE))
+          scala.this.Predef.ArrowAssoc[Int](end).-&gt;[List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](currentSolutions.++[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse, List[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]](candidates)(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse]).sortBy[(Float, Int)](((c: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.CandidateParse) =&gt; scala.Tuple2.apply[Float, Int](c.parse.score, c.parse.posTieBreaker)))(math.this.Ordering.Tuple2[Float, Int](math.this.Ordering.Float, math.this.Ordering.Int)).take(KoreanTokenizer.this.TOP_N_PER_STATE))
         </td>
       </tr><tr>
         <td>

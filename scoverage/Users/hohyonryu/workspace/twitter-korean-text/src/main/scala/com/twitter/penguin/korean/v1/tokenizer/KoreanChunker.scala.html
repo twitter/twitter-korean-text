@@ -55,16 +55,16 @@
 </span>30 <span style=''> */
 </span>31 <span style=''>object KoreanChunker {
 </span>32 <span style=''>  val POS_PATTERNS = Map(
-</span>33 <span style=''>    Korean -> """([가-힣]+)""".r.pattern,
-</span>34 <span style=''>    Alpha -> """(\p{Alpha}+)""".r.pattern,
-</span>35 <span style=''>    Number -> """(\p{Digit}+)""".r.pattern,
-</span>36 <span style=''>    KoreanParticle -> """([ㄱ-ㅣ]+)""".r.pattern,
-</span>37 <span style=''>    Punctuation -> """(\p{Punct}+)""".r.pattern,
-</span>38 <span style=''>    URL -> Regex.VALID_URL,
-</span>39 <span style=''>    Email -> """([\p{Alnum}\.\-_]+@[\p{Alnum}\.]+)""".r.pattern,
-</span>40 <span style=''>    Hashtag -> Regex.VALID_HASHTAG,
-</span>41 <span style=''>    ScreenName -> Regex.VALID_MENTION_OR_LIST,
-</span>42 <span style=''>    CashTag -> Regex.VALID_CASHTAG
+</span>33 <span style=''>    Korean </span><span style='background: #AEF1AE'>-></span><span style=''> """([가-힣]+)""".r.pattern,
+</span>34 <span style=''>    Alpha </span><span style='background: #AEF1AE'>-></span><span style=''> """(\p{Alpha}+)""".r.pattern,
+</span>35 <span style=''>    Number </span><span style='background: #AEF1AE'>-></span><span style=''> """(\p{Digit}+)""".r.pattern,
+</span>36 <span style=''>    KoreanParticle </span><span style='background: #AEF1AE'>-></span><span style=''> """([ㄱ-ㅣ]+)""".r.pattern,
+</span>37 <span style=''>    Punctuation </span><span style='background: #AEF1AE'>-></span><span style=''> """(\p{Punct}+)""".r.pattern,
+</span>38 <span style=''>    URL </span><span style='background: #AEF1AE'>-></span><span style=''> Regex.VALID_URL,
+</span>39 <span style=''>    Email </span><span style='background: #AEF1AE'>-></span><span style=''> """([\p{Alnum}\.\-_]+@[\p{Alnum}\.]+)""".r.pattern,
+</span>40 <span style=''>    Hashtag </span><span style='background: #AEF1AE'>-></span><span style=''> Regex.VALID_HASHTAG,
+</span>41 <span style=''>    ScreenName </span><span style='background: #AEF1AE'>-></span><span style=''> Regex.VALID_MENTION_OR_LIST,
+</span>42 <span style=''>    CashTag </span><span style='background: #AEF1AE'>-></span><span style=''> Regex.VALID_CASHTAG
 </span>43 <span style=''>  )
 </span>44 <span style=''>
 </span>45 <span style=''>  val CHUNKING_ORDER = Seq(URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
@@ -77,8 +77,8 @@
 </span>52 <span style=''>
 </span>53 <span style=''>  private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
 </span>54 <span style=''>    def disjoint(that: ChunkMatch): Boolean = {
-</span>55 <span style=''>      (that.start < this.start && that.end <= this.start) ||
-</span>56 <span style=''>          (that.start >= this.end && that.end > this.end)
+</span>55 <span style=''>      (that.start < this.start && that.end </span><span style='background: #AEF1AE'><=</span><span style=''> this.start) </span><span style='background: #AEF1AE'>||</span><span style=''>
+</span>56 <span style=''>          (that.start </span><span style='background: #AEF1AE'>>= this.end && that.end ></span><span style=''> this.end)
 </span>57 <span style=''>    }
 </span>58 <span style=''>  }
 </span>59 <span style=''>
@@ -94,7 +94,7 @@
 </span>69 <span style=''>  @scala.annotation.tailrec
 </span>70 <span style=''>  private[this] def findAllPatterns(m: Matcher, pos: KoreanPos, matches: List[ChunkMatch] = List()): List[ChunkMatch] = {
 </span>71 <span style=''>    if (m.find()) {
-</span>72 <span style=''>      findAllPatterns(m, pos, ChunkMatch(m.start, m.end, m.group(), pos) :: matches)
+</span>72 <span style=''>      findAllPatterns(m, pos, ChunkMatch(m.start, m.end, m.group(), pos) </span><span style='background: #AEF1AE'>::</span><span style=''> matches)
 </span>73 <span style=''>    } else {
 </span>74 <span style=''>      matches
 </span>75 <span style=''>    }
@@ -106,7 +106,7 @@
 </span>81 <span style=''>        (l, pos) =>
 </span>82 <span style=''>          val m = POS_PATTERNS(pos).matcher(s)
 </span>83 <span style=''>
-</span>84 <span style=''>          findAllPatterns(m, pos).filter(cm => l.forall(cm.disjoint)) ::: l
+</span>84 <span style=''>          findAllPatterns(m, pos).filter(cm => l.forall(cm.disjoint)) </span><span style='background: #AEF1AE'>:::</span><span style=''> l
 </span>85 <span style=''>      }
 </span>86 <span style=''>    ).sortBy(cm => cm.start)
 </span>87 <span style=''>
@@ -135,8 +135,8 @@
 </span>110 <span style=''>        throw new IllegalStateException("Non-disjoint chunk matches found.")
 </span>111 <span style=''>    }
 </span>112 <span style=''>
-</span>113 <span style=''>    val output = if (prevEnd < text.length) {
-</span>114 <span style=''>      ChunkMatch(prevEnd, text.length, text.slice(prevEnd, text.length), pos) :: chunksWithForeign
+</span>113 <span style=''>    val output = if (prevEnd </span><span style='background: #AEF1AE'><</span><span style=''> text.length) {
+</span>114 <span style=''>      ChunkMatch(prevEnd, text.length, text.slice(prevEnd, text.length), pos) </span><span style='background: #AEF1AE'>::</span><span style=''> chunksWithForeign
 </span>115 <span style=''>    } else {
 </span>116 <span style=''>      chunksWithForeign
 </span>117 <span style=''>    }
@@ -154,7 +154,7 @@
 </span>129 <span style=''>   * @return sequence of Korean chunk strings
 </span>130 <span style=''>   */
 </span>131 <span style=''>  def getChunksByPos(input: String, pos: KoreanPos): Seq[String] = {
-</span>132 <span style=''>    chunk(input).filter(_.pos == pos).map(_.text)
+</span>132 <span style=''>    chunk(input).filter(_.pos </span><span style='background: #F0ADAD'>==</span><span style=''> pos).map(_.text)
 </span>133 <span style=''>  }
 </span>134 <span style=''>
 </span>135 <span style=''>  /**
@@ -196,7 +196,7 @@
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.Map.apply[com.twitter.penguin.korean.v1.util.KoreanPos.Value, java.util.regex.Pattern](scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Korean).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([가-힣]+)&quot;).r.pattern), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Alpha).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Alpha}+)&quot;).r.pattern), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Number).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Digit}+)&quot;).r.pattern), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.KoreanParticle).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([ㄱ-ㅣ]+)&quot;).r.pattern), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Punctuation).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Punct}+)&quot;).r.pattern), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.URL).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_URL), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Email).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([\\p{Alnum}\\.\\-_]+@[\\p{Alnum}\\.]+)&quot;).r.pattern), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Hashtag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_HASHTAG), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.ScreenName).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_MENTION_OR_LIST), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.CashTag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_CASHTAG))
+          scala.this.Predef.Map.apply[com.twitter.penguin.korean.v1.util.KoreanPos.Value, java.util.regex.Pattern](scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Korean).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([가-힣]+)&quot;).r.pattern), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Alpha).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Alpha}+)&quot;).r.pattern), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Number).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Digit}+)&quot;).r.pattern), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.KoreanParticle).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([ㄱ-ㅣ]+)&quot;).r.pattern), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Punctuation).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Punct}+)&quot;).r.pattern), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.URL).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_URL), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Email).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([\\p{Alnum}\\.\\-_]+@[\\p{Alnum}\\.]+)&quot;).r.pattern), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Hashtag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_HASHTAG), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.ScreenName).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_MENTION_OR_LIST), scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.CashTag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_CASHTAG))
         </td>
       </tr><tr>
         <td>
@@ -260,7 +260,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Korean).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([가-힣]+)&quot;).r.pattern)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Korean).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([가-힣]+)&quot;).r.pattern)
         </td>
       </tr><tr>
         <td>
@@ -308,7 +308,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Alpha).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Alpha}+)&quot;).r.pattern)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Alpha).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Alpha}+)&quot;).r.pattern)
         </td>
       </tr><tr>
         <td>
@@ -340,7 +340,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Number).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Digit}+)&quot;).r.pattern)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Number).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Digit}+)&quot;).r.pattern)
         </td>
       </tr><tr>
         <td>
@@ -436,7 +436,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.KoreanParticle).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([ㄱ-ㅣ]+)&quot;).r.pattern)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.KoreanParticle).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([ㄱ-ㅣ]+)&quot;).r.pattern)
         </td>
       </tr><tr>
         <td>
@@ -484,7 +484,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Punctuation).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Punct}+)&quot;).r.pattern)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Punctuation).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;(\\p{Punct}+)&quot;).r.pattern)
         </td>
       </tr><tr>
         <td>
@@ -548,7 +548,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.URL).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_URL)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.URL).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_URL)
         </td>
       </tr><tr>
         <td>
@@ -596,7 +596,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Email).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([\\p{Alnum}\\.\\-_]+@[\\p{Alnum}\\.]+)&quot;).r.pattern)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Email).-&gt;[java.util.regex.Pattern](scala.this.Predef.augmentString(&quot;([\\p{Alnum}\\.\\-_]+@[\\p{Alnum}\\.]+)&quot;).r.pattern)
         </td>
       </tr><tr>
         <td>
@@ -644,7 +644,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Hashtag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_HASHTAG)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Hashtag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_HASHTAG)
         </td>
       </tr><tr>
         <td>
@@ -692,7 +692,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.ScreenName).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_MENTION_OR_LIST)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.ScreenName).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_MENTION_OR_LIST)
         </td>
       </tr><tr>
         <td>
@@ -740,7 +740,7 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.CashTag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_CASHTAG)
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.CashTag).-&gt;[java.util.regex.Pattern](com.twitter.Regex.VALID_CASHTAG)
         </td>
       </tr><tr>
         <td>
@@ -1173,7 +1173,7 @@
         </td>
         <td style="background: #AEF1AE">
           KoreanChunker.this.findAllPatterns(m, pos, {
-  &lt;synthetic&gt; val x$2: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch = KoreanChunker.this.ChunkMatch.apply(m.start(), m.end(), m.group(), pos);
+  &lt;synthetic&gt; &lt;artifact&gt; val x$2: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch = KoreanChunker.this.ChunkMatch.apply(m.start(), m.end(), m.group(), pos);
   matches.::[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](x$2)
 })
         </td>
@@ -1208,7 +1208,7 @@
         </td>
         <td style="background: #AEF1AE">
           KoreanChunker.this.findAllPatterns(m, pos, {
-  &lt;synthetic&gt; val x$2: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch = KoreanChunker.this.ChunkMatch.apply(m.start(), m.end(), m.group(), pos);
+  &lt;synthetic&gt; &lt;artifact&gt; val x$2: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch = KoreanChunker.this.ChunkMatch.apply(m.start(), m.end(), m.group(), pos);
   matches.::[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](x$2)
 })
         </td>
@@ -1242,7 +1242,7 @@
           scala.Array.canBuildFrom
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]))
+          scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]((ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]): scala.reflect.ClassTag[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]))
         </td>
       </tr><tr>
         <td>
@@ -1293,12 +1293,12 @@
           scala.this.Predef.refArrayOps[String](text.split(KoreanChunker.this.SPACE_REGEX_STRING)).flatMap[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch, Array[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]](((s: String) =&gt; KoreanChunker.this.CHUNKING_ORDER.foldLeft[List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]](immutable.this.Nil)(((l: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch], pos: com.twitter.penguin.korean.v1.util.KoreanPos.Value) =&gt; {
   val m: java.util.regex.Matcher = KoreanChunker.this.POS_PATTERNS.apply(pos).matcher(s);
   {
-    &lt;synthetic&gt; val x$3: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch] = KoreanChunker.this.findAllPatterns(m, pos, KoreanChunker.this.findAllPatterns$default$3).filter(((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; l.forall({
+    &lt;synthetic&gt; &lt;artifact&gt; val x$3: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch] = KoreanChunker.this.findAllPatterns(m, pos, KoreanChunker.this.findAllPatterns$default$3).filter(((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; l.forall({
       ((that: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; cm.disjoint(that))
     })));
     l.:::[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](x$3)
   }
-}))))(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch])))
+}))))(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]((ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]): scala.reflect.ClassTag[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch])))
         </td>
       </tr><tr>
         <td>
@@ -1317,7 +1317,7 @@
           KoreanChunker.this.CHUNKING_ORDER.foldLeft[List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]](immutable.this.Nil)(((l: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch], pos: com.twitter.penguin.korean.v1.util.KoreanPos.Value) =&gt; {
   val m: java.util.regex.Matcher = KoreanChunker.this.POS_PATTERNS.apply(pos).matcher(s);
   {
-    &lt;synthetic&gt; val x$3: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch] = KoreanChunker.this.findAllPatterns(m, pos, KoreanChunker.this.findAllPatterns$default$3).filter(((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; l.forall({
+    &lt;synthetic&gt; &lt;artifact&gt; val x$3: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch] = KoreanChunker.this.findAllPatterns(m, pos, KoreanChunker.this.findAllPatterns$default$3).filter(((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; l.forall({
       ((that: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; cm.disjoint(that))
     })));
     l.:::[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](x$3)
@@ -1421,12 +1421,12 @@
           scala.this.Predef.refArrayOps[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](scala.this.Predef.refArrayOps[String](text.split(KoreanChunker.this.SPACE_REGEX_STRING)).flatMap[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch, Array[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]](((s: String) =&gt; KoreanChunker.this.CHUNKING_ORDER.foldLeft[List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]](immutable.this.Nil)(((l: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch], pos: com.twitter.penguin.korean.v1.util.KoreanPos.Value) =&gt; {
   val m: java.util.regex.Matcher = KoreanChunker.this.POS_PATTERNS.apply(pos).matcher(s);
   {
-    &lt;synthetic&gt; val x$3: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch] = KoreanChunker.this.findAllPatterns(m, pos, KoreanChunker.this.findAllPatterns$default$3).filter(((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; l.forall({
+    &lt;synthetic&gt; &lt;artifact&gt; val x$3: List[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch] = KoreanChunker.this.findAllPatterns(m, pos, KoreanChunker.this.findAllPatterns$default$3).filter(((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; l.forall({
       ((that: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; cm.disjoint(that))
     })));
     l.:::[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](x$3)
   }
-}))))(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch])))).sortBy[Int](((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; cm.start))(math.this.Ordering.Int)
+}))))(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]((ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]): scala.reflect.ClassTag[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch])))).sortBy[Int](((cm: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; cm.start))(math.this.Ordering.Int)
         </td>
       </tr><tr>
         <td>
@@ -1539,7 +1539,7 @@
         </td>
         <td style="background: #AEF1AE">
           {
-  &lt;synthetic&gt; val x$8: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch = KoreanChunker.this.ChunkMatch.apply(prevEnd, text.length(), scala.this.Predef.augmentString(text).slice(prevEnd, text.length()), pos);
+  &lt;synthetic&gt; &lt;artifact&gt; val x$8: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch = KoreanChunker.this.ChunkMatch.apply(prevEnd, text.length(), scala.this.Predef.augmentString(text).slice(prevEnd, text.length()), pos);
   chunksWithForeign.::[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](x$8)
 }
         </td>
@@ -1719,7 +1719,7 @@
         <td style="background: #AEF1AE">
           scala.this.Predef.refArrayOps[String](input.toString().split(KoreanChunker.this.SPACE_REGEX_STRING)).flatMap[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch, Array[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]]({
   ((text: String) =&gt; KoreanChunker.this.splitChunks(text))
-})(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch])))
+})(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]((ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]): scala.reflect.ClassTag[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch])))
         </td>
       </tr><tr>
         <td>
@@ -1735,7 +1735,7 @@
           scala.Array.canBuildFrom
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]))
+          scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]((ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]): scala.reflect.ClassTag[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]))
         </td>
       </tr><tr>
         <td>
@@ -1769,7 +1769,7 @@
         <td style="background: #AEF1AE">
           scala.this.Predef.refArrayOps[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](scala.this.Predef.refArrayOps[String](input.toString().split(KoreanChunker.this.SPACE_REGEX_STRING)).flatMap[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch, Array[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]]({
   ((text: String) =&gt; KoreanChunker.this.splitChunks(text))
-})(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch])))).map[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken]](((m: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken.apply(m.text, m.pos, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3)))(scala.this.Array.fallbackCanBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](Predef.this.DummyImplicit.dummyImplicit))
+})(scala.this.Array.canBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch]((ClassTag.apply[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch](classOf[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker$$ChunkMatch]): scala.reflect.ClassTag[com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch])))).map[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken]](((m: com.twitter.penguin.korean.v1.tokenizer.KoreanChunker.ChunkMatch) =&gt; com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken.apply(m.text, m.pos, com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3)))(scala.this.Array.fallbackCanBuildFrom[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken](Predef.this.DummyImplicit.dummyImplicit))
         </td>
       </tr><tr>
         <td>

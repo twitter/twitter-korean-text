@@ -119,19 +119,19 @@
 </span>94 <span style=''>  }
 </span>95 <span style=''>
 </span>96 <span style=''>  protected[korean] def normalizeCodaN(chunk: CharSequence): CharSequence = {
-</span>97 <span style=''>    if (chunk.length < 2) return chunk
+</span>97 <span style=''>    if (chunk.length </span><span style='background: #AEF1AE'><</span><span style=''> 2) return chunk
 </span>98 <span style=''>
-</span>99 <span style=''>    val lastTwo = chunk.subSequence(chunk.length() - 2, chunk.length())
-</span>100 <span style=''>    val last = chunk.charAt(chunk.length() - 1)
+</span>99 <span style=''>    val lastTwo = chunk.subSequence(chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 2, chunk.length())
+</span>100 <span style=''>    val last = chunk.charAt(chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1)
 </span>101 <span style=''>
 </span>102 <span style=''>    val lastTwoHead = lastTwo.charAt(0)
 </span>103 <span style=''>
 </span>104 <span style=''>    // Exception cases
-</span>105 <span style=''>    if (koreanDictionary(Noun).contains(chunk) ||
-</span>106 <span style=''>        koreanDictionary(Conjunction).contains(chunk) ||
-</span>107 <span style=''>        koreanDictionary(Adverb).contains(chunk) ||
-</span>108 <span style=''>        koreanDictionary(Noun).contains(lastTwo) ||
-</span>109 <span style=''>        lastTwoHead < '가' || lastTwoHead > '힣' ||
+</span>105 <span style=''>    if (koreanDictionary(Noun).contains(chunk) </span><span style='background: #AEF1AE'>||
+</span>106 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Conjunction).contains(chunk) ||
+</span>107 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Adverb).contains(chunk) ||
+</span>108 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Noun).contains(lastTwo) ||
+</span>109 <span style=''></span><span style='background: #AEF1AE'>        lastTwoHead < '가' || lastTwoHead > '힣' ||</span><span style=''>
 </span>110 <span style=''>        CODA_N_EXCPETION.contains(lastTwoHead)
 </span>111 <span style=''>    ) {
 </span>112 <span style=''>      return chunk
@@ -140,15 +140,15 @@
 </span>115 <span style=''>    val (o, v, c) = decomposeHangul(lastTwoHead)
 </span>116 <span style=''>
 </span>117 <span style=''>    val newHead = new StringBuilder()
-</span>118 <span style=''>        .append(chunk.subSequence(0, chunk.length() - 2))
+</span>118 <span style=''>        .append(chunk.subSequence(0, chunk.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 2))
 </span>119 <span style=''>        .append(composeHangul(o, v))
 </span>120 <span style=''>
-</span>121 <span style=''>    if (c == 'ㄴ' &&
-</span>122 <span style=''>        (last == '데' || last == '가' || last == '지') &&
+</span>121 <span style=''>    if (c </span><span style='background: #AEF1AE'>== 'ㄴ' &&
+</span>122 <span style=''></span><span style='background: #AEF1AE'>        (last == '데' || last == '가' || last == '지') &&</span><span style=''>
 </span>123 <span style=''>        koreanDictionary(Noun).contains(newHead)
 </span>124 <span style=''>    ) {
-</span>125 <span style=''>      val mid = if (v == 'ㅡ') "은" else "인"
-</span>126 <span style=''>      newHead + mid + last
+</span>125 <span style=''>      val mid = if (v </span><span style='background: #AEF1AE'>==</span><span style=''> 'ㅡ') "은" else "인"
+</span>126 <span style=''>      newHead </span><span style='background: #AEF1AE'>+ mid +</span><span style=''> last
 </span>127 <span style=''>    } else {
 </span>128 <span style=''>      chunk
 </span>129 <span style=''>    }
@@ -158,36 +158,36 @@
 </span>133 <span style=''>    val chunk = m.group(1)
 </span>134 <span style=''>    val toNormalize = m.group(2)
 </span>135 <span style=''>
-</span>136 <span style=''>    val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) ||
-</span>137 <span style=''>        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||
+</span>136 <span style=''>    val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) </span><span style='background: #AEF1AE'>||
+</span>137 <span style=''></span><span style='background: #AEF1AE'>        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||</span><span style=''>
 </span>138 <span style=''>        koreanDictionary(Eomi).contains(chunk.takeRight(2))) {
 </span>139 <span style=''>      chunk
 </span>140 <span style=''>    } else {
 </span>141 <span style=''>      normalizeEmotionAttachedChunk(chunk, toNormalize)
 </span>142 <span style=''>    }
-</span>143 <span style=''>    normalizedChunk + toNormalize
+</span>143 <span style=''>    normalizedChunk </span><span style='background: #AEF1AE'>+</span><span style=''> toNormalize
 </span>144 <span style=''>  }
 </span>145 <span style=''>
 </span>146 <span style=''>  private[this] def normalizeEmotionAttachedChunk(s: CharSequence, toNormalize: CharSequence): CharSequence = {
-</span>147 <span style=''>    val init = s.subSequence(0, s.length() - 1)
+</span>147 <span style=''>    val init = s.subSequence(0, s.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1)
 </span>148 <span style=''>    val secondToLastDecomposed = init match {
-</span>149 <span style=''>      case si: CharSequence if si.length > 0 =>
+</span>149 <span style=''>      case si: CharSequence if si.length </span><span style='background: #AEF1AE'>></span><span style=''> 0 =>
 </span>150 <span style=''>        val (onset, vowel, coda) = decomposeHangul(si.charAt(si.length() - 1))
-</span>151 <span style=''>        if (coda == ' ') Some((onset, vowel, coda)) else None
+</span>151 <span style=''>        if (coda </span><span style='background: #AEF1AE'>==</span><span style=''> ' ') Some((onset, vowel, coda)) else None
 </span>152 <span style=''>      case _ => None
 </span>153 <span style=''>    }
 </span>154 <span style=''>
-</span>155 <span style=''>    decomposeHangul(s.charAt(s.length() - 1)) match {
-</span>156 <span style=''>      case (o: Char, v: Char, c: Char) if c == 'ㅋ' || c == 'ㅎ' =>
+</span>155 <span style=''>    decomposeHangul(s.charAt(s.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1)) match {
+</span>156 <span style=''>      case (o: Char, v: Char, c: Char) if c </span><span style='background: #AEF1AE'>== 'ㅋ' || c ==</span><span style=''> 'ㅎ' =>
 </span>157 <span style=''>        new StringBuilder()
 </span>158 <span style=''>            .append(init)
 </span>159 <span style=''>            .append(composeHangul(o, v))
-</span>160 <span style=''>      case (o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined &&
-</span>161 <span style=''>          (v == toNormalize.charAt(0)) &&
+</span>160 <span style=''>      case (o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined </span><span style='background: #AEF1AE'>&&
+</span>161 <span style=''></span><span style='background: #AEF1AE'>          (v == toNormalize.charAt(0)) &&</span><span style=''>
 </span>162 <span style=''>          Hangul.CODA_MAP.contains(o) =>
 </span>163 <span style=''>        val (onset, vowel, coda) = secondToLastDecomposed.get
 </span>164 <span style=''>        new StringBuilder()
-</span>165 <span style=''>            .append(init.subSequence(0, init.length() - 1))
+</span>165 <span style=''>            .append(init.subSequence(0, init.length() </span><span style='background: #AEF1AE'>-</span><span style=''> 1))
 </span>166 <span style=''>            .append(composeHangul(onset, vowel, o))
 </span>167 <span style=''>      case _ => s
 </span>168 <span style=''>    }
@@ -209,23 +209,7 @@
           34
         </td>
         <td>
-          2009
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          &quot;([ㄱ-ㅣ가-힣]+)&quot;
-        </td>
-      </tr><tr>
-        <td>
-          34
-        </td>
-        <td>
-          2010
+          2012
         </td>
         <td>
           Select
@@ -238,10 +222,26 @@
         </td>
       </tr><tr>
         <td>
+          34
+        </td>
+        <td>
+          2011
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;([ㄱ-ㅣ가-힣]+)&quot;
+        </td>
+      </tr><tr>
+        <td>
           35
         </td>
         <td>
-          2012
+          2014
         </td>
         <td>
           Select
@@ -257,7 +257,7 @@
           35
         </td>
         <td>
-          2011
+          2013
         </td>
         <td>
           Literal
@@ -273,23 +273,7 @@
           36
         </td>
         <td>
-          2014
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.collection.immutable.StringLike.r
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(&quot;(.)\\1{2,}|[ㅠㅜ]{2,}&quot;).r
-        </td>
-      </tr><tr>
-        <td>
-          36
-        </td>
-        <td>
-          2013
+          2015
         </td>
         <td>
           Literal
@@ -302,26 +286,26 @@
         </td>
       </tr><tr>
         <td>
-          37
+          36
         </td>
         <td>
-          2015
+          2016
         </td>
         <td>
-          Literal
+          Select
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.immutable.StringLike.r
         </td>
         <td style="background: #AEF1AE">
-          &quot;(..)\\1{2,}&quot;
+          scala.this.Predef.augmentString(&quot;(.)\\1{2,}|[ㅠㅜ]{2,}&quot;).r
         </td>
       </tr><tr>
         <td>
           37
         </td>
         <td>
-          2016
+          2018
         </td>
         <td>
           Select
@@ -334,10 +318,26 @@
         </td>
       </tr><tr>
         <td>
+          37
+        </td>
+        <td>
+          2017
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;(..)\\1{2,}&quot;
+        </td>
+      </tr><tr>
+        <td>
           39
         </td>
         <td>
-          2018
+          2020
         </td>
         <td>
           Select
@@ -353,7 +353,7 @@
           39
         </td>
         <td>
-          2017
+          2019
         </td>
         <td>
           Literal
@@ -369,23 +369,7 @@
           43
         </td>
         <td>
-          2020
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toSet
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(&quot;은는운인텐근른픈닌든던&quot;).toSet[Char]
-        </td>
-      </tr><tr>
-        <td>
-          43
-        </td>
-        <td>
-          2019
+          2021
         </td>
         <td>
           Literal
@@ -398,26 +382,26 @@
         </td>
       </tr><tr>
         <td>
-          54
+          43
         </td>
         <td>
-          2021
+          2022
         </td>
         <td>
-          Apply
+          TypeApply
         </td>
         <td>
-          java.lang.Object.toString
+          scala.collection.TraversableOnce.toSet
         </td>
         <td style="background: #AEF1AE">
-          KoreanNormalizer.this.normalizeKoreanChunk(m.group(0)).toString()
+          scala.this.Predef.augmentString(&quot;은는운인텐근른픈닌든던&quot;).toSet[Char]
         </td>
       </tr><tr>
         <td>
           54
         </td>
         <td>
-          2022
+          2024
         </td>
         <td>
           Apply
@@ -430,10 +414,26 @@
         </td>
       </tr><tr>
         <td>
+          54
+        </td>
+        <td>
+          2023
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.toString
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.normalizeKoreanChunk(m.group(0)).toString()
+        </td>
+      </tr><tr>
+        <td>
           59
         </td>
         <td>
-          2024
+          2026
         </td>
         <td>
           Apply
@@ -449,7 +449,7 @@
           60
         </td>
         <td>
-          2023
+          2025
         </td>
         <td>
           Apply
@@ -465,7 +465,7 @@
           64
         </td>
         <td>
-          2027
+          2029
         </td>
         <td>
           Apply
@@ -481,23 +481,7 @@
           66
         </td>
         <td>
-          2026
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.util.regex.Matcher.quoteReplacement
-        </td>
-        <td style="background: #AEF1AE">
-          java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(2).toString())
-        </td>
-      </tr><tr>
-        <td>
-          66
-        </td>
-        <td>
-          2025
+          2027
         </td>
         <td>
           Apply
@@ -510,10 +494,26 @@
         </td>
       </tr><tr>
         <td>
+          66
+        </td>
+        <td>
+          2028
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.regex.Matcher.quoteReplacement
+        </td>
+        <td style="background: #AEF1AE">
+          java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(2).toString())
+        </td>
+      </tr><tr>
+        <td>
           70
         </td>
         <td>
-          2030
+          2032
         </td>
         <td>
           Apply
@@ -529,23 +529,7 @@
           72
         </td>
         <td>
-          2029
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.util.regex.Matcher.quoteReplacement
-        </td>
-        <td style="background: #AEF1AE">
-          java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(4).toString())
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          2028
+          2030
         </td>
         <td>
           Apply
@@ -558,10 +542,26 @@
         </td>
       </tr><tr>
         <td>
-          77
+          72
         </td>
         <td>
           2031
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.regex.Matcher.quoteReplacement
+        </td>
+        <td style="background: #AEF1AE">
+          java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(4).toString())
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          2033
         </td>
         <td>
           Apply
@@ -577,7 +577,7 @@
           79
         </td>
         <td>
-          2032
+          2034
         </td>
         <td>
           Apply
@@ -593,7 +593,7 @@
           81
         </td>
         <td>
-          2033
+          2035
         </td>
         <td>
           Apply
@@ -609,7 +609,23 @@
           85
         </td>
         <td>
-          2045
+          2036
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          2047
         </td>
         <td>
           Apply
@@ -618,8 +634,8 @@
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.typoDictionaryByLength.foldLeft[CharSequence](chunk)(((x0$1: CharSequence, x1$1: (Int, scala.collection.immutable.Map[String,String])) =&gt; scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
-  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.typoDictionaryByLength.foldLeft[CharSequence](chunk)(((x0$1: CharSequence, x1$1: (Int, scala.collection.immutable.Map[String,String])) =&gt; scala.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
+  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
     case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
     case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
   }))
@@ -628,93 +644,61 @@
       </tr><tr>
         <td>
           85
+        </td>
+        <td>
+          2046
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
+  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
+    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+  }))
+}
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          2045
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+}))
+        </td>
+      </tr><tr>
+        <td>
+          87
         </td>
         <td>
           2044
         </td>
         <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
-  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
-    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
-    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
-  }))
-}
-        </td>
-      </tr><tr>
-        <td>
-          85
-        </td>
-        <td>
-          2034
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1)
-        </td>
-      </tr><tr>
-        <td>
-          87
-        </td>
-        <td>
-          2042
-        </td>
-        <td>
           Apply
         </td>
         <td>
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.Tuple2.apply[String, String](x0$2, x1$2) match {
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
 }))
-        </td>
-      </tr><tr>
-        <td>
-          87
-        </td>
-        <td>
-          2035
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[String, String](x0$2, x1$2)
-        </td>
-      </tr><tr>
-        <td>
-          87
-        </td>
-        <td>
-          2041
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
-  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
-  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
-}
         </td>
       </tr><tr>
         <td>
@@ -724,23 +708,39 @@
           2043
         </td>
         <td>
-          Block
+          Match
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+          scala.Tuple2.apply[String, String](x0$2, x1$2) match {
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
   case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
-}))
+}
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          2037
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[String, String](x0$2, x1$2)
         </td>
       </tr><tr>
         <td>
           88
         </td>
         <td>
-          2036
+          2038
         </td>
         <td>
           Apply
@@ -759,6 +759,22 @@
           2039
         </td>
         <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapLike.apply
+        </td>
+        <td style="background: #AEF1AE">
+          typoMap.apply(slice)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2041
+        </td>
+        <td>
           Block
         </td>
         <td>
@@ -772,7 +788,7 @@
           89
         </td>
         <td>
-          2038
+          2040
         </td>
         <td>
           Apply
@@ -785,26 +801,10 @@
         </td>
       </tr><tr>
         <td>
-          89
-        </td>
-        <td>
-          2037
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.MapLike.apply
-        </td>
-        <td style="background: #AEF1AE">
-          typoMap.apply(slice)
-        </td>
-      </tr><tr>
-        <td>
           91
         </td>
         <td>
-          2040
+          2042
         </td>
         <td>
           Ident
@@ -823,36 +823,20 @@
           2048
         </td>
         <td>
-          Literal
+          Apply
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Int.&lt;
         </td>
         <td style="background: #AEF1AE">
-          ()
+          chunk.length().&lt;(2)
         </td>
       </tr><tr>
         <td>
           97
         </td>
         <td>
-          2047
-        </td>
-        <td>
-          Return
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.normalizer.KoreanNormalizer.normalizeCodaN
-        </td>
-        <td style="background: #F0ADAD">
-          return chunk
-        </td>
-      </tr><tr>
-        <td>
-          97
-        </td>
-        <td>
-          2049
+          2051
         </td>
         <td>
           Block
@@ -868,23 +852,39 @@
           97
         </td>
         <td>
-          2046
+          2050
         </td>
         <td>
-          Apply
+          Literal
         </td>
         <td>
-          scala.Int.&lt;
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          chunk.length().&lt;(2)
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2049
+        </td>
+        <td>
+          Return
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.normalizer.KoreanNormalizer.normalizeCodaN
+        </td>
+        <td style="background: #F0ADAD">
+          return chunk
         </td>
       </tr><tr>
         <td>
           99
         </td>
         <td>
-          2051
+          2053
         </td>
         <td>
           Apply
@@ -900,7 +900,7 @@
           99
         </td>
         <td>
-          2050
+          2052
         </td>
         <td>
           Apply
@@ -916,7 +916,7 @@
           99
         </td>
         <td>
-          2052
+          2054
         </td>
         <td>
           Apply
@@ -932,23 +932,7 @@
           100
         </td>
         <td>
-          2053
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Int.-
-        </td>
-        <td style="background: #AEF1AE">
-          chunk.length().-(1)
-        </td>
-      </tr><tr>
-        <td>
-          100
-        </td>
-        <td>
-          2054
+          2056
         </td>
         <td>
           Apply
@@ -961,10 +945,26 @@
         </td>
       </tr><tr>
         <td>
-          102
+          100
         </td>
         <td>
           2055
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.length().-(1)
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          2057
         </td>
         <td>
           Apply
@@ -980,7 +980,7 @@
           105
         </td>
         <td>
-          2066
+          2068
         </td>
         <td>
           Block
@@ -996,7 +996,7 @@
           105
         </td>
         <td>
-          2056
+          2058
         </td>
         <td>
           Select
@@ -1012,7 +1012,7 @@
           105
         </td>
         <td>
-          2065
+          2067
         </td>
         <td>
           Literal
@@ -1028,7 +1028,7 @@
           106
         </td>
         <td>
-          2057
+          2059
         </td>
         <td>
           Apply
@@ -1044,7 +1044,7 @@
           107
         </td>
         <td>
-          2058
+          2060
         </td>
         <td>
           Apply
@@ -1060,7 +1060,7 @@
           108
         </td>
         <td>
-          2059
+          2061
         </td>
         <td>
           Apply
@@ -1076,7 +1076,7 @@
           109
         </td>
         <td>
-          2060
+          2062
         </td>
         <td>
           Apply
@@ -1092,23 +1092,7 @@
           109
         </td>
         <td>
-          2061
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Char.&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          lastTwoHead.&gt;('힣')
-        </td>
-      </tr><tr>
-        <td>
-          109
-        </td>
-        <td>
-          2063
+          2065
         </td>
         <td>
           Apply
@@ -1121,10 +1105,26 @@
         </td>
       </tr><tr>
         <td>
+          109
+        </td>
+        <td>
+          2063
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          lastTwoHead.&gt;('힣')
+        </td>
+      </tr><tr>
+        <td>
           110
         </td>
         <td>
-          2062
+          2064
         </td>
         <td>
           Apply
@@ -1140,7 +1140,7 @@
           112
         </td>
         <td>
-          2064
+          2066
         </td>
         <td>
           Return
@@ -1162,6 +1162,22 @@
           Select
         </td>
         <td>
+          scala.Tuple3._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$1._1
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          2071
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
           scala.Tuple3._3
         </td>
         <td style="background: #AEF1AE">
@@ -1172,7 +1188,7 @@
           115
         </td>
         <td>
-          2068
+          2070
         </td>
         <td>
           Select
@@ -1185,26 +1201,26 @@
         </td>
       </tr><tr>
         <td>
-          115
+          118
         </td>
         <td>
-          2067
+          2074
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          scala.Tuple3._1
+          java.lang.CharSequence.subSequence
         </td>
         <td style="background: #AEF1AE">
-          x$1._1
+          chunk.subSequence(0, chunk.length().-(2))
         </td>
       </tr><tr>
         <td>
           118
         </td>
         <td>
-          2071
+          2073
         </td>
         <td>
           Apply
@@ -1220,7 +1236,7 @@
           118
         </td>
         <td>
-          2070
+          2072
         </td>
         <td>
           Literal
@@ -1233,26 +1249,26 @@
         </td>
       </tr><tr>
         <td>
-          118
+          119
         </td>
         <td>
-          2072
+          2075
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          java.lang.CharSequence.subSequence
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
         </td>
         <td style="background: #AEF1AE">
-          chunk.subSequence(0, chunk.length().-(2))
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
         </td>
       </tr><tr>
         <td>
           119
         </td>
         <td>
-          2075
+          2077
         </td>
         <td>
           Apply
@@ -1268,7 +1284,7 @@
           119
         </td>
         <td>
-          2074
+          2076
         </td>
         <td>
           Apply
@@ -1281,26 +1297,10 @@
         </td>
       </tr><tr>
         <td>
-          119
-        </td>
-        <td>
-          2073
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
-        </td>
-      </tr><tr>
-        <td>
           121
         </td>
         <td>
-          2076
+          2078
         </td>
         <td>
           Literal
@@ -1316,7 +1316,23 @@
           122
         </td>
         <td>
-          2078
+          2084
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          c.==('ㄴ').&amp;&amp;(last.==('데').||(last.==('가')).||(last.==('지'))).&amp;&amp;(com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.v1.util.KoreanPos.Noun).contains(newHead))
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2080
         </td>
         <td>
           Apply
@@ -1332,7 +1348,7 @@
           122
         </td>
         <td>
-          2077
+          2079
         </td>
         <td>
           Literal
@@ -1348,7 +1364,7 @@
           122
         </td>
         <td>
-          2080
+          2082
         </td>
         <td>
           Apply
@@ -1364,7 +1380,7 @@
           122
         </td>
         <td>
-          2079
+          2081
         </td>
         <td>
           Apply
@@ -1377,26 +1393,10 @@
         </td>
       </tr><tr>
         <td>
-          122
-        </td>
-        <td>
-          2082
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Boolean.&amp;&amp;
-        </td>
-        <td style="background: #AEF1AE">
-          c.==('ㄴ').&amp;&amp;(last.==('데').||(last.==('가')).||(last.==('지'))).&amp;&amp;(com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.v1.util.KoreanPos.Noun).contains(newHead))
-        </td>
-      </tr><tr>
-        <td>
           123
         </td>
         <td>
-          2081
+          2083
         </td>
         <td>
           Apply
@@ -1412,7 +1412,7 @@
           124
         </td>
         <td>
-          2089
+          2091
         </td>
         <td>
           Block
@@ -1426,7 +1426,7 @@
     &quot;은&quot;
   else
     &quot;인&quot;;
-  scala.this.Predef.any2stringadd(newHead).+(mid).+(last)
+  scala.this.Predef.any2stringadd[StringBuilder](newHead).+(mid).+(last)
 }
         </td>
       </tr><tr>
@@ -1434,7 +1434,23 @@
           125
         </td>
         <td>
-          2084
+          2087
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;은&quot;
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          2086
         </td>
         <td>
           Literal
@@ -1450,7 +1466,7 @@
           125
         </td>
         <td>
-          2087
+          2089
         </td>
         <td>
           Block
@@ -1466,23 +1482,7 @@
           125
         </td>
         <td>
-          2086
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          &quot;인&quot;
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          2083
+          2085
         </td>
         <td>
           Apply
@@ -1498,23 +1498,23 @@
           125
         </td>
         <td>
-          2085
+          2088
         </td>
         <td>
-          Block
+          Literal
         </td>
         <td>
           &lt;nosymbol&gt;
         </td>
-        <td style="background: #F0ADAD">
-          &quot;은&quot;
+        <td style="background: #AEF1AE">
+          &quot;인&quot;
         </td>
       </tr><tr>
         <td>
           126
         </td>
         <td>
-          2088
+          2090
         </td>
         <td>
           Apply
@@ -1523,14 +1523,14 @@
           java.lang.String.+
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2stringadd(newHead).+(mid).+(last)
+          scala.this.Predef.any2stringadd[StringBuilder](newHead).+(mid).+(last)
         </td>
       </tr><tr>
         <td>
           128
         </td>
         <td>
-          2090
+          2092
         </td>
         <td>
           Ident
@@ -1546,7 +1546,7 @@
           133
         </td>
         <td>
-          2091
+          2093
         </td>
         <td>
           Apply
@@ -1562,7 +1562,7 @@
           134
         </td>
         <td>
-          2092
+          2094
         </td>
         <td>
           Apply
@@ -1578,7 +1578,7 @@
           136
         </td>
         <td>
-          2093
+          2095
         </td>
         <td>
           Select
@@ -1594,39 +1594,7 @@
           137
         </td>
         <td>
-          2096
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.CharArraySet.contains
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(1))
-        </td>
-      </tr><tr>
-        <td>
-          137
-        </td>
-        <td>
-          2095
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.IndexedSeqOptimized.takeRight
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(chunk).takeRight(1)
-        </td>
-      </tr><tr>
-        <td>
-          137
-        </td>
-        <td>
-          2100
+          2102
         </td>
         <td>
           Apply
@@ -1642,7 +1610,7 @@
           137
         </td>
         <td>
-          2094
+          2096
         </td>
         <td>
           Select
@@ -1655,10 +1623,58 @@
         </td>
       </tr><tr>
         <td>
-          138
+          137
         </td>
         <td>
           2098
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(1))
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          2097
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.takeRight
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(chunk).takeRight(1)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          2101
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(2))
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          2100
         </td>
         <td>
           Apply
@@ -1674,7 +1690,7 @@
           138
         </td>
         <td>
-          2097
+          2099
         </td>
         <td>
           Select
@@ -1687,26 +1703,10 @@
         </td>
       </tr><tr>
         <td>
-          138
-        </td>
-        <td>
-          2099
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.CharArraySet.contains
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.v1.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(2))
-        </td>
-      </tr><tr>
-        <td>
           139
         </td>
         <td>
-          2101
+          2103
         </td>
         <td>
           Ident
@@ -1722,23 +1722,7 @@
           141
         </td>
         <td>
-          2102
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.normalizer.KoreanNormalizer.normalizeEmotionAttachedChunk
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanNormalizer.this.normalizeEmotionAttachedChunk(chunk, toNormalize)
-        </td>
-      </tr><tr>
-        <td>
-          141
-        </td>
-        <td>
-          2103
+          2105
         </td>
         <td>
           Block
@@ -1751,7 +1735,7 @@
         </td>
       </tr><tr>
         <td>
-          143
+          141
         </td>
         <td>
           2104
@@ -1760,17 +1744,33 @@
           Apply
         </td>
         <td>
-          scala.runtime.StringAdd.+
+          com.twitter.penguin.korean.v1.normalizer.KoreanNormalizer.normalizeEmotionAttachedChunk
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2stringadd(normalizedChunk).+(toNormalize)
+          KoreanNormalizer.this.normalizeEmotionAttachedChunk(chunk, toNormalize)
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          2106
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.any2stringadd.+
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2stringadd[CharSequence](normalizedChunk).+(toNormalize)
         </td>
       </tr><tr>
         <td>
           147
         </td>
         <td>
-          2105
+          2107
         </td>
         <td>
           Literal
@@ -1786,7 +1786,7 @@
           147
         </td>
         <td>
-          2107
+          2109
         </td>
         <td>
           Apply
@@ -1802,7 +1802,7 @@
           147
         </td>
         <td>
-          2106
+          2108
         </td>
         <td>
           Apply
@@ -1818,7 +1818,7 @@
           148
         </td>
         <td>
-          2121
+          2123
         </td>
         <td>
           Match
@@ -1829,7 +1829,7 @@
         <td style="background: #AEF1AE">
           init match {
   case (si @ (_: CharSequence)) if si.length().&gt;(0) =&gt; {
-    &lt;synthetic&gt; private[this] val x$2: (Char, Char, Char) = (com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(si.charAt(si.length().-(1))): (Char, Char, Char) @unchecked) match {
+    &lt;synthetic&gt; &lt;artifact&gt; private[this] val x$2: (Char, Char, Char) = (com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(si.charAt(si.length().-(1))): (Char, Char, Char) @unchecked) match {
       case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((onset @ _), (vowel @ _), (coda @ _)) =&gt; scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda)
     };
     val onset: Char = x$2._1;
@@ -1848,7 +1848,7 @@
           149
         </td>
         <td>
-          2118
+          2120
         </td>
         <td>
           Block
@@ -1858,7 +1858,7 @@
         </td>
         <td style="background: #AEF1AE">
           case (si @ (_: CharSequence)) if si.length().&gt;(0) =&gt; {
-  &lt;synthetic&gt; private[this] val x$2: (Char, Char, Char) = (com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(si.charAt(si.length().-(1))): (Char, Char, Char) @unchecked) match {
+  &lt;synthetic&gt; &lt;artifact&gt; private[this] val x$2: (Char, Char, Char) = (com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(si.charAt(si.length().-(1))): (Char, Char, Char) @unchecked) match {
     case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((onset @ _), (vowel @ _), (coda @ _)) =&gt; scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda)
   };
   val onset: Char = x$2._1;
@@ -1875,7 +1875,7 @@
           149
         </td>
         <td>
-          2108
+          2110
         </td>
         <td>
           Apply
@@ -1897,6 +1897,22 @@
           Select
         </td>
         <td>
+          scala.Tuple3._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$2._1
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          2113
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
           scala.Tuple3._3
         </td>
         <td style="background: #AEF1AE">
@@ -1907,7 +1923,7 @@
           150
         </td>
         <td>
-          2110
+          2112
         </td>
         <td>
           Select
@@ -1920,26 +1936,58 @@
         </td>
       </tr><tr>
         <td>
-          150
+          151
         </td>
         <td>
-          2109
+          2116
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          scala.Tuple3._1
+          scala.Some.apply
         </td>
         <td style="background: #AEF1AE">
-          x$2._1
+          scala.Some.apply[(Char, Char, Char)](scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda))
         </td>
       </tr><tr>
         <td>
           151
         </td>
         <td>
-          2113
+          2119
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          2118
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          2115
         </td>
         <td>
           Apply
@@ -1955,23 +2003,7 @@
           151
         </td>
         <td>
-          2116
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.None
-        </td>
-        <td style="background: #AEF1AE">
-          scala.None
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
-          2112
+          2114
         </td>
         <td>
           Apply
@@ -1987,55 +2019,23 @@
           151
         </td>
         <td>
-          2115
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Some.apply[(Char, Char, Char)](scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda))
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
-          2114
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Some.apply[(Char, Char, Char)](scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda))
-        </td>
-      </tr><tr>
-        <td>
-          151
-        </td>
-        <td>
           2117
         </td>
         <td>
           Block
         </td>
         <td>
-          scala.None
+          scala.Some.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.None
+          scala.Some.apply[(Char, Char, Char)](scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda))
         </td>
       </tr><tr>
         <td>
           152
         </td>
         <td>
-          2120
+          2122
         </td>
         <td>
           Block
@@ -2051,7 +2051,7 @@
           152
         </td>
         <td>
-          2119
+          2121
         </td>
         <td>
           Select
@@ -2067,7 +2067,23 @@
           155
         </td>
         <td>
-          2146
+          2125
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.charAt
+        </td>
+        <td style="background: #AEF1AE">
+          s.charAt(s.length().-(1))
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          2148
         </td>
         <td>
           Match
@@ -2079,7 +2095,7 @@
           com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(s.charAt(s.length().-(1))) match {
   case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if c.==('ㅋ').||(c.==('ㅎ')) =&gt; new scala.`package`.StringBuilder().append(init).append(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))
   case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.v1.util.Hangul.CODA_MAP.contains(o)) =&gt; {
-    &lt;synthetic&gt; private[this] val x$3: (Char, Char, Char) = (secondToLastDecomposed.get: (Char, Char, Char) @unchecked) match {
+    &lt;synthetic&gt; &lt;artifact&gt; private[this] val x$3: (Char, Char, Char) = (secondToLastDecomposed.get: (Char, Char, Char) @unchecked) match {
       case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((onset @ _), (vowel @ _), (coda @ _)) =&gt; scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda)
     };
     val onset: Char = x$3._1;
@@ -2095,7 +2111,7 @@
           155
         </td>
         <td>
-          2122
+          2124
         </td>
         <td>
           Apply
@@ -2111,7 +2127,7 @@
           155
         </td>
         <td>
-          2124
+          2126
         </td>
         <td>
           Apply
@@ -2124,42 +2140,10 @@
         </td>
       </tr><tr>
         <td>
-          155
-        </td>
-        <td>
-          2123
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.CharSequence.charAt
-        </td>
-        <td style="background: #AEF1AE">
-          s.charAt(s.length().-(1))
-        </td>
-      </tr><tr>
-        <td>
           156
         </td>
         <td>
-          2125
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          'ㅋ'
-        </td>
-      </tr><tr>
-        <td>
-          156
-        </td>
-        <td>
-          2127
+          2129
         </td>
         <td>
           Apply
@@ -2175,7 +2159,7 @@
           156
         </td>
         <td>
-          2126
+          2128
         </td>
         <td>
           Apply
@@ -2188,10 +2172,26 @@
         </td>
       </tr><tr>
         <td>
+          156
+        </td>
+        <td>
+          2127
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          'ㅋ'
+        </td>
+      </tr><tr>
+        <td>
           159
         </td>
         <td>
-          2129
+          2131
         </td>
         <td>
           Apply
@@ -2207,23 +2207,7 @@
           159
         </td>
         <td>
-          2131
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if c.==('ㅋ').||(c.==('ㅎ')) =&gt; new scala.`package`.StringBuilder().append(init).append(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))
-        </td>
-      </tr><tr>
-        <td>
-          159
-        </td>
-        <td>
-          2128
+          2130
         </td>
         <td>
           Select
@@ -2239,7 +2223,23 @@
           159
         </td>
         <td>
-          2130
+          2133
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if c.==('ㅋ').||(c.==('ㅎ')) =&gt; new scala.`package`.StringBuilder().append(init).append(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2132
         </td>
         <td>
           Apply
@@ -2255,23 +2255,23 @@
           161
         </td>
         <td>
-          2133
+          2137
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Char.==
+          scala.Boolean.&amp;&amp;
         </td>
         <td style="background: #AEF1AE">
-          v.==(toNormalize.charAt(0))
+          secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.v1.util.Hangul.CODA_MAP.contains(o))
         </td>
       </tr><tr>
         <td>
           161
         </td>
         <td>
-          2132
+          2134
         </td>
         <td>
           Apply
@@ -2293,17 +2293,41 @@
           Apply
         </td>
         <td>
-          scala.Boolean.&amp;&amp;
+          scala.Char.==
         </td>
         <td style="background: #AEF1AE">
-          secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.v1.util.Hangul.CODA_MAP.contains(o))
+          v.==(toNormalize.charAt(0))
         </td>
       </tr><tr>
         <td>
           162
         </td>
         <td>
-          2134
+          2146
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.v1.util.Hangul.CODA_MAP.contains(o)) =&gt; {
+  &lt;synthetic&gt; &lt;artifact&gt; private[this] val x$3: (Char, Char, Char) = (secondToLastDecomposed.get: (Char, Char, Char) @unchecked) match {
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((onset @ _), (vowel @ _), (coda @ _)) =&gt; scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda)
+  };
+  val onset: Char = x$3._1;
+  val vowel: Char = x$3._2;
+  val coda: Char = x$3._3;
+  new scala.`package`.StringBuilder().append(init.subSequence(0, init.length().-(1))).append(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(onset, vowel, o))
+}
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          2136
         </td>
         <td>
           Apply
@@ -2316,34 +2340,26 @@
         </td>
       </tr><tr>
         <td>
-          162
+          163
         </td>
         <td>
-          2144
+          2138
         </td>
         <td>
-          Block
+          Select
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Tuple3._1
         </td>
         <td style="background: #AEF1AE">
-          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.v1.util.Hangul.CODA_MAP.contains(o)) =&gt; {
-  &lt;synthetic&gt; private[this] val x$3: (Char, Char, Char) = (secondToLastDecomposed.get: (Char, Char, Char) @unchecked) match {
-    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((onset @ _), (vowel @ _), (coda @ _)) =&gt; scala.Tuple3.apply[Char, Char, Char](onset, vowel, coda)
-  };
-  val onset: Char = x$3._1;
-  val vowel: Char = x$3._2;
-  val coda: Char = x$3._3;
-  new scala.`package`.StringBuilder().append(init.subSequence(0, init.length().-(1))).append(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(onset, vowel, o))
-}
+          x$3._1
         </td>
       </tr><tr>
         <td>
           163
         </td>
         <td>
-          2138
+          2140
         </td>
         <td>
           Select
@@ -2359,7 +2375,7 @@
           163
         </td>
         <td>
-          2137
+          2139
         </td>
         <td>
           Select
@@ -2372,26 +2388,26 @@
         </td>
       </tr><tr>
         <td>
-          163
+          165
         </td>
         <td>
-          2136
+          2143
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          scala.Tuple3._1
+          java.lang.CharSequence.subSequence
         </td>
         <td style="background: #AEF1AE">
-          x$3._1
+          init.subSequence(0, init.length().-(1))
         </td>
       </tr><tr>
         <td>
           165
         </td>
         <td>
-          2140
+          2142
         </td>
         <td>
           Apply
@@ -2407,7 +2423,7 @@
           165
         </td>
         <td>
-          2139
+          2141
         </td>
         <td>
           Literal
@@ -2420,26 +2436,10 @@
         </td>
       </tr><tr>
         <td>
-          165
-        </td>
-        <td>
-          2141
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.CharSequence.subSequence
-        </td>
-        <td style="background: #AEF1AE">
-          init.subSequence(0, init.length().-(1))
-        </td>
-      </tr><tr>
-        <td>
           166
         </td>
         <td>
-          2143
+          2145
         </td>
         <td>
           Apply
@@ -2455,7 +2455,7 @@
           166
         </td>
         <td>
-          2142
+          2144
         </td>
         <td>
           Apply
@@ -2471,7 +2471,7 @@
           167
         </td>
         <td>
-          2145
+          2147
         </td>
         <td>
           Ident

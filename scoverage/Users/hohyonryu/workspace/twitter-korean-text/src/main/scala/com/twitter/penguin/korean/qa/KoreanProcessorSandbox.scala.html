@@ -1,0 +1,172 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/qa/KoreanProcessorSandbox.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.qa
+</span>20 <span style=''>
+</span>21 <span style=''>import com.twitter.penguin.korean.TwitterKoreanProcessor._
+</span>22 <span style=''>
+</span>23 <span style=''>/**
+</span>24 <span style=''> * A simple testing tool to try Korean tokenization.
+</span>25 <span style=''> */
+</span>26 <span style=''>object KoreanProcessorSandbox {
+</span>27 <span style=''>  def main(args: Array[String]) {
+</span>28 <span style=''>    val s = "한국어를 처리하는 예시입니다 ㅋㅋ"
+</span>29 <span style=''>
+</span>30 <span style=''>    println(
+</span>31 <span style=''>      tokenize(s, stemming = false).mkString(" ")
+</span>32 <span style=''>    )
+</span>33 <span style=''>
+</span>34 <span style=''>    println(
+</span>35 <span style=''>      extractPhrases(s)
+</span>36 <span style=''>    )
+</span>37 <span style=''>  }
+</span>38 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          28
+        </td>
+        <td>
+          547
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;한국어를 처리하는 예시입니다 ㅋㅋ&quot;
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          549
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println({
+  &lt;artifact&gt; val x$1: String = s;
+  &lt;artifact&gt; val x$2: Boolean = false;
+  &lt;artifact&gt; val x$3: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2;
+  &lt;artifact&gt; val x$4: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4;
+  com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(x$1, x$3, x$2, x$4)
+}.mkString(&quot; &quot;))
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          548
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #F0ADAD">
+          {
+  &lt;artifact&gt; val x$1: String = s;
+  &lt;artifact&gt; val x$2: Boolean = false;
+  &lt;artifact&gt; val x$3: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2;
+  &lt;artifact&gt; val x$4: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4;
+  com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(x$1, x$3, x$2, x$4)
+}.mkString(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          551
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(s))
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          550
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(s)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

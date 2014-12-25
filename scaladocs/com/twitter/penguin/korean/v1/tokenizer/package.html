@@ -1,14 +1,18 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
-          <title>tokenizer - Korean Text Processing Utilities 2.5-SNAPSHOT API - com.twitter.penguin.korean.v1.tokenizer</title>
-          <meta name="description" content="tokenizer - Korean Text Processing Utilities 2.5 - SNAPSHOT API - com.twitter.penguin.korean.v1.tokenizer" />
-          <meta name="keywords" content="tokenizer Korean Text Processing Utilities 2.5 SNAPSHOT API com.twitter.penguin.korean.v1.tokenizer" />
+          <title>tokenizer - Korean Text Processing Utilities 2.4.2-SNAPSHOT API - com.twitter.penguin.korean.v1.tokenizer</title>
+          <meta name="description" content="tokenizer - Korean Text Processing Utilities 2.4.2 - SNAPSHOT API - com.twitter.penguin.korean.v1.tokenizer" />
+          <meta name="keywords" content="tokenizer Korean Text Processing Utilities 2.4.2 SNAPSHOT API com.twitter.penguin.korean.v1.tokenizer" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../../../index.html';
@@ -26,7 +30,11 @@
       <div id="definition">
         <img src="../../../../../../lib/package_big.png" />
         <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean.v1">v1</a></p>
-        <h1>tokenizer</h1>
+        <h1>tokenizer</h1> <span class="permalink">
+      <a href="../../../../../../index.html#com.twitter.penguin.korean.v1.tokenizer.package" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -73,10 +81,14 @@
       <span class="symbol">
         <a href="KoreanChunker$.html"><span class="name">KoreanChunker</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Split input text into Korean Chunks (어절)
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.twitter.penguin.korean.v1.tokenizer.package@KoreanChunker" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Split input text into Korean Chunks (어절)
 </p>
-    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="KoreanTokenizer"></a>
       <a id="KoreanTokenizer:KoreanTokenizer"></a>
       <h4 class="signature">
@@ -87,8 +99,16 @@
       <span class="symbol">
         <a href="KoreanTokenizer$.html"><span class="name">KoreanTokenizer</span></a>
       </span>
-      </h4>
-      <p class="comment cmt">Provides Korean tokenization.</p>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.twitter.penguin.korean.v1.tokenizer.package@KoreanTokenizer" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides Korean tokenization.</p><div class="fullcomment"><div class="comment cmt"><p>Provides Korean tokenization.</p><p>Chunk: 어절 - 공백으로 구분되어 있는 단위 (사랑하는사람을)
+Word: 단어 - 하나의 문장 구성 요소 (사랑하는, 사람을)
+Token: 토큰 - 형태소와 비슷한 단위이지만 문법적으로 정확하지는 않음 (사랑, 하는, 사람, 을)</p><p>Whenever there is an updates in the behavior of KoreanParser,
+the initial cache has to be updated by running tools.CreateInitialCache.
+</p></div></div>
     </li></ol>
             </div>
 
@@ -114,6 +134,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
+
+
     </body>
       </html>

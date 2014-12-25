@@ -63,12 +63,12 @@
 </span>38 <span style=''>  val VERBOSE = true
 </span>39 <span style=''>
 </span>40 <span style=''>  def main(args: Array[String]) {
-</span>41 <span style=''>    if (args.length != 1) {
+</span>41 <span style=''>    if (args.length </span><span style='background: #F0ADAD'>!=</span><span style=''> 1) {
 </span>42 <span style=''>      println("The first arg should be an input file of Korean tweets.")
 </span>43 <span style=''>      return
 </span>44 <span style=''>    }
 </span>45 <span style=''>    val parseTimesAll = Source.fromFile(args(0)).getLines().foldLeft(List[ParseTime]()) {
-</span>46 <span style=''>      case (l: List[ParseTime], line: String) if line.trim.length > 5 =>
+</span>46 <span style=''>      case (l: List[ParseTime], line: String) if line.trim.length </span><span style='background: #F0ADAD'>></span><span style=''> 5 =>
 </span>47 <span style=''>        if (VERBOSE) println(line.trim)
 </span>48 <span style=''>
 </span>49 <span style=''>        val t0 = System.currentTimeMillis()
@@ -83,7 +83,7 @@
 </span>58 <span style=''>
 </span>59 <span style=''>          println()
 </span>60 <span style=''>        }
-</span>61 <span style=''>        ParseTime(t1 - t0, line.trim) :: l
+</span>61 <span style=''>        ParseTime(t1 - t0, line.trim) </span><span style='background: #F0ADAD'>::</span><span style=''> l
 </span>62 <span style=''>      case (l: List[ParseTime], line: String) => l
 </span>63 <span style=''>    }
 </span>64 <span style=''>
@@ -93,20 +93,20 @@
 </span>68 <span style=''>
 </span>69 <span style=''>    val parseTimes = parseTimesAll.init
 </span>70 <span style=''>
-</span>71 <span style=''>    val averageTweetLength = parseTimes.map(_.chunk.length).sum.toDouble / parseTimes.size
+</span>71 <span style=''>    val averageTweetLength = parseTimes.map(_.chunk.length).sum.toDouble </span><span style='background: #F0ADAD'>/</span><span style=''> parseTimes.size
 </span>72 <span style=''>
-</span>73 <span style=''>    val averageTime = parseTimes.map(_.time).sum.toDouble / parseTimes.size
+</span>73 <span style=''>    val averageTime = parseTimes.map(_.time).sum.toDouble </span><span style='background: #F0ADAD'>/</span><span style=''> parseTimes.size
 </span>74 <span style=''>    val maxItem = parseTimes.maxBy(_.time)
 </span>75 <span style=''>
-</span>76 <span style=''>    LOG.log(Level.INFO, ("Parsed %d items. \n" +
-</span>77 <span style=''>        "       Total time: %d s \n" +
-</span>78 <span style=''>        "       Average tweet length: %.2f chars \n" +
-</span>79 <span style=''>        "       Average time per tweet: %.2f ms \n" +
-</span>80 <span style=''>        "       Max time: %d ms, %s\n" +
+</span>76 <span style=''>    LOG.log(Level.INFO, ("Parsed %d items. \n" </span><span style='background: #F0ADAD'>+
+</span>77 <span style=''></span><span style='background: #F0ADAD'>        "       Total time: %d s \n" +
+</span>78 <span style=''></span><span style='background: #F0ADAD'>        "       Average tweet length: %.2f chars \n" +
+</span>79 <span style=''></span><span style='background: #F0ADAD'>        "       Average time per tweet: %.2f ms \n" +
+</span>80 <span style=''></span><span style='background: #F0ADAD'>        "       Max time: %d ms, %s\n" +</span><span style=''>
 </span>81 <span style=''>        "       Parsed: %s"
 </span>82 <span style=''>        ).format(
 </span>83 <span style=''>          parseTimes.size,
-</span>84 <span style=''>          parseTimes.map(_.time).sum / 1000,
+</span>84 <span style=''>          parseTimes.map(_.time).sum </span><span style='background: #F0ADAD'>/</span><span style=''> 1000,
 </span>85 <span style=''>          averageTweetLength,
 </span>86 <span style=''>          averageTime,
 </span>87 <span style=''>          maxItem.time,
@@ -140,22 +140,6 @@
           Apply
         </td>
         <td>
-          java.util.logging.Logger.getLogger
-        </td>
-        <td style="background: #F0ADAD">
-          java.util.logging.Logger.getLogger(BatchTokenizeTweets.this.getClass().getSimpleName())
-        </td>
-      </tr><tr>
-        <td>
-          37
-        </td>
-        <td>
-          2178
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
           java.lang.Class.getSimpleName
         </td>
         <td style="background: #F0ADAD">
@@ -163,10 +147,26 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
           2180
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.logging.Logger.getLogger
+        </td>
+        <td style="background: #F0ADAD">
+          java.util.logging.Logger.getLogger(BatchTokenizeTweets.this.getClass().getSimpleName())
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          2181
         </td>
         <td>
           Literal
@@ -182,23 +182,7 @@
           41
         </td>
         <td>
-          2185
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          41
-        </td>
-        <td>
-          2181
+          2182
         </td>
         <td>
           Apply
@@ -214,7 +198,7 @@
           41
         </td>
         <td>
-          2184
+          2185
         </td>
         <td>
           Block
@@ -233,7 +217,7 @@
           41
         </td>
         <td>
-          2186
+          2187
         </td>
         <td>
           Block
@@ -246,10 +230,26 @@
         </td>
       </tr><tr>
         <td>
+          41
+        </td>
+        <td>
+          2186
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
           42
         </td>
         <td>
-          2182
+          2183
         </td>
         <td>
           Apply
@@ -265,7 +265,7 @@
           43
         </td>
         <td>
-          2183
+          2184
         </td>
         <td>
           Literal
@@ -290,7 +290,7 @@
           scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #F0ADAD">
-          scala.io.Source.fromFile(args.apply(0))(io.this.Codec.fallbackSystemCodec).getLines().foldLeft[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime]](immutable.this.Nil)(((x0$1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], x1$1: String) =&gt; scala.this.Tuple2.apply[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
+          scala.io.Source.fromFile(args.apply(0))(io.this.Codec.fallbackSystemCodec).getLines().foldLeft[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime]](immutable.this.Nil)(((x0$1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], x1$1: String) =&gt; scala.Tuple2.apply[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
   case (_1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
     if (BatchTokenizeTweets.this.VERBOSE)
       scala.this.Predef.println(line.trim())
@@ -310,7 +310,7 @@
     else
       ();
     {
-      &lt;synthetic&gt; val x$1: com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+      &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
       l.::[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime](x$1)
     }
   }
@@ -323,63 +323,6 @@
         </td>
         <td>
           2188
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.io.LowPriorityCodecImplicits.fallbackSystemCodec
-        </td>
-        <td style="background: #F0ADAD">
-          io.this.Codec.fallbackSystemCodec
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          2211
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Tuple2.apply[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
-  case (_1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
-    if (BatchTokenizeTweets.this.VERBOSE)
-      scala.this.Predef.println(line.trim())
-    else
-      ();
-    val t0: Long = java.this.lang.System.currentTimeMillis();
-    val parsed: Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.v1.TwitterKoreanProcessor.tokenize(line);
-    val t1: Long = java.this.lang.System.currentTimeMillis();
-    if (BatchTokenizeTweets.this.VERBOSE)
-      {
-        scala.this.Predef.println(parsed.map[String, Seq[String]](((x0$2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
-  case (t @ _) if t.unknown =&gt; t.text.toString().+(t.pos).+(&quot;*&quot;)
-  case (t @ _) =&gt; t.text.+(t.pos.toString())
-}))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;));
-        scala.this.Predef.println()
-      }
-    else
-      ();
-    {
-      &lt;synthetic&gt; val x$1: com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
-      l.::[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime](x$1)
-    }
-  }
-  case (_1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; l
-}
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          2187
         </td>
         <td>
           Apply
@@ -395,6 +338,47 @@
           45
         </td>
         <td>
+          2211
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
+  case (_1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) if line.trim().length().&gt;(5) =&gt; {
+    if (BatchTokenizeTweets.this.VERBOSE)
+      scala.this.Predef.println(line.trim())
+    else
+      ();
+    val t0: Long = java.this.lang.System.currentTimeMillis();
+    val parsed: Seq[com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.v1.TwitterKoreanProcessor.tokenize(line);
+    val t1: Long = java.this.lang.System.currentTimeMillis();
+    if (BatchTokenizeTweets.this.VERBOSE)
+      {
+        scala.this.Predef.println(parsed.map[String, Seq[String]](((x0$2: com.twitter.penguin.korean.v1.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+  case (t @ _) if t.unknown =&gt; t.text.toString().+(t.pos).+(&quot;*&quot;)
+  case (t @ _) =&gt; t.text.+(t.pos.toString())
+}))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;));
+        scala.this.Predef.println()
+      }
+    else
+      ();
+    {
+      &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+      l.::[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime](x$1)
+    }
+  }
+  case (_1: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; l
+}
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
           2190
         </td>
         <td>
@@ -404,7 +388,7 @@
           scala.Tuple2.apply
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Tuple2.apply[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1)
+          scala.Tuple2.apply[List[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1)
         </td>
       </tr><tr>
         <td>
@@ -455,7 +439,7 @@
   else
     ();
   {
-    &lt;synthetic&gt; val x$1: com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+    &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
     l.::[com.twitter.penguin.korean.v1.qa.BatchTokenizeTweets.ParseTime](x$1)
   }
 }

@@ -53,7 +53,7 @@
 </span>28 <span style=''>
 </span>29 <span style=''>  private val HANGUL_BASE = 0xAC00
 </span>30 <span style=''>
-</span>31 <span style=''>  private val ONSET_BASE = 21 * 28
+</span>31 <span style=''>  private val ONSET_BASE = 21 </span><span style='background: #AEF1AE'>*</span><span style=''> 28
 </span>32 <span style=''>  private val VOWEL_BASE = 28
 </span>33 <span style=''>
 </span>34 <span style=''>
@@ -83,17 +83,17 @@
 </span>58 <span style=''>  case class DoubleCoda(first: Char, second: Char)
 </span>59 <span style=''>
 </span>60 <span style=''>  protected[korean] val DOUBLE_CODAS = Map(
-</span>61 <span style=''>    'ㄳ' -> DoubleCoda('ㄱ', 'ㅅ'),
-</span>62 <span style=''>    'ㄵ' -> DoubleCoda('ㄴ', 'ㅈ'),
-</span>63 <span style=''>    'ㄶ' -> DoubleCoda('ㄴ', 'ㅎ'),
-</span>64 <span style=''>    'ㄺ' -> DoubleCoda('ㄹ', 'ㄱ'),
-</span>65 <span style=''>    'ㄻ' -> DoubleCoda('ㄹ', 'ㅁ'),
-</span>66 <span style=''>    'ㄼ' -> DoubleCoda('ㄹ', 'ㅂ'),
-</span>67 <span style=''>    'ㄽ' -> DoubleCoda('ㄹ', 'ㅅ'),
-</span>68 <span style=''>    'ㄾ' -> DoubleCoda('ㄹ', 'ㅌ'),
-</span>69 <span style=''>    'ㄿ' -> DoubleCoda('ㄹ', 'ㅍ'),
-</span>70 <span style=''>    'ㅀ' -> DoubleCoda('ㄹ', 'ㅎ'),
-</span>71 <span style=''>    'ㅄ' -> DoubleCoda('ㅂ', 'ㅅ')
+</span>61 <span style=''>    'ㄳ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄱ', 'ㅅ'),
+</span>62 <span style=''>    'ㄵ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄴ', 'ㅈ'),
+</span>63 <span style=''>    'ㄶ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄴ', 'ㅎ'),
+</span>64 <span style=''>    'ㄺ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㄱ'),
+</span>65 <span style=''>    'ㄻ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㅁ'),
+</span>66 <span style=''>    'ㄼ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㅂ'),
+</span>67 <span style=''>    'ㄽ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㅅ'),
+</span>68 <span style=''>    'ㄾ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㅌ'),
+</span>69 <span style=''>    'ㄿ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㅍ'),
+</span>70 <span style=''>    'ㅀ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㄹ', 'ㅎ'),
+</span>71 <span style=''>    'ㅄ' </span><span style='background: #AEF1AE'>-></span><span style=''> DoubleCoda('ㅂ', 'ㅅ')
 </span>72 <span style=''>  )
 </span>73 <span style=''>
 </span>74 <span style=''>  /**
@@ -103,13 +103,13 @@
 </span>78 <span style=''>   * @return (onset: Char, vowel: Char, coda: Char)
 </span>79 <span style=''>   */
 </span>80 <span style=''>  def decomposeHangul(c: Char): HangulChar = {
-</span>81 <span style=''>    require(!ONSET_MAP.contains(c) && !VOWEL_MAP.contains(c) && !CODA_MAP.contains(c),
+</span>81 <span style=''>    require(!ONSET_MAP.contains(c) </span><span style='background: #AEF1AE'>&& !VOWEL_MAP.contains(c) &&</span><span style=''> !CODA_MAP.contains(c),
 </span>82 <span style=''>      "Input character is not a valid Korean character")
 </span>83 <span style=''>
-</span>84 <span style=''>    val u = c - HANGUL_BASE
-</span>85 <span style=''>    HangulChar(ONSET_LIST(u / ONSET_BASE),
-</span>86 <span style=''>      VOWEL_LIST((u % ONSET_BASE) / VOWEL_BASE),
-</span>87 <span style=''>      CODA_LIST(u % VOWEL_BASE))
+</span>84 <span style=''>    val u = c </span><span style='background: #AEF1AE'>-</span><span style=''> HANGUL_BASE
+</span>85 <span style=''>    HangulChar(ONSET_LIST(u </span><span style='background: #AEF1AE'>/</span><span style=''> ONSET_BASE),
+</span>86 <span style=''>      VOWEL_LIST((u % ONSET_BASE) </span><span style='background: #AEF1AE'>/</span><span style=''> VOWEL_BASE),
+</span>87 <span style=''>      CODA_LIST(u </span><span style='background: #AEF1AE'>%</span><span style=''> VOWEL_BASE))
 </span>88 <span style=''>  }
 </span>89 <span style=''>
 </span>90 <span style=''>  /**
@@ -118,7 +118,7 @@
 </span>93 <span style=''>   * @param c A Korean character
 </span>94 <span style=''>   * @return true if the character has a coda.
 </span>95 <span style=''>   */
-</span>96 <span style=''>  def hasCoda(c: Char): Boolean = (c - HANGUL_BASE) % VOWEL_BASE > 0
+</span>96 <span style=''>  def hasCoda(c: Char): Boolean = (c - HANGUL_BASE) </span><span style='background: #AEF1AE'>% VOWEL_BASE ></span><span style=''> 0
 </span>97 <span style=''>
 </span>98 <span style=''>  /**
 </span>99 <span style=''>   * Compose a Korean character from the provided onset(초성), vowel(중성), and coda(종성).
@@ -129,11 +129,11 @@
 </span>104 <span style=''>   * @return A Korean character
 </span>105 <span style=''>   */
 </span>106 <span style=''>  def composeHangul(onset: Char, vowel: Char, coda: Char = ' '): Char = {
-</span>107 <span style=''>    require(onset != ' ' && vowel != ' ', "Input characters are not valid")
+</span>107 <span style=''>    require(onset </span><span style='background: #AEF1AE'>!= ' ' && vowel !=</span><span style=''> ' ', "Input characters are not valid")
 </span>108 <span style=''>
 </span>109 <span style=''>    (HANGUL_BASE +
-</span>110 <span style=''>        (ONSET_MAP(onset) * ONSET_BASE) +
-</span>111 <span style=''>        (VOWEL_MAP(vowel) * VOWEL_BASE) +
+</span>110 <span style=''>        (ONSET_MAP(onset) </span><span style='background: #AEF1AE'>*</span><span style=''> ONSET_BASE) +
+</span>111 <span style=''>        (VOWEL_MAP(vowel) </span><span style='background: #AEF1AE'>*</span><span style=''> VOWEL_BASE) +
 </span>112 <span style=''>        CODA_MAP(coda)).toChar
 </span>113 <span style=''>  }
 </span>114 <span style=''>
@@ -162,7 +162,7 @@
           29
         </td>
         <td>
-          1100
+          1102
         </td>
         <td>
           Literal
@@ -178,7 +178,7 @@
           31
         </td>
         <td>
-          1101
+          1103
         </td>
         <td>
           Literal
@@ -194,7 +194,7 @@
           32
         </td>
         <td>
-          1102
+          1104
         </td>
         <td>
           Literal
@@ -210,7 +210,7 @@
           35
         </td>
         <td>
-          1103
+          1105
         </td>
         <td>
           Apply
@@ -226,7 +226,7 @@
           40
         </td>
         <td>
-          1104
+          1106
         </td>
         <td>
           Apply
@@ -242,7 +242,7 @@
           47
         </td>
         <td>
-          1105
+          1107
         </td>
         <td>
           Apply
@@ -258,16 +258,16 @@
           54
         </td>
         <td>
-          1106
+          1109
         </td>
         <td>
           TypeApply
         </td>
         <td>
-          scala.collection.immutable.List.canBuildFrom
+          scala.Predef.$conforms
         </td>
         <td style="background: #AEF1AE">
-          immutable.this.List.canBuildFrom[(Char, Int)]
+          scala.this.Predef.$conforms[(Char, Int)]
         </td>
       </tr><tr>
         <td>
@@ -277,38 +277,6 @@
           1108
         </td>
         <td>
-          ApplyToImplicitArgs
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toMap
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.ONSET_LIST.zipWithIndex[Char, List[(Char, Int)]](immutable.this.List.canBuildFrom[(Char, Int)]).toMap[Char, Int](scala.this.Predef.conforms[(Char, Int)])
-        </td>
-      </tr><tr>
-        <td>
-          54
-        </td>
-        <td>
-          1107
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.Predef.conforms
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.conforms[(Char, Int)]
-        </td>
-      </tr><tr>
-        <td>
-          55
-        </td>
-        <td>
-          1109
-        </td>
-        <td>
           TypeApply
         </td>
         <td>
@@ -316,6 +284,22 @@
         </td>
         <td style="background: #AEF1AE">
           immutable.this.List.canBuildFrom[(Char, Int)]
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1110
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toMap
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.ONSET_LIST.zipWithIndex[Char, List[(Char, Int)]](immutable.this.List.canBuildFrom[(Char, Int)]).toMap[Char, Int](scala.this.Predef.$conforms[(Char, Int)])
         </td>
       </tr><tr>
         <td>
@@ -325,29 +309,61 @@
           1111
         </td>
         <td>
-          ApplyToImplicitArgs
+          TypeApply
         </td>
         <td>
-          scala.collection.TraversableOnce.toMap
+          scala.collection.immutable.List.canBuildFrom
         </td>
         <td style="background: #AEF1AE">
-          Hangul.this.VOWEL_LIST.zipWithIndex[Char, List[(Char, Int)]](immutable.this.List.canBuildFrom[(Char, Int)]).toMap[Char, Int](scala.this.Predef.conforms[(Char, Int)])
+          immutable.this.List.canBuildFrom[(Char, Int)]
         </td>
       </tr><tr>
         <td>
           55
         </td>
         <td>
-          1110
+          1113
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toMap
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.VOWEL_LIST.zipWithIndex[Char, List[(Char, Int)]](immutable.this.List.canBuildFrom[(Char, Int)]).toMap[Char, Int](scala.this.Predef.$conforms[(Char, Int)])
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1112
         </td>
         <td>
           TypeApply
         </td>
         <td>
-          scala.Predef.conforms
+          scala.Predef.$conforms
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.conforms[(Char, Int)]
+          scala.this.Predef.$conforms[(Char, Int)]
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1115
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.Predef.$conforms
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.$conforms[(Char, Int)]
         </td>
       </tr><tr>
         <td>
@@ -355,38 +371,6 @@
         </td>
         <td>
           1114
-        </td>
-        <td>
-          ApplyToImplicitArgs
-        </td>
-        <td>
-          scala.collection.TraversableOnce.toMap
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.CODA_LIST.zipWithIndex[Char, List[(Char, Int)]](immutable.this.List.canBuildFrom[(Char, Int)]).toMap[Char, Int](scala.this.Predef.conforms[(Char, Int)])
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          1113
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.Predef.conforms
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.conforms[(Char, Int)]
-        </td>
-      </tr><tr>
-        <td>
-          56
-        </td>
-        <td>
-          1112
         </td>
         <td>
           TypeApply
@@ -399,10 +383,26 @@
         </td>
       </tr><tr>
         <td>
+          56
+        </td>
+        <td>
+          1116
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toMap
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.CODA_LIST.zipWithIndex[Char, List[(Char, Int)]](immutable.this.List.canBuildFrom[(Char, Int)]).toMap[Char, Int](scala.this.Predef.$conforms[(Char, Int)])
+        </td>
+      </tr><tr>
+        <td>
           60
         </td>
         <td>
-          1148
+          1150
         </td>
         <td>
           Apply
@@ -411,14 +411,30 @@
           scala.collection.generic.GenMapFactory.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.Map.apply[Char, com.twitter.penguin.korean.util.Hangul.DoubleCoda](scala.this.Predef.any2ArrowAssoc[Char]('ㄳ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄱ', 'ㅅ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄵ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅈ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄶ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅎ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄺ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㄱ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄻ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅁ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄼ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅂ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄽ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅅ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄾ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅌ')), scala.this.Predef.any2ArrowAssoc[Char]('ㄿ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅍ')), scala.this.Predef.any2ArrowAssoc[Char]('ㅀ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅎ')), scala.this.Predef.any2ArrowAssoc[Char]('ㅄ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㅂ', 'ㅅ')))
+          scala.this.Predef.Map.apply[Char, com.twitter.penguin.korean.util.Hangul.DoubleCoda](scala.this.Predef.ArrowAssoc[Char]('ㄳ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄱ', 'ㅅ')), scala.this.Predef.ArrowAssoc[Char]('ㄵ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅈ')), scala.this.Predef.ArrowAssoc[Char]('ㄶ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅎ')), scala.this.Predef.ArrowAssoc[Char]('ㄺ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㄱ')), scala.this.Predef.ArrowAssoc[Char]('ㄻ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅁ')), scala.this.Predef.ArrowAssoc[Char]('ㄼ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅂ')), scala.this.Predef.ArrowAssoc[Char]('ㄽ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅅ')), scala.this.Predef.ArrowAssoc[Char]('ㄾ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅌ')), scala.this.Predef.ArrowAssoc[Char]('ㄿ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅍ')), scala.this.Predef.ArrowAssoc[Char]('ㅀ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅎ')), scala.this.Predef.ArrowAssoc[Char]('ㅄ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㅂ', 'ㅅ')))
         </td>
       </tr><tr>
         <td>
           61
         </td>
         <td>
-          1115
+          1118
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.DoubleCoda.apply('ㄱ', 'ㅅ')
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1117
         </td>
         <td>
           Literal
@@ -434,7 +450,7 @@
           61
         </td>
         <td>
-          1117
+          1119
         </td>
         <td>
           Apply
@@ -443,30 +459,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄳ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄱ', 'ㅅ'))
-        </td>
-      </tr><tr>
-        <td>
-          61
-        </td>
-        <td>
-          1116
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.DoubleCoda.apply('ㄱ', 'ㅅ')
+          scala.this.Predef.ArrowAssoc[Char]('ㄳ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄱ', 'ㅅ'))
         </td>
       </tr><tr>
         <td>
           62
         </td>
         <td>
-          1118
+          1120
         </td>
         <td>
           Literal
@@ -482,7 +482,7 @@
           62
         </td>
         <td>
-          1120
+          1122
         </td>
         <td>
           Apply
@@ -491,14 +491,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄵ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅈ'))
+          scala.this.Predef.ArrowAssoc[Char]('ㄵ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅈ'))
         </td>
       </tr><tr>
         <td>
           62
         </td>
         <td>
-          1119
+          1121
         </td>
         <td>
           Apply
@@ -514,23 +514,7 @@
           63
         </td>
         <td>
-          1123
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄶ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅎ'))
-        </td>
-      </tr><tr>
-        <td>
-          63
-        </td>
-        <td>
-          1122
+          1124
         </td>
         <td>
           Apply
@@ -546,7 +530,7 @@
           63
         </td>
         <td>
-          1121
+          1123
         </td>
         <td>
           Literal
@@ -559,10 +543,42 @@
         </td>
       </tr><tr>
         <td>
+          63
+        </td>
+        <td>
+          1125
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('ㄶ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄴ', 'ㅎ'))
+        </td>
+      </tr><tr>
+        <td>
           64
         </td>
         <td>
-          1124
+          1127
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.DoubleCoda.apply('ㄹ', 'ㄱ')
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          1126
         </td>
         <td>
           Literal
@@ -578,7 +594,7 @@
           64
         </td>
         <td>
-          1126
+          1128
         </td>
         <td>
           Apply
@@ -587,30 +603,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄺ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㄱ'))
-        </td>
-      </tr><tr>
-        <td>
-          64
-        </td>
-        <td>
-          1125
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.DoubleCoda.apply('ㄹ', 'ㄱ')
+          scala.this.Predef.ArrowAssoc[Char]('ㄺ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㄱ'))
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          1127
+          1129
         </td>
         <td>
           Literal
@@ -626,7 +626,7 @@
           65
         </td>
         <td>
-          1129
+          1131
         </td>
         <td>
           Apply
@@ -635,14 +635,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄻ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅁ'))
+          scala.this.Predef.ArrowAssoc[Char]('ㄻ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅁ'))
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          1128
+          1130
         </td>
         <td>
           Apply
@@ -658,23 +658,7 @@
           66
         </td>
         <td>
-          1132
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄼ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅂ'))
-        </td>
-      </tr><tr>
-        <td>
-          66
-        </td>
-        <td>
-          1131
+          1133
         </td>
         <td>
           Apply
@@ -690,7 +674,7 @@
           66
         </td>
         <td>
-          1130
+          1132
         </td>
         <td>
           Literal
@@ -703,10 +687,42 @@
         </td>
       </tr><tr>
         <td>
+          66
+        </td>
+        <td>
+          1134
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('ㄼ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅂ'))
+        </td>
+      </tr><tr>
+        <td>
           67
         </td>
         <td>
-          1133
+          1136
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.DoubleCoda.apply('ㄹ', 'ㅅ')
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1135
         </td>
         <td>
           Literal
@@ -722,7 +738,7 @@
           67
         </td>
         <td>
-          1135
+          1137
         </td>
         <td>
           Apply
@@ -731,30 +747,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄽ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅅ'))
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          1134
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.DoubleCoda.apply('ㄹ', 'ㅅ')
+          scala.this.Predef.ArrowAssoc[Char]('ㄽ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅅ'))
         </td>
       </tr><tr>
         <td>
           68
         </td>
         <td>
-          1136
+          1138
         </td>
         <td>
           Literal
@@ -770,7 +770,7 @@
           68
         </td>
         <td>
-          1138
+          1140
         </td>
         <td>
           Apply
@@ -779,14 +779,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄾ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅌ'))
+          scala.this.Predef.ArrowAssoc[Char]('ㄾ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅌ'))
         </td>
       </tr><tr>
         <td>
           68
         </td>
         <td>
-          1137
+          1139
         </td>
         <td>
           Apply
@@ -802,23 +802,7 @@
           69
         </td>
         <td>
-          1141
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㄿ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅍ'))
-        </td>
-      </tr><tr>
-        <td>
-          69
-        </td>
-        <td>
-          1140
+          1142
         </td>
         <td>
           Apply
@@ -834,7 +818,7 @@
           69
         </td>
         <td>
-          1139
+          1141
         </td>
         <td>
           Literal
@@ -847,10 +831,42 @@
         </td>
       </tr><tr>
         <td>
+          69
+        </td>
+        <td>
+          1143
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('ㄿ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅍ'))
+        </td>
+      </tr><tr>
+        <td>
           70
         </td>
         <td>
-          1142
+          1145
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.DoubleCoda.apply('ㄹ', 'ㅎ')
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1144
         </td>
         <td>
           Literal
@@ -866,7 +882,7 @@
           70
         </td>
         <td>
-          1144
+          1146
         </td>
         <td>
           Apply
@@ -875,30 +891,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㅀ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅎ'))
-        </td>
-      </tr><tr>
-        <td>
-          70
-        </td>
-        <td>
-          1143
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.DoubleCoda.apply
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.DoubleCoda.apply('ㄹ', 'ㅎ')
+          scala.this.Predef.ArrowAssoc[Char]('ㅀ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㄹ', 'ㅎ'))
         </td>
       </tr><tr>
         <td>
           71
         </td>
         <td>
-          1145
+          1147
         </td>
         <td>
           Literal
@@ -914,7 +914,7 @@
           71
         </td>
         <td>
-          1147
+          1149
         </td>
         <td>
           Apply
@@ -923,14 +923,14 @@
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.any2ArrowAssoc[Char]('ㅄ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㅂ', 'ㅅ'))
+          scala.this.Predef.ArrowAssoc[Char]('ㅄ').-&gt;[com.twitter.penguin.korean.util.Hangul.DoubleCoda](Hangul.this.DoubleCoda.apply('ㅂ', 'ㅅ'))
         </td>
       </tr><tr>
         <td>
           71
         </td>
         <td>
-          1146
+          1148
         </td>
         <td>
           Apply
@@ -949,6 +949,22 @@
           1151
         </td>
         <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.VOWEL_MAP.contains(c).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1153
+        </td>
+        <td>
           Apply
         </td>
         <td>
@@ -962,23 +978,7 @@
           81
         </td>
         <td>
-          1153
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.require
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.require(Hangul.this.ONSET_MAP.contains(c).unary_!.&amp;&amp;(Hangul.this.VOWEL_MAP.contains(c).unary_!).&amp;&amp;(Hangul.this.CODA_MAP.contains(c).unary_!), &quot;Input character is not a valid Korean character&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
-          1150
+          1152
         </td>
         <td>
           Select
@@ -994,23 +994,23 @@
           81
         </td>
         <td>
-          1149
+          1155
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          scala.Boolean.unary_!
+          scala.Predef.require
         </td>
         <td style="background: #AEF1AE">
-          Hangul.this.VOWEL_MAP.contains(c).unary_!
+          scala.this.Predef.require(Hangul.this.ONSET_MAP.contains(c).unary_!.&amp;&amp;(Hangul.this.VOWEL_MAP.contains(c).unary_!).&amp;&amp;(Hangul.this.CODA_MAP.contains(c).unary_!), &quot;Input character is not a valid Korean character&quot;)
         </td>
       </tr><tr>
         <td>
           82
         </td>
         <td>
-          1152
+          1154
         </td>
         <td>
           Literal
@@ -1026,7 +1026,7 @@
           84
         </td>
         <td>
-          1154
+          1156
         </td>
         <td>
           Select
@@ -1042,7 +1042,7 @@
           84
         </td>
         <td>
-          1155
+          1157
         </td>
         <td>
           Apply
@@ -1058,23 +1058,7 @@
           85
         </td>
         <td>
-          1156
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.ONSET_BASE
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.ONSET_BASE
-        </td>
-      </tr><tr>
-        <td>
-          85
-        </td>
-        <td>
-          1158
+          1160
         </td>
         <td>
           Apply
@@ -1090,7 +1074,7 @@
           85
         </td>
         <td>
-          1166
+          1168
         </td>
         <td>
           Apply
@@ -1106,7 +1090,7 @@
           85
         </td>
         <td>
-          1157
+          1159
         </td>
         <td>
           Apply
@@ -1119,42 +1103,10 @@
         </td>
       </tr><tr>
         <td>
-          86
+          85
         </td>
         <td>
-          1160
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.VOWEL_BASE
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.VOWEL_BASE
-        </td>
-      </tr><tr>
-        <td>
-          86
-        </td>
-        <td>
-          1162
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.LinearSeqOptimized.apply
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.VOWEL_LIST.apply(u.%(Hangul.this.ONSET_BASE)./(Hangul.this.VOWEL_BASE))
-        </td>
-      </tr><tr>
-        <td>
-          86
-        </td>
-        <td>
-          1159
+          1158
         </td>
         <td>
           Select
@@ -1170,7 +1122,55 @@
           86
         </td>
         <td>
+          1162
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.VOWEL_BASE
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.VOWEL_BASE
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
           1161
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.ONSET_BASE
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.ONSET_BASE
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1164
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.LinearSeqOptimized.apply
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.VOWEL_LIST.apply(u.%(Hangul.this.ONSET_BASE)./(Hangul.this.VOWEL_BASE))
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          1163
         </td>
         <td>
           Apply
@@ -1189,6 +1189,22 @@
           1165
         </td>
         <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.VOWEL_BASE
+        </td>
+        <td style="background: #AEF1AE">
+          Hangul.this.VOWEL_BASE
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1167
+        </td>
+        <td>
           Apply
         </td>
         <td>
@@ -1202,7 +1218,7 @@
           87
         </td>
         <td>
-          1164
+          1166
         </td>
         <td>
           Apply
@@ -1215,26 +1231,10 @@
         </td>
       </tr><tr>
         <td>
-          87
-        </td>
-        <td>
-          1163
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.VOWEL_BASE
-        </td>
-        <td style="background: #AEF1AE">
-          Hangul.this.VOWEL_BASE
-        </td>
-      </tr><tr>
-        <td>
           96
         </td>
         <td>
-          1167
+          1169
         </td>
         <td>
           Apply
@@ -1250,7 +1250,7 @@
           107
         </td>
         <td>
-          1169
+          1171
         </td>
         <td>
           Apply
@@ -1266,23 +1266,23 @@
           107
         </td>
         <td>
-          1171
+          1174
         </td>
         <td>
-          Literal
+          Apply
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.Predef.require
         </td>
         <td style="background: #AEF1AE">
-          &quot;Input characters are not valid&quot;
+          scala.this.Predef.require(onset.!=(' ').&amp;&amp;(vowel.!=(' ')), &quot;Input characters are not valid&quot;)
         </td>
       </tr><tr>
         <td>
           107
         </td>
         <td>
-          1168
+          1170
         </td>
         <td>
           Literal
@@ -1298,16 +1298,16 @@
           107
         </td>
         <td>
-          1170
+          1173
         </td>
         <td>
-          Apply
+          Literal
         </td>
         <td>
-          scala.Boolean.&amp;&amp;
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          onset.!=(' ').&amp;&amp;(vowel.!=(' '))
+          &quot;Input characters are not valid&quot;
         </td>
       </tr><tr>
         <td>
@@ -1320,17 +1320,17 @@
           Apply
         </td>
         <td>
-          scala.Predef.require
+          scala.Boolean.&amp;&amp;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.require(onset.!=(' ').&amp;&amp;(vowel.!=(' ')), &quot;Input characters are not valid&quot;)
+          onset.!=(' ').&amp;&amp;(vowel.!=(' '))
         </td>
       </tr><tr>
         <td>
           110
         </td>
         <td>
-          1174
+          1176
         </td>
         <td>
           Apply
@@ -1346,7 +1346,7 @@
           110
         </td>
         <td>
-          1173
+          1175
         </td>
         <td>
           Select
@@ -1362,7 +1362,7 @@
           111
         </td>
         <td>
-          1176
+          1178
         </td>
         <td>
           Apply
@@ -1378,7 +1378,7 @@
           111
         </td>
         <td>
-          1175
+          1177
         </td>
         <td>
           Select
@@ -1394,7 +1394,7 @@
           112
         </td>
         <td>
-          1178
+          1180
         </td>
         <td>
           Select
@@ -1410,7 +1410,7 @@
           112
         </td>
         <td>
-          1177
+          1179
         </td>
         <td>
           Apply
@@ -1426,7 +1426,23 @@
           122
         </td>
         <td>
-          1180
+          1183
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.coda
+        </td>
+        <td style="background: #AEF1AE">
+          hc.coda
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1182
         </td>
         <td>
           Select
@@ -1442,7 +1458,7 @@
           122
         </td>
         <td>
-          1179
+          1181
         </td>
         <td>
           Select
@@ -1458,7 +1474,7 @@
           122
         </td>
         <td>
-          1182
+          1184
         </td>
         <td>
           Apply
@@ -1468,22 +1484,6 @@
         </td>
         <td style="background: #AEF1AE">
           Hangul.this.composeHangul(hc.onset, hc.vowel, hc.coda)
-        </td>
-      </tr><tr>
-        <td>
-          122
-        </td>
-        <td>
-          1181
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.Hangul.HangulChar.coda
-        </td>
-        <td style="background: #AEF1AE">
-          hc.coda
         </td>
       </tr>
     </table>
