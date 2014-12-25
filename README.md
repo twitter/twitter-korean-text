@@ -7,7 +7,7 @@ Scala library to process Korean text with a Java wrapper. twitter-korean-text cu
 
 twitter-korean-text의 목표는 빅데이터 등에서 간단한 한국어 처리를 통해 색인어를 추출하는 데에 있습니다. 완전한 수준의 형태소 분석을 지향하지는 않습니다.
 
-현재 twitter-korean-text에서는 normalization, tokenization, stemming 이렇게 세가지 기능을 지원합니다. 
+twitter-korean-text는 normalization, tokenization, stemming, phrase extraction 이렇게 네가지 기능을 지원합니다. 
 
 
 **정규화 normalization (입니닼ㅋㅋ -> 입니다 ㅋㅋ, 샤릉해 -> 사랑해)**
