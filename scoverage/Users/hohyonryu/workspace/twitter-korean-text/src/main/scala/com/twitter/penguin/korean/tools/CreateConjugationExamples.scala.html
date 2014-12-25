@@ -1,0 +1,390 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tools/CreateConjugationExamples.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.tools
+</span>20 <span style=''>
+</span>21 <span style=''>import java.io.FileOutputStream
+</span>22 <span style=''>
+</span>23 <span style=''>import com.twitter.penguin.korean.util.KoreanConjugation._
+</span>24 <span style=''>import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
+</span>25 <span style=''>
+</span>26 <span style=''>/**
+</span>27 <span style=''> * Create Korean predicate expansion goldenset from adjective and verb resources.
+</span>28 <span style=''> * The first argument is the test resource directory.
+</span>29 <span style=''> */
+</span>30 <span style=''>object CreateConjugationExamples {
+</span>31 <span style=''>
+</span>32 <span style=''>  case class ConjugationExample(word: String, conjugations: Seq[String])
+</span>33 <span style=''>
+</span>34 <span style=''>  def main(args: Array[String]) {
+</span>35 <span style=''>    System.err.println("Reading the verbs and adjectives..")
+</span>36 <span style=''>
+</span>37 <span style=''>    def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {
+</span>38 <span style=''>      System.err.println("Writing the expansion goldenset in " + outputFileName)
+</span>39 <span style=''>
+</span>40 <span style=''>      val outputPath = "src/test/resources/com/twitter/penguin/korean/util/" + outputFileName
+</span>41 <span style=''>      val out = new FileOutputStream(outputPath)
+</span>42 <span style=''>
+</span>43 <span style=''>      val words = readWordsAsSeq(file)
+</span>44 <span style=''>      val goldenset = words.map(word =>
+</span>45 <span style=''>        ConjugationExample(word, conjugatePredicated(Set(word), isAdj).toSeq.sorted)
+</span>46 <span style=''>      )
+</span>47 <span style=''>
+</span>48 <span style=''>      goldenset.foreach {
+</span>49 <span style=''>        c => out.write(
+</span>50 <span style=''>          "%s\t%s\n".format(c.word, c.conjugations.mkString(", ")).getBytes
+</span>51 <span style=''>        )
+</span>52 <span style=''>      }
+</span>53 <span style=''>
+</span>54 <span style=''>      out.close()
+</span>55 <span style=''>    }
+</span>56 <span style=''>
+</span>57 <span style=''>    updateConjugateExamples("adjective/adjective.txt", isAdj = true, "adj_conjugate.txt")
+</span>58 <span style=''>    updateConjugateExamples("verb/verb.txt", isAdj = false, "verb_conjugate.txt")
+</span>59 <span style=''>  }
+</span>60 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          35
+        </td>
+        <td>
+          1019
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(&quot;Reading the verbs and adjectives..&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1021
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(&quot;Writing the expansion goldenset in &quot;.+(outputFileName))
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1020
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Writing the expansion goldenset in &quot;.+(outputFileName)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1022
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;src/test/resources/com/twitter/penguin/korean/util/&quot;.+(outputFileName)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1023
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.&lt;init&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          new java.io.FileOutputStream(outputPath)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1024
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSeq
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSeq(file)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1030
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          words.map[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample, Seq[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample]](((word: String) =&gt; CreateConjugationExamples.this.ConjugationExample.apply(word, com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdj).toSeq.sorted[String](math.this.Ordering.String))))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample])
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1029
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample]
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1028
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample.apply
+        </td>
+        <td style="background: #F0ADAD">
+          CreateConjugationExamples.this.ConjugationExample.apply(word, com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdj).toSeq.sorted[String](math.this.Ordering.String))
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1025
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Set.apply[String](word)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1027
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.sorted
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdj).toSeq.sorted[String](math.this.Ordering.String)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          1026
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Ordering.String
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Ordering.String
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1033
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableLike.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          goldenset.foreach[Unit](((c: com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample) =&gt; out.write(scala.this.Predef.augmentString(&quot;%s\t%s\n&quot;).format(c.word, c.conjugations.mkString(&quot;, &quot;)).getBytes())))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1032
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(scala.this.Predef.augmentString(&quot;%s\t%s\n&quot;).format(c.word, c.conjugations.mkString(&quot;, &quot;)).getBytes())
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1031
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;%s\t%s\n&quot;).format(c.word, c.conjugations.mkString(&quot;, &quot;)).getBytes()
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1034
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.close
+        </td>
+        <td style="background: #F0ADAD">
+          out.close()
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.CreateConjugationExamples.updateConjugateExamples
+        </td>
+        <td style="background: #F0ADAD">
+          updateConjugateExamples(&quot;adjective/adjective.txt&quot;, true, &quot;adj_conjugate.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1036
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.CreateConjugationExamples.updateConjugateExamples
+        </td>
+        <td style="background: #F0ADAD">
+          updateConjugateExamples(&quot;verb/verb.txt&quot;, false, &quot;verb_conjugate.txt&quot;)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

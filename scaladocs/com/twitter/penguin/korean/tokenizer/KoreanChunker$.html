@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanChunker - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanChunker</title>
-          <meta name="description" content="KoreanChunker - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanChunker" />
-          <meta name="keywords" content="KoreanChunker Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanChunker" />
+          <title>KoreanChunker - Korean Text Processing Utilities 2.5-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanChunker</title>
+          <meta name="description" content="KoreanChunker - Korean Text Processing Utilities 2.5 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanChunker" />
+          <meta name="keywords" content="KoreanChunker Korean Text Processing Utilities 2.5 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanChunker" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -165,15 +165,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanChunker#chunk" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="chunk(input:CharSequence):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
-      <a id="chunk(CharSequence):Seq[KoreanToken]"></a>
+      <a id="chunk(input:CharSequence,keepSpace:Boolean):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
+      <a id="chunk(CharSequence,Boolean):Seq[KoreanToken]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">chunk</span><span class="params">(<span name="input">input: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
+        <span class="name">chunk</span><span class="params">(<span name="input">input: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="keepSpace">keepSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Split input text into a sequnce of KoreanToken.</p><div class="fullcomment"><div class="comment cmt"><p>Split input text into a sequnce of KoreanToken. A candidate for Korean parser
@@ -245,15 +245,15 @@ gets tagged with KoreanPos.Korean.
               
         </dd></dl></div>
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanChunker#getChunks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getChunks(input:String):Seq[String]"></a>
-      <a id="getChunks(String):Seq[String]"></a>
+      <a id="getChunks(input:String,keepSpace:Boolean):Seq[String]"></a>
+      <a id="getChunks(String,Boolean):Seq[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getChunks</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">getChunks</span><span class="params">(<span name="input">input: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="keepSpace">keepSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>

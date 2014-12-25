@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>CandidateParse - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse</title>
-          <meta name="description" content="CandidateParse - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse" />
-          <meta name="keywords" content="CandidateParse Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse" />
+          <title>CandidateParse - Korean Text Processing Utilities 2.5-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse</title>
+          <meta name="description" content="CandidateParse - Korean Text Processing Utilities 2.5 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse" />
+          <meta name="keywords" content="CandidateParse Korean Text Processing Utilities 2.5 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">CandidateParse</span><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">CandidateParse</span><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="../util/KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Option">Option</span>[<a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -80,7 +80,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(parse:com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk,curTrie:List[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie],ending:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse"></a>
+      <a id="&lt;init&gt;(parse:com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk,curTrie:List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie],ending:Option[com.twitter.penguin.korean.util.KoreanPos.KoreanPos]):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse"></a>
       <a id="&lt;init&gt;:CandidateParse"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +88,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">CandidateParse</span><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">CandidateParse</span><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="../util/KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Option">Option</span>[<a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a>]</span>)</span>
       </span>
       </h4>
       
@@ -199,7 +199,7 @@
               
         </dd></dl></div>
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#curTrie" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="curTrie:List[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie]"></a>
+      <a id="curTrie:List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]"></a>
       <a id="curTrie:List[KoreanPosTrie]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -207,20 +207,20 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">curTrie</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>
+        <span class="name">curTrie</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../util/KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>
       </span>
       </h4>
       
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.CandidateParse#ending" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ending:Boolean"></a>
-      <a id="ending:Boolean"></a>
+      <a id="ending:Option[com.twitter.penguin.korean.util.KoreanPos.KoreanPos]"></a>
+      <a id="ending:Option[KoreanPos]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">ending</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ending</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a>]</span>
       </span>
       </h4>
       

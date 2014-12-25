@@ -1,0 +1,2486 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/normalizer/KoreanNormalizer.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.normalizer
+</span>20 <span style=''>
+</span>21 <span style=''>import java.util.regex.Matcher
+</span>22 <span style=''>
+</span>23 <span style=''>import com.twitter.penguin.korean.util.Hangul
+</span>24 <span style=''>import com.twitter.penguin.korean.util.Hangul._
+</span>25 <span style=''>import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
+</span>26 <span style=''>import com.twitter.penguin.korean.util.KoreanPos._
+</span>27 <span style=''>
+</span>28 <span style=''>import scala.util.matching.Regex.Match
+</span>29 <span style=''>
+</span>30 <span style=''>/**
+</span>31 <span style=''> * Normalize Korean colloquial text
+</span>32 <span style=''> */
+</span>33 <span style=''>object KoreanNormalizer {
+</span>34 <span style=''>  private[this] val EXTENTED_KOREAN_REGEX = """([ㄱ-ㅣ가-힣]+)""".r
+</span>35 <span style=''>  private[this] val KOREAN_TO_NORMALIZE_REGEX = """([가-힣]+)(ㅋ+|ㅎ+|[ㅠㅜ]+)""".r
+</span>36 <span style=''>  protected[korean] val REPEATING_CHAR_REGEX = """(.)\1{2,}|[ㅠㅜ]{2,}""".r
+</span>37 <span style=''>  private[this] val REPEATING_2CHAR_REGEX = """(..)\1{2,}""".r
+</span>38 <span style=''>
+</span>39 <span style=''>  private[this] val WHITESPACE_REGEX = """\s+""".r
+</span>40 <span style=''>
+</span>41 <span style=''>  private[this] case class Segment(text: String, matchData: Option[Match])
+</span>42 <span style=''>
+</span>43 <span style=''>  private[this] val CODA_N_EXCPETION = "은는운인텐근른픈닌든던".toSet
+</span>44 <span style=''>
+</span>45 <span style=''>  /**
+</span>46 <span style=''>   * Normalize Korean CharSequence text
+</span>47 <span style=''>   * ex) 하댘ㅋㅋㅋ -> 하대, 머구뮤ㅠㅠㅠ -> 머굼
+</span>48 <span style=''>   * 하즤 -> 하지
+</span>49 <span style=''>   *
+</span>50 <span style=''>   * @param input input CharSequence
+</span>51 <span style=''>   * @return normalized CharSequence
+</span>52 <span style=''>   */
+</span>53 <span style=''>  def normalize(input: CharSequence): CharSequence = {
+</span>54 <span style=''>    EXTENTED_KOREAN_REGEX.replaceAllIn(input, m => normalizeKoreanChunk(m.group(0)).toString)
+</span>55 <span style=''>  }
+</span>56 <span style=''>
+</span>57 <span style=''>  private[this] def normalizeKoreanChunk(input: CharSequence): CharSequence = {
+</span>58 <span style=''>    // Normalize endings: 안됔ㅋㅋㅋ -> 안돼ㅋㅋ
+</span>59 <span style=''>    val endingNormalized = KOREAN_TO_NORMALIZE_REGEX.replaceAllIn(
+</span>60 <span style=''>      input, m => processNormalizationCandidate(m).toString
+</span>61 <span style=''>    )
+</span>62 <span style=''>
+</span>63 <span style=''>    // Normalize repeating chars: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ -> ㅋㅋ
+</span>64 <span style=''>    val exclamationNormalized = REPEATING_CHAR_REGEX.replaceAllIn(
+</span>65 <span style=''>      endingNormalized, m => {
+</span>66 <span style=''>        Matcher.quoteReplacement(m.group(0).take(2).toString)
+</span>67 <span style=''>      }
+</span>68 <span style=''>    )
+</span>69 <span style=''>    // Normalize repeating chars: 훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍 -> 훌쩍훌쩍
+</span>70 <span style=''>    val repeatingNormalized = REPEATING_2CHAR_REGEX.replaceAllIn(
+</span>71 <span style=''>      exclamationNormalized, m => {
+</span>72 <span style=''>        Matcher.quoteReplacement(m.group(0).take(4).toString)
+</span>73 <span style=''>      }
+</span>74 <span style=''>    )
+</span>75 <span style=''>
+</span>76 <span style=''>    // Coda normalization (명사 + ㄴ 첨가 정규화): 소린가 -> 소리인가
+</span>77 <span style=''>    val codaNNormalized = normalizeCodaN(repeatingNormalized)
+</span>78 <span style=''>    // Typo correction: 하겟다 -> 하겠다
+</span>79 <span style=''>    val typoCorrected = correctTypo(codaNNormalized)
+</span>80 <span style=''>    // Spaces, tabs, new lines are replaces with a single space.
+</span>81 <span style=''>    WHITESPACE_REGEX.replaceAllIn(typoCorrected, " ")
+</span>82 <span style=''>  }
+</span>83 <span style=''>
+</span>84 <span style=''>  protected[korean] def correctTypo(chunk: CharSequence): CharSequence = {
+</span>85 <span style=''>    typoDictionaryByLength.foldLeft(chunk) {
+</span>86 <span style=''>      case (output: String, (wordLen: Int, typoMap: Map[String, String])) =>
+</span>87 <span style=''>        output.sliding(wordLen).foldLeft(output) {
+</span>88 <span style=''>          case (sliceOutput: String, slice: String) if typoMap.contains(slice) =>
+</span>89 <span style=''>            sliceOutput.replaceAll(slice, typoMap(slice))
+</span>90 <span style=''>          case (sliceOutput: String, slice: String) =>
+</span>91 <span style=''>            sliceOutput
+</span>92 <span style=''>        }
+</span>93 <span style=''>    }
+</span>94 <span style=''>  }
+</span>95 <span style=''>
+</span>96 <span style=''>  protected[korean] def normalizeCodaN(chunk: CharSequence): CharSequence = {
+</span>97 <span style=''>    if (chunk.length < 2) return chunk
+</span>98 <span style=''>
+</span>99 <span style=''>    val lastTwo = chunk.subSequence(chunk.length() - 2, chunk.length())
+</span>100 <span style=''>    val last = chunk.charAt(chunk.length() - 1)
+</span>101 <span style=''>
+</span>102 <span style=''>    val lastTwoHead = lastTwo.charAt(0)
+</span>103 <span style=''>
+</span>104 <span style=''>    // Exception cases
+</span>105 <span style=''>    if (koreanDictionary(Noun).contains(chunk) ||
+</span>106 <span style=''>        koreanDictionary(Conjunction).contains(chunk) ||
+</span>107 <span style=''>        koreanDictionary(Adverb).contains(chunk) ||
+</span>108 <span style=''>        koreanDictionary(Noun).contains(lastTwo) ||
+</span>109 <span style=''>        lastTwoHead < '가' || lastTwoHead > '힣' ||
+</span>110 <span style=''>        CODA_N_EXCPETION.contains(lastTwoHead)
+</span>111 <span style=''>    ) {
+</span>112 <span style=''>      return chunk
+</span>113 <span style=''>    }
+</span>114 <span style=''>
+</span>115 <span style=''>    val hc = decomposeHangul(lastTwoHead)
+</span>116 <span style=''>
+</span>117 <span style=''>    val newHead = new StringBuilder()
+</span>118 <span style=''>        .append(chunk.subSequence(0, chunk.length() - 2))
+</span>119 <span style=''>        .append(composeHangul(hc.onset, hc.vowel))
+</span>120 <span style=''>
+</span>121 <span style=''>    if (hc.coda == 'ㄴ' &&
+</span>122 <span style=''>        (last == '데' || last == '가' || last == '지') &&
+</span>123 <span style=''>        koreanDictionary(Noun).contains(newHead)
+</span>124 <span style=''>    ) {
+</span>125 <span style=''>      val mid = if (hc.vowel == 'ㅡ') "은" else "인"
+</span>126 <span style=''>      newHead + mid + last
+</span>127 <span style=''>    } else {
+</span>128 <span style=''>      chunk
+</span>129 <span style=''>    }
+</span>130 <span style=''>  }
+</span>131 <span style=''>
+</span>132 <span style=''>  private[this] def processNormalizationCandidate(m: Match): CharSequence = {
+</span>133 <span style=''>    val chunk = m.group(1)
+</span>134 <span style=''>    val toNormalize = m.group(2)
+</span>135 <span style=''>
+</span>136 <span style=''>    val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) ||
+</span>137 <span style=''>        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||
+</span>138 <span style=''>        koreanDictionary(Eomi).contains(chunk.takeRight(2))) {
+</span>139 <span style=''>      chunk
+</span>140 <span style=''>    } else {
+</span>141 <span style=''>      normalizeEmotionAttachedChunk(chunk, toNormalize)
+</span>142 <span style=''>    }
+</span>143 <span style=''>    normalizedChunk + toNormalize
+</span>144 <span style=''>  }
+</span>145 <span style=''>
+</span>146 <span style=''>  private[this] def normalizeEmotionAttachedChunk(s: CharSequence, toNormalize: CharSequence): CharSequence = {
+</span>147 <span style=''>    val init = s.subSequence(0, s.length() - 1)
+</span>148 <span style=''>    val secondToLastDecomposed = init match {
+</span>149 <span style=''>      case si: CharSequence if si.length > 0 =>
+</span>150 <span style=''>        val hc = decomposeHangul(si.charAt(si.length() - 1))
+</span>151 <span style=''>        if (hc.coda == ' ') Some(hc) else None
+</span>152 <span style=''>      case _ => None
+</span>153 <span style=''>    }
+</span>154 <span style=''>
+</span>155 <span style=''>    decomposeHangul(s.charAt(s.length() - 1)) match {
+</span>156 <span style=''>      case hc: HangulChar if hc.coda == 'ㅋ' || hc.coda == 'ㅎ' =>
+</span>157 <span style=''>        new StringBuilder()
+</span>158 <span style=''>            .append(init)
+</span>159 <span style=''>            .append(composeHangul(hc.onset, hc.vowel))
+</span>160 <span style=''>      case HangulChar(o: Char, v: Char, ' ') if secondToLastDecomposed.isDefined &&
+</span>161 <span style=''>          (v == toNormalize.charAt(0)) &&
+</span>162 <span style=''>          Hangul.CODA_MAP.contains(o) =>
+</span>163 <span style=''>        val hc = secondToLastDecomposed.get
+</span>164 <span style=''>        new StringBuilder()
+</span>165 <span style=''>            .append(init.subSequence(0, init.length() - 1))
+</span>166 <span style=''>            .append(composeHangul(hc.onset, hc.vowel, o))
+</span>167 <span style=''>      case _ => s
+</span>168 <span style=''>    }
+</span>169 <span style=''>  }
+</span>170 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          34
+        </td>
+        <td>
+          29
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;([ㄱ-ㅣ가-힣]+)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          30
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;([ㄱ-ㅣ가-힣]+)&quot;).r
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          32
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;([가-힣]+)(ㅋ+|ㅎ+|[ㅠㅜ]+)&quot;).r
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          31
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;([가-힣]+)(ㅋ+|ㅎ+|[ㅠㅜ]+)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          34
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;(.)\\1{2,}|[ㅠㅜ]{2,}&quot;).r
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          33
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;(.)\\1{2,}|[ㅠㅜ]{2,}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          35
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;(..)\\1{2,}&quot;
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          36
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;(..)\\1{2,}&quot;).r
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          38
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;\\s+&quot;).r
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          37
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;\\s+&quot;
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          40
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toSet
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;은는운인텐근른픈닌든던&quot;).toSet[Char]
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          39
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;은는운인텐근른픈닌든던&quot;
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          41
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.toString
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.normalizeKoreanChunk(m.group(0)).toString()
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          42
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.replaceAllIn
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.EXTENTED_KOREAN_REGEX.replaceAllIn(input, ((m: scala.util.matching.Regex.Match) =&gt; KoreanNormalizer.this.normalizeKoreanChunk(m.group(0)).toString()))
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          44
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.replaceAllIn
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.KOREAN_TO_NORMALIZE_REGEX.replaceAllIn(input, ((m: scala.util.matching.Regex.Match) =&gt; KoreanNormalizer.this.processNormalizationCandidate(m).toString()))
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          43
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.toString
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.processNormalizationCandidate(m).toString()
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          47
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.replaceAllIn
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.REPEATING_CHAR_REGEX.replaceAllIn(endingNormalized, ((m: scala.util.matching.Regex.Match) =&gt; java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(2).toString())))
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          46
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.regex.Matcher.quoteReplacement
+        </td>
+        <td style="background: #AEF1AE">
+          java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(2).toString())
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          45
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.toString
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(m.group(0)).take(2).toString()
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          50
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.replaceAllIn
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.REPEATING_2CHAR_REGEX.replaceAllIn(exclamationNormalized, ((m: scala.util.matching.Regex.Match) =&gt; java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(4).toString())))
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          49
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.regex.Matcher.quoteReplacement
+        </td>
+        <td style="background: #AEF1AE">
+          java.util.regex.Matcher.quoteReplacement(scala.this.Predef.augmentString(m.group(0)).take(4).toString())
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          48
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.toString
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(m.group(0)).take(4).toString()
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          51
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalizeCodaN
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.normalizeCodaN(repeatingNormalized)
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          52
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.correctTypo
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.correctTypo(codaNNormalized)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          53
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.replaceAllIn
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.WHITESPACE_REGEX.replaceAllIn(typoCorrected, &quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          65
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.foldLeft
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.typoDictionaryByLength.foldLeft[CharSequence](chunk)(((x0$1: CharSequence, x1$1: (Int, scala.collection.immutable.Map[String,String])) =&gt; scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
+  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+  }))
+}))
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          64
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1) match {
+  case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+    case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+  }))
+}
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          54
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[CharSequence, (Int, scala.collection.immutable.Map[String,String])](x0$1, x1$1)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          62
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.foldLeft
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+}))
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          55
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[String, String](x0$2, x1$2)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          61
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+}
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          63
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: CharSequence, _2: (Int, scala.collection.immutable.Map[String,String]))(CharSequence, (Int, scala.collection.immutable.Map[String,String]))((output @ (_: String)), (_1: Int, _2: scala.collection.immutable.Map[String,String])(Int, scala.collection.immutable.Map[String,String])((wordLen @ (_: Int)), (typoMap @ (_: Map[String,String])))) =&gt; scala.this.Predef.augmentString(output).sliding(wordLen).foldLeft[String](output)(((x0$2: String, x1$2: String) =&gt; scala.this.Tuple2.apply[String, String](x0$2, x1$2) match {
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+  case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+}))
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          56
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          typoMap.contains(slice)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          59
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) if typoMap.contains(slice) =&gt; sliceOutput.replaceAll(slice, typoMap.apply(slice))
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.replaceAll
+        </td>
+        <td style="background: #AEF1AE">
+          sliceOutput.replaceAll(slice, typoMap.apply(slice))
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          57
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapLike.apply
+        </td>
+        <td style="background: #AEF1AE">
+          typoMap.apply(slice)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          60
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: String, _2: String)(String, String)((sliceOutput @ (_: String)), (slice @ (_: String))) =&gt; sliceOutput
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          67
+        </td>
+        <td>
+          Return
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalizeCodaN
+        </td>
+        <td style="background: #AEF1AE">
+          return chunk
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          69
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          66
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&lt;
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.length().&lt;(2)
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          71
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.length
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.length()
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          70
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.length().-(2)
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          72
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.subSequence
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.subSequence(chunk.length().-(2), chunk.length())
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          74
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.charAt
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.charAt(chunk.length().-(1))
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          73
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.length().-(1)
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          75
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.charAt
+        </td>
+        <td style="background: #AEF1AE">
+          lastTwo.charAt(0)
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          86
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          85
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          76
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          77
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Conjunction).contains(chunk)
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          78
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Adverb).contains(chunk)
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          79
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(lastTwo)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          83
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(chunk).||(com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Conjunction).contains(chunk)).||(com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Adverb).contains(chunk)).||(com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(lastTwo)).||(lastTwoHead.&lt;('가')).||(lastTwoHead.&gt;('힣')).||(KoreanNormalizer.this.CODA_N_EXCPETION.contains(lastTwoHead))
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          80
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.&lt;
+        </td>
+        <td style="background: #AEF1AE">
+          lastTwoHead.&lt;('가')
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          81
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          lastTwoHead.&gt;('힣')
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          82
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.CODA_N_EXCPETION.contains(lastTwoHead)
+        </td>
+      </tr><tr>
+        <td>
+          112
+        </td>
+        <td>
+          84
+        </td>
+        <td>
+          Return
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalizeCodaN
+        </td>
+        <td style="background: #AEF1AE">
+          return chunk
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          87
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul(lastTwoHead)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          89
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.length().-(2)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          88
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          90
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.subSequence
+        </td>
+        <td style="background: #AEF1AE">
+          chunk.subSequence(0, chunk.length().-(2))
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          92
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.vowel
+        </td>
+        <td style="background: #AEF1AE">
+          hc.vowel
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          95
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.StringBuilder.append
+        </td>
+        <td style="background: #AEF1AE">
+          new scala.`package`.StringBuilder().append(chunk.subSequence(0, chunk.length().-(2))).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, com.twitter.penguin.korean.util.Hangul.composeHangul$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          91
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.onset
+        </td>
+        <td style="background: #AEF1AE">
+          hc.onset
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          94
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, com.twitter.penguin.korean.util.Hangul.composeHangul$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          93
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.composeHangul$default$3
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.composeHangul$default$3
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          96
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          'ㄴ'
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          98
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          last.==('가')
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          100
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          last.==('데').||(last.==('가')).||(last.==('지'))
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          97
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          '데'
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          99
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          last.==('지')
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          102
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          hc.coda.==('ㄴ').&amp;&amp;(last.==('데').||(last.==('가')).||(last.==('지'))).&amp;&amp;(com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(newHead))
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          101
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(newHead)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          109
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {
+  val mid: String = if (hc.vowel.==('ㅡ'))
+    &quot;은&quot;
+  else
+    &quot;인&quot;;
+  scala.this.Predef.any2stringadd(newHead).+(mid).+(last)
+}
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          104
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;은&quot;
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          107
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;인&quot;
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          106
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;인&quot;
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          103
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          hc.vowel.==('ㅡ')
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          105
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;은&quot;
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          108
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2stringadd(newHead).+(mid).+(last)
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          110
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.chunk
+        </td>
+        <td style="background: #AEF1AE">
+          chunk
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          111
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.MatchData.group
+        </td>
+        <td style="background: #AEF1AE">
+          m.group(1)
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          112
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.MatchData.group
+        </td>
+        <td style="background: #AEF1AE">
+          m.group(2)
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          113
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          116
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(1))
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          115
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.takeRight
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(chunk).takeRight(1)
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          120
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(chunk).||(com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(1))).||(com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(2)))
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          114
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          119
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Eomi).contains(scala.this.Predef.augmentString(chunk).takeRight(2))
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          118
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.takeRight
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(chunk).takeRight(2)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          117
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          121
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.chunk
+        </td>
+        <td style="background: #AEF1AE">
+          chunk
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          122
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalizeEmotionAttachedChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.normalizeEmotionAttachedChunk(chunk, toNormalize)
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          123
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalizeEmotionAttachedChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanNormalizer.this.normalizeEmotionAttachedChunk(chunk, toNormalize)
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          124
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.runtime.StringAdd.+
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2stringadd(normalizedChunk).+(toNormalize)
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          125
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          127
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.subSequence
+        </td>
+        <td style="background: #AEF1AE">
+          s.subSequence(0, s.length().-(1))
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          126
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          s.length().-(1)
+        </td>
+      </tr><tr>
+        <td>
+          148
+        </td>
+        <td>
+          140
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          init match {
+  case (si @ (_: CharSequence)) if si.length().&gt;(0) =&gt; {
+    val hc: com.twitter.penguin.korean.util.Hangul.HangulChar = com.twitter.penguin.korean.util.Hangul.decomposeHangul(si.charAt(si.length().-(1)));
+    if (hc.coda.==(' '))
+      scala.Some.apply[com.twitter.penguin.korean.util.Hangul.HangulChar](hc)
+    else
+      scala.None
+  }
+  case _ =&gt; scala.None
+}
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          137
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (si @ (_: CharSequence)) if si.length().&gt;(0) =&gt; {
+  val hc: com.twitter.penguin.korean.util.Hangul.HangulChar = com.twitter.penguin.korean.util.Hangul.decomposeHangul(si.charAt(si.length().-(1)));
+  if (hc.coda.==(' '))
+    scala.Some.apply[com.twitter.penguin.korean.util.Hangul.HangulChar](hc)
+  else
+    scala.None
+}
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          128
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          si.length().&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          131
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul(si.charAt(si.length().-(1)))
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          130
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.charAt
+        </td>
+        <td style="background: #AEF1AE">
+          si.charAt(si.length().-(1))
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          129
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          si.length().-(1)
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          134
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[com.twitter.penguin.korean.util.Hangul.HangulChar](hc)
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          133
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[com.twitter.penguin.korean.util.Hangul.HangulChar](hc)
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          136
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          132
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          hc.coda.==(' ')
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          139
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case _ =&gt; scala.None
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          138
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          167
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul(s.charAt(s.length().-(1))) match {
+  case (hc @ (_: com.twitter.penguin.korean.util.Hangul.HangulChar)) if hc.coda.==('ㅋ').||(hc.coda.==('ㅎ')) =&gt; new scala.`package`.StringBuilder().append(init).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, com.twitter.penguin.korean.util.Hangul.composeHangul$default$3))
+  case (onset: Char, vowel: Char, coda: Char)com.twitter.penguin.korean.util.Hangul.HangulChar((o @ (_: Char)), (v @ (_: Char)), ' ') if secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.util.Hangul.CODA_MAP.contains(o)) =&gt; {
+    val hc: com.twitter.penguin.korean.util.Hangul.HangulChar = secondToLastDecomposed.get;
+    new scala.`package`.StringBuilder().append(init.subSequence(0, init.length().-(1))).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, o))
+  }
+  case _ =&gt; s
+}
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          142
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.charAt
+        </td>
+        <td style="background: #AEF1AE">
+          s.charAt(s.length().-(1))
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          141
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          s.length().-(1)
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          143
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul(s.charAt(s.length().-(1)))
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          146
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          hc.coda.==('ㅋ').||(hc.coda.==('ㅎ'))
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          145
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          hc.coda.==('ㅎ')
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          144
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          'ㅋ'
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          149
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.composeHangul$default$3
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.composeHangul$default$3
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          151
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.StringBuilder.append
+        </td>
+        <td style="background: #AEF1AE">
+          new scala.`package`.StringBuilder().append(init).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, com.twitter.penguin.korean.util.Hangul.composeHangul$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.vowel
+        </td>
+        <td style="background: #AEF1AE">
+          hc.vowel
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          147
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.onset
+        </td>
+        <td style="background: #AEF1AE">
+          hc.onset
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, com.twitter.penguin.korean.util.Hangul.composeHangul$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          152
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (hc @ (_: com.twitter.penguin.korean.util.Hangul.HangulChar)) if hc.coda.==('ㅋ').||(hc.coda.==('ㅎ')) =&gt; new scala.`package`.StringBuilder().append(init).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, com.twitter.penguin.korean.util.Hangul.composeHangul$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          154
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          v.==(toNormalize.charAt(0))
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          156
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.util.Hangul.CODA_MAP.contains(o))
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          153
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.charAt
+        </td>
+        <td style="background: #AEF1AE">
+          toNormalize.charAt(0)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          155
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.CODA_MAP.contains(o)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          165
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (onset: Char, vowel: Char, coda: Char)com.twitter.penguin.korean.util.Hangul.HangulChar((o @ (_: Char)), (v @ (_: Char)), ' ') if secondToLastDecomposed.isDefined.&amp;&amp;(v.==(toNormalize.charAt(0))).&amp;&amp;(com.twitter.penguin.korean.util.Hangul.CODA_MAP.contains(o)) =&gt; {
+  val hc: com.twitter.penguin.korean.util.Hangul.HangulChar = secondToLastDecomposed.get;
+  new scala.`package`.StringBuilder().append(init.subSequence(0, init.length().-(1))).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, o))
+}
+        </td>
+      </tr><tr>
+        <td>
+          163
+        </td>
+        <td>
+          157
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Option.get
+        </td>
+        <td style="background: #AEF1AE">
+          secondToLastDecomposed.get
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          158
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          160
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.subSequence
+        </td>
+        <td style="background: #AEF1AE">
+          init.subSequence(0, init.length().-(1))
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          159
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          init.length().-(1)
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          164
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.StringBuilder.append
+        </td>
+        <td style="background: #AEF1AE">
+          new scala.`package`.StringBuilder().append(init.subSequence(0, init.length().-(1))).append(com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, o))
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          163
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.composeHangul(hc.onset, hc.vowel, o)
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          162
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.vowel
+        </td>
+        <td style="background: #AEF1AE">
+          hc.vowel
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          161
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.onset
+        </td>
+        <td style="background: #AEF1AE">
+          hc.onset
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          166
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case _ =&gt; s
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

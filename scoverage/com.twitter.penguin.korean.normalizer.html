@@ -1,0 +1,150 @@
+<html>
+      <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <title id="title">Scoverage Code Coverage</title>
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+      <style>
+        .meter {
+        height: 14px;
+        position: relative;
+        background: #BB2020;
+}
+
+.meter span {
+	display: block;
+	height: 100%;
+	background-color: rgb(43,194,83);
+	background-image: -webkit-gradient(
+	  linear,
+	  left bottom,
+	  left top,
+	  color-stop(0, rgb(43,194,83)),
+	  color-stop(1, rgb(84,240,84))
+	 );
+	background-image: -webkit-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	background-image: -moz-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	background-image: -ms-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	background-image: -o-linear-gradient(
+	  center bottom,
+	  rgb(43,194,83) 37%,
+	  rgb(84,240,84) 69%
+	 );
+	-webkit-box-shadow:
+	  inset 0 2px 9px  rgba(255,255,255,0.3),
+	  inset 0 -2px 6px rgba(0,0,0,0.4);
+	-moz-box-shadow:
+	  inset 0 2px 9px  rgba(255,255,255,0.3),
+	  inset 0 -2px 6px rgba(0,0,0,0.4);
+	position: relative;
+	overflow: hidden;
+}
+      </style>
+      <script>
+        $(document).ready(function() {$(&quot;#packages&quot;).tablesorter();});
+      </script>
+    </head><body style="font-family: monospace;">
+      <table class="tablesorter table table-striped" style="font-size:13px">
+      <thead>
+        <tr>
+          <th>
+            Class
+          </th>
+          <th>
+            Source file
+          </th>
+          <th>
+            Lines
+          </th>
+          <th>
+            Methods
+          </th>
+          <th>
+            Statements
+          </th>
+          <th>
+            Invoked
+          </th>
+          <th>
+            Coverage
+          </th>
+          <th>
+          </th>
+          <th>
+            Branches
+          </th>
+          <th>
+            Invoked
+          </th>
+          <th>
+            Coverage
+          </th>
+          <th>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+      <td>
+        <a href="/Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/normalizer/KoreanNormalizer.scala.html">
+          KoreanNormalizer
+        </a>
+      </td>
+      <td>
+        KoreanNormalizer.scala
+      </td>
+      <td>
+        167
+      </td>
+      <td>
+        7
+      </td>
+      <td>
+        139
+      </td>
+      <td>
+        139
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+      <td>
+        12
+      </td>
+      <td>
+        12
+      </td>
+      <td>
+        <div class="meter">
+          <span style="width: 100%"></span>
+        </div>
+      </td>
+      <td>
+        100.00
+        %
+      </td>
+    </tr>
+      </tbody>
+    </table>
+    </body>
+    </html>

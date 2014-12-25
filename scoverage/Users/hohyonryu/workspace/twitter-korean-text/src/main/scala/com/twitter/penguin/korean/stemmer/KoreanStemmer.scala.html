@@ -1,0 +1,1501 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/stemmer/KoreanStemmer.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>package com.twitter.penguin.korean.stemmer
+</span>2 <span style=''>
+</span>3 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
+</span>4 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+</span>5 <span style=''>import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
+</span>6 <span style=''>import com.twitter.penguin.korean.util.KoreanPos._
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * Stems Adjectives and Verbs: 새로운 스테밍을 추가했었다. -> 새롭다 + 스테밍 + 을 + 추가하다
+</span>10 <span style=''> */
+</span>11 <span style=''>object KoreanStemmer {
+</span>12 <span style=''>  private val Endings = Set(Eomi, PreEomi)
+</span>13 <span style=''>  private val Predicates = Set(Verb, Adjective)
+</span>14 <span style=''>
+</span>15 <span style=''>  private val EndingsForNouns = Set("하다", "되다", "없다")
+</span>16 <span style=''>
+</span>17 <span style=''>  case class StemmedTextWithTokens(text: CharSequence, tokens: Seq[KoreanToken])
+</span>18 <span style=''>
+</span>19 <span style=''>  /**
+</span>20 <span style=''>   * Removes Ending tokens recovering the root form of predicates
+</span>21 <span style=''>   *
+</span>22 <span style=''>   * @param tokens A sequence of tokens
+</span>23 <span style=''>   * @return A sequence of collapsed Korean tokens ([새, 로, 운, 사람] -> [[새, 로, 운].], 사람)
+</span>24 <span style=''>   */
+</span>25 <span style=''>  def stemPredicatesCore(tokens: Seq[KoreanToken]): Seq[Seq[KoreanToken]] = {
+</span>26 <span style=''>    if (!tokens.exists(t => t.pos == Verb || t.pos == Adjective)) {
+</span>27 <span style=''>      return tokens.map(t => Seq(t));
+</span>28 <span style=''>    }
+</span>29 <span style=''>
+</span>30 <span style=''>    val stemmed = tokens.map {
+</span>31 <span style=''>      case token: KoreanToken if Endings.contains(token.pos) => None
+</span>32 <span style=''>      case token: KoreanToken if Predicates.contains(token.pos) =>
+</span>33 <span style=''>        Some(
+</span>34 <span style=''>          KoreanToken(
+</span>35 <span style=''>            predicateStems(token.pos)(token.text),
+</span>36 <span style=''>
+</span>37 <span style=''>            token.pos, token.unknown
+</span>38 <span style=''>          )
+</span>39 <span style=''>        )
+</span>40 <span style=''>      case token => Some(token)
+</span>41 <span style=''>    }
+</span>42 <span style=''>
+</span>43 <span style=''>    def validNounHeading(token: KoreanToken): Boolean = {
+</span>44 <span style=''>      val heading = token.text.take(token.text.length - 2)
+</span>45 <span style=''>
+</span>46 <span style=''>      val validLength = token.text.length > 2
+</span>47 <span style=''>      val validPos = token.pos == Verb
+</span>48 <span style=''>      val validEndings = EndingsForNouns.contains(token.text.takeRight(2))
+</span>49 <span style=''>      val validNouns = koreanDictionary(Noun).contains(heading)
+</span>50 <span style=''>
+</span>51 <span style=''>      validLength && validPos && validEndings && validNouns
+</span>52 <span style=''>    }
+</span>53 <span style=''>
+</span>54 <span style=''>    stemmed.map {
+</span>55 <span style=''>      case Some(token) if validNounHeading(token) =>
+</span>56 <span style=''>        val heading = token.text.take(token.text.length - 2)
+</span>57 <span style=''>        val ending = token.text.takeRight(2)
+</span>58 <span style=''>
+</span>59 <span style=''>        Seq(
+</span>60 <span style=''>          KoreanToken(heading, Noun),
+</span>61 <span style=''>          KoreanToken(ending, token.pos)
+</span>62 <span style=''>        )
+</span>63 <span style=''>      case Some(token) => Seq(token)
+</span>64 <span style=''>      case None => Seq()
+</span>65 <span style=''>    }
+</span>66 <span style=''>  }
+</span>67 <span style=''>
+</span>68 <span style=''>  /**
+</span>69 <span style=''>   * Removes Ending tokens recovering the root form of predicates
+</span>70 <span style=''>   *
+</span>71 <span style=''>   * @param tokens A sequence of tokens
+</span>72 <span style=''>   * @return A list of Korean tokens
+</span>73 <span style=''>   */
+</span>74 <span style=''>  def stemPredicates(tokens: Seq[KoreanToken]): Seq[KoreanToken] = {
+</span>75 <span style=''>    stemPredicatesCore(tokens).flatMap(c => c)
+</span>76 <span style=''>  }
+</span>77 <span style=''>
+</span>78 <span style=''>  /**
+</span>79 <span style=''>   * Stem tokens
+</span>80 <span style=''>   *
+</span>81 <span style=''>   * @param text Input text
+</span>82 <span style=''>   * @return StemmedTextWithTokens
+</span>83 <span style=''>   */
+</span>84 <span style=''>  def stem(text: CharSequence): StemmedTextWithTokens = {
+</span>85 <span style=''>    val tokenized = KoreanTokenizer.tokenize(text)
+</span>86 <span style=''>
+</span>87 <span style=''>    val stemmed = stemPredicatesCore(tokenized)
+</span>88 <span style=''>    val mapped = tokenized.zip(stemmed)
+</span>89 <span style=''>
+</span>90 <span style=''>    val s = text.toString
+</span>91 <span style=''>    // transform the original text to the stemmed text
+</span>92 <span style=''>    val (sb, i) = mapped.foldLeft(new StringBuilder(), 0) {
+</span>93 <span style=''>      case ((sb: StringBuilder, i: Int), (token: KoreanToken, stemmedTokens: Seq[KoreanToken])) =>
+</span>94 <span style=''>        val segStart = s.indexOf(token.text, i)
+</span>95 <span style=''>        sb.append(s.substring(i, segStart))
+</span>96 <span style=''>        sb.append(stemmedTokens.map(_.text).mkString(""))
+</span>97 <span style=''>        (sb, segStart + token.text.length)
+</span>98 <span style=''>    }
+</span>99 <span style=''>    sb.append(s.substring(i, text.length))
+</span>100 <span style=''>
+</span>101 <span style=''>    StemmedTextWithTokens(sb, stemmed.flatten)
+</span>102 <span style=''>  }
+</span>103 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          12
+        </td>
+        <td>
+          550
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          552
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi, com.twitter.penguin.korean.util.KoreanPos.PreEomi)
+        </td>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          551
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          555
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb, com.twitter.penguin.korean.util.KoreanPos.Adjective)
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          554
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          553
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          556
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[String](&quot;하다&quot;, &quot;되다&quot;, &quot;없다&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          559
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Adjective)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          567
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          558
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          561
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #AEF1AE">
+          tokens.exists(((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Verb).||(t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Adjective)))).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          557
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          566
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          560
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Verb).||(t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Adjective))
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          564
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          tokens.map[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken], Seq[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](t)))(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]])
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          563
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          562
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](t)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          565
+        </td>
+        <td>
+          Return
+        </td>
+        <td>
+          com.twitter.penguin.korean.stemmer.KoreanStemmer.stemPredicatesCore
+        </td>
+        <td style="background: #AEF1AE">
+          return tokens.map[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken], Seq[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](t)))(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]])
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          585
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Option[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          584
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$1 match {
+  case (token @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if KoreanStemmer.this.Endings.contains(token.pos) =&gt; scala.None
+  case (token @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if KoreanStemmer.this.Predicates.contains(token.pos) =&gt; scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(com.twitter.penguin.korean.util.KoreanDictionaryProvider.predicateStems.apply(token.pos).apply(token.text), token.pos, token.unknown))
+  case (token @ _) =&gt; scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+}
+        </td>
+      </tr><tr>
+        <td>
+          30
+        </td>
+        <td>
+          586
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          tokens.map[Option[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken], Seq[Option[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]](((x0$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$1 match {
+  case (token @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if KoreanStemmer.this.Endings.contains(token.pos) =&gt; scala.None
+  case (token @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if KoreanStemmer.this.Predicates.contains(token.pos) =&gt; scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(com.twitter.penguin.korean.util.KoreanDictionaryProvider.predicateStems.apply(token.pos).apply(token.text), token.pos, token.unknown))
+  case (token @ _) =&gt; scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+}))(collection.this.Seq.canBuildFrom[Option[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]])
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          568
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          570
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          569
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanStemmer.this.Endings.contains(token.pos)
+        </td>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          571
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (token @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if KoreanStemmer.this.Endings.contains(token.pos) =&gt; scala.None
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          573
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanStemmer.this.Predicates.contains(token.pos)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          572
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          581
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (token @ (_: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)) if KoreanStemmer.this.Predicates.contains(token.pos) =&gt; scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(com.twitter.penguin.korean.util.KoreanDictionaryProvider.predicateStems.apply(token.pos).apply(token.text), token.pos, token.unknown))
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          580
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(com.twitter.penguin.korean.util.KoreanDictionaryProvider.predicateStems.apply(token.pos).apply(token.text), token.pos, token.unknown))
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          579
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(com.twitter.penguin.korean.util.KoreanDictionaryProvider.predicateStems.apply(token.pos).apply(token.text), token.pos, token.unknown)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          576
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapLike.apply
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.predicateStems.apply(token.pos).apply(token.text)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          575
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.text
+        </td>
+        <td style="background: #AEF1AE">
+          token.text
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          574
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          577
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          578
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.unknown
+        </td>
+        <td style="background: #AEF1AE">
+          token.unknown
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          582
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          583
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (token @ _) =&gt; scala.Some.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          588
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          token.text.length().-(2)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          587
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.text
+        </td>
+        <td style="background: #AEF1AE">
+          token.text
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          589
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.take
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(token.text).take(token.text.length().-(2))
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          590
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          token.text.length().&gt;(2)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          591
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          592
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos.==(com.twitter.penguin.korean.util.KoreanPos.Verb)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          594
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanStemmer.this.EndingsForNouns.contains(scala.this.Predef.augmentString(token.text).takeRight(2))
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          593
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.takeRight
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(token.text).takeRight(2)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          595
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.contains
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.koreanDictionary.apply(com.twitter.penguin.korean.util.KoreanPos.Noun).contains(heading)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          596
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          validLength.&amp;&amp;(validPos).&amp;&amp;(validEndings).&amp;&amp;(validNouns)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          615
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          614
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$2 match {
+  case (x: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)Some[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]((token @ _)) if validNounHeading(token) =&gt; {
+    val heading: String = scala.this.Predef.augmentString(token.text).take(token.text.length().-(2));
+    val ending: String = scala.this.Predef.augmentString(token.text).takeRight(2);
+    collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(heading, com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3), com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(ending, token.pos, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3))
+  }
+  case (x: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)Some[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]((token @ _)) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+  case scala.None =&gt; collection.this.Seq.apply[Nothing]()
+}
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          616
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          stemmed.map[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken], Seq[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]](((x0$2: Option[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]) =&gt; x0$2 match {
+  case (x: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)Some[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]((token @ _)) if validNounHeading(token) =&gt; {
+    val heading: String = scala.this.Predef.augmentString(token.text).take(token.text.length().-(2));
+    val ending: String = scala.this.Predef.augmentString(token.text).takeRight(2);
+    collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(heading, com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3), com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(ending, token.pos, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3))
+  }
+  case (x: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)Some[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]((token @ _)) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+  case scala.None =&gt; collection.this.Seq.apply[Nothing]()
+}))(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]])
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          609
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (x: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)Some[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]((token @ _)) if validNounHeading(token) =&gt; {
+  val heading: String = scala.this.Predef.augmentString(token.text).take(token.text.length().-(2));
+  val ending: String = scala.this.Predef.augmentString(token.text).takeRight(2);
+  collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(heading, com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3), com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(ending, token.pos, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3))
+}
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          597
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.stemmer.KoreanStemmer.validNounHeading
+        </td>
+        <td style="background: #AEF1AE">
+          validNounHeading(token)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          600
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.take
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(token.text).take(token.text.length().-(2))
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          599
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          token.text.length().-(2)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          598
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.text
+        </td>
+        <td style="background: #AEF1AE">
+          token.text
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.takeRight
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(token.text).takeRight(2)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          608
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(heading, com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3), com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(ending, token.pos, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          603
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          602
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          604
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(heading, com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          606
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          605
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          607
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply(ending, token.pos, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.apply$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          611
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (x: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)Some[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]((token @ _)) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          610
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          612
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[Nothing]()
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          613
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case scala.None =&gt; collection.this.Seq.apply[Nothing]()
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          618
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.flatMap
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanStemmer.this.stemPredicatesCore(tokens).flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((c: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]) =&gt; c))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          617
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          620
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(text, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2)
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          619
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize$default$2
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          621
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.stemmer.KoreanStemmer.stemPredicatesCore
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanStemmer.this.stemPredicatesCore(tokenized)
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          623
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.IterableLike.zip
+        </td>
+        <td style="background: #AEF1AE">
+          tokenized.zip[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken], Seq[(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])]](stemmed)(collection.this.Seq.canBuildFrom[(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])])
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          622
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[(com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])]
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          624
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.toString
+        </td>
+        <td style="background: #AEF1AE">
+          text.toString()
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          626
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td style="background: #AEF1AE">
+          x$2._2
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          625
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$2._1
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          627
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.CharSequence.length
+        </td>
+        <td style="background: #AEF1AE">
+          text.length()
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          629
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.StringBuilder.append
+        </td>
+        <td style="background: #AEF1AE">
+          sb.append(s.substring(i, text.length()))
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          628
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.substring
+        </td>
+        <td style="background: #AEF1AE">
+          s.substring(i, text.length())
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          630
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.Predef.conforms
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.conforms[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanStemmer.this.StemmedTextWithTokens.apply(sb, stemmed.flatten[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](scala.this.Predef.conforms[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]]))
+        </td>
+      </tr><tr>
+        <td>
+          101
+        </td>
+        <td>
+          631
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.generic.GenericTraversableTemplate.flatten
+        </td>
+        <td style="background: #AEF1AE">
+          stemmed.flatten[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](scala.this.Predef.conforms[Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]])
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

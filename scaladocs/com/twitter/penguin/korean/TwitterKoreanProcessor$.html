@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>TwitterKoreanProcessor - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor</title>
-          <meta name="description" content="TwitterKoreanProcessor - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor" />
-          <meta name="keywords" content="TwitterKoreanProcessor Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.TwitterKoreanProcessor" />
+          <title>TwitterKoreanProcessor - Korean Text Processing Utilities 2.5-SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor</title>
+          <meta name="description" content="TwitterKoreanProcessor - Korean Text Processing Utilities 2.5 - SNAPSHOT API - com.twitter.penguin.korean.TwitterKoreanProcessor" />
+          <meta name="keywords" content="TwitterKoreanProcessor Korean Text Processing Utilities 2.5 SNAPSHOT API com.twitter.penguin.korean.TwitterKoreanProcessor" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -239,6 +239,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.TwitterKoreanProcessor#extractPhrases" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="extractPhrases(text:CharSequence):Seq[CharSequence]"></a>
+      <a id="extractPhrases(CharSequence):Seq[CharSequence]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">extractPhrases</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -394,15 +407,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.twitter.penguin.korean.TwitterKoreanProcessor#tokenize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tokenize(text:CharSequence,normalizization:Boolean,stemming:Boolean):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
-      <a id="tokenize(CharSequence,Boolean,Boolean):Seq[KoreanToken]"></a>
+      <a id="tokenize(text:CharSequence,normalizization:Boolean,stemming:Boolean,keepSpace:Boolean):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
+      <a id="tokenize(CharSequence,Boolean,Boolean,Boolean):Seq[KoreanToken]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="normalizization">normalizization: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="stemming">stemming: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
+        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="normalizization">normalizization: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="stemming">stemming: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="keepSpace">keepSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
@@ -411,15 +424,15 @@ whether a token is an out-of-vocabulary term.
 </p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>input text</p></dd><dt class="param">normalizization</dt><dd class="cmt"><p>option to enable the normalizer</p></dd><dt class="param">stemming</dt><dd class="cmt"><p>option to enable the stemmer</p></dd><dt>returns</dt><dd class="cmt"><p>A sequence of KoreanTokens.
 </p></dd></dl></div>
     </li><li name="com.twitter.penguin.korean.TwitterKoreanProcessor#tokenizeToStrings" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tokenizeToStrings(text:CharSequence,normalize:Boolean,stem:Boolean):Seq[String]"></a>
-      <a id="tokenizeToStrings(CharSequence,Boolean,Boolean):Seq[String]"></a>
+      <a id="tokenizeToStrings(text:CharSequence,normalize:Boolean,stem:Boolean,keepSpace:Boolean):Seq[String]"></a>
+      <a id="tokenizeToStrings(CharSequence,Boolean,Boolean,Boolean):Seq[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tokenizeToStrings</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="stem">stem: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">tokenizeToStrings</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="normalize">normalize: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="stem">stem: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="keepSpace">keepSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Tokenize text into a sequence of token strings.</p><div class="fullcomment"><div class="comment cmt"><p>Tokenize text into a sequence of token strings.

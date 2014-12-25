@@ -1,0 +1,2607 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/util/KoreanDictionaryProvider.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.util
+</span>20 <span style=''>
+</span>21 <span style=''>import java.io.InputStream
+</span>22 <span style=''>import java.util.zip.GZIPInputStream
+</span>23 <span style=''>
+</span>24 <span style=''>import com.twitter.penguin.korean.util.KoreanConjugation._
+</span>25 <span style=''>import com.twitter.penguin.korean.util.KoreanPos._
+</span>26 <span style=''>
+</span>27 <span style=''>import scala.collection.JavaConversions._
+</span>28 <span style=''>import scala.io.Source
+</span>29 <span style=''>
+</span>30 <span style=''>/**
+</span>31 <span style=''> * Provides a singleton Korean dictionary
+</span>32 <span style=''> */
+</span>33 <span style=''>object KoreanDictionaryProvider {
+</span>34 <span style=''>  private[this] def readStreamByLine(stream: InputStream, filename: String): Iterator[String] = {
+</span>35 <span style=''>    require(stream != null, "Resource not loaded: " + filename)
+</span>36 <span style=''>    Source.fromInputStream(stream)(io.Codec("UTF-8"))
+</span>37 <span style=''>        .getLines()
+</span>38 <span style=''>        .map(_.trim)
+</span>39 <span style=''>        .filter(_.length > 0)
+</span>40 <span style=''>  }
+</span>41 <span style=''>
+</span>42 <span style=''>  private[this] def readWordFreqs(filename: String): collection.mutable.Map[CharSequence, Float] = {
+</span>43 <span style=''>    var freqMap: collection.mutable.Map[CharSequence, Float] =
+</span>44 <span style=''>      new java.util.HashMap[CharSequence, Float]
+</span>45 <span style=''>
+</span>46 <span style=''>    readFileByLineFromResources(filename).foreach {
+</span>47 <span style=''>      case line => if (line.contains("\t")) {
+</span>48 <span style=''>        val data = line.split("\t")
+</span>49 <span style=''>        freqMap += (data(0) -> data(1).slice(0, 6).toFloat)
+</span>50 <span style=''>      }
+</span>51 <span style=''>    }
+</span>52 <span style=''>    freqMap
+</span>53 <span style=''>  }
+</span>54 <span style=''>
+</span>55 <span style=''>  private[this] def readWordMap(filename: String): Map[String, String] = {
+</span>56 <span style=''>    readFileByLineFromResources(filename).filter {
+</span>57 <span style=''>      case line: String => line.contains(" ")
+</span>58 <span style=''>    }.map {
+</span>59 <span style=''>      case line =>
+</span>60 <span style=''>        val data = line.split(" ")
+</span>61 <span style=''>        (data(0), data(1))
+</span>62 <span style=''>    }.toMap
+</span>63 <span style=''>  }
+</span>64 <span style=''>
+</span>65 <span style=''>
+</span>66 <span style=''>  protected[korean] def readWordsAsSeq(filename: String): Seq[String] = {
+</span>67 <span style=''>    readFileByLineFromResources(filename).toSeq
+</span>68 <span style=''>  }
+</span>69 <span style=''>
+</span>70 <span style=''>  protected[korean] def readWordsAsSet(filenames: String*): Set[String] = {
+</span>71 <span style=''>    filenames.foldLeft(Set[String]()) {
+</span>72 <span style=''>      case (output: Set[String], filename: String) =>
+</span>73 <span style=''>        output.union(
+</span>74 <span style=''>          readFileByLineFromResources(filename).toSet
+</span>75 <span style=''>        )
+</span>76 <span style=''>    }
+</span>77 <span style=''>  }
+</span>78 <span style=''>
+</span>79 <span style=''>  protected[korean] def readWords(filenames: String*): CharArraySet = {
+</span>80 <span style=''>    val set = newCharArraySet
+</span>81 <span style=''>    filenames.foreach(
+</span>82 <span style=''>      filename => readFileByLineFromResources(filename).foreach(set.add)
+</span>83 <span style=''>    )
+</span>84 <span style=''>    set
+</span>85 <span style=''>  }
+</span>86 <span style=''>
+</span>87 <span style=''>  protected[korean] def readFileByLineFromResources(filename: String): Iterator[String] = {
+</span>88 <span style=''>    readStreamByLine(
+</span>89 <span style=''>      if (filename.endsWith(".gz")) {
+</span>90 <span style=''>        new GZIPInputStream(getClass.getResourceAsStream(filename))
+</span>91 <span style=''>      } else {
+</span>92 <span style=''>        getClass.getResourceAsStream(filename)
+</span>93 <span style=''>      }
+</span>94 <span style=''>      , filename
+</span>95 <span style=''>    )
+</span>96 <span style=''>  }
+</span>97 <span style=''>
+</span>98 <span style=''>  protected[korean] def newCharArraySet: CharArraySet = {
+</span>99 <span style=''>    new CharArraySet(10000, false)
+</span>100 <span style=''>  }
+</span>101 <span style=''>
+</span>102 <span style=''>  lazy val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
+</span>103 <span style=''>    readWordFreqs("freq/entity-freq.txt.gz")
+</span>104 <span style=''>
+</span>105 <span style=''>  lazy val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
+</span>106 <span style=''>    var map: collection.mutable.Map[KoreanPos, CharArraySet] =
+</span>107 <span style=''>      new java.util.HashMap[KoreanPos, CharArraySet]
+</span>108 <span style=''>
+</span>109 <span style=''>    map += Noun -> readWords(
+</span>110 <span style=''>      "noun/nouns.txt", "noun/entities.txt", "noun/spam.txt",
+</span>111 <span style=''>      "noun/names.txt", "noun/twitter.txt", "noun/lol.txt",
+</span>112 <span style=''>      "noun/slangs.txt", "noun/company_names.txt",
+</span>113 <span style=''>      "noun/foreign.txt", "noun/geolocations.txt", "noun/profane.txt",
+</span>114 <span style=''>      "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
+</span>115 <span style=''>      "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt"
+</span>116 <span style=''>    )
+</span>117 <span style=''>    map += Verb -> conjugatePredicatesToCharArraySet(readWordsAsSet("verb/verb.txt"))
+</span>118 <span style=''>    map += Adjective -> conjugatePredicatesToCharArraySet(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+</span>119 <span style=''>    map += Adverb -> readWords("adverb/adverb.txt")
+</span>120 <span style=''>    map += Determiner -> readWords("auxiliary/determiner.txt")
+</span>121 <span style=''>    map += Exclamation -> readWords("auxiliary/exclamation.txt")
+</span>122 <span style=''>    map += Josa -> readWords("josa/josa.txt")
+</span>123 <span style=''>    map += Eomi -> readWords("verb/eomi.txt")
+</span>124 <span style=''>    map += PreEomi -> readWords("verb/pre_eomi.txt")
+</span>125 <span style=''>    map += Conjunction -> readWords("auxiliary/conjunctions.txt")
+</span>126 <span style=''>    map += NounPrefix -> readWords("substantives/noun_prefix.txt")
+</span>127 <span style=''>    map += VerbPrefix -> readWords("verb/verb_prefix.txt")
+</span>128 <span style=''>    map += Suffix -> readWords("substantives/suffix.txt")
+</span>129 <span style=''>    map
+</span>130 <span style=''>  }
+</span>131 <span style=''>
+</span>132 <span style=''>  lazy val nameDictionay = Map(
+</span>133 <span style=''>    'family_name -> readWords("substantives/family_names.txt"),
+</span>134 <span style=''>    'given_name -> readWords("substantives/given_names.txt"),
+</span>135 <span style=''>    'full_name -> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")
+</span>136 <span style=''>  )
+</span>137 <span style=''>
+</span>138 <span style=''>  lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
+</span>139 <span style=''>    case (key: String, value: String) => key.length
+</span>140 <span style=''>  }
+</span>141 <span style=''>
+</span>142 <span style=''>  lazy val predicateStems = {
+</span>143 <span style=''>    def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
+</span>144 <span style=''>      words.flatMap {
+</span>145 <span style=''>        word: String => conjugatePredicated(Set(word), isAdjective).map {
+</span>146 <span style=''>          conjugated => (conjugated.toString, word + "다")
+</span>147 <span style=''>        }
+</span>148 <span style=''>      }.toMap
+</span>149 <span style=''>    }
+</span>150 <span style=''>
+</span>151 <span style=''>    Map(
+</span>152 <span style=''>      Verb -> getConjugationMap(readWordsAsSet("verb/verb.txt"), isAdjective = false),
+</span>153 <span style=''>      Adjective -> getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+</span>154 <span style=''>    )
+</span>155 <span style=''>  }
+</span>156 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          35
+        </td>
+        <td>
+          1602
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Resource not loaded: &quot;.+(filename)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1601
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.!=
+        </td>
+        <td style="background: #AEF1AE">
+          stream.!=(null)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1603
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.require
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.require(stream.!=(null), &quot;Resource not loaded: &quot;.+(filename))
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          1604
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.io.Codec.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.io.Codec.apply(&quot;UTF-8&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1605
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.trim
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.trim()
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1607
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.Iterator.filter
+        </td>
+        <td style="background: #AEF1AE">
+          scala.io.Source.fromInputStream(stream)(scala.io.Codec.apply(&quot;UTF-8&quot;)).getLines().map[String](((x$1: String) =&gt; x$1.trim())).filter(((x$2: String) =&gt; x$2.length().&gt;(0)))
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1606
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.length().&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1608
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.HashMap.&lt;init&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          new java.util.HashMap[CharSequence,Float]()
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1609
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.collection.convert.WrapAsScala.mapAsScalaMap
+        </td>
+        <td style="background: #AEF1AE">
+          scala.collection.JavaConversions.mapAsScalaMap[CharSequence, Float](new java.util.HashMap[CharSequence,Float]())
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1622
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.Iterator.foreach
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readFileByLineFromResources(filename).foreach[Any](((x0$2: String) =&gt; x0$2 match {
+  case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
+    {
+      val data: Array[String] = line.split(&quot;\t&quot;);
+      freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+    }
+  else
+    ()
+}))
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1621
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$2 match {
+  case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
+    {
+      val data: Array[String] = line.split(&quot;\t&quot;);
+      freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+    }
+  else
+    ()
+}
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1620
+        </td>
+        <td>
+          If
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
+  {
+    val data: Array[String] = line.split(&quot;\t&quot;);
+    freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+  }
+else
+  ()
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1617
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          {
+  val data: Array[String] = line.split(&quot;\t&quot;);
+  freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+}
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1619
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1610
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.contains
+        </td>
+        <td style="background: #AEF1AE">
+          line.contains(&quot;\t&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1618
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1611
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.split
+        </td>
+        <td style="background: #AEF1AE">
+          line.split(&quot;\t&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1614
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.toFloat
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1613
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringOps.slice
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1616
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          freqMap.+=(scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1615
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1612
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #AEF1AE">
+          data.apply(0)
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1625
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$3 match {
+  case (line @ (_: String)) =&gt; line.contains(&quot; &quot;)
+}
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1623
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.contains
+        </td>
+        <td style="background: #AEF1AE">
+          line.contains(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          57
+        </td>
+        <td>
+          1624
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (line @ (_: String)) =&gt; line.contains(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1631
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$4 match {
+  case (line @ _) =&gt; {
+    val data: Array[String] = line.split(&quot; &quot;);
+    scala.Tuple2.apply[String, String](data.apply(0), data.apply(1))
+  }
+}
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1630
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (line @ _) =&gt; {
+  val data: Array[String] = line.split(&quot; &quot;);
+  scala.Tuple2.apply[String, String](data.apply(0), data.apply(1))
+}
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1626
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.split
+        </td>
+        <td style="background: #AEF1AE">
+          line.split(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1629
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[String, String](data.apply(0), data.apply(1))
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1628
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #AEF1AE">
+          data.apply(1)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1627
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #AEF1AE">
+          data.apply(0)
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1632
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.Predef.conforms
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.conforms[(String, String)]
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1633
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toMap
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readFileByLineFromResources(filename).filter(((x0$3: String) =&gt; x0$3 match {
+  case (line @ (_: String)) =&gt; line.contains(&quot; &quot;)
+})).map[(String, String)](((x0$4: String) =&gt; x0$4 match {
+  case (line @ _) =&gt; {
+    val data: Array[String] = line.split(&quot; &quot;);
+    scala.Tuple2.apply[String, String](data.apply(0), data.apply(1))
+  }
+})).toMap[String, String](scala.this.Predef.conforms[(String, String)])
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1634
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toSeq
+        </td>
+        <td style="background: #F0ADAD">
+          KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1641
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.foldLeft
+        </td>
+        <td style="background: #AEF1AE">
+          filenames.foldLeft[scala.collection.immutable.Set[String]](scala.this.Predef.Set.apply[String]())(((x0$5: scala.collection.immutable.Set[String], x1$1: String) =&gt; scala.this.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
+  case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
+}))
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1635
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[String]()
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1640
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
+  case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
+}
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1636
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1)
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1638
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.union
+        </td>
+        <td style="background: #AEF1AE">
+          output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          1639
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          1637
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toSet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String]
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          1642
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.newCharArraySet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.newCharArraySet
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1645
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableLike.foreach
+        </td>
+        <td style="background: #AEF1AE">
+          filenames.foreach[Unit](((filename: String) =&gt; KoreanDictionaryProvider.this.readFileByLineFromResources(filename).foreach[Boolean]({
+  ((text: String) =&gt; set.add(text))
+})))
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1644
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.Iterator.foreach
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readFileByLineFromResources(filename).foreach[Boolean]({
+  ((text: String) =&gt; set.add(text))
+})
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1643
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.add
+        </td>
+        <td style="background: #AEF1AE">
+          set.add(text)
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          1652
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readStreamByLine
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readStreamByLine(if (filename.endsWith(&quot;.gz&quot;))
+  new java.util.zip.GZIPInputStream(KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename))
+else
+  KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename), filename)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          1646
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.endsWith
+        </td>
+        <td style="background: #AEF1AE">
+          filename.endsWith(&quot;.gz&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1647
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Class.getResourceAsStream
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1649
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          java.util.zip.GZIPInputStream.&lt;init&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          new java.util.zip.GZIPInputStream(KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename))
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1648
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.zip.GZIPInputStream.&lt;init&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          new java.util.zip.GZIPInputStream(KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename))
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1650
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Class.getResourceAsStream
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          1651
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          java.lang.Class.getResourceAsStream
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename)
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          1653
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.&lt;init&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          new CharArraySet(10000, false)
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          1654
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordFreqs
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordFreqs(&quot;freq/entity-freq.txt.gz&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          1656
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.collection.convert.WrapAsScala.mapAsScalaMap
+        </td>
+        <td style="background: #AEF1AE">
+          scala.collection.JavaConversions.mapAsScalaMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos, com.twitter.penguin.korean.util.CharArraySet](new java.util.HashMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos,com.twitter.penguin.korean.util.CharArraySet]())
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          1655
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.HashMap.&lt;init&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          new java.util.HashMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos,com.twitter.penguin.korean.util.CharArraySet]()
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1659
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/pokemon.txt&quot;, &quot;noun/congress.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1658
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/pokemon.txt&quot;, &quot;noun/congress.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1657
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1660
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/pokemon.txt&quot;, &quot;noun/congress.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1665
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2))
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1662
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1661
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1664
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2)
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1666
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2)))
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1663
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1668
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1671
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true))
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1670
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1667
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1669
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1672
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)))
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1674
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1673
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adverb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adverb
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1676
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1675
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1680
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/determiner.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1677
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Determiner
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Determiner
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1679
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/determiner.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1678
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/determiner.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          1683
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Exclamation).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/exclamation.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          1682
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/exclamation.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          1684
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Exclamation).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/exclamation.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          1681
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Exclamation
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Exclamation
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1686
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1688
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1685
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Josa
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Josa
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1687
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1689
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Eomi
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1692
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1691
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1690
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1695
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.PreEomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1694
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1693
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1696
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.PreEomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1698
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1697
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Conjunction
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Conjunction
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1700
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1699
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          1701
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.NounPrefix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.NounPrefix
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          1704
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          1703
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          1702
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1707
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1706
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1705
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.VerbPrefix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.VerbPrefix
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1708
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          1710
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          1712
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          1709
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          1711
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          1722
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenMapFactory.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Map.apply[Symbol, com.twitter.penguin.korean.util.CharArraySet](scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;family_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;)), scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;given_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;)), scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;full_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/kpop.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/names.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          1713
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Symbol.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Symbol.apply(&quot;family_name&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          1715
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;family_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          133
+        </td>
+        <td>
+          1714
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;substantives/family_names.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          1716
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Symbol.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Symbol.apply(&quot;given_name&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          1718
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;given_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          134
+        </td>
+        <td>
+          1717
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1719
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Symbol.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Symbol.apply(&quot;full_name&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1721
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[Symbol](scala.Symbol.apply(&quot;full_name&quot;)).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;noun/kpop.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/names.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          1720
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;noun/kpop.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/names.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1727
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableLike.groupBy
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordMap(&quot;typos/typos.txt&quot;).groupBy[Int](((x0$1: (String, String)) =&gt; x0$1 match {
+  case (_1: String, _2: String)(String, String)((key @ (_: String)), (value @ (_: String))) =&gt; key.length()
+}))
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1726
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$1 match {
+  case (_1: String, _2: String)(String, String)((key @ (_: String)), (value @ (_: String))) =&gt; key.length()
+}
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1723
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;typos/typos.txt&quot;
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          1725
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: String, _2: String)(String, String)((key @ (_: String)), (value @ (_: String))) =&gt; key.length()
+        </td>
+      </tr><tr>
+        <td>
+          139
+        </td>
+        <td>
+          1724
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.length
+        </td>
+        <td style="background: #AEF1AE">
+          key.length()
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          1734
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.Set.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.Set.canBuildFrom[(String, String)]
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          1728
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[String](word)
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          1733
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SetLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdjective).map[(String, String), scala.collection.immutable.Set[(String, String)]](((conjugated: String) =&gt; scala.Tuple2.apply[String, String](conjugated.toString(), word.+(&quot;다&quot;))))(immutable.this.Set.canBuildFrom[(String, String)])
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          1732
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.Set.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.Set.canBuildFrom[(String, String)]
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1731
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[String, String](conjugated.toString(), word.+(&quot;다&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1730
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #AEF1AE">
+          word.+(&quot;다&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          1729
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.toString
+        </td>
+        <td style="background: #AEF1AE">
+          conjugated.toString()
+        </td>
+      </tr><tr>
+        <td>
+          148
+        </td>
+        <td>
+          1736
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toMap
+        </td>
+        <td style="background: #AEF1AE">
+          words.flatMap[(String, String), scala.collection.immutable.Set[(String, String)]](((word: String) =&gt; com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdjective).map[(String, String), scala.collection.immutable.Set[(String, String)]](((conjugated: String) =&gt; scala.Tuple2.apply[String, String](conjugated.toString(), word.+(&quot;다&quot;))))(immutable.this.Set.canBuildFrom[(String, String)])))(immutable.this.Set.canBuildFrom[(String, String)]).toMap[String, String](scala.this.Predef.conforms[(String, String)])
+        </td>
+      </tr><tr>
+        <td>
+          148
+        </td>
+        <td>
+          1735
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.Predef.conforms
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.conforms[(String, String)]
+        </td>
+      </tr><tr>
+        <td>
+          151
+        </td>
+        <td>
+          1747
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenMapFactory.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Map.apply[com.twitter.penguin.korean.util.KoreanPos.Value, Map[String,String]](scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false)), scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)))
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          1737
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          1739
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          false
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          1738
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          1741
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false))
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          1740
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.getConjugationMap
+        </td>
+        <td style="background: #AEF1AE">
+          getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false)
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1743
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1746
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true))
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1742
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1745
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.getConjugationMap
+        </td>
+        <td style="background: #AEF1AE">
+          getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1744
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          true
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

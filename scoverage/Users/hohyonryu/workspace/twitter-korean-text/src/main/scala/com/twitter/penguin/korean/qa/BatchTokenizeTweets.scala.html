@@ -1,0 +1,1217 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/qa/BatchTokenizeTweets.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.qa
+</span>20 <span style=''>
+</span>21 <span style=''>import java.util.logging.{Level, Logger}
+</span>22 <span style=''>
+</span>23 <span style=''>import com.twitter.penguin.korean.TwitterKoreanProcessor
+</span>24 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+</span>25 <span style=''>import com.twitter.penguin.korean.util.KoreanPos
+</span>26 <span style=''>
+</span>27 <span style=''>import scala.io.Source
+</span>28 <span style=''>
+</span>29 <span style=''>/**
+</span>30 <span style=''> * Batch tokenize a file of Korean tweets.
+</span>31 <span style=''> *
+</span>32 <span style=''> * Program arguments example = "~/korean_201407_100"
+</span>33 <span style=''> */
+</span>34 <span style=''>object BatchTokenizeTweets {
+</span>35 <span style=''>
+</span>36 <span style=''>  case class ParseTime(time: Long, chunk: String)
+</span>37 <span style=''>
+</span>38 <span style=''>  private val LOG = Logger.getLogger(getClass.getSimpleName)
+</span>39 <span style=''>  private val VERBOSE = true
+</span>40 <span style=''>  private val NON_NOUNS = Set(KoreanPos.Adjective, KoreanPos.Adverb, KoreanPos.Verb)
+</span>41 <span style=''>
+</span>42 <span style=''>  def main(args: Array[String]) {
+</span>43 <span style=''>    if (args.length != 1) {
+</span>44 <span style=''>      println("The first arg should be an input file of Korean tweets.")
+</span>45 <span style=''>      return
+</span>46 <span style=''>    }
+</span>47 <span style=''>    val parseTimesAll = Source.fromFile(args(0)).getLines().foldLeft(List[ParseTime]()) {
+</span>48 <span style=''>      case (l: List[ParseTime], line: String) =>
+</span>49 <span style=''>        val t0 = System.currentTimeMillis()
+</span>50 <span style=''>        val parsed = TwitterKoreanProcessor.tokenize(line)
+</span>51 <span style=''>        val t1 = System.currentTimeMillis()
+</span>52 <span style=''>
+</span>53 <span style=''>        if (VERBOSE) {
+</span>54 <span style=''>          println(parsed.map(t => t.text + "/" + t.pos).mkString(" "))
+</span>55 <span style=''>        }
+</span>56 <span style=''>        ParseTime(t1 - t0, line.trim) :: l
+</span>57 <span style=''>    }
+</span>58 <span style=''>
+</span>59 <span style=''>    val loadingTime = parseTimesAll.last
+</span>60 <span style=''>
+</span>61 <span style=''>    LOG.log(Level.INFO, "The first one \"%s\" took %d ms including the loading time.".format(loadingTime.chunk, loadingTime.time))
+</span>62 <span style=''>
+</span>63 <span style=''>    val parseTimes = parseTimesAll.init
+</span>64 <span style=''>
+</span>65 <span style=''>    val averageTweetLength = parseTimes.map(_.chunk.length).sum.toDouble / parseTimes.size
+</span>66 <span style=''>
+</span>67 <span style=''>    val averageTime = parseTimes.map(_.time).sum.toDouble / parseTimes.size
+</span>68 <span style=''>    val maxItem = parseTimes.maxBy(_.time)
+</span>69 <span style=''>
+</span>70 <span style=''>    LOG.log(Level.INFO, ("Parsed %d items. \n" +
+</span>71 <span style=''>        "       Total time: %d s \n" +
+</span>72 <span style=''>        "       Average tweet length: %.2f chars \n" +
+</span>73 <span style=''>        "       Average time per tweet: %.2f ms \n" +
+</span>74 <span style=''>        "       Max time: %d ms, %s\n" +
+</span>75 <span style=''>        "       Parsed: %s"
+</span>76 <span style=''>        ).format(
+</span>77 <span style=''>          parseTimes.size,
+</span>78 <span style=''>          parseTimes.map(_.time).sum / 1000,
+</span>79 <span style=''>          averageTweetLength,
+</span>80 <span style=''>          averageTime,
+</span>81 <span style=''>          maxItem.time,
+</span>82 <span style=''>          maxItem.chunk,
+</span>83 <span style=''>          TwitterKoreanProcessor.tokenize(maxItem.chunk).map {
+</span>84 <span style=''>            case t if t.unknown => t.text.toString + t.pos + "*"
+</span>85 <span style=''>            case t => t.text + t.pos.toString
+</span>86 <span style=''>          }.mkString(" ")
+</span>87 <span style=''>        ))
+</span>88 <span style=''>  }
+</span>89 <span style=''>
+</span>90 <span style=''>  private def parseToString(parsed: Seq[KoreanToken]): String = {
+</span>91 <span style=''>    parsed.map {
+</span>92 <span style=''>      case t if t.unknown => t.text.toString + t.pos + "*"
+</span>93 <span style=''>      case t => t.text + t.pos.toString
+</span>94 <span style=''>    }.mkString(" ")
+</span>95 <span style=''>  }
+</span>96 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          38
+        </td>
+        <td>
+          483
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Class.getSimpleName
+        </td>
+        <td style="background: #F0ADAD">
+          BatchTokenizeTweets.this.getClass().getSimpleName()
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          484
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.logging.Logger.getLogger
+        </td>
+        <td style="background: #F0ADAD">
+          java.util.logging.Logger.getLogger(BatchTokenizeTweets.this.getClass().getSimpleName())
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          485
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          487
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adverb
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanPos.Adverb
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          489
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Set.apply[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective, com.twitter.penguin.korean.util.KoreanPos.Adverb, com.twitter.penguin.korean.util.KoreanPos.Verb)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          486
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          488
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          490
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.!=
+        </td>
+        <td style="background: #F0ADAD">
+          args.length.!=(1)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          495
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          494
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          493
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          {
+  scala.this.Predef.println(&quot;The first arg should be an input file of Korean tweets.&quot;);
+  return ()
+}
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(&quot;The first arg should be an input file of Korean tweets.&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          492
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          514
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
+  case (_1: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; {
+    val t0: Long = java.this.lang.System.currentTimeMillis();
+    val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(line, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+    val t1: Long = java.this.lang.System.currentTimeMillis();
+    if (BatchTokenizeTweets.this.VERBOSE)
+      scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+    else
+      ();
+    {
+      &lt;synthetic&gt; val x$1: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+      l.::[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime](x$1)
+    }
+  }
+}
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          496
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #F0ADAD">
+          args.apply(0)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          499
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          498
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.Nil
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.Nil
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          497
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.io.LowPriorityCodecImplicits.fallbackSystemCodec
+        </td>
+        <td style="background: #F0ADAD">
+          io.this.Codec.fallbackSystemCodec
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          515
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.foldLeft
+        </td>
+        <td style="background: #F0ADAD">
+          scala.io.Source.fromFile(args.apply(0))(io.this.Codec.fallbackSystemCodec).getLines().foldLeft[List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime]](immutable.this.Nil)(((x0$1: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], x1$1: String) =&gt; scala.this.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
+  case (_1: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; {
+    val t0: Long = java.this.lang.System.currentTimeMillis();
+    val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(line, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+    val t1: Long = java.this.lang.System.currentTimeMillis();
+    if (BatchTokenizeTweets.this.VERBOSE)
+      scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+    else
+      ();
+    {
+      &lt;synthetic&gt; val x$1: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+      l.::[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime](x$1)
+    }
+  }
+}))
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          513
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case (_1: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; {
+  val t0: Long = java.this.lang.System.currentTimeMillis();
+  val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(line, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+  val t1: Long = java.this.lang.System.currentTimeMillis();
+  if (BatchTokenizeTweets.this.VERBOSE)
+    scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+  else
+    ();
+  {
+    &lt;synthetic&gt; val x$1: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+    l.::[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime](x$1)
+  }
+}
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          500
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.System.currentTimeMillis
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.currentTimeMillis()
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          501
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          504
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(line, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          503
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          502
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          505
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.System.currentTimeMillis
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.currentTimeMillis()
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          510
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          506
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.VERBOSE
+        </td>
+        <td style="background: #F0ADAD">
+          BatchTokenizeTweets.this.VERBOSE
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          511
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          508
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          507
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #F0ADAD">
+          parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          509
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          512
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.::
+        </td>
+        <td style="background: #F0ADAD">
+          l.::[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime](x$1)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          516
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.LinearSeqOptimized.last
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimesAll.last
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          517
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          java.util.logging.Level.INFO
+        </td>
+        <td style="background: #F0ADAD">
+          java.util.logging.Level.INFO
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          519
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime.chunk
+        </td>
+        <td style="background: #F0ADAD">
+          loadingTime.chunk
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          522
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.logging.Logger.log
+        </td>
+        <td style="background: #F0ADAD">
+          BatchTokenizeTweets.this.LOG.log(java.util.logging.Level.INFO, scala.this.Predef.augmentString(&quot;The first one \&quot;%s\&quot; took %d ms including the loading time.&quot;).format(loadingTime.chunk, loadingTime.time))
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          521
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;The first one \&quot;%s\&quot; took %d ms including the loading time.&quot;).format(loadingTime.chunk, loadingTime.time)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          518
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;The first one \&quot;%s\&quot; took %d ms including the loading time.&quot;
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          520
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime.time
+        </td>
+        <td style="background: #F0ADAD">
+          loadingTime.time
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          523
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.TraversableLike.init
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimesAll.init
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          525
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.List.canBuildFrom[Int]
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          528
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Double./
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.map[Int, List[Int]](((x$2: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime) =&gt; x$2.chunk.length()))(immutable.this.List.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral).toDouble./(parseTimes.size)
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          524
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.length
+        </td>
+        <td style="background: #F0ADAD">
+          x$2.chunk.length()
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          527
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.size
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.size
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          526
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Numeric.IntIsIntegral
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Numeric.IntIsIntegral
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          532
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.size
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.size
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          531
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Numeric.LongIsIntegral
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Numeric.LongIsIntegral
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          530
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.List.canBuildFrom[Long]
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          533
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Double./
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.map[Long, List[Long]](((x$3: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime) =&gt; x$3.time))(immutable.this.List.canBuildFrom[Long]).sum[Long](math.this.Numeric.LongIsIntegral).toDouble./(parseTimes.size)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          529
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime.time
+        </td>
+        <td style="background: #F0ADAD">
+          x$3.time
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          534
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime.time
+        </td>
+        <td style="background: #F0ADAD">
+          x$4.time
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          536
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.maxBy
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.maxBy[Long](((x$4: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime) =&gt; x$4.time))(math.this.Ordering.Long)
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          535
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Ordering.Long
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Ordering.Long
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          537
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          java.util.logging.Level.INFO
+        </td>
+        <td style="background: #F0ADAD">
+          java.util.logging.Level.INFO
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          545
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.logging.Logger.log
+        </td>
+        <td style="background: #F0ADAD">
+          BatchTokenizeTweets.this.LOG.log(java.util.logging.Level.INFO, scala.this.Predef.augmentString(&quot;Parsed %d items. \n       Total time: %d s \n       Average tweet length: %.2f chars \n       Average time per tweet: %.2f ms \n       Max time: %d ms, %s\n       Parsed: %s&quot;).format(parseTimes.size, parseTimes.map[Long, List[Long]](((x$5: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime) =&gt; x$5.time))(immutable.this.List.canBuildFrom[Long]).sum[Long](math.this.Numeric.LongIsIntegral)./(1000), averageTweetLength, averageTime, maxItem.time, maxItem.chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(maxItem.chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4).map[String, Seq[String]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+  case (t @ _) if t.unknown =&gt; t.text.toString().+(t.pos).+(&quot;*&quot;)
+  case (t @ _) =&gt; t.text.+(t.pos.toString())
+}))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          538
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Parsed %d items. \n       Total time: %d s \n       Average tweet length: %.2f chars \n       Average time per tweet: %.2f ms \n       Max time: %d ms, %s\n       Parsed: %s&quot;
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;Parsed %d items. \n       Total time: %d s \n       Average tweet length: %.2f chars \n       Average time per tweet: %.2f ms \n       Max time: %d ms, %s\n       Parsed: %s&quot;).format(parseTimes.size, parseTimes.map[Long, List[Long]](((x$5: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime) =&gt; x$5.time))(immutable.this.List.canBuildFrom[Long]).sum[Long](math.this.Numeric.LongIsIntegral)./(1000), averageTweetLength, averageTime, maxItem.time, maxItem.chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(maxItem.chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4).map[String, Seq[String]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+  case (t @ _) if t.unknown =&gt; t.text.toString().+(t.pos).+(&quot;*&quot;)
+  case (t @ _) =&gt; t.text.+(t.pos.toString())
+}))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          539
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.size
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.size
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          540
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Long./
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.map[Long, List[Long]](((x$5: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime) =&gt; x$5.time))(immutable.this.List.canBuildFrom[Long]).sum[Long](math.this.Numeric.LongIsIntegral)./(1000)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          541
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime.time
+        </td>
+        <td style="background: #F0ADAD">
+          maxItem.time
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          542
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime.chunk
+        </td>
+        <td style="background: #F0ADAD">
+          maxItem.chunk
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          543
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(maxItem.chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4).map[String, Seq[String]](((x0$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$2 match {
+  case (t @ _) if t.unknown =&gt; t.text.toString().+(t.pos).+(&quot;*&quot;)
+  case (t @ _) =&gt; t.text.+(t.pos.toString())
+}))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          546
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #F0ADAD">
+          parsed.map[String, Seq[String]](((x0$3: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x0$3 match {
+  case (t @ _) if t.unknown =&gt; t.text.toString().+(t.pos).+(&quot;*&quot;)
+  case (t @ _) =&gt; t.text.+(t.pos.toString())
+}))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

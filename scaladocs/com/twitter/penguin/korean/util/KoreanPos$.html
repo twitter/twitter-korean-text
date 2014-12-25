@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanPos - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.util.KoreanPos</title>
-          <meta name="description" content="KoreanPos - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.util.KoreanPos" />
-          <meta name="keywords" content="KoreanPos Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.util.KoreanPos" />
+          <title>KoreanPos - Korean Text Processing Utilities 2.5-SNAPSHOT API - com.twitter.penguin.korean.util.KoreanPos</title>
+          <meta name="description" content="KoreanPos - Korean Text Processing Utilities 2.5 - SNAPSHOT API - com.twitter.penguin.korean.util.KoreanPos" />
+          <meta name="keywords" content="KoreanPos Korean Text Processing Utilities 2.5 SNAPSHOT API com.twitter.penguin.korean.util.KoreanPos" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -49,7 +49,7 @@ l AdverbialJosa: 부사격 조사 (~인, ~의, ~일)
 e Eomi: 어말어미 (다, 요, 여, 하댘ㅋㅋ)
 r PreEomi: 선어말어미 (었)</p><p>p NounPrefix: 접두사 ('초'대박)
 v VerbPrefix: 동사 접두어 ('쳐'먹어)
-s Suffix: 접미사 (~적)</p><p>지시사는 Derterminant로 대체하기로 함
+s Suffix: 접미사 (~적)</p><p>f Foreign: 한글이 아닌 문자들</p><p>지시사는 Derterminant로 대체하기로 함
 Derterminant is used for demonstratives.</p><p>Korean: Korean chunk (candidate for parsing)
 Foreign: Mixture of non-Korean strings
 Number: 숫자
@@ -110,6 +110,19 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       <span class="symbol">
         <span class="name">KoreanPos</span><span class="result"> = <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="KoreanPosTrieextendsProductwithSerializable"></a>
+      <a id="KoreanPosTrie:KoreanPosTrie"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="KoreanPos$$KoreanPosTrie.html"><span class="name">KoreanPosTrie</span></a><span class="params">(<span name="curPos">curPos: <a href="#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="nextTrie">nextTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Option">Option</span>[<a href="#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -457,6 +470,32 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       </h4>
       
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#OtherPoses" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OtherPoses:scala.collection.immutable.Set[com.twitter.penguin.korean.util.KoreanPos.Value]"></a>
+      <a id="OtherPoses:Set[Value]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">OtherPoses</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#Others" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Others:com.twitter.penguin.korean.util.KoreanPos.Value"></a>
+      <a id="Others:Value"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Others</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a></span>
+      </span>
+      </h4>
+      
     </li><li name="com.twitter.penguin.korean.util.KoreanPos#PreEomi" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="PreEomi:com.twitter.penguin.korean.util.KoreanPos.Value"></a>
       <a id="PreEomi:Value"></a>
@@ -467,6 +506,19 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       <span class="symbol">
         <span class="name">PreEomi</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#Predicates" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Predicates:scala.collection.immutable.Set[com.twitter.penguin.korean.util.KoreanPos.Value]"></a>
+      <a id="Predicates:Set[Value]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Predicates</span><span class="result">: <span class="extype" name="scala.collection.immutable.Set">Set</span>[<a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a>]</span>
       </span>
       </h4>
       
@@ -493,6 +545,19 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       <span class="symbol">
         <span class="name">ScreenName</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#Space" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Space:com.twitter.penguin.korean.util.KoreanPos.Value"></a>
+      <a id="Space:Value"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Space</span><span class="result">: <a href="#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.Value">Value</a></span>
       </span>
       </h4>
       
@@ -639,6 +704,19 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#buildTrie" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="buildTrie(s:String,ending_pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos):List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]"></a>
+      <a id="buildTrie(String,KoreanPos):List[KoreanPosTrie]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">buildTrie</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ending_pos">ending_pos: <a href="#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -716,6 +794,19 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#getTrie" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getTrie(sequences:Map[String,com.twitter.penguin.korean.util.KoreanPos.KoreanPos]):List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]"></a>
+      <a id="getTrie(Map[String,KoreanPos]):List[KoreanPosTrie]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getTrie</span><span class="params">(<span name="sequences">sequences: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a>]</span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -833,6 +924,19 @@ ScreenName: Twitter username (@nlpenguin)</p><p>Unkown: Could not parse the stri
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Enumeration</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.util.KoreanPos#selfNode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="selfNode:com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie"></a>
+      <a id="selfNode:KoreanPosTrie"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">selfNode</span><span class="result">: <a href="KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a></span>
+      </span>
+      </h4>
+      
     </li><li name="com.twitter.penguin.korean.util.KoreanPos#shortCut" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="shortCut:scala.collection.immutable.Map[Char,com.twitter.penguin.korean.util.KoreanPos.Value]"></a>
       <a id="shortCut:Map[Char,Value]"></a>

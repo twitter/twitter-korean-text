@@ -1,0 +1,655 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tools/CreateParsingExamples.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.tools
+</span>20 <span style=''>
+</span>21 <span style=''>import java.io.FileOutputStream
+</span>22 <span style=''>
+</span>23 <span style=''>import com.twitter.penguin.korean.TwitterKoreanProcessor._
+</span>24 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+</span>25 <span style=''>import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
+</span>26 <span style=''>
+</span>27 <span style=''>/**
+</span>28 <span style=''> * Create Korean Parsing examples.
+</span>29 <span style=''> */
+</span>30 <span style=''>object CreateParsingExamples {
+</span>31 <span style=''>
+</span>32 <span style=''>  case class ParsingExample(text: String, parse: Seq[KoreanToken])
+</span>33 <span style=''>
+</span>34 <span style=''>  def main(args: Array[String]) {
+</span>35 <span style=''>    System.err.println("Reading the goldenset..")
+</span>36 <span style=''>
+</span>37 <span style=''>    val parsedPairs = readFileByLineFromResources("example_chunks.txt").flatMap {
+</span>38 <span style=''>      case line if line.length > 0 =>
+</span>39 <span style=''>        val chunk = line.trim
+</span>40 <span style=''>        val parsed = tokenize(chunk)
+</span>41 <span style=''>        Some(ParsingExample(chunk, parsed))
+</span>42 <span style=''>      case line => None
+</span>43 <span style=''>    }.toSet
+</span>44 <span style=''>
+</span>45 <span style=''>
+</span>46 <span style=''>    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_parsing.txt"
+</span>47 <span style=''>
+</span>48 <span style=''>    System.err.println("Writing the new goldenset to " + outputFile)
+</span>49 <span style=''>
+</span>50 <span style=''>    val out = new FileOutputStream(outputFile)
+</span>51 <span style=''>    parsedPairs.foreach {
+</span>52 <span style=''>      p =>
+</span>53 <span style=''>        out.write(p.text.getBytes)
+</span>54 <span style=''>        out.write("\t".getBytes)
+</span>55 <span style=''>        out.write(p.parse.mkString("/").getBytes)
+</span>56 <span style=''>        out.write("\n".getBytes)
+</span>57 <span style=''>    }
+</span>58 <span style=''>    out.close()
+</span>59 <span style=''>
+</span>60 <span style=''>    System.err.println("Testing the new goldenset " + outputFile)
+</span>61 <span style=''>  }
+</span>62 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          35
+        </td>
+        <td>
+          1037
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(&quot;Reading the goldenset..&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1052
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          x0$1 match {
+  case (line @ _) if line.length().&gt;(0) =&gt; {
+    val chunk: String = line.trim();
+    val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+    scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)))
+  }
+  case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
+}
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          1038
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;example_chunks.txt&quot;
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1048
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case (line @ _) if line.length().&gt;(0) =&gt; {
+  val chunk: String = line.trim();
+  val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+  scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)))
+}
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1039
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          line.length().&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1040
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.trim
+        </td>
+        <td style="background: #F0ADAD">
+          line.trim()
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1043
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1042
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1041
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1044
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1046
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed))
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1045
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample.apply
+        </td>
+        <td style="background: #F0ADAD">
+          CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1047
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.Option.option2Iterable
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)))
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1049
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #F0ADAD">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1051
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          1050
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.Option.option2Iterable
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Option.option2Iterable[Nothing](scala.None)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1053
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toSet
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readFileByLineFromResources(&quot;example_chunks.txt&quot;).flatMap[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](((x0$1: String) =&gt; x0$1 match {
+  case (line @ _) if line.length().&gt;(0) =&gt; {
+    val chunk: String = line.trim();
+    val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+    scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample](CreateParsingExamples.this.ParsingExample.apply(chunk, parsed)))
+  }
+  case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
+})).toSet[com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample]
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          1054
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;src/test/resources/com/twitter/penguin/korean/util/current_parsing.txt&quot;
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1055
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Writing the new goldenset to &quot;.+(outputFile)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          1056
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(&quot;Writing the new goldenset to &quot;.+(outputFile))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          1057
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.&lt;init&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          new java.io.FileOutputStream(outputFile)
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          1066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableLike.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          parsedPairs.foreach[Unit](((p: com.twitter.penguin.korean.tools.CreateParsingExamples.ParsingExample) =&gt; {
+  out.write(p.text.getBytes());
+  out.write(&quot;\t&quot;.getBytes());
+  out.write(p.parse.mkString(&quot;/&quot;).getBytes());
+  out.write(&quot;\n&quot;.getBytes())
+}))
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1058
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          p.text.getBytes()
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          1059
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(p.text.getBytes())
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1061
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(&quot;\t&quot;.getBytes())
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1060
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;\t&quot;.getBytes()
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1063
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(p.parse.mkString(&quot;/&quot;).getBytes())
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1062
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          p.parse.mkString(&quot;/&quot;).getBytes()
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1064
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;\n&quot;.getBytes()
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          1065
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(&quot;\n&quot;.getBytes())
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          1067
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.close
+        </td>
+        <td style="background: #F0ADAD">
+          out.close()
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1069
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(&quot;Testing the new goldenset &quot;.+(outputFile))
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          1068
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Testing the new goldenset &quot;.+(outputFile)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

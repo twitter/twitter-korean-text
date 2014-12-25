@@ -1,0 +1,4989 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/phrase_extractor/KoreanPhraseExtractor.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>package com.twitter.penguin.korean.phrase_extractor
+</span>2 <span style=''>
+</span>3 <span style=''>import com.twitter.penguin.korean.TwitterKoreanProcessor
+</span>4 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+</span>5 <span style=''>import com.twitter.penguin.korean.util.KoreanPos._
+</span>6 <span style=''>import com.twitter.penguin.korean.util.{Hangul, KoreanPos}
+</span>7 <span style=''>
+</span>8 <span style=''>/**
+</span>9 <span style=''> * KoreanPhraseExtractor extracts suitable phrases for trending topics.
+</span>10 <span style=''> *
+</span>11 <span style=''> * 1. Collapse sequence of POSes to phrase candidates (초 + 거대 + 기업 + 의 -> 초거대기업 + 의)
+</span>12 <span style=''> * 2. Find suitable phrases
+</span>13 <span style=''> */
+</span>14 <span style=''>object KoreanPhraseExtractor {
+</span>15 <span style=''>  private val MinCharsPerPhraseChunkWithoutSpaces = 2
+</span>16 <span style=''>  private val MinPhrasesPerPhraseChunk = 3
+</span>17 <span style=''>
+</span>18 <span style=''>  private val MaxCharsPerPhraseChunkWithoutSpaces = 30
+</span>19 <span style=''>  private val MaxPhrasesPerPhraseChunk = 8
+</span>20 <span style=''>
+</span>21 <span style=''>  private val ModifyingPredicateEndings: Set[Char] = Set('ㄹ', 'ㄴ')
+</span>22 <span style=''>  private val PhraseTokens = Set(Noun, Space)
+</span>23 <span style=''>  private val ConjunctionJosa = Set("와", "과", "의")
+</span>24 <span style=''>  type KoreanPhraseChunk = Seq[KoreanPhrase]
+</span>25 <span style=''>
+</span>26 <span style=''>  private val PhraseHeadTailPoses = Set(Noun, Alpha, Number)
+</span>27 <span style=''>
+</span>28 <span style=''>  /**
+</span>29 <span style=''>   * 0 for optional, 1 for required
+</span>30 <span style=''>   * * for optional repeatable, + for required repeatable
+</span>31 <span style=''>   *
+</span>32 <span style=''>   * Substantive: 체언 (초거대기업의)
+</span>33 <span style=''>   * Predicate: 용언 (하였었습니다, 개예뻤었다)
+</span>34 <span style=''>   * Modifier: 수식언 (모르는 할수도있는 보이기도하는 예뻐 예쁜 완전 레알 초인간적인 잘 잘한)
+</span>35 <span style=''>   * Standalone: 독립언
+</span>36 <span style=''>   * Functional: 관계언 (조사)
+</span>37 <span style=''>   *
+</span>38 <span style=''>   * N Noun: 명사 (Nouns, Pronouns, Company Names, Proper Noun, Person Names, Numerals, Standalone, Dependent)
+</span>39 <span style=''>   * V Verb: 동사 (하, 먹, 자, 차)
+</span>40 <span style=''>   * J Adjective: 형용사 (예쁘다, 크다, 작다)
+</span>41 <span style=''>   * A Adverb: 부사 (잘, 매우, 빨리, 반드시, 과연)
+</span>42 <span style=''>   * D Determiner: 관형사 (새, 헌, 참, 첫, 이, 그, 저)
+</span>43 <span style=''>   * E Exclamation: 감탄사 (헐, ㅋㅋㅋ, 어머나, 얼씨구)
+</span>44 <span style=''>   *
+</span>45 <span style=''>   * C Conjunction: 접속사
+</span>46 <span style=''>   *
+</span>47 <span style=''>   * j SubstantiveJosa: 조사 (의, 에, 에서)
+</span>48 <span style=''>   * l AdverbialJosa: 부사격 조사 (~인, ~의, ~일)
+</span>49 <span style=''>   * e Eomi: 어말어미 (다, 요, 여, 하댘ㅋㅋ)
+</span>50 <span style=''>   * r PreEomi: 선어말어미 (었)
+</span>51 <span style=''>   *
+</span>52 <span style=''>   * p NounPrefix: 접두사 ('초'대박)
+</span>53 <span style=''>   * v VerbPrefix: 동사 접두어 ('쳐'먹어)
+</span>54 <span style=''>   * s Suffix: 접미사 (~적)
+</span>55 <span style=''>   */
+</span>56 <span style=''>  private val COLLAPSING_RULES = Map(
+</span>57 <span style=''>    // Substantive
+</span>58 <span style=''>    "D0p*N1s0" -> Noun,
+</span>59 <span style=''>    "n*a+n*" -> Noun,
+</span>60 <span style=''>    "n+" -> Noun,
+</span>61 <span style=''>
+</span>62 <span style=''>    // Predicate 초기뻐하다, 와주세요, 초기뻤었고, 추첨하다, 구경하기힘들다, 기뻐하는, 기쁜, 추첨해서, 좋아하다, 걸려있을
+</span>63 <span style=''>    "v*V1r*e0" -> Verb,
+</span>64 <span style=''>    "v*J1r*e0" -> Adjective
+</span>65 <span style=''>  )
+</span>66 <span style=''>  private val CollapseTrie = KoreanPos.getTrie(COLLAPSING_RULES)
+</span>67 <span style=''>
+</span>68 <span style=''>  private def trimPhraseChunk(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
+</span>69 <span style=''>    def trimNonNouns: Seq[KoreanPhrase] = {
+</span>70 <span style=''>      phrases
+</span>71 <span style=''>          .dropWhile(t => !PhraseHeadTailPoses.contains(t.pos))
+</span>72 <span style=''>          .reverse
+</span>73 <span style=''>          .dropWhile(t => !PhraseHeadTailPoses.contains(t.pos))
+</span>74 <span style=''>          .reverse
+</span>75 <span style=''>    }
+</span>76 <span style=''>
+</span>77 <span style=''>    def trimSpacesFromPhrase(phrases: Seq[KoreanPhrase]): Seq[KoreanPhrase] = {
+</span>78 <span style=''>      phrases.zipWithIndex.map {
+</span>79 <span style=''>        case (phrase, i) if phrases.length == 1 =>
+</span>80 <span style=''>          KoreanPhrase(phrase.tokens
+</span>81 <span style=''>              .dropWhile(_.pos == Space)
+</span>82 <span style=''>              .reverse.dropWhile(_.pos == Space).reverse, phrase.pos)
+</span>83 <span style=''>        case (phrase, i) if i == 0 =>
+</span>84 <span style=''>          KoreanPhrase(phrase.tokens.dropWhile(_.pos == Space), phrase.pos)
+</span>85 <span style=''>        case (phrase, i) if i == phrases.length - 1 =>
+</span>86 <span style=''>          KoreanPhrase(phrase.tokens.reverse.dropWhile(_.pos == Space).reverse, phrase.pos)
+</span>87 <span style=''>        case (phrase, i) => phrase
+</span>88 <span style=''>      }
+</span>89 <span style=''>    }
+</span>90 <span style=''>
+</span>91 <span style=''>    trimSpacesFromPhrase(trimNonNouns)
+</span>92 <span style=''>  }
+</span>93 <span style=''>
+</span>94 <span style=''>  private def trimPhrase(phrase: KoreanPhrase): KoreanPhrase = {
+</span>95 <span style=''>    KoreanPhrase(phrase.tokens.dropWhile(_.pos == Space)
+</span>96 <span style=''>        .reverse.dropWhile(_.pos == Space).reverse, phrase.pos)
+</span>97 <span style=''>  }
+</span>98 <span style=''>
+</span>99 <span style=''>
+</span>100 <span style=''>  private def isProperPhraseChunk(phraseChunk: KoreanPhraseChunk): Boolean = {
+</span>101 <span style=''>    def notEndingInNonPhraseSuffix: Boolean = {
+</span>102 <span style=''>      val lastToken = phraseChunk.last.tokens.last
+</span>103 <span style=''>      !(lastToken.pos == Suffix && lastToken.text == "적")
+</span>104 <span style=''>    }
+</span>105 <span style=''>
+</span>106 <span style=''>    def isRightLength: Boolean = {
+</span>107 <span style=''>      val phraseChunkWithoutSpaces: Seq[KoreanPhrase] = phraseChunk.filter(_.pos != Space)
+</span>108 <span style=''>
+</span>109 <span style=''>      def checkMaxLength: Boolean = {
+</span>110 <span style=''>        phraseChunkWithoutSpaces.length <= MaxPhrasesPerPhraseChunk &&
+</span>111 <span style=''>            phraseChunkWithoutSpaces.map(_.getTextLength).sum <= MaxCharsPerPhraseChunkWithoutSpaces
+</span>112 <span style=''>      }
+</span>113 <span style=''>
+</span>114 <span style=''>      def checkMinLength: Boolean = {
+</span>115 <span style=''>        phraseChunkWithoutSpaces.length >= MinPhrasesPerPhraseChunk ||
+</span>116 <span style=''>            (phraseChunkWithoutSpaces.length < MinPhrasesPerPhraseChunk &&
+</span>117 <span style=''>                phraseChunkWithoutSpaces.map(_.getTextLength).sum >= MinCharsPerPhraseChunkWithoutSpaces)
+</span>118 <span style=''>      }
+</span>119 <span style=''>
+</span>120 <span style=''>      checkMaxLength && checkMinLength
+</span>121 <span style=''>    }
+</span>122 <span style=''>
+</span>123 <span style=''>    isRightLength && notEndingInNonPhraseSuffix
+</span>124 <span style=''>  }
+</span>125 <span style=''>
+</span>126 <span style=''>  case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos = Noun) {
+</span>127 <span style=''>    override def toString(): String = {
+</span>128 <span style=''>      this.tokens.map(_.text).mkString("") + pos
+</span>129 <span style=''>    }
+</span>130 <span style=''>
+</span>131 <span style=''>    def getTextLength = {
+</span>132 <span style=''>      this.tokens.map(_.text.length).sum
+</span>133 <span style=''>    }
+</span>134 <span style=''>  }
+</span>135 <span style=''>
+</span>136 <span style=''>  protected[korean] def collapsePos(tokens: Seq[KoreanToken]): Seq[KoreanPhrase] = {
+</span>137 <span style=''>    case class PhraseBuffer(phrases: List[KoreanPhrase], curTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
+</span>138 <span style=''>
+</span>139 <span style=''>    def getTries(token: KoreanToken, trie: List[KoreanPosTrie]): (KoreanPosTrie, List[KoreanPosTrie]) = {
+</span>140 <span style=''>      val curTrie = trie.filter(_.curPos == token.pos).head
+</span>141 <span style=''>      val nextTrie = curTrie.nextTrie.map {
+</span>142 <span style=''>        case nt: KoreanPosTrie if nt == selfNode => curTrie
+</span>143 <span style=''>        case nt: KoreanPosTrie => nt
+</span>144 <span style=''>      }
+</span>145 <span style=''>      (curTrie, nextTrie)
+</span>146 <span style=''>    }
+</span>147 <span style=''>
+</span>148 <span style=''>    def getInit(phraseBuffer: PhraseBuffer): List[KoreanPhrase] = {
+</span>149 <span style=''>      if (phraseBuffer.phrases.isEmpty) {
+</span>150 <span style=''>        List()
+</span>151 <span style=''>      } else {
+</span>152 <span style=''>        phraseBuffer.phrases.init
+</span>153 <span style=''>      }
+</span>154 <span style=''>    }
+</span>155 <span style=''>
+</span>156 <span style=''>    tokens.foldLeft(PhraseBuffer(List[KoreanPhrase](), CollapseTrie, None)) {
+</span>157 <span style=''>      case (output, token) if output.curTrie.exists(_.curPos == token.pos) =>
+</span>158 <span style=''>        val (ct, nt) = getTries(token, output.curTrie)
+</span>159 <span style=''>
+</span>160 <span style=''>        if (output.phrases.isEmpty) {
+</span>161 <span style=''>          PhraseBuffer(
+</span>162 <span style=''>            List(KoreanPhrase(List(token), ct.ending.getOrElse(Noun))),
+</span>163 <span style=''>            nt, ct.ending
+</span>164 <span style=''>          )
+</span>165 <span style=''>        } else if (output.curTrie == CollapseTrie) {
+</span>166 <span style=''>          PhraseBuffer(
+</span>167 <span style=''>            List(KoreanPhrase(List(token), ct.ending.getOrElse(Noun))),
+</span>168 <span style=''>            nt, ct.ending
+</span>169 <span style=''>          )
+</span>170 <span style=''>        } else {
+</span>171 <span style=''>          PhraseBuffer(
+</span>172 <span style=''>            getInit(output) :+
+</span>173 <span style=''>                KoreanPhrase(output.phrases.last.tokens :+ token, ct.ending.getOrElse(Noun)),
+</span>174 <span style=''>            nt, ct.ending
+</span>175 <span style=''>          )
+</span>176 <span style=''>        }
+</span>177 <span style=''>      case (output, token) if CollapseTrie.exists(_.curPos == token.pos) =>
+</span>178 <span style=''>        val (ct, nt) = getTries(token, CollapseTrie)
+</span>179 <span style=''>
+</span>180 <span style=''>        PhraseBuffer(
+</span>181 <span style=''>          output.phrases :+ KoreanPhrase(List(token), ct.ending.getOrElse(Noun)),
+</span>182 <span style=''>          nt, ct.ending
+</span>183 <span style=''>        )
+</span>184 <span style=''>      case (output, token) =>
+</span>185 <span style=''>        PhraseBuffer(
+</span>186 <span style=''>          output.phrases :+ KoreanPhrase(List(token), token.pos),
+</span>187 <span style=''>          output.curTrie, output.ending
+</span>188 <span style=''>        )
+</span>189 <span style=''>    }.phrases
+</span>190 <span style=''>  }
+</span>191 <span style=''>
+</span>192 <span style=''>  protected def getCandidatePhraseChunks(phrases: KoreanPhraseChunk): Seq[KoreanPhraseChunk] = {
+</span>193 <span style=''>    def isNonNounPhraseCandidate(phrase: KoreanPhrase): Boolean = {
+</span>194 <span style=''>      val trimmed = trimPhrase(phrase)
+</span>195 <span style=''>
+</span>196 <span style=''>      // 하는, 할인된, 할인될
+</span>197 <span style=''>      def isModifyingPredicate: Boolean =
+</span>198 <span style=''>        (trimmed.pos == Verb || trimmed.pos == Adjective) &&
+</span>199 <span style=''>            ModifyingPredicateEndings.contains(Hangul.decomposeHangul(trimmed.tokens.last.text.last).coda)
+</span>200 <span style=''>
+</span>201 <span style=''>      // 과, 와, 의, 그리고
+</span>202 <span style=''>      def isConjuction: Boolean =
+</span>203 <span style=''>        trimmed.pos == Josa && ConjunctionJosa.contains(trimmed.tokens.last.text) ||
+</span>204 <span style=''>            trimmed.pos == Conjunction
+</span>205 <span style=''>
+</span>206 <span style=''>      def isAlphaNumeric: Boolean =
+</span>207 <span style=''>        trimmed.pos == Alpha || trimmed.pos == Number
+</span>208 <span style=''>
+</span>209 <span style=''>      isAlphaNumeric || isModifyingPredicate || isConjuction
+</span>210 <span style=''>    }
+</span>211 <span style=''>
+</span>212 <span style=''>    def collapseNounPhrases(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
+</span>213 <span style=''>      val (output, buffer) = phrases.foldLeft((Seq[KoreanPhrase](), Seq[KoreanPhrase]())) {
+</span>214 <span style=''>        case ((output, buffer), phrase) if phrase.pos == Noun => (output, buffer :+ phrase)
+</span>215 <span style=''>        case ((output, buffer), phrase) =>
+</span>216 <span style=''>          val tempPhrases = if (buffer.length > 0) {
+</span>217 <span style=''>            Seq(KoreanPhrase(buffer.flatMap(_.tokens)), phrase)
+</span>218 <span style=''>          } else {
+</span>219 <span style=''>            Seq(phrase)
+</span>220 <span style=''>          }
+</span>221 <span style=''>          (output ++ tempPhrases, Seq[KoreanPhrase]())
+</span>222 <span style=''>      }
+</span>223 <span style=''>      if (buffer.length > 0) output :+ KoreanPhrase(buffer.flatMap(_.tokens)) else output
+</span>224 <span style=''>    }
+</span>225 <span style=''>
+</span>226 <span style=''>    def collapsePhrases(phrases: KoreanPhraseChunk): Seq[KoreanPhraseChunk] = {
+</span>227 <span style=''>      def addPhraseToBuffer(phrase: KoreanPhrase, buffer: Seq[KoreanPhraseChunk]): Seq[KoreanPhraseChunk] = {
+</span>228 <span style=''>        buffer.map(b => b :+ phrase)
+</span>229 <span style=''>      }
+</span>230 <span style=''>
+</span>231 <span style=''>      def newBuffer: Seq[Seq[KoreanPhrase]] = Seq(Seq[KoreanPhrase]())
+</span>232 <span style=''>
+</span>233 <span style=''>      val (output, buffer) = phrases.foldLeft(
+</span>234 <span style=''>        (Seq[KoreanPhraseChunk](), newBuffer)
+</span>235 <span style=''>      ) {
+</span>236 <span style=''>        case ((output, buffer), phrase) if PhraseTokens.contains(phrase.pos) =>
+</span>237 <span style=''>          (output, addPhraseToBuffer(phrase, buffer))
+</span>238 <span style=''>        case ((output, buffer), phrase) if buffer.length > 0 && isNonNounPhraseCandidate(phrase) =>
+</span>239 <span style=''>          (output ++ buffer, addPhraseToBuffer(phrase, buffer :+ Seq[KoreanPhrase]()))
+</span>240 <span style=''>        case ((output, buffer), phrase) if isNonNounPhraseCandidate(phrase) =>
+</span>241 <span style=''>          (output, addPhraseToBuffer(phrase, buffer))
+</span>242 <span style=''>        case ((output, buffer), phrase) if buffer.length > 0 =>
+</span>243 <span style=''>          (output ++ buffer, newBuffer)
+</span>244 <span style=''>        case ((output, buffer), phrase) => (output, buffer)
+</span>245 <span style=''>      }
+</span>246 <span style=''>      if (buffer.length > 0) output ++ buffer else output
+</span>247 <span style=''>    }
+</span>248 <span style=''>
+</span>249 <span style=''>    def getSingleTokenNouns: Seq[KoreanPhraseChunk] = {
+</span>250 <span style=''>      phrases.filter {
+</span>251 <span style=''>        phrase =>
+</span>252 <span style=''>          val trimmed = trimPhrase(phrase)
+</span>253 <span style=''>          phrase.pos == Noun &&
+</span>254 <span style=''>              (trimmed.getTextLength >= MinCharsPerPhraseChunkWithoutSpaces ||
+</span>255 <span style=''>                  trimmed.tokens.length >= MinPhrasesPerPhraseChunk)
+</span>256 <span style=''>      }.map(phrase => Seq(trimPhrase(phrase)))
+</span>257 <span style=''>    }
+</span>258 <span style=''>
+</span>259 <span style=''>    val nounPhrases: KoreanPhraseChunk = collapseNounPhrases(phrases)
+</span>260 <span style=''>    val phraseCollapsed = collapsePhrases(nounPhrases)
+</span>261 <span style=''>
+</span>262 <span style=''>    (phraseCollapsed.map(trimPhraseChunk) ++ getSingleTokenNouns).distinct
+</span>263 <span style=''>  }
+</span>264 <span style=''>
+</span>265 <span style=''>  /**
+</span>266 <span style=''>   * Find suitable phrases
+</span>267 <span style=''>   *
+</span>268 <span style=''>   * @param tokens A sequence of tokens
+</span>269 <span style=''>   * @return A list of KoreanPhrase
+</span>270 <span style=''>   */
+</span>271 <span style=''>  def extractPhrases(tokens: Seq[KoreanToken]): Seq[KoreanPhrase] = {
+</span>272 <span style=''>    val collapsed = collapsePos(tokens)
+</span>273 <span style=''>    val candidates = getCandidatePhraseChunks(collapsed)
+</span>274 <span style=''>
+</span>275 <span style=''>    val permutatedCandidates = candidates.flatMap {
+</span>276 <span style=''>      case phrases if phrases.length > MinPhrasesPerPhraseChunk =>
+</span>277 <span style=''>        (0 to phrases.length - MinPhrasesPerPhraseChunk).map {
+</span>278 <span style=''>          i => trimPhraseChunk(phrases.slice(i, phrases.length))
+</span>279 <span style=''>        }
+</span>280 <span style=''>      case phrases => Seq(phrases)
+</span>281 <span style=''>    }.filter { phraseChunk: KoreanPhraseChunk => isProperPhraseChunk(phraseChunk)
+</span>282 <span style=''>    }.distinct
+</span>283 <span style=''>
+</span>284 <span style=''>    permutatedCandidates.map {
+</span>285 <span style=''>      phraseChunk: KoreanPhraseChunk => KoreanPhrase(trimPhraseChunk(phraseChunk).flatMap(_.tokens))
+</span>286 <span style=''>    }
+</span>287 <span style=''>  }
+</span>288 <span style=''>
+</span>289 <span style=''>
+</span>290 <span style=''>  /**
+</span>291 <span style=''>   * Extract phrarse from input CharSequence
+</span>292 <span style=''>   *
+</span>293 <span style=''>   * @param input Input CharSequence
+</span>294 <span style=''>   * @return Seq of phrase CharSequence
+</span>295 <span style=''>   */
+</span>296 <span style=''>  def extractPhrases(input: CharSequence): Seq[CharSequence] = {
+</span>297 <span style=''>    val tokens = TwitterKoreanProcessor.tokenize(
+</span>298 <span style=''>      input, stemming = false, keepSpace = true
+</span>299 <span style=''>    )
+</span>300 <span style=''>    extractPhrases(tokens).map {
+</span>301 <span style=''>      phrase => phrase.tokens.map(_.text).mkString("")
+</span>302 <span style=''>    }
+</span>303 <span style=''>  }
+</span>304 <span style=''>
+</span>305 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          15
+        </td>
+        <td>
+          168
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          3
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          169
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          2
+        </td>
+      </tr><tr>
+        <td>
+          18
+        </td>
+        <td>
+          170
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          30
+        </td>
+      </tr><tr>
+        <td>
+          19
+        </td>
+        <td>
+          171
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          8
+        </td>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          172
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[Char]('ㄹ', 'ㄴ')
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          173
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          175
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          174
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          176
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[String](&quot;와&quot;, &quot;과&quot;, &quot;의&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          178
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Alpha
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Alpha
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          180
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun, com.twitter.penguin.korean.util.KoreanPos.Alpha, com.twitter.penguin.korean.util.KoreanPos.Number)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          177
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          179
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Number
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Number
+        </td>
+      </tr><tr>
+        <td>
+          56
+        </td>
+        <td>
+          196
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenMapFactory.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Map.apply[String, com.twitter.penguin.korean.util.KoreanPos.Value](scala.this.Predef.any2ArrowAssoc[String](&quot;D0p*N1s0&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun), scala.this.Predef.any2ArrowAssoc[String](&quot;n*a+n*&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun), scala.this.Predef.any2ArrowAssoc[String](&quot;n+&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun), scala.this.Predef.any2ArrowAssoc[String](&quot;v*V1r*e0&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb), scala.this.Predef.any2ArrowAssoc[String](&quot;v*J1r*e0&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective))
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          182
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          181
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;D0p*N1s0&quot;
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          183
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[String](&quot;D0p*N1s0&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          185
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          184
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;n*a+n*&quot;
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          186
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[String](&quot;n*a+n*&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          187
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;n+&quot;
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          189
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[String](&quot;n+&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          188
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          191
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          190
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;v*V1r*e0&quot;
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          192
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[String](&quot;v*V1r*e0&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb)
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          194
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          193
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;v*J1r*e0&quot;
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.any2ArrowAssoc[String](&quot;v*J1r*e0&quot;).-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective)
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          198
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.getTrie
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.getTrie(KoreanPhraseExtractor.this.COLLAPSING_RULES)
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          197
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.COLLAPSING_RULES
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.COLLAPSING_RULES
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          200
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.PhraseHeadTailPoses.contains(t.pos).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          199
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          t.pos
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          202
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.PhraseHeadTailPoses.contains(t.pos).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          201
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          t.pos
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          203
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.reverse
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.dropWhile(((t: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; KoreanPhraseExtractor.this.PhraseHeadTailPoses.contains(t.pos).unary_!)).reverse.dropWhile(((t: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; KoreanPhraseExtractor.this.PhraseHeadTailPoses.contains(t.pos).unary_!)).reverse
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          232
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.zipWithIndex[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Seq[(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)]](collection.this.Seq.canBuildFrom[(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)]).map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](((x0$1: (com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)) =&gt; x0$1 match {
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if phrases.length.==(1) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$2.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if i.==(0) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$3: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$3.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))), phrase.pos)
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if i.==(phrases.length.-(1)) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.reverse.dropWhile(((x$4: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$4.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) =&gt; phrase
+}))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          204
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)]
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          231
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          230
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$1 match {
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if phrases.length.==(1) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$2.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if i.==(0) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$3: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$3.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))), phrase.pos)
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if i.==(phrases.length.-(1)) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.reverse.dropWhile(((x$4: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$4.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+  case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) =&gt; phrase
+}
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          205
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.==
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.length.==(1)
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          213
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if phrases.length.==(1) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$2.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          212
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$2.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          207
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          206
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          209
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          211
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.pos
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          208
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          210
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.reverse
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.tokens.dropWhile(((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$2.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          214
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.==
+        </td>
+        <td style="background: #AEF1AE">
+          i.==(0)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          218
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.pos
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          220
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if i.==(0) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$3: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$3.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))), phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          217
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableLike.dropWhile
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.tokens.dropWhile(((x$3: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$3.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)))
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$3.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          219
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$3: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$3.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))), phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          215
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          222
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.==
+        </td>
+        <td style="background: #AEF1AE">
+          i.==(phrases.length.-(1))
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          221
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.length.-(1)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          227
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.reverse.dropWhile(((x$4: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$4.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          226
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.pos
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          223
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          225
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.reverse
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.tokens.reverse.dropWhile(((x$4: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$4.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          228
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) if i.==(phrases.length.-(1)) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.reverse.dropWhile(((x$4: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$4.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          224
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$4.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          229
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, _2: Int)(com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Int)((phrase @ _), (i @ _)) =&gt; phrase
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          233
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.trimSpacesFromPhrase
+        </td>
+        <td style="background: #AEF1AE">
+          trimSpacesFromPhrase(trimNonNouns)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          235
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$5.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          240
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(phrase.tokens.dropWhile(((x$5: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$5.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$6: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$6.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse, phrase.pos)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          234
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          236
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          238
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.reverse
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.tokens.dropWhile(((x$5: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$5.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse.dropWhile(((x$6: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$6.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).reverse
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          237
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$6.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          239
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.pos
+        </td>
+      </tr><tr>
+        <td>
+          102
+        </td>
+        <td>
+          241
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.TraversableLike.last
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunk.last.tokens.last
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          244
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Boolean.unary_!
+        </td>
+        <td style="background: #AEF1AE">
+          lastToken.pos.==(com.twitter.penguin.korean.util.KoreanPos.Suffix).&amp;&amp;(lastToken.text.==(&quot;적&quot;)).unary_!
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          243
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          lastToken.text.==(&quot;적&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          103
+        </td>
+        <td>
+          242
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          245
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          247
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableLike.filter
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunk.filter(((x$7: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$7.pos.!=(com.twitter.penguin.korean.util.KoreanPos.Space)))
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          246
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.!=
+        </td>
+        <td style="background: #AEF1AE">
+          x$7.pos.!=(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          254
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunkWithoutSpaces.length.&lt;=(KoreanPhraseExtractor.this.MaxPhrasesPerPhraseChunk).&amp;&amp;(phraseChunkWithoutSpaces.map[Int, Seq[Int]](((x$8: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$8.getTextLength))(collection.this.Seq.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral).&lt;=(KoreanPhraseExtractor.this.MaxCharsPerPhraseChunkWithoutSpaces))
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          248
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MaxPhrasesPerPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MaxPhrasesPerPhraseChunk
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          253
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&lt;=
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunkWithoutSpaces.map[Int, Seq[Int]](((x$8: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$8.getTextLength))(collection.this.Seq.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral).&lt;=(KoreanPhraseExtractor.this.MaxCharsPerPhraseChunkWithoutSpaces)
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          250
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Int]
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          249
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.getTextLength
+        </td>
+        <td style="background: #AEF1AE">
+          x$8.getTextLength
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          252
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MaxCharsPerPhraseChunkWithoutSpaces
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MaxCharsPerPhraseChunkWithoutSpaces
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          251
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Numeric.IntIsIntegral
+        </td>
+        <td style="background: #AEF1AE">
+          math.this.Numeric.IntIsIntegral
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          255
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinPhrasesPerPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk
+        </td>
+      </tr><tr>
+        <td>
+          115
+        </td>
+        <td>
+          263
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunkWithoutSpaces.length.&gt;=(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk).||(phraseChunkWithoutSpaces.length.&lt;(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk).&amp;&amp;(phraseChunkWithoutSpaces.map[Int, Seq[Int]](((x$9: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$9.getTextLength))(collection.this.Seq.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral).&gt;=(KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces)))
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          262
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunkWithoutSpaces.length.&lt;(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk).&amp;&amp;(phraseChunkWithoutSpaces.map[Int, Seq[Int]](((x$9: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$9.getTextLength))(collection.this.Seq.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral).&gt;=(KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces))
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          256
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinPhrasesPerPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          259
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Numeric.IntIsIntegral
+        </td>
+        <td style="background: #AEF1AE">
+          math.this.Numeric.IntIsIntegral
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          258
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Int]
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          261
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;=
+        </td>
+        <td style="background: #AEF1AE">
+          phraseChunkWithoutSpaces.map[Int, Seq[Int]](((x$9: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$9.getTextLength))(collection.this.Seq.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral).&gt;=(KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces)
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          257
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.getTextLength
+        </td>
+        <td style="background: #AEF1AE">
+          x$9.getTextLength
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          260
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinCharsPerPhraseChunkWithoutSpaces
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          264
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          checkMaxLength.&amp;&amp;(checkMinLength)
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          265
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          isRightLength.&amp;&amp;(notEndingInNonPhraseSuffix)
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          268
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          267
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          270
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #AEF1AE">
+          this.tokens.map[String, Seq[String]](((x$10: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$10.text))(collection.this.Seq.canBuildFrom[String]).mkString(&quot;&quot;).+(KoreanPhrase.this.pos)
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          266
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.text
+        </td>
+        <td style="background: #AEF1AE">
+          x$10.text
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          269
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.pos
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhrase.this.pos
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          271
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.length
+        </td>
+        <td style="background: #AEF1AE">
+          x$11.text.length()
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          274
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableOnce.sum
+        </td>
+        <td style="background: #AEF1AE">
+          this.tokens.map[Int, Seq[Int]](((x$11: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$11.text.length()))(collection.this.Seq.canBuildFrom[Int]).sum[Int](math.this.Numeric.IntIsIntegral)
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          273
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Numeric.IntIsIntegral
+        </td>
+        <td style="background: #AEF1AE">
+          math.this.Numeric.IntIsIntegral
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          272
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Int]
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          277
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IterableLike.head
+        </td>
+        <td style="background: #AEF1AE">
+          trie.filter(((x$12: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$12.curPos.==(token.pos))).head
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          276
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$12.curPos.==(token.pos)
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          275
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          283
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          282
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$2 match {
+  case (nt @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie)) if nt.==(com.twitter.penguin.korean.util.KoreanPos.selfNode) =&gt; curTrie
+  case (nt @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie)) =&gt; nt
+}
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          284
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          curTrie.nextTrie.map[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](((x0$2: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x0$2 match {
+  case (nt @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie)) if nt.==(com.twitter.penguin.korean.util.KoreanPos.selfNode) =&gt; curTrie
+  case (nt @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie)) =&gt; nt
+}))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          280
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (nt @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie)) if nt.==(com.twitter.penguin.korean.util.KoreanPos.selfNode) =&gt; curTrie
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          279
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          nt.==(com.twitter.penguin.korean.util.KoreanPos.selfNode)
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          278
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.selfNode
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.selfNode
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          281
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (nt @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie)) =&gt; nt
+        </td>
+      </tr><tr>
+        <td>
+          145
+        </td>
+        <td>
+          285
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](curTrie, nextTrie)
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          286
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.isEmpty
+        </td>
+        <td style="background: #AEF1AE">
+          phraseBuffer.phrases.isEmpty
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          288
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.immutable.Nil
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.Nil
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          287
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.Nil
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.Nil
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          289
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.TraversableLike.init
+        </td>
+        <td style="background: #AEF1AE">
+          phraseBuffer.phrases.init
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          290
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.TraversableLike.init
+        </td>
+        <td style="background: #AEF1AE">
+          phraseBuffer.phrases.init
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          355
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](x0$3, x1$1) match {
+  case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) if output.curTrie.exists(((x$13: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$13.curPos.==(token.pos))) =&gt; {
+    &lt;synthetic&gt; private[this] val x$14: (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) = (getTries(token, output.curTrie): (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) @unchecked) match {
+      case (_1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, _2: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])(com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])((ct @ _), (nt @ _)) =&gt; scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](ct, nt)
+    };
+    val ct: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = x$14._1;
+    val nt: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = x$14._2;
+    if (output.phrases.isEmpty)
+      PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+    else
+      if (output.curTrie.==(KoreanPhraseExtractor.this.CollapseTrie))
+        PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+      else
+        PhraseBuffer.apply(getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+  }
+  case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) if KoreanPhraseExtractor.this.CollapseTrie.exists(((x$15: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$15.curPos.==(token.pos))) =&gt; {
+    &lt;synthetic&gt; private[this] val x$16: (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) = (getTries(token, KoreanPhraseExtractor.this.CollapseTrie): (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) @unchecked) match {
+      case (_1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, _2: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])(com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])((ct @ _), (nt @ _)) =&gt; scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](ct, nt)
+    };
+    val ct: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = x$16._1;
+    val nt: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = x$16._2;
+    PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+  }
+  case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) =&gt; PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), token.pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), output.curTrie, output.ending)
+}
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          295
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Tuple2.apply[PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](x0$3, x1$1)
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          292
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.CollapseTrie
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.CollapseTrie
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          294
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(immutable.this.Nil, KoreanPhraseExtractor.this.CollapseTrie, scala.None)
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          291
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.Nil
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.Nil
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          293
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.None
+        </td>
+        <td style="background: #AEF1AE">
+          scala.None
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          331
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) if output.curTrie.exists(((x$13: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$13.curPos.==(token.pos))) =&gt; {
+  &lt;synthetic&gt; private[this] val x$14: (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) = (getTries(token, output.curTrie): (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) @unchecked) match {
+    case (_1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, _2: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])(com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])((ct @ _), (nt @ _)) =&gt; scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](ct, nt)
+  };
+  val ct: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = x$14._1;
+  val nt: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = x$14._2;
+  if (output.phrases.isEmpty)
+    PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+  else
+    if (output.curTrie.==(KoreanPhraseExtractor.this.CollapseTrie))
+      PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+    else
+      PhraseBuffer.apply(getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+}
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.LinearSeqOptimized.exists
+        </td>
+        <td style="background: #AEF1AE">
+          output.curTrie.exists(((x$13: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$13.curPos.==(token.pos)))
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          297
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$13.curPos.==(token.pos)
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          296
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          300
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td style="background: #AEF1AE">
+          x$14._2
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          299
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$14._1
+        </td>
+      </tr><tr>
+        <td>
+          160
+        </td>
+        <td>
+          301
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.isEmpty
+        </td>
+        <td style="background: #AEF1AE">
+          output.phrases.isEmpty
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          309
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          161
+        </td>
+        <td>
+          308
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          304
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          303
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          306
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.apply
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          302
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.apply
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          305
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))
+        </td>
+      </tr><tr>
+        <td>
+          163
+        </td>
+        <td>
+          307
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.ending
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          310
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.CollapseTrie
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.CollapseTrie
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          330
+        </td>
+        <td>
+          If
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          if (output.curTrie.==(KoreanPhraseExtractor.this.CollapseTrie))
+  PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+else
+  PhraseBuffer.apply(getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          311
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          output.curTrie.==(KoreanPhraseExtractor.this.CollapseTrie)
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          319
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          318
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          313
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          316
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.apply
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          312
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.apply
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          315
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          314
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          317
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.ending
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending
+        </td>
+      </tr><tr>
+        <td>
+          171
+        </td>
+        <td>
+          328
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          171
+        </td>
+        <td>
+          329
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          172
+        </td>
+        <td>
+          325
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          172
+        </td>
+        <td>
+          326
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          322
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          321
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          324
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          323
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          320
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]
+        </td>
+      </tr><tr>
+        <td>
+          174
+        </td>
+        <td>
+          327
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.ending
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending
+        </td>
+      </tr><tr>
+        <td>
+          177
+        </td>
+        <td>
+          334
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.LinearSeqOptimized.exists
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.CollapseTrie.exists(((x$15: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$15.curPos.==(token.pos)))
+        </td>
+      </tr><tr>
+        <td>
+          177
+        </td>
+        <td>
+          345
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) if KoreanPhraseExtractor.this.CollapseTrie.exists(((x$15: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$15.curPos.==(token.pos))) =&gt; {
+  &lt;synthetic&gt; private[this] val x$16: (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) = (getTries(token, KoreanPhraseExtractor.this.CollapseTrie): (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) @unchecked) match {
+    case (_1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, _2: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])(com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])((ct @ _), (nt @ _)) =&gt; scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](ct, nt)
+  };
+  val ct: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = x$16._1;
+  val nt: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = x$16._2;
+  PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+}
+        </td>
+      </tr><tr>
+        <td>
+          177
+        </td>
+        <td>
+          333
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          x$15.curPos.==(token.pos)
+        </td>
+      </tr><tr>
+        <td>
+          177
+        </td>
+        <td>
+          332
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          178
+        </td>
+        <td>
+          336
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td style="background: #AEF1AE">
+          x$16._2
+        </td>
+      </tr><tr>
+        <td>
+          178
+        </td>
+        <td>
+          335
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$16._1
+        </td>
+      </tr><tr>
+        <td>
+          180
+        </td>
+        <td>
+          344
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          340
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          337
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.apply
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          339
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Option.getOrElse
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          342
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          341
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          338
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          182
+        </td>
+        <td>
+          343
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.ending
+        </td>
+        <td style="background: #AEF1AE">
+          ct.ending
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          354
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) =&gt; PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), token.pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), output.curTrie, output.ending)
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          353
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.apply
+        </td>
+        <td style="background: #AEF1AE">
+          PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), token.pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), output.curTrie, output.ending)
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          346
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.apply
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token)
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          349
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          348
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), token.pos)
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          350
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), token.pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          347
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.pos
+        </td>
+        <td style="background: #AEF1AE">
+          token.pos
+        </td>
+      </tr><tr>
+        <td>
+          187
+        </td>
+        <td>
+          352
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.ending
+        </td>
+        <td style="background: #AEF1AE">
+          output.ending
+        </td>
+      </tr><tr>
+        <td>
+          187
+        </td>
+        <td>
+          351
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.curTrie
+        </td>
+        <td style="background: #AEF1AE">
+          output.curTrie
+        </td>
+      </tr><tr>
+        <td>
+          189
+        </td>
+        <td>
+          356
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.PhraseBuffer.phrases
+        </td>
+        <td style="background: #AEF1AE">
+          tokens.foldLeft[PhraseBuffer](PhraseBuffer.apply(immutable.this.Nil, KoreanPhraseExtractor.this.CollapseTrie, scala.None))(((x0$3: PhraseBuffer, x1$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; scala.this.Tuple2.apply[PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](x0$3, x1$1) match {
+  case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) if output.curTrie.exists(((x$13: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$13.curPos.==(token.pos))) =&gt; {
+    &lt;synthetic&gt; private[this] val x$14: (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) = (getTries(token, output.curTrie): (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) @unchecked) match {
+      case (_1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, _2: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])(com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])((ct @ _), (nt @ _)) =&gt; scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](ct, nt)
+    };
+    val ct: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = x$14._1;
+    val nt: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = x$14._2;
+    if (output.phrases.isEmpty)
+      PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+    else
+      if (output.curTrie.==(KoreanPhraseExtractor.this.CollapseTrie))
+        PhraseBuffer.apply(immutable.this.List.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun))), nt, ct.ending)
+      else
+        PhraseBuffer.apply(getInit(output).:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(output.phrases.last.tokens.:+[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](token)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+  }
+  case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) if KoreanPhraseExtractor.this.CollapseTrie.exists(((x$15: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie) =&gt; x$15.curPos.==(token.pos))) =&gt; {
+    &lt;synthetic&gt; private[this] val x$16: (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) = (getTries(token, KoreanPhraseExtractor.this.CollapseTrie): (com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]) @unchecked) match {
+      case (_1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, _2: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])(com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])((ct @ _), (nt @ _)) =&gt; scala.Tuple2.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](ct, nt)
+    };
+    val ct: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = x$16._1;
+    val nt: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = x$16._2;
+    PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), ct.ending.getOrElse[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](com.twitter.penguin.korean.util.KoreanPos.Noun)))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), nt, ct.ending)
+  }
+  case (_1: PhraseBuffer, _2: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)(PhraseBuffer, com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken)((output @ _), (token @ _)) =&gt; PhraseBuffer.apply(output.phrases.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, List[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](KoreanPhraseExtractor.this.KoreanPhrase.apply(immutable.this.List.apply[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken](token), token.pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]), output.curTrie, output.ending)
+})).phrases
+        </td>
+      </tr><tr>
+        <td>
+          194
+        </td>
+        <td>
+          357
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.trimPhrase
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.trimPhrase(phrase)
+        </td>
+      </tr><tr>
+        <td>
+          198
+        </td>
+        <td>
+          358
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          198
+        </td>
+        <td>
+          360
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Adjective)
+        </td>
+      </tr><tr>
+        <td>
+          198
+        </td>
+        <td>
+          359
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          198
+        </td>
+        <td>
+          365
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Verb).||(trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Adjective)).&amp;&amp;(KoreanPhraseExtractor.this.ModifyingPredicateEndings.contains(com.twitter.penguin.korean.util.Hangul.decomposeHangul(scala.this.Predef.augmentString(trimmed.tokens.last.text).last).coda))
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          364
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.ModifyingPredicateEndings.contains(com.twitter.penguin.korean.util.Hangul.decomposeHangul(scala.this.Predef.augmentString(trimmed.tokens.last.text).last).coda)
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          361
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.text
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.tokens.last.text
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          363
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.Hangul.HangulChar.coda
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.Hangul.decomposeHangul(scala.this.Predef.augmentString(trimmed.tokens.last.text).last).coda
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          362
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.last
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(trimmed.tokens.last.text).last
+        </td>
+      </tr><tr>
+        <td>
+          203
+        </td>
+        <td>
+          367
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken.text
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.tokens.last.text
+        </td>
+      </tr><tr>
+        <td>
+          203
+        </td>
+        <td>
+          366
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Josa
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Josa
+        </td>
+      </tr><tr>
+        <td>
+          203
+        </td>
+        <td>
+          368
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.SetLike.contains
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.ConjunctionJosa.contains(trimmed.tokens.last.text)
+        </td>
+      </tr><tr>
+        <td>
+          203
+        </td>
+        <td>
+          371
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Josa).&amp;&amp;(KoreanPhraseExtractor.this.ConjunctionJosa.contains(trimmed.tokens.last.text)).||(trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Conjunction))
+        </td>
+      </tr><tr>
+        <td>
+          204
+        </td>
+        <td>
+          370
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Conjunction)
+        </td>
+      </tr><tr>
+        <td>
+          204
+        </td>
+        <td>
+          369
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Conjunction
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Conjunction
+        </td>
+      </tr><tr>
+        <td>
+          207
+        </td>
+        <td>
+          373
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Number
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Number
+        </td>
+      </tr><tr>
+        <td>
+          207
+        </td>
+        <td>
+          372
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Alpha
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Alpha
+        </td>
+      </tr><tr>
+        <td>
+          207
+        </td>
+        <td>
+          375
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Alpha).||(trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Number))
+        </td>
+      </tr><tr>
+        <td>
+          207
+        </td>
+        <td>
+          374
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.pos.==(com.twitter.penguin.korean.util.KoreanPos.Number)
+        </td>
+      </tr><tr>
+        <td>
+          209
+        </td>
+        <td>
+          376
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          isAlphaNumeric.||(isModifyingPredicate).||(isConjuction)
+        </td>
+      </tr><tr>
+        <td>
+          213
+        </td>
+        <td>
+          378
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td style="background: #AEF1AE">
+          x$18._2
+        </td>
+      </tr><tr>
+        <td>
+          213
+        </td>
+        <td>
+          377
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$18._1
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          382
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.flatMap
+        </td>
+        <td style="background: #AEF1AE">
+          buffer.flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$19: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$19.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          385
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          388
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.output
+        </td>
+        <td style="background: #AEF1AE">
+          output
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          379
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          buffer.length.&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          387
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          output.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk](KoreanPhraseExtractor.this.KoreanPhrase.apply(buffer.flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$19: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$19.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          381
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          384
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(buffer.flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$19: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$19.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2)
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          383
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply$default$2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          386
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          output.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk](KoreanPhraseExtractor.this.KoreanPhrase.apply(buffer.flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$19: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$19.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          380
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.tokens
+        </td>
+        <td style="background: #AEF1AE">
+          x$19.tokens
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          391
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]]
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          390
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.:+
+        </td>
+        <td style="background: #AEF1AE">
+          b.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](phrase)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          392
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          buffer.map[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase], Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((b: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk) =&gt; b.:+[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](phrase)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])))(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]])
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          389
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          231
+        </td>
+        <td>
+          394
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]())
+        </td>
+      </tr><tr>
+        <td>
+          231
+        </td>
+        <td>
+          393
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]()
+        </td>
+      </tr><tr>
+        <td>
+          233
+        </td>
+        <td>
+          396
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._2
+        </td>
+        <td style="background: #AEF1AE">
+          x$20._2
+        </td>
+      </tr><tr>
+        <td>
+          233
+        </td>
+        <td>
+          395
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Tuple2._1
+        </td>
+        <td style="background: #AEF1AE">
+          x$20._1
+        </td>
+      </tr><tr>
+        <td>
+          246
+        </td>
+        <td>
+          400
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          output.++[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase], Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](buffer)(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]])
+        </td>
+      </tr><tr>
+        <td>
+          246
+        </td>
+        <td>
+          397
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          buffer.length.&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          246
+        </td>
+        <td>
+          399
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          output.++[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase], Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](buffer)(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]])
+        </td>
+      </tr><tr>
+        <td>
+          246
+        </td>
+        <td>
+          401
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.output
+        </td>
+        <td style="background: #F0ADAD">
+          output
+        </td>
+      </tr><tr>
+        <td>
+          246
+        </td>
+        <td>
+          398
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]]
+        </td>
+      </tr><tr>
+        <td>
+          252
+        </td>
+        <td>
+          402
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.trimPhrase
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.trimPhrase(phrase)
+        </td>
+      </tr><tr>
+        <td>
+          253
+        </td>
+        <td>
+          403
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Noun
+        </td>
+      </tr><tr>
+        <td>
+          253
+        </td>
+        <td>
+          408
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.pos.==(com.twitter.penguin.korean.util.KoreanPos.Noun).&amp;&amp;(trimmed.getTextLength.&gt;=(KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces).||(trimmed.tokens.length.&gt;=(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)))
+        </td>
+      </tr><tr>
+        <td>
+          254
+        </td>
+        <td>
+          404
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinCharsPerPhraseChunkWithoutSpaces
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces
+        </td>
+      </tr><tr>
+        <td>
+          254
+        </td>
+        <td>
+          407
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.getTextLength.&gt;=(KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces).||(trimmed.tokens.length.&gt;=(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk))
+        </td>
+      </tr><tr>
+        <td>
+          255
+        </td>
+        <td>
+          406
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;=
+        </td>
+        <td style="background: #AEF1AE">
+          trimmed.tokens.length.&gt;=(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)
+        </td>
+      </tr><tr>
+        <td>
+          255
+        </td>
+        <td>
+          405
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinPhrasesPerPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk
+        </td>
+      </tr><tr>
+        <td>
+          256
+        </td>
+        <td>
+          409
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.trimPhrase
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.trimPhrase(phrase)
+        </td>
+      </tr><tr>
+        <td>
+          256
+        </td>
+        <td>
+          412
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.filter(((phrase: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; {
+  val trimmed: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase = KoreanPhraseExtractor.this.trimPhrase(phrase);
+  phrase.pos.==(com.twitter.penguin.korean.util.KoreanPos.Noun).&amp;&amp;(trimmed.getTextLength.&gt;=(KoreanPhraseExtractor.this.MinCharsPerPhraseChunkWithoutSpaces).||(trimmed.tokens.length.&gt;=(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)))
+})).map[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase], Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((phrase: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.trimPhrase(phrase))))(collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]])
+        </td>
+      </tr><tr>
+        <td>
+          256
+        </td>
+        <td>
+          411
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]]
+        </td>
+      </tr><tr>
+        <td>
+          256
+        </td>
+        <td>
+          410
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase](KoreanPhraseExtractor.this.trimPhrase(phrase))
+        </td>
+      </tr><tr>
+        <td>
+          259
+        </td>
+        <td>
+          413
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.collapseNounPhrases
+        </td>
+        <td style="background: #AEF1AE">
+          collapseNounPhrases(phrases)
+        </td>
+      </tr><tr>
+        <td>
+          260
+        </td>
+        <td>
+          414
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.collapsePhrases
+        </td>
+        <td style="background: #AEF1AE">
+          collapsePhrases(nounPhrases)
+        </td>
+      </tr><tr>
+        <td>
+          262
+        </td>
+        <td>
+          415
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.trimPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.trimPhraseChunk(phrases)
+        </td>
+      </tr><tr>
+        <td>
+          262
+        </td>
+        <td>
+          418
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.distinct
+        </td>
+        <td style="background: #AEF1AE">
+          phraseCollapsed.map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]]({
+  ((phrases: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk) =&gt; KoreanPhraseExtractor.this.trimPhraseChunk(phrases))
+})(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]).++[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](getSingleTokenNouns)(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]).distinct
+        </td>
+      </tr><tr>
+        <td>
+          262
+        </td>
+        <td>
+          417
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]
+        </td>
+      </tr><tr>
+        <td>
+          262
+        </td>
+        <td>
+          416
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]
+        </td>
+      </tr><tr>
+        <td>
+          272
+        </td>
+        <td>
+          419
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.collapsePos
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.collapsePos(tokens)
+        </td>
+      </tr><tr>
+        <td>
+          273
+        </td>
+        <td>
+          420
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.getCandidatePhraseChunks
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.getCandidatePhraseChunks(collapsed)
+        </td>
+      </tr><tr>
+        <td>
+          275
+        </td>
+        <td>
+          435
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]
+        </td>
+      </tr><tr>
+        <td>
+          275
+        </td>
+        <td>
+          434
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$6 match {
+  case (phrases @ _) if phrases.length.&gt;(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk) =&gt; scala.this.Predef.intWrapper(0).to(phrases.length.-(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)).map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, scala.collection.immutable.IndexedSeq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((i: Int) =&gt; KoreanPhraseExtractor.this.trimPhraseChunk(phrases.slice(i, phrases.length))))(immutable.this.IndexedSeq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk])
+  case (phrases @ _) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk](phrases)
+}
+        </td>
+      </tr><tr>
+        <td>
+          276
+        </td>
+        <td>
+          421
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinPhrasesPerPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk
+        </td>
+      </tr><tr>
+        <td>
+          276
+        </td>
+        <td>
+          422
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.length.&gt;(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)
+        </td>
+      </tr><tr>
+        <td>
+          277
+        </td>
+        <td>
+          424
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.MinPhrasesPerPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk
+        </td>
+      </tr><tr>
+        <td>
+          277
+        </td>
+        <td>
+          430
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.intWrapper(0).to(phrases.length.-(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)).map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, scala.collection.immutable.IndexedSeq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((i: Int) =&gt; KoreanPhraseExtractor.this.trimPhraseChunk(phrases.slice(i, phrases.length))))(immutable.this.IndexedSeq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk])
+        </td>
+      </tr><tr>
+        <td>
+          277
+        </td>
+        <td>
+          429
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.IndexedSeq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.IndexedSeq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]
+        </td>
+      </tr><tr>
+        <td>
+          277
+        </td>
+        <td>
+          423
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          277
+        </td>
+        <td>
+          431
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (phrases @ _) if phrases.length.&gt;(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk) =&gt; scala.this.Predef.intWrapper(0).to(phrases.length.-(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)).map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, scala.collection.immutable.IndexedSeq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((i: Int) =&gt; KoreanPhraseExtractor.this.trimPhraseChunk(phrases.slice(i, phrases.length))))(immutable.this.IndexedSeq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk])
+        </td>
+      </tr><tr>
+        <td>
+          277
+        </td>
+        <td>
+          425
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.-
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.length.-(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)
+        </td>
+      </tr><tr>
+        <td>
+          278
+        </td>
+        <td>
+          427
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableLike.slice
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.slice(i, phrases.length)
+        </td>
+      </tr><tr>
+        <td>
+          278
+        </td>
+        <td>
+          426
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.length
+        </td>
+        <td style="background: #AEF1AE">
+          phrases.length
+        </td>
+      </tr><tr>
+        <td>
+          278
+        </td>
+        <td>
+          428
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.trimPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.trimPhraseChunk(phrases.slice(i, phrases.length))
+        </td>
+      </tr><tr>
+        <td>
+          280
+        </td>
+        <td>
+          433
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (phrases @ _) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk](phrases)
+        </td>
+      </tr><tr>
+        <td>
+          280
+        </td>
+        <td>
+          432
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk](phrases)
+        </td>
+      </tr><tr>
+        <td>
+          281
+        </td>
+        <td>
+          436
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.isProperPhraseChunk
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.isProperPhraseChunk(phraseChunk)
+        </td>
+      </tr><tr>
+        <td>
+          282
+        </td>
+        <td>
+          437
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.distinct
+        </td>
+        <td style="background: #AEF1AE">
+          candidates.flatMap[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((x0$6: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk) =&gt; x0$6 match {
+  case (phrases @ _) if phrases.length.&gt;(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk) =&gt; scala.this.Predef.intWrapper(0).to(phrases.length.-(KoreanPhraseExtractor.this.MinPhrasesPerPhraseChunk)).map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk, scala.collection.immutable.IndexedSeq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]](((i: Int) =&gt; KoreanPhraseExtractor.this.trimPhraseChunk(phrases.slice(i, phrases.length))))(immutable.this.IndexedSeq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk])
+  case (phrases @ _) =&gt; collection.this.Seq.apply[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk](phrases)
+}))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]).filter(((phraseChunk: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk) =&gt; KoreanPhraseExtractor.this.isProperPhraseChunk(phraseChunk))).distinct
+        </td>
+      </tr><tr>
+        <td>
+          284
+        </td>
+        <td>
+          444
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          permutatedCandidates.map[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase, Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]](((phraseChunk: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk) =&gt; KoreanPhraseExtractor.this.KoreanPhrase.apply(KoreanPhraseExtractor.this.trimPhraseChunk(phraseChunk).flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$21: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$21.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2)))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase])
+        </td>
+      </tr><tr>
+        <td>
+          284
+        </td>
+        <td>
+          443
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]
+        </td>
+      </tr><tr>
+        <td>
+          285
+        </td>
+        <td>
+          442
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply(KoreanPhraseExtractor.this.trimPhraseChunk(phraseChunk).flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$21: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$21.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]), KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2)
+        </td>
+      </tr><tr>
+        <td>
+          285
+        </td>
+        <td>
+          439
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]
+        </td>
+      </tr><tr>
+        <td>
+          285
+        </td>
+        <td>
+          438
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.tokens
+        </td>
+        <td style="background: #AEF1AE">
+          x$21.tokens
+        </td>
+      </tr><tr>
+        <td>
+          285
+        </td>
+        <td>
+          441
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase.apply$default$2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.KoreanPhrase.apply$default$2
+        </td>
+      </tr><tr>
+        <td>
+          285
+        </td>
+        <td>
+          440
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.flatMap
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.trimPhraseChunk(phraseChunk).flatMap[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken, Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]](((x$21: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; x$21.tokens))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken])
+        </td>
+      </tr><tr>
+        <td>
+          297
+        </td>
+        <td>
+          448
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(x$23, x$26, x$24, x$25)
+        </td>
+      </tr><tr>
+        <td>
+          297
+        </td>
+        <td>
+          447
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2
+        </td>
+      </tr><tr>
+        <td>
+          298
+        </td>
+        <td>
+          445
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          false
+        </td>
+      </tr><tr>
+        <td>
+          298
+        </td>
+        <td>
+          446
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          true
+        </td>
+      </tr><tr>
+        <td>
+          300
+        </td>
+        <td>
+          451
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPhraseExtractor.this.extractPhrases(tokens).map[String, Seq[CharSequence]](((phrase: com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase) =&gt; phrase.tokens.map[String, Seq[String]](((x$22: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$22.text))(collection.this.Seq.canBuildFrom[String]).mkString(&quot;&quot;)))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          300
+        </td>
+        <td>
+          450
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          301
+        </td>
+        <td>
+          449
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #AEF1AE">
+          phrase.tokens.map[String, Seq[String]](((x$22: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$22.text))(collection.this.Seq.canBuildFrom[String]).mkString(&quot;&quot;)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

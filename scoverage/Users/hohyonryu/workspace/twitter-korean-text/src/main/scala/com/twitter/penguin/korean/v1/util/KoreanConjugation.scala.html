@@ -1,0 +1,5440 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/v1/util/KoreanConjugation.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.v1.util
+</span>20 <span style=''>
+</span>21 <span style=''>import com.twitter.penguin.korean.util.CharArraySet
+</span>22 <span style=''>import com.twitter.penguin.korean.v1.util.Hangul._
+</span>23 <span style=''>import com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider._
+</span>24 <span style=''>
+</span>25 <span style=''>import scala.collection.JavaConversions._
+</span>26 <span style=''>
+</span>27 <span style=''>/**
+</span>28 <span style=''> * Expands Korean verbs and adjectives to all possible conjugation forms.
+</span>29 <span style=''> */
+</span>30 <span style=''>object KoreanConjugation {
+</span>31 <span style=''>  // ㅋ, ㅎ for 잨ㅋㅋㅋㅋ 잔댛ㅎㅎㅎㅎ
+</span>32 <span style=''>  private[this] val CODAS_COMMON = Seq('ㅂ', 'ㅆ', 'ㄹ', 'ㄴ', 'ㅁ')
+</span>33 <span style=''>  private[this] val CODAS_NO_PAST = Seq('ㅂ', 'ㄹ', 'ㄴ', 'ㅁ')
+</span>34 <span style=''>
+</span>35 <span style=''>  private[this] val CODAS_SLANG_CONSONANT = Seq('ㅋ', 'ㅎ')
+</span>36 <span style=''>  private[this] val CODAS_SLANG_VOWEL = Seq('ㅜ', 'ㅠ')
+</span>37 <span style=''>
+</span>38 <span style=''>  private[this] val PRE_EOMI_COMMON = "노러도게면네더던든고거구기긴길다자재죠져지진질겠".toSeq
+</span>39 <span style=''>  private[this] val PRE_EOMI_1_1 = "야서써도준".toSeq
+</span>40 <span style=''>  private[this] val PRE_EOMI_1_2 = "어었".toSeq
+</span>41 <span style=''>  private[this] val PRE_EOMI_1_3 = "아았".toSeq
+</span>42 <span style=''>  private[this] val PRE_EOMI_1_4 = "워웠".toSeq
+</span>43 <span style=''>  private[this] val PRE_EOMI_1_5 = "여였".toSeq
+</span>44 <span style=''>
+</span>45 <span style=''>  private[this] val PRE_EOMI_2 = "니냐".toSeq
+</span>46 <span style=''>  private[this] val PRE_EOMI_3 = "려며".toSeq
+</span>47 <span style=''>  private[this] val PRE_EOMI_4 = "으".toSeq
+</span>48 <span style=''>  private[this] val PRE_EOMI_5 = "은".toSeq
+</span>49 <span style=''>  private[this] val PRE_EOMI_6 = "는".toSeq
+</span>50 <span style=''>  private[this] val PRE_EOMI_7 = "운".toSeq
+</span>51 <span style=''>
+</span>52 <span style=''>  private[this] val PRE_EOMI_RESPECT = "세시실신셔습셨십".toSeq
+</span>53 <span style=''>
+</span>54 <span style=''>  // 모음 어말어미
+</span>55 <span style=''>  private[this] val PRE_EOMI_VOWEL = PRE_EOMI_COMMON ++ PRE_EOMI_2 ++ PRE_EOMI_3 ++ PRE_EOMI_RESPECT
+</span>56 <span style=''>
+</span>57 <span style=''>  private[this] def addPreEomi(lastChar: Char, charsToAdd: Seq[Char]): Seq[String] = {
+</span>58 <span style=''>    charsToAdd.map(lastChar + _.toString)
+</span>59 <span style=''>  }
+</span>60 <span style=''>
+</span>61 <span style=''>  /**
+</span>62 <span style=''>   * Conjugate adjectives and verbs.
+</span>63 <span style=''>   *
+</span>64 <span style=''>   * @param words Set of adjectives or verbs.
+</span>65 <span style=''>   * @param isAdjective True if the set contains adjectives.
+</span>66 <span style=''>   * @return CharArraySet with conjugated words.
+</span>67 <span style=''>   */
+</span>68 <span style=''>  protected[korean] def conjugatePredicates(words: Set[String], isAdjective: Boolean = false): CharArraySet = {
+</span>69 <span style=''>    lazy val expanded = words.flatMap { word: String =>
+</span>70 <span style=''>      val init = word.init
+</span>71 <span style=''>      val lastChar = word.last
+</span>72 <span style=''>      val lastCharString = lastChar.toString
+</span>73 <span style=''>      val lastCharDecomposed = decomposeHangul(lastChar)
+</span>74 <span style=''>
+</span>75 <span style=''>      val expandedLast: Seq[String] = lastCharDecomposed match {
+</span>76 <span style=''>        // 하다, special case
+</span>77 <span style=''>        case ('ㅎ', 'ㅏ', ' ') =>
+</span>78 <span style=''>          val endings = if (isAdjective) Seq("합", "해", "히", "") else Seq("합", "해")
+</span>79 <span style=''>          addPreEomi(lastChar, PRE_EOMI_COMMON ++ PRE_EOMI_2 ++ PRE_EOMI_6 ++ PRE_EOMI_RESPECT) ++
+</span>80 <span style=''>              CODAS_COMMON.map {
+</span>81 <span style=''>                case c: Char if c == 'ㅆ' => composeHangul('ㅎ', 'ㅐ', c).toString
+</span>82 <span style=''>                case c: Char => composeHangul('ㅎ', 'ㅏ', c).toString
+</span>83 <span style=''>              } ++ addPreEomi('하', PRE_EOMI_VOWEL ++ PRE_EOMI_1_5 ++ PRE_EOMI_6) ++
+</span>84 <span style=''>              addPreEomi('해', PRE_EOMI_1_1) ++ endings
+</span>85 <span style=''>
+</span>86 <span style=''>        // 쏘다
+</span>87 <span style=''>        case (o: Char, 'ㅗ', ' ') =>
+</span>88 <span style=''>          addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_6) ++
+</span>89 <span style=''>              CODAS_NO_PAST.map(composeHangul(o, 'ㅗ', _).toString) ++
+</span>90 <span style=''>              Seq(composeHangul(o, 'ㅘ', ' ').toString,
+</span>91 <span style=''>                composeHangul(o, 'ㅘ', 'ㅆ').toString,
+</span>92 <span style=''>                lastCharString)
+</span>93 <span style=''>
+</span>94 <span style=''>        // 맞추다, 겨누다, 재우다,
+</span>95 <span style=''>        case (o: Char, 'ㅜ', ' ') =>
+</span>96 <span style=''>          addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_2 ++ PRE_EOMI_6) ++
+</span>97 <span style=''>              CODAS_NO_PAST.map(composeHangul(o, 'ㅜ', _).toString) ++
+</span>98 <span style=''>              Seq(composeHangul(o, 'ㅝ').toString,
+</span>99 <span style=''>                composeHangul(o, 'ㅝ', 'ㅆ').toString,
+</span>100 <span style=''>                lastCharString)
+</span>101 <span style=''>
+</span>102 <span style=''>
+</span>103 <span style=''>        // 치르다, 구르다, 굴르다, 뜨다, 모으다, 고르다, 골르다
+</span>104 <span style=''>        case (o: Char, 'ㅡ', ' ') =>
+</span>105 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅡ', _).toString) ++
+</span>106 <span style=''>              Seq(composeHangul(o, 'ㅝ').toString,
+</span>107 <span style=''>                composeHangul(o, 'ㅓ').toString,
+</span>108 <span style=''>                composeHangul(o, 'ㅏ').toString,
+</span>109 <span style=''>                composeHangul(o, 'ㅝ', 'ㅆ').toString,
+</span>110 <span style=''>                composeHangul(o, 'ㅓ', 'ㅆ').toString,
+</span>111 <span style=''>                composeHangul(o, 'ㅏ', 'ㅆ').toString,
+</span>112 <span style=''>                lastCharString)
+</span>113 <span style=''>
+</span>114 <span style=''>        // 사귀다
+</span>115 <span style=''>        case (o: Char, 'ㅟ', ' ') =>
+</span>116 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅟ', _).toString) ++
+</span>117 <span style=''>              Seq(composeHangul(o, 'ㅕ', ' ').toString, composeHangul(o, 'ㅕ', 'ㅆ').toString) ++
+</span>118 <span style=''>              Seq(lastCharString)
+</span>119 <span style=''>
+</span>120 <span style=''>        // 마시다, 엎드리다, 치다
+</span>121 <span style=''>        case (o: Char, 'ㅣ', ' ') =>
+</span>122 <span style=''>          CODAS_NO_PAST.map(composeHangul(o, 'ㅣ', _).toString) ++
+</span>123 <span style=''>              Seq(composeHangul(o, 'ㅕ', ' ').toString,
+</span>124 <span style=''>                composeHangul(o, 'ㅕ', 'ㅆ').toString,
+</span>125 <span style=''>                lastCharString)
+</span>126 <span style=''>
+</span>127 <span style=''>        // 꿰다, 꾀다
+</span>128 <span style=''>        case (o: Char, v: Char, ' ') if v == 'ㅞ' || v == 'ㅚ' || v == 'ㅙ' =>
+</span>129 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
+</span>130 <span style=''>              Seq(lastCharString)
+</span>131 <span style=''>
+</span>132 <span style=''>
+</span>133 <span style=''>        // All other vowel endings: 둘러서다, 켜다, 세다, 캐다
+</span>134 <span style=''>        case (o: Char, v: Char, ' ') =>
+</span>135 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
+</span>136 <span style=''>              addPreEomi(lastChar, PRE_EOMI_VOWEL ++ PRE_EOMI_1_1 ++ PRE_EOMI_6) ++
+</span>137 <span style=''>              Seq(lastCharString)
+</span>138 <span style=''>
+</span>139 <span style=''>        // 만들다, 알다, 풀다
+</span>140 <span style=''>        case (o: Char, v: Char, 'ㄹ') if v == 'ㅡ' || v == 'ㅏ' || v == 'ㅜ' =>
+</span>141 <span style=''>          addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_2 ++ PRE_EOMI_3 ++ PRE_EOMI_RESPECT) ++
+</span>142 <span style=''>              Seq(composeHangul(o, v, 'ㄻ').toString,
+</span>143 <span style=''>                composeHangul(o, v, 'ㄴ').toString,
+</span>144 <span style=''>                composeHangul(o, v, ' ').toString,
+</span>145 <span style=''>                lastCharString)
+</span>146 <span style=''>
+</span>147 <span style=''>        // 낫다
+</span>148 <span style=''>        case (o: Char, 'ㅏ', 'ㅅ') =>
+</span>149 <span style=''>          addPreEomi(composeHangul(o, 'ㅏ'), PRE_EOMI_3 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>150 <span style=''>              Seq(lastCharString)
+</span>151 <span style=''>
+</span>152 <span style=''>        // 묻다
+</span>153 <span style=''>        case ('ㅁ', 'ㅜ', 'ㄷ') =>
+</span>154 <span style=''>          Seq(composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString,
+</span>155 <span style=''>            lastCharString)
+</span>156 <span style=''>
+</span>157 <span style=''>        // 붇다
+</span>158 <span style=''>        case (o: Char, 'ㅜ', 'ㄷ') =>
+</span>159 <span style=''>          addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_2 ++ PRE_EOMI_1_4 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>160 <span style=''>              Seq(composeHangul(o, 'ㅜ', 'ㄹ').toString,
+</span>161 <span style=''>                lastCharString)
+</span>162 <span style=''>
+</span>163 <span style=''>        // 눕다
+</span>164 <span style=''>        case (o: Char, 'ㅜ', 'ㅂ') =>
+</span>165 <span style=''>          addPreEomi(composeHangul(o, 'ㅜ', ' '), PRE_EOMI_1_4 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>166 <span style=''>              Seq(lastCharString)
+</span>167 <span style=''>
+</span>168 <span style=''>        // 간지럽다, 갑작스럽다 -> 갑작스런
+</span>169 <span style=''>        case (o: Char, 'ㅓ', 'ㅂ') if isAdjective =>
+</span>170 <span style=''>          addPreEomi(composeHangul(o, 'ㅓ', ' '), PRE_EOMI_1_4 ++ PRE_EOMI_7) ++
+</span>171 <span style=''>              Seq(composeHangul(o, 'ㅓ', ' ').toString, composeHangul(o, 'ㅓ', 'ㄴ').toString, lastCharString)
+</span>172 <span style=''>
+</span>173 <span style=''>        // 아름답다, 가볍다, 덥다, 간지럽다
+</span>174 <span style=''>        case (o: Char, v: Char, 'ㅂ') if isAdjective =>
+</span>175 <span style=''>          addPreEomi(composeHangul(o, v, ' '), PRE_EOMI_1_4 ++ PRE_EOMI_7) ++
+</span>176 <span style=''>              Seq(composeHangul(o, v, ' ').toString, lastCharString)
+</span>177 <span style=''>
+</span>178 <span style=''>        // 놓다
+</span>179 <span style=''>        case (o: Char, 'ㅗ', 'ㅎ') =>
+</span>180 <span style=''>          CODAS_COMMON.map(composeHangul(o, 'ㅗ', _).toString) ++
+</span>181 <span style=''>              Seq(composeHangul(o, 'ㅘ', ' ').toString, composeHangul(o, 'ㅗ', ' ').toString, lastCharString)
+</span>182 <span style=''>
+</span>183 <span style=''>        // 파랗다, 퍼렇다
+</span>184 <span style=''>        case (o: Char, v: Char, 'ㅎ') if isAdjective =>
+</span>185 <span style=''>          CODAS_COMMON.map(composeHangul(o, v, _).toString) ++
+</span>186 <span style=''>              Seq(composeHangul(o, v, ' ').toString, lastCharString)
+</span>187 <span style=''>
+</span>188 <span style=''>        // 1 char with coda, 작다
+</span>189 <span style=''>        case (o: Char, v: Char, c: Char) if word.length == 1 =>
+</span>190 <span style=''>          addPreEomi(lastChar, PRE_EOMI_COMMON ++ PRE_EOMI_1_2 ++ PRE_EOMI_1_3 ++ PRE_EOMI_4 ++ PRE_EOMI_5) ++
+</span>191 <span style=''>              Seq(lastCharString)
+</span>192 <span style=''>
+</span>193 <span style=''>        // 부여잡다, 얻어맞다, 얻어먹다
+</span>194 <span style=''>        case _ =>
+</span>195 <span style=''>          Seq(lastCharString)
+</span>196 <span style=''>
+</span>197 <span style=''>      }
+</span>198 <span style=''>
+</span>199 <span style=''>      expandedLast.map(init + _)
+</span>200 <span style=''>    }
+</span>201 <span style=''>
+</span>202 <span style=''>    lazy val newSet = newCharArraySet
+</span>203 <span style=''>    newSet.addAll(expanded)
+</span>204 <span style=''>    newSet
+</span>205 <span style=''>  }
+</span>206 <span style=''>
+</span>207 <span style=''>
+</span>208 <span style=''>  /**
+</span>209 <span style=''>   * Adds intentional typos at verb endings.
+</span>210 <span style=''>   * 가래 -> 가랰ㅋㅋㅋㅋㅋ
+</span>211 <span style=''>   * 먹 -> 머구ㅜㅜㅜㅜㅜ
+</span>212 <span style=''>   * 닭 -> 달규ㅠㅠㅠ
+</span>213 <span style=''>   *
+</span>214 <span style=''>   * @param word Input string.
+</span>215 <span style=''>   * @return Expanded words.
+</span>216 <span style=''>   */
+</span>217 <span style=''>  def addTypoEndings(word: String, applyToOneChar: Boolean = true): Seq[String] = {
+</span>218 <span style=''>    decomposeHangul(word.last) match {
+</span>219 <span style=''>      case (o: Char, v: Char, ' ') if applyToOneChar || word.length > 1 =>
+</span>220 <span style=''>        Seq(word) ++
+</span>221 <span style=''>            CODAS_SLANG_CONSONANT.map(word.init + composeHangul(o, v, _))
+</span>222 <span style=''>      case (o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) && word.length > 1 =>
+</span>223 <span style=''>        val doubleCoda = DOUBLE_CODAS(c)
+</span>224 <span style=''>        Seq(word) ++
+</span>225 <span style=''>            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, doubleCoda.first) + composeHangul(doubleCoda.second, _))
+</span>226 <span style=''>      case (o: Char, v: Char, c: Char) if word.length > 1 =>
+</span>227 <span style=''>        Seq(word) ++
+</span>228 <span style=''>            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, ' ') + composeHangul(c, _))
+</span>229 <span style=''>      case _ => Seq(word)
+</span>230 <span style=''>    }
+</span>231 <span style=''>  }
+</span>232 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          32
+        </td>
+        <td>
+          2764
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[Char]('ㅂ', 'ㅆ', 'ㄹ', 'ㄴ', 'ㅁ')
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          2765
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[Char]('ㅂ', 'ㄹ', 'ㄴ', 'ㅁ')
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          2766
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[Char]('ㅋ', 'ㅎ')
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          2767
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[Char]('ㅜ', 'ㅠ')
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          2768
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;노러도게면네더던든고거구기긴길다자재죠져지진질겠&quot;
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          2769
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;노러도게면네더던든고거구기긴길다자재죠져지진질겠&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          2771
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;야서써도준&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          2770
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;야서써도준&quot;
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          2773
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;어었&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          2772
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;어었&quot;
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          2775
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;아았&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          2774
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;아았&quot;
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          2777
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;워웠&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          42
+        </td>
+        <td>
+          2776
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;워웠&quot;
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2779
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;여였&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          2778
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;여였&quot;
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          2780
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;니냐&quot;
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          2781
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;니냐&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          2783
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;려며&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          2782
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;려며&quot;
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          2784
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;으&quot;
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          2785
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;으&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          2786
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;은&quot;
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          2787
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;은&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          2789
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;는&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          2788
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;는&quot;
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          2791
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;운&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          2790
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;운&quot;
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          2793
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;세시실신셔습셨십&quot;).toSeq
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          2792
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;세시실신셔습셨십&quot;
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2795
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2798
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_RESPECT
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_RESPECT
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2797
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2800
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2794
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_2
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2796
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_3
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_3
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          2799
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2802
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.+
+        </td>
+        <td style="background: #AEF1AE">
+          lastChar.+(x$1.toString())
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2801
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          x$1.toString()
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2804
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          charsToAdd.map[String, Seq[String]](((x$1: Char) =&gt; lastChar.+(x$1.toString())))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          2803
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          3038
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.Set.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.Set.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          3039
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.flatMap
+        </td>
+        <td style="background: #AEF1AE">
+          words.flatMap[String, scala.collection.immutable.Set[String]](((word: String) =&gt; {
+  val init: String = scala.this.Predef.augmentString(word).init;
+  val lastChar: Char = scala.this.Predef.augmentString(word).last;
+  val lastCharString: String = lastChar.toString();
+  val lastCharDecomposed: (Char, Char, Char) = com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(lastChar);
+  val expandedLast: Seq[String] = lastCharDecomposed match {
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)('ㅎ', 'ㅏ', ' ') =&gt; {
+      val endings: Seq[String] = if (isAdjective)
+        collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;, &quot;히&quot;, &quot;&quot;)
+      else
+        collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;);
+      KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x0$1: Char) =&gt; x0$1 match {
+  case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+  case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+}))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('하', KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_5)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('해', KoreanConjugation.this.PRE_EOMI_1_1))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](endings)(collection.this.Seq.canBuildFrom[String])
+    }
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅗ', ' ') =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$2: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$2).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', ' ') =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$3: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', x$3).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅡ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$4: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅡ', x$4).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅟ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$5: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅟ', x$5).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅣ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$6: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅣ', x$6).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if v.==('ㅞ').||(v.==('ㅚ')).||(v.==('ㅙ')) =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$7: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$7).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$8: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$8).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_1)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㄹ') if v.==('ㅡ').||(v.==('ㅏ')).||(v.==('ㅜ')) =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄻ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄴ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅏ', 'ㅅ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3), KoreanConjugation.this.PRE_EOMI_3.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)('ㅁ', 'ㅜ', 'ㄷ') =&gt; collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString(), lastCharString)
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', 'ㄷ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', 'ㄹ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', 'ㅂ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅓ', 'ㅂ') if isAdjective =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㄴ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㅂ') if isAdjective =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅗ', 'ㅎ') =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$9: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$9).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㅎ') if isAdjective =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$10: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$10).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if word.length().==(1) =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+    case _ =&gt; collection.this.Seq.apply[String](lastCharString)
+  };
+  expandedLast.map[String, Seq[String]](((x$11: String) =&gt; init.+(x$11)))(collection.this.Seq.canBuildFrom[String])
+}))(immutable.this.Set.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          2805
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.init
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(word).init
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          2806
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.last
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(word).last
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          2807
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          lastChar.toString()
+        </td>
+      </tr><tr>
+        <td>
+          73
+        </td>
+        <td>
+          2808
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(lastChar)
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          3034
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          lastCharDecomposed match {
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)('ㅎ', 'ㅏ', ' ') =&gt; {
+    val endings: Seq[String] = if (isAdjective)
+      collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;, &quot;히&quot;, &quot;&quot;)
+    else
+      collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;);
+    KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x0$1: Char) =&gt; x0$1 match {
+  case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+  case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+}))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('하', KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_5)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('해', KoreanConjugation.this.PRE_EOMI_1_1))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](endings)(collection.this.Seq.canBuildFrom[String])
+  }
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅗ', ' ') =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$2: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$2).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', ' ') =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$3: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', x$3).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅡ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$4: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅡ', x$4).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅟ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$5: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅟ', x$5).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅣ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$6: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅣ', x$6).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if v.==('ㅞ').||(v.==('ㅚ')).||(v.==('ㅙ')) =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$7: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$7).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$8: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$8).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_1)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㄹ') if v.==('ㅡ').||(v.==('ㅏ')).||(v.==('ㅜ')) =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄻ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄴ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅏ', 'ㅅ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3), KoreanConjugation.this.PRE_EOMI_3.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)('ㅁ', 'ㅜ', 'ㄷ') =&gt; collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString(), lastCharString)
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', 'ㄷ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', 'ㄹ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', 'ㅂ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅓ', 'ㅂ') if isAdjective =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㄴ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㅂ') if isAdjective =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅗ', 'ㅎ') =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$9: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$9).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㅎ') if isAdjective =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$10: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$10).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if word.length().==(1) =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+  case _ =&gt; collection.this.Seq.apply[String](lastCharString)
+}
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          2843
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)('ㅎ', 'ㅏ', ' ') =&gt; {
+  val endings: Seq[String] = if (isAdjective)
+    collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;, &quot;히&quot;, &quot;&quot;)
+  else
+    collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;);
+  KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x0$1: Char) =&gt; x0$1 match {
+  case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+  case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+}))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('하', KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_5)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('해', KoreanConjugation.this.PRE_EOMI_1_1))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](endings)(collection.this.Seq.canBuildFrom[String])
+}
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          2810
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;, &quot;히&quot;, &quot;&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          2809
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;, &quot;히&quot;, &quot;&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          2812
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          2811
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](&quot;합&quot;, &quot;해&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2828
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2819
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2813
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_2
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2816
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2815
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_6
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_6
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2818
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2814
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          2817
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_RESPECT
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_RESPECT
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          2825
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$1 match {
+  case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+  case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+}
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          2827
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x0$1: Char) =&gt; x0$1 match {
+  case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+  case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+}))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          2826
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          2822
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          2821
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          2820
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          c.==('ㅆ')
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          2824
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          2823
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2834
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_5)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2831
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2840
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2833
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2836
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2830
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_5
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_5
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2829
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          '하'
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2832
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_6
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_6
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          2835
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.addPreEomi
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi('하', KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_5)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]))
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          2837
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          '해'
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          2842
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x0$1: Char) =&gt; x0$1 match {
+  case (c @ (_: Char)) if c.==('ㅆ') =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅐ', c).toString()
+  case (c @ (_: Char)) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅎ', 'ㅏ', c).toString()
+}))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('하', KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_5)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi('해', KoreanConjugation.this.PRE_EOMI_1_1))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](endings)(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          2839
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.addPreEomi
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi('해', KoreanConjugation.this.PRE_EOMI_1_1)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          2838
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_1
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_1
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          2841
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2846
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_3
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_3
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2849
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2848
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_6
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_6
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2845
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2854
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2847
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2850
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          88
+        </td>
+        <td>
+          2844
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_2
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2852
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2858
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2851
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$2).toString()
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2860
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅗ', ' ') =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$2: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$2).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2859
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$2: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$2).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          2853
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$2: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$2).toString()))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          2855
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          2857
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', 'ㅆ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          2856
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2861
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_2
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2864
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2869
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2863
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_6
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_6
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2865
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          2862
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2873
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2867
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2875
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', ' ') =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$3: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', x$3).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2866
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', x$3).toString()
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2874
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$3: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', x$3).toString()))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          97
+        </td>
+        <td>
+          2868
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$3: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', x$3).toString()))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          2870
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString()
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          2872
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          99
+        </td>
+        <td>
+          2871
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2876
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅡ', x$4).toString()
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2885
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2887
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅡ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$4: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅡ', x$4).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2877
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          2886
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$4: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅡ', x$4).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          2884
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㅆ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', 'ㅆ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          106
+        </td>
+        <td>
+          2878
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString()
+        </td>
+      </tr><tr>
+        <td>
+          107
+        </td>
+        <td>
+          2879
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString()
+        </td>
+      </tr><tr>
+        <td>
+          108
+        </td>
+        <td>
+          2880
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3).toString()
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          2881
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅝ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          2882
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          111
+        </td>
+        <td>
+          2883
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          2888
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅟ', x$5).toString()
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          2893
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          116
+        </td>
+        <td>
+          2889
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2897
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅟ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$5: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅟ', x$5).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2891
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2896
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$5: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅟ', x$5).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2890
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2892
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString())
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          2895
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          2894
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2903
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2905
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅣ', ' ') =&gt; KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$6: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅣ', x$6).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2899
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2898
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅣ', x$6).toString()
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          2904
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_NO_PAST.map[String, Seq[String]](((x$6: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅣ', x$6).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          2900
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          2902
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          2901
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅕ', 'ㅆ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          2906
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          'ㅞ'
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          2909
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          v.==('ㅞ').||(v.==('ㅚ')).||(v.==('ㅙ'))
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          2908
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          v.==('ㅙ')
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          2907
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          v.==('ㅚ')
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2915
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if v.==('ㅞ').||(v.==('ㅚ')).||(v.==('ㅙ')) =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$7: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$7).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2911
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2914
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$7: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$7).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2910
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$7).toString()
+        </td>
+      </tr><tr>
+        <td>
+          129
+        </td>
+        <td>
+          2913
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          130
+        </td>
+        <td>
+          2912
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2924
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2917
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          135
+        </td>
+        <td>
+          2916
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$8).toString()
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2921
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2927
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$8: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$8).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_1)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2918
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_1
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_1
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2926
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2920
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_6
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_6
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2923
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.addPreEomi
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_1)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char]))
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2928
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$8: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$8).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_1)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2919
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          2922
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_VOWEL.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_1)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_6)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          2925
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          2930
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          v.==('ㅏ')
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          2929
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          'ㅡ'
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          2932
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #AEF1AE">
+          v.==('ㅡ').||(v.==('ㅏ')).||(v.==('ㅜ'))
+        </td>
+      </tr><tr>
+        <td>
+          140
+        </td>
+        <td>
+          2931
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Char.==
+        </td>
+        <td style="background: #AEF1AE">
+          v.==('ㅜ')
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2933
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2936
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_RESPECT
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_RESPECT
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2945
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㄹ') if v.==('ㅡ').||(v.==('ㅏ')).||(v.==('ㅜ')) =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄻ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄴ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2935
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2944
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄻ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄴ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2938
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_RESPECT)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2943
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2934
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_3
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_3
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          2937
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          2939
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄻ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          2942
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄻ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄴ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          2940
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, 'ㄴ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          144
+        </td>
+        <td>
+          2941
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2948
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2957
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅏ', 'ㅅ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3), KoreanConjugation.this.PRE_EOMI_3.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2951
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_5
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_5
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2953
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_3.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2947
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2956
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅏ', com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3), KoreanConjugation.this.PRE_EOMI_3.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2950
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2949
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_4
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_4
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2952
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2946
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          'ㅏ'
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          2955
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          2954
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          2960
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)('ㅁ', 'ㅜ', 'ㄷ') =&gt; collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          2959
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          2958
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul('ㅁ', 'ㅜ', 'ㄹ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2972
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', 'ㄹ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2963
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2966
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_5
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_5
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2968
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2962
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_4
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_4
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2971
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2965
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2967
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2961
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' ')
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2973
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', 'ㄷ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_2.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', 'ㄹ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          2964
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_4
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_4
+        </td>
+      </tr><tr>
+        <td>
+          160
+        </td>
+        <td>
+          2969
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', 'ㄹ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          160
+        </td>
+        <td>
+          2970
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', 'ㄹ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2981
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2975
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_4
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_4
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2978
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2977
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_5
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_5
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2983
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅜ', 'ㅂ') =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' ')
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2976
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2979
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          165
+        </td>
+        <td>
+          2982
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅜ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          2980
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2984
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ')
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2993
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅓ', 'ㅂ') if isAdjective =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㄴ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2987
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2986
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2992
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㄴ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2991
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          2985
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_7
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_7
+        </td>
+      </tr><tr>
+        <td>
+          171
+        </td>
+        <td>
+          2990
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㄴ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          171
+        </td>
+        <td>
+          2989
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', 'ㄴ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          171
+        </td>
+        <td>
+          2988
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅓ', ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          3002
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㅂ') if isAdjective =&gt; KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          2996
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          2995
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_7
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_7
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          3001
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' '), KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          3000
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          2994
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')
+        </td>
+      </tr><tr>
+        <td>
+          175
+        </td>
+        <td>
+          2997
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_4.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_7)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          176
+        </td>
+        <td>
+          2999
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          176
+        </td>
+        <td>
+          2998
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          180
+        </td>
+        <td>
+          3008
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          180
+        </td>
+        <td>
+          3004
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          180
+        </td>
+        <td>
+          3010
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), 'ㅗ', 'ㅎ') =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$9: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$9).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          180
+        </td>
+        <td>
+          3009
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$9: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$9).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          180
+        </td>
+        <td>
+          3003
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', x$9).toString()
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          3005
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          3007
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅘ', ' ').toString(), com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', ' ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          181
+        </td>
+        <td>
+          3006
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, 'ㅗ', ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3017
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), 'ㅎ') if isAdjective =&gt; KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$10: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$10).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3011
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$10).toString()
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3016
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.CODAS_COMMON.map[String, Seq[String]](((x$10: Char) =&gt; com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$10).toString()))(collection.this.Seq.canBuildFrom[String]).++[String, Seq[String]](collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3012
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          185
+        </td>
+        <td>
+          3015
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          3013
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Any.toString
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString()
+        </td>
+      </tr><tr>
+        <td>
+          186
+        </td>
+        <td>
+          3014
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ').toString(), lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          189
+        </td>
+        <td>
+          3018
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.==
+        </td>
+        <td style="background: #AEF1AE">
+          word.length().==(1)
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3026
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3020
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3029
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3031
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if word.length().==(1) =&gt; KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3022
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3025
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_5
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_5
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3019
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_2
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_2
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3027
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3021
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_1_3
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_1_3
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3030
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.addPreEomi(lastChar, KoreanConjugation.this.PRE_EOMI_COMMON.++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_2)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_1_3)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_4)(collection.this.Seq.canBuildFrom[Char]).++[Char, Seq[Char]](KoreanConjugation.this.PRE_EOMI_5)(collection.this.Seq.canBuildFrom[Char])).++[String, Seq[String]](collection.this.Seq.apply[String](lastCharString))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3024
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[Char]
+        </td>
+      </tr><tr>
+        <td>
+          190
+        </td>
+        <td>
+          3023
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanConjugation.PRE_EOMI_4
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanConjugation.this.PRE_EOMI_4
+        </td>
+      </tr><tr>
+        <td>
+          191
+        </td>
+        <td>
+          3028
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          195
+        </td>
+        <td>
+          3033
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          case _ =&gt; collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          195
+        </td>
+        <td>
+          3032
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.apply[String](lastCharString)
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          3035
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #AEF1AE">
+          init.+(x$11)
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          3037
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #AEF1AE">
+          expandedLast.map[String, Seq[String]](((x$11: String) =&gt; init.+(x$11)))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          199
+        </td>
+        <td>
+          3036
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          202
+        </td>
+        <td>
+          3040
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.newCharArraySet
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.newCharArraySet
+        </td>
+      </tr><tr>
+        <td>
+          203
+        </td>
+        <td>
+          3042
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.AbstractCollection.addAll
+        </td>
+        <td style="background: #AEF1AE">
+          newSet.addAll(scala.collection.JavaConversions.setAsJavaSet[String](expanded))
+        </td>
+      </tr><tr>
+        <td>
+          203
+        </td>
+        <td>
+          3041
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.collection.convert.WrapAsJava.setAsJavaSet
+        </td>
+        <td style="background: #AEF1AE">
+          scala.collection.JavaConversions.setAsJavaSet[String](expanded)
+        </td>
+      </tr><tr>
+        <td>
+          218
+        </td>
+        <td>
+          3080
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(scala.this.Predef.augmentString(word).last) match {
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if applyToOneChar.||(word.length().&gt;(1)) =&gt; collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_CONSONANT.map[String, Seq[String]](((x$12: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$12))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if com.twitter.penguin.korean.v1.util.Hangul.DOUBLE_CODAS.contains(c).&amp;&amp;(word.length().&gt;(1)) =&gt; {
+    val doubleCoda: com.twitter.penguin.korean.v1.util.Hangul.DoubleCoda = com.twitter.penguin.korean.v1.util.Hangul.DOUBLE_CODAS.apply(c);
+    collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$13: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, doubleCoda.first)).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(doubleCoda.second, x$13, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+  }
+  case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if word.length().&gt;(1) =&gt; collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$14: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(c, x$14, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+  case _ =&gt; collection.this.Seq.apply[String](word)
+}
+        </td>
+      </tr><tr>
+        <td>
+          218
+        </td>
+        <td>
+          3044
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.decomposeHangul(scala.this.Predef.augmentString(word).last)
+        </td>
+      </tr><tr>
+        <td>
+          218
+        </td>
+        <td>
+          3043
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.last
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(word).last
+        </td>
+      </tr><tr>
+        <td>
+          219
+        </td>
+        <td>
+          3046
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.||
+        </td>
+        <td style="background: #F0ADAD">
+          applyToOneChar.||(word.length().&gt;(1))
+        </td>
+      </tr><tr>
+        <td>
+          219
+        </td>
+        <td>
+          3045
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          word.length().&gt;(1)
+        </td>
+      </tr><tr>
+        <td>
+          220
+        </td>
+        <td>
+          3053
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), ' ') if applyToOneChar.||(word.length().&gt;(1)) =&gt; collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_CONSONANT.map[String, Seq[String]](((x$12: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$12))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          220
+        </td>
+        <td>
+          3052
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_CONSONANT.map[String, Seq[String]](((x$12: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$12))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          220
+        </td>
+        <td>
+          3051
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          221
+        </td>
+        <td>
+          3047
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$12)
+        </td>
+      </tr><tr>
+        <td>
+          221
+        </td>
+        <td>
+          3049
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          221
+        </td>
+        <td>
+          3048
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$12))
+        </td>
+      </tr><tr>
+        <td>
+          221
+        </td>
+        <td>
+          3050
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          KoreanConjugation.this.CODAS_SLANG_CONSONANT.map[String, Seq[String]](((x$12: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, x$12))))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          222
+        </td>
+        <td>
+          3055
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Boolean.&amp;&amp;
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.DOUBLE_CODAS.contains(c).&amp;&amp;(word.length().&gt;(1))
+        </td>
+      </tr><tr>
+        <td>
+          222
+        </td>
+        <td>
+          3067
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if com.twitter.penguin.korean.v1.util.Hangul.DOUBLE_CODAS.contains(c).&amp;&amp;(word.length().&gt;(1)) =&gt; {
+  val doubleCoda: com.twitter.penguin.korean.v1.util.Hangul.DoubleCoda = com.twitter.penguin.korean.v1.util.Hangul.DOUBLE_CODAS.apply(c);
+  collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$13: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, doubleCoda.first)).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(doubleCoda.second, x$13, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+}
+        </td>
+      </tr><tr>
+        <td>
+          222
+        </td>
+        <td>
+          3054
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          word.length().&gt;(1)
+        </td>
+      </tr><tr>
+        <td>
+          223
+        </td>
+        <td>
+          3056
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.MapLike.apply
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.DOUBLE_CODAS.apply(c)
+        </td>
+      </tr><tr>
+        <td>
+          224
+        </td>
+        <td>
+          3065
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          224
+        </td>
+        <td>
+          3066
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$13: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, doubleCoda.first)).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(doubleCoda.second, x$13, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3062
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, doubleCoda.first)).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(doubleCoda.second, x$13, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3064
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$13: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, doubleCoda.first)).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(doubleCoda.second, x$13, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3058
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, doubleCoda.first)
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3061
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(doubleCoda.second, x$13, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3060
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3063
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3057
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.DoubleCoda.first
+        </td>
+        <td style="background: #F0ADAD">
+          doubleCoda.first
+        </td>
+      </tr><tr>
+        <td>
+          225
+        </td>
+        <td>
+          3059
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.DoubleCoda.second
+        </td>
+        <td style="background: #F0ADAD">
+          doubleCoda.second
+        </td>
+      </tr><tr>
+        <td>
+          226
+        </td>
+        <td>
+          3068
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          word.length().&gt;(1)
+        </td>
+      </tr><tr>
+        <td>
+          227
+        </td>
+        <td>
+          3076
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.++
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$14: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(c, x$14, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          227
+        </td>
+        <td>
+          3075
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          227
+        </td>
+        <td>
+          3077
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case (_1: Char, _2: Char, _3: Char)(Char, Char, Char)((o @ (_: Char)), (v @ (_: Char)), (c @ (_: Char))) if word.length().&gt;(1) =&gt; collection.this.Seq.apply[String](word).++[String, Seq[String]](KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$14: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(c, x$14, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String]))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          3071
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(c, x$14, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3)
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          3073
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          3070
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          3069
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          3072
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(c, x$14, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          228
+        </td>
+        <td>
+          3074
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          KoreanConjugation.this.CODAS_SLANG_VOWEL.map[String, Seq[String]](((x$14: Char) =&gt; scala.this.Predef.augmentString(word).init.+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(o, v, ' ')).+(com.twitter.penguin.korean.v1.util.Hangul.composeHangul(c, x$14, com.twitter.penguin.korean.v1.util.Hangul.composeHangul$default$3))))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          229
+        </td>
+        <td>
+          3079
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          case _ =&gt; collection.this.Seq.apply[String](word)
+        </td>
+      </tr><tr>
+        <td>
+          229
+        </td>
+        <td>
+          3078
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.apply[String](word)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

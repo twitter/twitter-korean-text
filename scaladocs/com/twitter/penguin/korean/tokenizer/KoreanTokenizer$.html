@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>KoreanTokenizer - Korean Text Processing Utilities 2.4-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer</title>
-          <meta name="description" content="KoreanTokenizer - Korean Text Processing Utilities 2.4 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
-          <meta name="keywords" content="KoreanTokenizer Korean Text Processing Utilities 2.4 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
+          <title>KoreanTokenizer - Korean Text Processing Utilities 2.5-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer</title>
+          <meta name="description" content="KoreanTokenizer - Korean Text Processing Utilities 2.5 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
+          <meta name="keywords" content="KoreanTokenizer Korean Text Processing Utilities 2.5 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -94,20 +94,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="KoreanTokenizer$$CandidateParse.html"><span class="name">CandidateParse</span></a><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="KoreanPosTrieextendsProductwithSerializable"></a>
-      <a id="KoreanPosTrie:KoreanPosTrie"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="KoreanTokenizer$$KoreanPosTrie.html"><span class="name">KoreanPosTrie</span></a><span class="params">(<span name="curPos">curPos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="nextTrie">nextTrie: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="KoreanTokenizer$$CandidateParse.html"><span class="name">CandidateParse</span></a><span class="params">(<span name="parse">parse: <a href="KoreanTokenizer$$ParsedChunk.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunk">ParsedChunk</a></span>, <span name="curTrie">curTrie: <span class="extype" name="scala.List">List</span>[<a href="../util/KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a>]</span>, <span name="ending">ending: <span class="extype" name="scala.Option">Option</span>[<a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -159,7 +146,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="KoreanTokenizer$$PossibleTrie.html"><span class="name">PossibleTrie</span></a><span class="params">(<span name="curTrie">curTrie: <a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a></span>, <span name="words">words: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="KoreanTokenizer$$PossibleTrie.html"><span class="name">PossibleTrie</span></a><span class="params">(<span name="curTrie">curTrie: <a href="../util/KoreanPos$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie">KoreanPosTrie</a></span>, <span name="words">words: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -248,19 +235,6 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#buildTrie" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="buildTrie(s:String):List[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie]"></a>
-      <a id="buildTrie(String):List[KoreanPosTrie]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">buildTrie</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -403,19 +377,6 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#selfNode" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="selfNode:com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie"></a>
-      <a id="selfNode:KoreanPosTrie"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">selfNode</span><span class="result">: <a href="KoreanTokenizer$$KoreanPosTrie.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanPosTrie">KoreanPosTrie</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../package.html" class="extype" name="com.twitter.penguin.korean">com.twitter.penguin.korean</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -443,15 +404,15 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#tokenize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tokenize(text:CharSequence):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
-      <a id="tokenize(CharSequence):Seq[KoreanToken]"></a>
+      <a id="tokenize(text:CharSequence,keepSpace:Boolean):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
+      <a id="tokenize(CharSequence,Boolean):Seq[KoreanToken]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
+        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="keepSpace">keepSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Parse Korean text into a sequence of KoreanTokens
