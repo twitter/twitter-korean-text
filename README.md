@@ -23,7 +23,7 @@ twitter-korean-text의 목표는 빅데이터 등에서 간단한 한국어 처�
 * 한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle
 
 
-**어구 추출 Phrase Extractor** 
+**어구 추출 phrase extraction** 
 
 * 한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어, 처리, 예시, 처리하는 예시
 
@@ -45,7 +45,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>2.4</version>
+    <version>2.4.1</version>
   <dependency>
 ```
 
