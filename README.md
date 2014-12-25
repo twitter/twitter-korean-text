@@ -95,14 +95,24 @@ object ScalaTwitterKoreanTextExample {
     println(parsedPos)
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle)
 
+    // Tokenize without stemming
+    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] = TwitterKoreanProcessor
+      .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = true, stemming = false)
+    println(parsedPosNoStemming)
+    // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle)
+
     // Tokenize without normalization and stemming
     val parsedPosParsingOnly: Seq[KoreanTokenizer.KoreanToken] = TwitterKoreanProcessor
       .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = false, stemming = false)
     println(parsedPosParsingOnly)
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle)
+
+    // Phrase extraction
+    val phrases: Seq[CharSequence] = TwitterKoreanProcessor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+    println(phrases)
+    // List(한국어, 처리하는 예시)
   }
 }
-
 ```
 
 from Java
@@ -126,6 +136,20 @@ public class JavaTwitterKoreanTextExample {
     // output: [한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle]
 
 
+    // Tokenize without stemmer
+    processor = new TwitterKoreanProcessorJava.Builder()
+            .disableStemmer()
+            .build();
+
+    parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    System.out.println(parsedStrings);
+    // output: [한국어, 를, 처리, 하는, 예시, 입, 니다, ㅋㅋ]
+
+    parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    System.out.println(parsed);
+    // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle]
+
+
     // Tokenize with neither normalization nor stemmer
     processor = new TwitterKoreanProcessorJava.Builder()
         .disableNormalizer()
@@ -140,6 +164,11 @@ public class JavaTwitterKoreanTextExample {
     System.out.println(parsed);
     // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle]
 
+    List<CharSequence> phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    System.out.println(phrases);
+    // output: [한국어, 처리하는 예시]
+  }
+}
 ```
 
 
