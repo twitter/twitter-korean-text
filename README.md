@@ -45,7 +45,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2</version>
   <dependency>
 ```
 
@@ -86,7 +86,8 @@ import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 object ScalaTwitterKoreanTextExample {
   def main(args: Array[String]) {
     // Tokenize into List<String>
-    val parsed: Seq[String] = TwitterKoreanProcessor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+    val parsed: Seq[String] = TwitterKoreanProcessor
+        .tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(parsed)
     // ArraySeq(한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ)
 
@@ -97,8 +98,9 @@ object ScalaTwitterKoreanTextExample {
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle)
 
     // Tokenize without stemming
-    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] = TwitterKoreanProcessor
-      .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = true, stemming = false)
+    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] = 
+      TwitterKoreanProcessor
+          .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = true, stemming = false)
     println(parsedPosNoStemming)
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle)
 
@@ -109,10 +111,16 @@ object ScalaTwitterKoreanTextExample {
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle)
 
     // Phrase extraction
-    val phrases: Seq[CharSequence] = 
-      TwitterKoreanProcessor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+    val phrases: Seq[CharSequence] = TwitterKoreanProcessor
+        .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발")
     println(phrases)
-    // List(한국어, 처리하는 예시)
+    // List(한국어, 처리, 처리하는 예시, 예시, 시발)
+
+    // Phrase extraction with the spam filter enabled
+    val phrasesSpamFilitered: Seq[CharSequence] = TwitterKoreanProcessor
+        .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발", filterSpam = true)
+    println(phrasesSpamFilitered)
+    // List(한국어, 처리, 처리하는 예시, 예시)
   }
 }
 ```
@@ -133,7 +141,8 @@ public class JavaTwitterKoreanTextExample {
     System.out.println(parsedStrings);
     // output: [한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ]
 
-    List<KoreanTokenizer.KoreanToken> parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    List<KoreanTokenizer.KoreanToken> parsed = processor
+        .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
     // output: [한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle]
 
@@ -166,9 +175,20 @@ public class JavaTwitterKoreanTextExample {
     System.out.println(parsed);
     // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle]
 
-    List<CharSequence> phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    List<CharSequence> phrases = processor
+        .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
     System.out.println(phrases);
-    // output: [한국어, 처리하는 예시]
+    // output: [한국어, 처리, 처리하는 예시, 예시, 시발]
+
+    processor = new TwitterKoreanProcessorJava.Builder()
+        .disableNormalizer()
+        .disableStemmer()
+        .enablePhraseExtractorSpamFilter()
+        .build();
+
+    phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
+    System.out.println(phrases);
+    // output: [한국어, 처리, 처리하는 예시, 예시]
   }
 }
 ```
