@@ -30,7 +30,8 @@ public class JavaTwitterKoreanTextExample {
     System.out.println(parsedStrings);
     // output: [한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ]
 
-    List<KoreanTokenizer.KoreanToken> parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    List<KoreanTokenizer.KoreanToken> parsed = processor
+        .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
     // output: [한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle]
 
@@ -63,8 +64,19 @@ public class JavaTwitterKoreanTextExample {
     System.out.println(parsed);
     // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle]
 
-    List<CharSequence> phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    List<CharSequence> phrases = processor
+        .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
     System.out.println(phrases);
-    // output: [한국어, 처리하는 예시]
+    // output: [한국어, 처리, 처리하는 예시, 예시, 시발]
+
+    processor = new TwitterKoreanProcessorJava.Builder()
+        .disableNormalizer()
+        .disableStemmer()
+        .enablePhraseExtractorSpamFilter()
+        .build();
+
+    phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
+    System.out.println(phrases);
+    // output: [한국어, 처리, 처리하는 예시, 예시]
   }
 }

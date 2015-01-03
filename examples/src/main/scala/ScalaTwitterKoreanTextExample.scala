@@ -22,18 +22,21 @@ import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 object ScalaTwitterKoreanTextExample {
   def main(args: Array[String]) {
     // Tokenize into List<String>
-    val parsed: Seq[String] = TwitterKoreanProcessor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+    val parsed: Seq[String] = TwitterKoreanProcessor
+        .tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(parsed)
     // ArraySeq(한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ)
 
     // Tokenize with Part-of-Speech information
-    val parsedPos: Seq[KoreanTokenizer.KoreanToken] = TwitterKoreanProcessor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+    val parsedPos: Seq[KoreanTokenizer.KoreanToken] =
+      TwitterKoreanProcessor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(parsedPos)
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle)
 
     // Tokenize without stemming
-    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] = TwitterKoreanProcessor
-      .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = true, stemming = false)
+    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] =
+      TwitterKoreanProcessor
+          .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = true, stemming = false)
     println(parsedPosNoStemming)
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle)
 
@@ -44,8 +47,15 @@ object ScalaTwitterKoreanTextExample {
     // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle)
 
     // Phrase extraction
-    val phrases: Seq[CharSequence] = TwitterKoreanProcessor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+    val phrases: Seq[CharSequence] = TwitterKoreanProcessor
+        .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발")
     println(phrases)
-    // List(한국어, 처리하는 예시)
+    // List(한국어, 처리, 처리하는 예시, 예시, 시발)
+
+    // Phrase extraction with the spam filter enabled
+    val phrasesSpamFilitered: Seq[CharSequence] = TwitterKoreanProcessor
+        .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발", filterSpam = true)
+    println(phrasesSpamFilitered)
+    // List(한국어, 처리, 처리하는 예시, 예시)
   }
 }
