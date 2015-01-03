@@ -192,4 +192,22 @@ class TwitterKoreanProcessorTest extends TestBase {
       TwitterKoreanProcessor.tokenize(_).mkString("/")
     )
   }
+
+  test("extractPhrases should correctly extract phrases") {
+    assert(
+      TwitterKoreanProcessor.extractPhrases(
+        "시발 토토가의 인기폭발을 보니 미국에서 뉴키즈온더블럭 백스트릿보이스 조인트 컨서트"
+      ).mkString(", ") ===
+          "시발 토토가, 시발 토토가의 인기폭발, 토토가의 인기폭발, 인기폭발, 미국, " +
+              "뉴키즈온더블럭 백스트릿보이스 조인트 컨서트, 백스트릿보이스 조인트 컨서트, 조인트 컨서트, " +
+              "시발, 토토가, 인기, 폭발, 뉴키즈온더블럭, 스트릿, 보이스, 조인트, 컨서트"
+    )
+    assert(
+      TwitterKoreanProcessor.extractPhrases(
+        "시발 토토가의 인기폭발을 보니 미국에서 뉴키즈온더블럭 백스트릿보이스 조인트 컨서트", filterSpam = true
+      ).mkString(", ") ===
+          "토토가, 토토가의 인기폭발, 인기폭발, 미국, 뉴키즈온더블럭 백스트릿보이스 조인트 컨서트, " +
+              "백스트릿보이스 조인트 컨서트, 조인트 컨서트, 인기, 폭발, 뉴키즈온더블럭, 스트릿, 보이스, 조인트, 컨서트"
+    )
+  }
 }

@@ -25,7 +25,7 @@ import scala.io.Source
 /**
  * Clean up resources by removing duplicates and sorting.
  */
-object CleanUpDictionaries {
+object CleanUpDictionaries extends Runnable  {
 
   private[this] def readWords(filename: String): Set[String] = {
     Source.fromFile(filename)(io.Codec("UTF-8"))
@@ -55,7 +55,7 @@ object CleanUpDictionaries {
     "verb/eomi.txt", "verb/pre_eomi.txt", "verb/verb.txt", "verb/verb_prefix.txt"
   )
 
-  def main(args: Array[String]) {
+  def run {
     RESOURCES_TO_CLEANUP.foreach {
       f: String =>
         val outputFolder = "src/main/resources/com/twitter/penguin/korean/util/"

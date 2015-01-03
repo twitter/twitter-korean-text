@@ -95,6 +95,7 @@ class KoreanPhraseExtractorTest extends TestBase {
   test("extractPhrases should filter out spam and profane words") {
     assert(KoreanPhraseExtractor.extractPhrases(spamText).mkString(", ") ===
         "레알 시발 저거 카지노 포르노 야동, 시발 저거 카지노 포르노 야동, 저거 카지노 포르노 야동, 카지노 포르노 야동, 포르노 야동, 레알, 시발, 저거, 카지노, 포르노, 야동")
-    assert(KoreanPhraseExtractor.extractPhrases(spamText, filterSpam = true).mkString(", ") === "")
+    assert(KoreanPhraseExtractor.extractPhrases(spamText, filterSpam = true).mkString(", ") ===
+        "레알, 저거")
   }
 }

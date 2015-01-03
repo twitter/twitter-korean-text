@@ -27,11 +27,10 @@ import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 /**
  * Create Korean Parsing examples.
  */
-object CreateParsingExamples {
-
+object CreateParsingExamples extends Runnable  {
   case class ParsingExample(text: String, parse: Seq[KoreanToken])
 
-  def main(args: Array[String]) {
+  def run {
     System.err.println("Reading the goldenset..")
 
     val parsedPairs = readFileByLineFromResources("example_chunks.txt").flatMap {

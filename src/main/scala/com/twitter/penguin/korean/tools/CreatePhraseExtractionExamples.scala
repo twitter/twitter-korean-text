@@ -26,11 +26,11 @@ import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 /**
  * Create Korean Phrase Extraction Examples.
  */
-object CreatePhraseExtractionExamples {
+object CreatePhraseExtractionExamples extends Runnable {
 
   case class PhraseExample(text: String, phrases: Seq[CharSequence])
 
-  def main(args: Array[String]) {
+  def run {
     System.err.println("Reading the sample tweets..")
 
     val phrasePairs = readFileByLineFromResources("example_tweets.txt").flatMap {
