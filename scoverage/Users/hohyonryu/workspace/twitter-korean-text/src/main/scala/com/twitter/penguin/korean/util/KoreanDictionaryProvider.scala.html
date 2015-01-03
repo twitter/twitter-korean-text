@@ -127,7 +127,7 @@
 </span>102 <span style=''>  lazy val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
 </span>103 <span style=''>    readWordFreqs("freq/entity-freq.txt.gz")
 </span>104 <span style=''>
-</span>105 <span style=''>  lazy val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
+</span>105 <span style=''>  val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
 </span>106 <span style=''>    var map: collection.mutable.Map[KoreanPos, CharArraySet] =
 </span>107 <span style=''>      new java.util.HashMap[KoreanPos, CharArraySet]
 </span>108 <span style=''>
@@ -154,31 +154,33 @@
 </span>129 <span style=''>    map
 </span>130 <span style=''>  }
 </span>131 <span style=''>
-</span>132 <span style=''>  lazy val nameDictionay = Map(
-</span>133 <span style=''>    'family_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("substantives/family_names.txt"),
-</span>134 <span style=''>    'given_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("substantives/given_names.txt"),
-</span>135 <span style=''>    'full_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")
-</span>136 <span style=''>  )
-</span>137 <span style=''>
-</span>138 <span style=''>  lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
-</span>139 <span style=''>    case (key: String, value: String) => key.length
-</span>140 <span style=''>  }
-</span>141 <span style=''>
-</span>142 <span style=''>  lazy val predicateStems = {
-</span>143 <span style=''>    def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
-</span>144 <span style=''>      words.flatMap {
-</span>145 <span style=''>        word: String => conjugatePredicated(Set(word), isAdjective).map {
-</span>146 <span style=''>          conjugated => (conjugated.toString, word </span><span style='background: #AEF1AE'>+</span><span style=''> "다")
-</span>147 <span style=''>        }
-</span>148 <span style=''>      }.toMap
-</span>149 <span style=''>    }
-</span>150 <span style=''>
-</span>151 <span style=''>    Map(
-</span>152 <span style=''>      Verb </span><span style='background: #AEF1AE'>-></span><span style=''> getConjugationMap(readWordsAsSet("verb/verb.txt"), isAdjective = false),
-</span>153 <span style=''>      Adjective </span><span style='background: #AEF1AE'>-></span><span style=''> getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
-</span>154 <span style=''>    )
-</span>155 <span style=''>  }
-</span>156 <span style=''>}
+</span>132 <span style=''>  lazy val spamNouns = readWords("noun/spam.txt", "noun/profane.txt")
+</span>133 <span style=''>
+</span>134 <span style=''>  lazy val nameDictionay = Map(
+</span>135 <span style=''>    'family_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("substantives/family_names.txt"),
+</span>136 <span style=''>    'given_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("substantives/given_names.txt"),
+</span>137 <span style=''>    'full_name </span><span style='background: #AEF1AE'>-></span><span style=''> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")
+</span>138 <span style=''>  )
+</span>139 <span style=''>
+</span>140 <span style=''>  lazy val typoDictionaryByLength = readWordMap("typos/typos.txt").groupBy {
+</span>141 <span style=''>    case (key: String, value: String) => key.length
+</span>142 <span style=''>  }
+</span>143 <span style=''>
+</span>144 <span style=''>  lazy val predicateStems = {
+</span>145 <span style=''>    def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
+</span>146 <span style=''>      words.flatMap {
+</span>147 <span style=''>        word: String => conjugatePredicated(Set(word), isAdjective).map {
+</span>148 <span style=''>          conjugated => (conjugated.toString, word </span><span style='background: #AEF1AE'>+</span><span style=''> "다")
+</span>149 <span style=''>        }
+</span>150 <span style=''>      }.toMap
+</span>151 <span style=''>    }
+</span>152 <span style=''>
+</span>153 <span style=''>    Map(
+</span>154 <span style=''>      Verb </span><span style='background: #AEF1AE'>-></span><span style=''> getConjugationMap(readWordsAsSet("verb/verb.txt"), isAdjective = false),
+</span>155 <span style=''>      Adjective </span><span style='background: #AEF1AE'>-></span><span style=''> getConjugationMap(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
+</span>156 <span style=''>    )
+</span>157 <span style=''>  }
+</span>158 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -195,7 +197,23 @@
           35
         </td>
         <td>
-          1605
+          1623
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.!=
+        </td>
+        <td style="background: #AEF1AE">
+          stream.!=(null)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1625
         </td>
         <td>
           Apply
@@ -211,7 +229,7 @@
           35
         </td>
         <td>
-          1604
+          1624
         </td>
         <td>
           Apply
@@ -224,26 +242,10 @@
         </td>
       </tr><tr>
         <td>
-          35
-        </td>
-        <td>
-          1603
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.Object.!=
-        </td>
-        <td style="background: #AEF1AE">
-          stream.!=(null)
-        </td>
-      </tr><tr>
-        <td>
           36
         </td>
         <td>
-          1606
+          1626
         </td>
         <td>
           Apply
@@ -259,7 +261,7 @@
           38
         </td>
         <td>
-          1607
+          1627
         </td>
         <td>
           Apply
@@ -275,23 +277,7 @@
           39
         </td>
         <td>
-          1608
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Int.&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          x$2.length().&gt;(0)
-        </td>
-      </tr><tr>
-        <td>
-          39
-        </td>
-        <td>
-          1609
+          1629
         </td>
         <td>
           Apply
@@ -304,10 +290,26 @@
         </td>
       </tr><tr>
         <td>
+          39
+        </td>
+        <td>
+          1628
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x$2.length().&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
           44
         </td>
         <td>
-          1611
+          1631
         </td>
         <td>
           ApplyImplicitView
@@ -323,7 +325,7 @@
           44
         </td>
         <td>
-          1610
+          1630
         </td>
         <td>
           Apply
@@ -339,31 +341,7 @@
           46
         </td>
         <td>
-          1623
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          x0$2 match {
-  case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
-    {
-      val data: Array[String] = line.split(&quot;\t&quot;);
-      freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
-    }
-  else
-    ()
-}
-        </td>
-      </tr><tr>
-        <td>
-          46
-        </td>
-        <td>
-          1624
+          1644
         </td>
         <td>
           Apply
@@ -384,10 +362,66 @@
         </td>
       </tr><tr>
         <td>
+          46
+        </td>
+        <td>
+          1643
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$2 match {
+  case (line @ _) =&gt; if (line.contains(&quot;\t&quot;))
+    {
+      val data: Array[String] = line.split(&quot;\t&quot;);
+      freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+    }
+  else
+    ()
+}
+        </td>
+      </tr><tr>
+        <td>
           47
         </td>
         <td>
-          1620
+          1632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.contains
+        </td>
+        <td style="background: #AEF1AE">
+          line.contains(&quot;\t&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1641
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1640
         </td>
         <td>
           Literal
@@ -403,26 +437,7 @@
           47
         </td>
         <td>
-          1619
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          {
-  val data: Array[String] = line.split(&quot;\t&quot;);
-  freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
-}
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          1622
+          1642
         </td>
         <td>
           If
@@ -444,7 +459,7 @@ else
           47
         </td>
         <td>
-          1621
+          1639
         </td>
         <td>
           Block
@@ -452,31 +467,18 @@ else
         <td>
           &lt;nosymbol&gt;
         </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          1612
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.contains
-        </td>
         <td style="background: #AEF1AE">
-          line.contains(&quot;\t&quot;)
+          {
+  val data: Array[String] = line.split(&quot;\t&quot;);
+  freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+}
         </td>
       </tr><tr>
         <td>
           48
         </td>
         <td>
-          1613
+          1633
         </td>
         <td>
           Apply
@@ -492,55 +494,23 @@ else
           49
         </td>
         <td>
-          1614
+          1638
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Array.apply
+          scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          data.apply(0)
+          freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          1617
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          1616
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.collection.immutable.StringLike.toFloat
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat
-        </td>
-      </tr><tr>
-        <td>
-          49
-        </td>
-        <td>
-          1615
+          1635
         </td>
         <td>
           Apply
@@ -556,23 +526,55 @@ else
           49
         </td>
         <td>
-          1618
+          1634
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.collection.mutable.MapLike.+=
+          scala.Array.apply
         </td>
         <td style="background: #AEF1AE">
-          freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+          data.apply(0)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1637
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
+        </td>
+      </tr><tr>
+        <td>
+          49
+        </td>
+        <td>
+          1636
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.toFloat
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat
         </td>
       </tr><tr>
         <td>
           56
         </td>
         <td>
-          1627
+          1647
         </td>
         <td>
           Match
@@ -590,7 +592,7 @@ else
           57
         </td>
         <td>
-          1626
+          1646
         </td>
         <td>
           Block
@@ -606,7 +608,7 @@ else
           57
         </td>
         <td>
-          1625
+          1645
         </td>
         <td>
           Apply
@@ -622,7 +624,7 @@ else
           58
         </td>
         <td>
-          1633
+          1653
         </td>
         <td>
           Match
@@ -643,7 +645,7 @@ else
           59
         </td>
         <td>
-          1632
+          1652
         </td>
         <td>
           Block
@@ -662,7 +664,7 @@ else
           60
         </td>
         <td>
-          1628
+          1648
         </td>
         <td>
           Apply
@@ -678,7 +680,23 @@ else
           61
         </td>
         <td>
-          1629
+          1650
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #AEF1AE">
+          data.apply(1)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1649
         </td>
         <td>
           Apply
@@ -694,7 +712,7 @@ else
           61
         </td>
         <td>
-          1631
+          1651
         </td>
         <td>
           Apply
@@ -707,26 +725,10 @@ else
         </td>
       </tr><tr>
         <td>
-          61
-        </td>
-        <td>
-          1630
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Array.apply
-        </td>
-        <td style="background: #AEF1AE">
-          data.apply(1)
-        </td>
-      </tr><tr>
-        <td>
           62
         </td>
         <td>
-          1635
+          1655
         </td>
         <td>
           ApplyToImplicitArgs
@@ -749,7 +751,7 @@ else
           62
         </td>
         <td>
-          1634
+          1654
         </td>
         <td>
           TypeApply
@@ -765,7 +767,7 @@ else
           67
         </td>
         <td>
-          1636
+          1656
         </td>
         <td>
           Select
@@ -781,7 +783,25 @@ else
           71
         </td>
         <td>
-          1638
+          1662
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
+  case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
+}
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          1658
         </td>
         <td>
           Apply
@@ -797,25 +817,7 @@ else
           71
         </td>
         <td>
-          1643
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.TraversableOnce.foldLeft
-        </td>
-        <td style="background: #AEF1AE">
-          filenames.foldLeft[scala.collection.immutable.Set[String]](scala.this.Predef.Set.apply[String]())(((x0$5: scala.collection.immutable.Set[String], x1$1: String) =&gt; scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
-  case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
-}))
-        </td>
-      </tr><tr>
-        <td>
-          71
-        </td>
-        <td>
-          1637
+          1657
         </td>
         <td>
           Apply
@@ -831,25 +833,25 @@ else
           71
         </td>
         <td>
-          1642
+          1663
         </td>
         <td>
-          Match
+          Apply
         </td>
         <td>
-          &lt;nosymbol&gt;
+          scala.collection.TraversableOnce.foldLeft
         </td>
         <td style="background: #AEF1AE">
-          scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
+          filenames.foldLeft[scala.collection.immutable.Set[String]](scala.this.Predef.Set.apply[String]())(((x0$5: scala.collection.immutable.Set[String], x1$1: String) =&gt; scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1) match {
   case (_1: scala.collection.immutable.Set[String], _2: String)(scala.collection.immutable.Set[String], String)((output @ (_: Set[String])), (filename @ (_: String))) =&gt; output.union(KoreanDictionaryProvider.this.readFileByLineFromResources(filename).toSet[String])
-}
+}))
         </td>
       </tr><tr>
         <td>
           73
         </td>
         <td>
-          1641
+          1661
         </td>
         <td>
           Block
@@ -865,7 +867,7 @@ else
           73
         </td>
         <td>
-          1640
+          1660
         </td>
         <td>
           Apply
@@ -881,7 +883,7 @@ else
           74
         </td>
         <td>
-          1639
+          1659
         </td>
         <td>
           TypeApply
@@ -897,7 +899,7 @@ else
           80
         </td>
         <td>
-          1644
+          1664
         </td>
         <td>
           Select
@@ -913,7 +915,7 @@ else
           81
         </td>
         <td>
-          1647
+          1667
         </td>
         <td>
           Apply
@@ -931,7 +933,23 @@ else
           82
         </td>
         <td>
-          1646
+          1665
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.CharArraySet.add
+        </td>
+        <td style="background: #AEF1AE">
+          set.add(text)
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          1666
         </td>
         <td>
           Apply
@@ -946,26 +964,10 @@ else
         </td>
       </tr><tr>
         <td>
-          82
-        </td>
-        <td>
-          1645
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.CharArraySet.add
-        </td>
-        <td style="background: #AEF1AE">
-          set.add(text)
-        </td>
-      </tr><tr>
-        <td>
           88
         </td>
         <td>
-          1654
+          1674
         </td>
         <td>
           Apply
@@ -984,7 +986,7 @@ else
           89
         </td>
         <td>
-          1648
+          1668
         </td>
         <td>
           Apply
@@ -1000,7 +1002,23 @@ else
           90
         </td>
         <td>
-          1650
+          1671
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          java.util.zip.GZIPInputStream.&lt;init&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          new java.util.zip.GZIPInputStream(KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename))
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          1670
         </td>
         <td>
           Apply
@@ -1016,7 +1034,7 @@ else
           90
         </td>
         <td>
-          1649
+          1669
         </td>
         <td>
           Apply
@@ -1029,26 +1047,10 @@ else
         </td>
       </tr><tr>
         <td>
-          90
-        </td>
-        <td>
-          1651
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          java.util.zip.GZIPInputStream.&lt;init&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          new java.util.zip.GZIPInputStream(KoreanDictionaryProvider.this.getClass().getResourceAsStream(filename))
-        </td>
-      </tr><tr>
-        <td>
           92
         </td>
         <td>
-          1653
+          1673
         </td>
         <td>
           Block
@@ -1064,7 +1066,7 @@ else
           92
         </td>
         <td>
-          1652
+          1672
         </td>
         <td>
           Apply
@@ -1080,7 +1082,7 @@ else
           99
         </td>
         <td>
-          1655
+          1675
         </td>
         <td>
           Apply
@@ -1096,7 +1098,7 @@ else
           103
         </td>
         <td>
-          1656
+          1676
         </td>
         <td>
           Apply
@@ -1112,23 +1114,7 @@ else
           107
         </td>
         <td>
-          1658
-        </td>
-        <td>
-          ApplyImplicitView
-        </td>
-        <td>
-          scala.collection.convert.WrapAsScala.mapAsScalaMap
-        </td>
-        <td style="background: #AEF1AE">
-          scala.collection.JavaConversions.mapAsScalaMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos, com.twitter.penguin.korean.util.CharArraySet](new java.util.HashMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos,com.twitter.penguin.korean.util.CharArraySet]())
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          1657
+          1677
         </td>
         <td>
           Apply
@@ -1141,10 +1127,42 @@ else
         </td>
       </tr><tr>
         <td>
+          107
+        </td>
+        <td>
+          1678
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.collection.convert.WrapAsScala.mapAsScalaMap
+        </td>
+        <td style="background: #AEF1AE">
+          scala.collection.JavaConversions.mapAsScalaMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos, com.twitter.penguin.korean.util.CharArraySet](new java.util.HashMap[com.twitter.penguin.korean.util.KoreanPos.KoreanPos,com.twitter.penguin.korean.util.CharArraySet]())
+        </td>
+      </tr><tr>
+        <td>
           109
         </td>
         <td>
-          1659
+          1680
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/pokemon.txt&quot;, &quot;noun/congress.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          109
+        </td>
+        <td>
+          1679
         </td>
         <td>
           Select
@@ -1160,7 +1178,7 @@ else
           109
         </td>
         <td>
-          1662
+          1682
         </td>
         <td>
           Apply
@@ -1176,7 +1194,7 @@ else
           109
         </td>
         <td>
-          1661
+          1681
         </td>
         <td>
           Apply
@@ -1189,90 +1207,26 @@ else
         </td>
       </tr><tr>
         <td>
-          109
-        </td>
-        <td>
-          1660
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWords(&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/pokemon.txt&quot;, &quot;noun/congress.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;)
-        </td>
-      </tr><tr>
-        <td>
           117
         </td>
         <td>
-          1665
+          1683
         </td>
         <td>
           Select
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2
+          com.twitter.penguin.korean.util.KoreanPos.Verb
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2
+          com.twitter.penguin.korean.util.KoreanPos.Verb
         </td>
       </tr><tr>
         <td>
           117
         </td>
         <td>
-          1668
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.+=
-        </td>
-        <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2)))
-        </td>
-      </tr><tr>
-        <td>
-          117
-        </td>
-        <td>
-          1664
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          117
-        </td>
-        <td>
-          1667
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2))
-        </td>
-      </tr><tr>
-        <td>
-          117
-        </td>
-        <td>
-          1666
+          1686
         </td>
         <td>
           Apply
@@ -1288,23 +1242,103 @@ else
           117
         </td>
         <td>
-          1663
+          1688
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2)))
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1685
         </td>
         <td>
           Select
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanPos.Verb
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Verb
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1684
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          117
+        </td>
+        <td>
+          1687
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet$default$2))
         </td>
       </tr><tr>
         <td>
           118
         </td>
         <td>
-          1674
+          1689
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1692
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          1694
         </td>
         <td>
           Apply
@@ -1320,7 +1354,7 @@ else
           118
         </td>
         <td>
-          1671
+          1691
         </td>
         <td>
           Literal
@@ -1336,23 +1370,7 @@ else
           118
         </td>
         <td>
-          1670
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          118
-        </td>
-        <td>
-          1673
+          1693
         </td>
         <td>
           Apply
@@ -1368,39 +1386,55 @@ else
           118
         </td>
         <td>
-          1669
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Adjective
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Adjective
-        </td>
-      </tr><tr>
-        <td>
-          118
-        </td>
-        <td>
-          1672
+          1690
         </td>
         <td>
           Apply
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWordsAsSet
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicatesToCharArraySet(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;)
         </td>
       </tr><tr>
         <td>
           119
         </td>
         <td>
-          1677
+          1698
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1695
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adverb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Adverb
+        </td>
+      </tr><tr>
+        <td>
+          119
+        </td>
+        <td>
+          1697
         </td>
         <td>
           Apply
@@ -1416,7 +1450,7 @@ else
           119
         </td>
         <td>
-          1676
+          1696
         </td>
         <td>
           Apply
@@ -1429,42 +1463,26 @@ else
         </td>
       </tr><tr>
         <td>
-          119
+          120
         </td>
         <td>
-          1675
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Adverb
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Adverb
-        </td>
-      </tr><tr>
-        <td>
-          119
-        </td>
-        <td>
-          1678
+          1701
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.collection.mutable.MapLike.+=
+          scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adverb).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;adverb/adverb.txt&quot;)))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/determiner.txt&quot;))
         </td>
       </tr><tr>
         <td>
           120
         </td>
         <td>
-          1680
+          1700
         </td>
         <td>
           Apply
@@ -1480,23 +1498,7 @@ else
           120
         </td>
         <td>
-          1679
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Determiner
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Determiner
-        </td>
-      </tr><tr>
-        <td>
-          120
-        </td>
-        <td>
-          1682
+          1702
         </td>
         <td>
           Apply
@@ -1512,23 +1514,39 @@ else
           120
         </td>
         <td>
-          1681
+          1699
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.Predef.ArrowAssoc.-&gt;
+          com.twitter.penguin.korean.util.KoreanPos.Determiner
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Determiner).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/determiner.txt&quot;))
+          com.twitter.penguin.korean.util.KoreanPos.Determiner
         </td>
       </tr><tr>
         <td>
           121
         </td>
         <td>
-          1683
+          1704
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/exclamation.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          121
+        </td>
+        <td>
+          1703
         </td>
         <td>
           Select
@@ -1544,7 +1562,7 @@ else
           121
         </td>
         <td>
-          1686
+          1706
         </td>
         <td>
           Apply
@@ -1560,7 +1578,7 @@ else
           121
         </td>
         <td>
-          1685
+          1705
         </td>
         <td>
           Apply
@@ -1573,26 +1591,42 @@ else
         </td>
       </tr><tr>
         <td>
-          121
+          122
         </td>
         <td>
-          1684
+          1707
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+          com.twitter.penguin.korean.util.KoreanPos.Josa
         </td>
         <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/exclamation.txt&quot;)
+          com.twitter.penguin.korean.util.KoreanPos.Josa
         </td>
       </tr><tr>
         <td>
           122
         </td>
         <td>
-          1689
+          1710
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          122
+        </td>
+        <td>
+          1709
         </td>
         <td>
           Apply
@@ -1608,7 +1642,7 @@ else
           122
         </td>
         <td>
-          1688
+          1708
         </td>
         <td>
           Apply
@@ -1621,42 +1655,26 @@ else
         </td>
       </tr><tr>
         <td>
-          122
+          123
         </td>
         <td>
-          1687
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Josa
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Josa
-        </td>
-      </tr><tr>
-        <td>
-          122
-        </td>
-        <td>
-          1690
+          1713
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.collection.mutable.MapLike.+=
+          scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Josa).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;josa/josa.txt&quot;)))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;))
         </td>
       </tr><tr>
         <td>
           123
         </td>
         <td>
-          1692
+          1712
         </td>
         <td>
           Apply
@@ -1672,23 +1690,7 @@ else
           123
         </td>
         <td>
-          1694
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.+=
-        </td>
-        <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;)))
-        </td>
-      </tr><tr>
-        <td>
-          123
-        </td>
-        <td>
-          1691
+          1711
         </td>
         <td>
           Select
@@ -1704,23 +1706,55 @@ else
           123
         </td>
         <td>
-          1693
+          1714
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Predef.ArrowAssoc.-&gt;
+          scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;))
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Eomi).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/eomi.txt&quot;)))
         </td>
       </tr><tr>
         <td>
           124
         </td>
         <td>
-          1698
+          1716
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1715
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          1718
         </td>
         <td>
           Apply
@@ -1736,23 +1770,7 @@ else
           124
         </td>
         <td>
-          1695
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.PreEomi
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.PreEomi
-        </td>
-      </tr><tr>
-        <td>
-          124
-        </td>
-        <td>
-          1697
+          1717
         </td>
         <td>
           Apply
@@ -1765,58 +1783,26 @@ else
         </td>
       </tr><tr>
         <td>
-          124
+          125
         </td>
         <td>
-          1696
+          1719
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+          com.twitter.penguin.korean.util.KoreanPos.Conjunction
         </td>
         <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWords(&quot;verb/pre_eomi.txt&quot;)
+          com.twitter.penguin.korean.util.KoreanPos.Conjunction
         </td>
       </tr><tr>
         <td>
           125
         </td>
         <td>
-          1701
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;))
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          1700
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          125
-        </td>
-        <td>
-          1702
+          1722
         </td>
         <td>
           Apply
@@ -1832,23 +1818,55 @@ else
           125
         </td>
         <td>
-          1699
+          1721
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanPos.Conjunction
+          scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Conjunction
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Conjunction).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1720
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;auxiliary/conjunctions.txt&quot;)
         </td>
       </tr><tr>
         <td>
           126
         </td>
         <td>
-          1704
+          1725
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;))
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          1724
         </td>
         <td>
           Apply
@@ -1864,23 +1882,7 @@ else
           126
         </td>
         <td>
-          1703
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.NounPrefix
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.NounPrefix
-        </td>
-      </tr><tr>
-        <td>
-          126
-        </td>
-        <td>
-          1706
+          1726
         </td>
         <td>
           Apply
@@ -1896,39 +1898,39 @@ else
           126
         </td>
         <td>
-          1705
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.NounPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/noun_prefix.txt&quot;))
-        </td>
-      </tr><tr>
-        <td>
-          127
-        </td>
-        <td>
-          1707
+          1723
         </td>
         <td>
           Select
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanPos.VerbPrefix
+          com.twitter.penguin.korean.util.KoreanPos.NounPrefix
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.VerbPrefix
+          com.twitter.penguin.korean.util.KoreanPos.NounPrefix
         </td>
       </tr><tr>
         <td>
           127
         </td>
         <td>
-          1710
+          1728
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1730
         </td>
         <td>
           Apply
@@ -1944,7 +1946,23 @@ else
           127
         </td>
         <td>
-          1709
+          1727
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.VerbPrefix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.VerbPrefix
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          1729
         </td>
         <td>
           Apply
@@ -1957,26 +1975,42 @@ else
         </td>
       </tr><tr>
         <td>
-          127
+          128
         </td>
         <td>
-          1708
+          1734
         </td>
         <td>
           Apply
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+          scala.collection.mutable.MapLike.+=
         </td>
         <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;)))
         </td>
       </tr><tr>
         <td>
           128
         </td>
         <td>
-          1713
+          1731
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          1733
         </td>
         <td>
           Apply
@@ -1992,7 +2026,7 @@ else
           128
         </td>
         <td>
-          1712
+          1732
         </td>
         <td>
           Apply
@@ -2005,42 +2039,26 @@ else
         </td>
       </tr><tr>
         <td>
-          128
+          132
         </td>
         <td>
-          1711
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Suffix
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Suffix
-        </td>
-      </tr><tr>
-        <td>
-          128
-        </td>
-        <td>
-          1714
+          1735
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.collection.mutable.MapLike.+=
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Suffix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;substantives/suffix.txt&quot;)))
+          KoreanDictionaryProvider.this.readWords(&quot;noun/spam.txt&quot;, &quot;noun/profane.txt&quot;)
         </td>
       </tr><tr>
         <td>
-          132
+          134
         </td>
         <td>
-          1724
+          1745
         </td>
         <td>
           Apply
@@ -2053,10 +2071,10 @@ else
         </td>
       </tr><tr>
         <td>
-          133
+          135
         </td>
         <td>
-          1716
+          1737
         </td>
         <td>
           Apply
@@ -2069,10 +2087,10 @@ else
         </td>
       </tr><tr>
         <td>
-          133
+          135
         </td>
         <td>
-          1715
+          1736
         </td>
         <td>
           Apply
@@ -2085,10 +2103,10 @@ else
         </td>
       </tr><tr>
         <td>
-          133
+          135
         </td>
         <td>
-          1717
+          1738
         </td>
         <td>
           Apply
@@ -2101,26 +2119,10 @@ else
         </td>
       </tr><tr>
         <td>
-          134
+          136
         </td>
         <td>
-          1719
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;)
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1718
+          1739
         </td>
         <td>
           Apply
@@ -2133,10 +2135,10 @@ else
         </td>
       </tr><tr>
         <td>
-          134
+          136
         </td>
         <td>
-          1720
+          1741
         </td>
         <td>
           Apply
@@ -2149,10 +2151,26 @@ else
         </td>
       </tr><tr>
         <td>
-          135
+          136
         </td>
         <td>
-          1722
+          1740
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.readWords
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanDictionaryProvider.this.readWords(&quot;substantives/given_names.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          137
+        </td>
+        <td>
+          1743
         </td>
         <td>
           Apply
@@ -2165,10 +2183,10 @@ else
         </td>
       </tr><tr>
         <td>
-          135
+          137
         </td>
         <td>
-          1721
+          1742
         </td>
         <td>
           Apply
@@ -2181,10 +2199,10 @@ else
         </td>
       </tr><tr>
         <td>
-          135
+          137
         </td>
         <td>
-          1723
+          1744
         </td>
         <td>
           Apply
@@ -2197,10 +2215,10 @@ else
         </td>
       </tr><tr>
         <td>
-          138
+          140
         </td>
         <td>
-          1725
+          1746
         </td>
         <td>
           Literal
@@ -2213,28 +2231,10 @@ else
         </td>
       </tr><tr>
         <td>
-          138
+          140
         </td>
         <td>
-          1728
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          x0$1 match {
-  case (_1: String, _2: String)(String, String)((key @ (_: String)), (value @ (_: String))) =&gt; key.length()
-}
-        </td>
-      </tr><tr>
-        <td>
-          138
-        </td>
-        <td>
-          1729
+          1750
         </td>
         <td>
           Apply
@@ -2249,10 +2249,28 @@ else
         </td>
       </tr><tr>
         <td>
-          139
+          140
         </td>
         <td>
-          1727
+          1749
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          x0$1 match {
+  case (_1: String, _2: String)(String, String)((key @ (_: String)), (value @ (_: String))) =&gt; key.length()
+}
+        </td>
+      </tr><tr>
+        <td>
+          141
+        </td>
+        <td>
+          1748
         </td>
         <td>
           Block
@@ -2265,10 +2283,10 @@ else
         </td>
       </tr><tr>
         <td>
-          139
+          141
         </td>
         <td>
-          1726
+          1747
         </td>
         <td>
           Apply
@@ -2281,26 +2299,10 @@ else
         </td>
       </tr><tr>
         <td>
-          144
+          146
         </td>
         <td>
-          1736
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.collection.immutable.Set.canBuildFrom
-        </td>
-        <td style="background: #AEF1AE">
-          immutable.this.Set.canBuildFrom[(String, String)]
-        </td>
-      </tr><tr>
-        <td>
-          145
-        </td>
-        <td>
-          1734
+          1757
         </td>
         <td>
           TypeApply
@@ -2313,10 +2315,26 @@ else
         </td>
       </tr><tr>
         <td>
-          145
+          147
         </td>
         <td>
-          1730
+          1755
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.Set.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.Set.canBuildFrom[(String, String)]
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          1751
         </td>
         <td>
           Apply
@@ -2329,10 +2347,10 @@ else
         </td>
       </tr><tr>
         <td>
-          145
+          147
         </td>
         <td>
-          1735
+          1756
         </td>
         <td>
           ApplyToImplicitArgs
@@ -2345,10 +2363,10 @@ else
         </td>
       </tr><tr>
         <td>
-          146
+          148
         </td>
         <td>
-          1731
+          1752
         </td>
         <td>
           Apply
@@ -2361,10 +2379,10 @@ else
         </td>
       </tr><tr>
         <td>
-          146
+          148
         </td>
         <td>
-          1733
+          1754
         </td>
         <td>
           Apply
@@ -2377,10 +2395,10 @@ else
         </td>
       </tr><tr>
         <td>
-          146
+          148
         </td>
         <td>
-          1732
+          1753
         </td>
         <td>
           Apply
@@ -2393,26 +2411,10 @@ else
         </td>
       </tr><tr>
         <td>
-          148
+          150
         </td>
         <td>
-          1737
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.Predef.$conforms
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.$conforms[(String, String)]
-        </td>
-      </tr><tr>
-        <td>
-          148
-        </td>
-        <td>
-          1738
+          1759
         </td>
         <td>
           ApplyToImplicitArgs
@@ -2425,10 +2427,26 @@ else
         </td>
       </tr><tr>
         <td>
-          151
+          150
         </td>
         <td>
-          1749
+          1758
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.Predef.$conforms
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.$conforms[(String, String)]
+        </td>
+      </tr><tr>
+        <td>
+          153
+        </td>
+        <td>
+          1770
         </td>
         <td>
           Apply
@@ -2441,74 +2459,10 @@ else
         </td>
       </tr><tr>
         <td>
-          152
+          154
         </td>
         <td>
-          1743
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false))
-        </td>
-      </tr><tr>
-        <td>
-          152
-        </td>
-        <td>
-          1739
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Verb
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.util.KoreanPos.Verb
-        </td>
-      </tr><tr>
-        <td>
-          152
-        </td>
-        <td>
-          1742
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanDictionaryProvider.getConjugationMap
-        </td>
-        <td style="background: #AEF1AE">
-          getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false)
-        </td>
-      </tr><tr>
-        <td>
-          152
-        </td>
-        <td>
-          1741
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          false
-        </td>
-      </tr><tr>
-        <td>
-          152
-        </td>
-        <td>
-          1740
+          1761
         </td>
         <td>
           Apply
@@ -2521,26 +2475,10 @@ else
         </td>
       </tr><tr>
         <td>
-          153
+          154
         </td>
         <td>
-          1746
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          true
-        </td>
-      </tr><tr>
-        <td>
-          153
-        </td>
-        <td>
-          1748
+          1764
         </td>
         <td>
           Apply
@@ -2549,14 +2487,62 @@ else
           scala.Predef.ArrowAssoc.-&gt;
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true))
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Verb).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false))
         </td>
       </tr><tr>
         <td>
-          153
+          154
         </td>
         <td>
-          1745
+          1763
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanDictionaryProvider.getConjugationMap
+        </td>
+        <td style="background: #AEF1AE">
+          getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;), false)
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          1760
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          1762
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          false
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          1766
         </td>
         <td>
           Apply
@@ -2569,10 +2555,26 @@ else
         </td>
       </tr><tr>
         <td>
-          153
+          155
         </td>
         <td>
-          1744
+          1769
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.util.KoreanPos.Value](com.twitter.penguin.korean.util.KoreanPos.Adjective).-&gt;[Map[String,String]](getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true))
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          1765
         </td>
         <td>
           Select
@@ -2585,10 +2587,10 @@ else
         </td>
       </tr><tr>
         <td>
-          153
+          155
         </td>
         <td>
-          1747
+          1768
         </td>
         <td>
           Apply
@@ -2598,6 +2600,22 @@ else
         </td>
         <td style="background: #AEF1AE">
           getConjugationMap(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)
+        </td>
+      </tr><tr>
+        <td>
+          155
+        </td>
+        <td>
+          1767
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          true
         </td>
       </tr>
     </table>

@@ -149,8 +149,8 @@
 </span>124 <span style=''>    if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
 </span>125 <span style=''>  }
 </span>126 <span style=''>
-</span>127 <span style=''>  def extractPhrases(text: CharSequence): Seq[CharSequence] = {
-</span>128 <span style=''>    KoreanPhraseExtractor.extractPhrases(text)
+</span>127 <span style=''>  def extractPhrases(text: CharSequence, filterSpam: Boolean = false): Seq[CharSequence] = {
+</span>128 <span style=''>    KoreanPhraseExtractor.extractPhrases(text, filterSpam)
 </span>129 <span style=''>  }
 </span>130 <span style=''>
 </span>131 <span style=''>  /**
@@ -563,7 +563,7 @@
           com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.extractPhrases
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.extractPhrases(text)
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.extractPhrases(text, filterSpam)
         </td>
       </tr><tr>
         <td>

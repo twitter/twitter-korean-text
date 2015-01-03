@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>KoreanPhraseExtractor - Korean Text Processing Utilities 2.4.2-SNAPSHOT API - com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor</title>
-          <meta name="description" content="KoreanPhraseExtractor - Korean Text Processing Utilities 2.4.2 - SNAPSHOT API - com.twitter.penguin.korean.phrase extractor.KoreanPhraseExtractor" />
-          <meta name="keywords" content="KoreanPhraseExtractor Korean Text Processing Utilities 2.4.2 SNAPSHOT API com.twitter.penguin.korean.phrase extractor.KoreanPhraseExtractor" />
+          <title>KoreanPhraseExtractor - Korean Text Processing Utilities 2.4.3-SNAPSHOT API - com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor</title>
+          <meta name="description" content="KoreanPhraseExtractor - Korean Text Processing Utilities 2.4.3 - SNAPSHOT API - com.twitter.penguin.korean.phrase extractor.KoreanPhraseExtractor" />
+          <meta name="keywords" content="KoreanPhraseExtractor Korean Text Processing Utilities 2.4.3 SNAPSHOT API com.twitter.penguin.korean.phrase extractor.KoreanPhraseExtractor" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -275,18 +275,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor#extractPhrases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="extractPhrases(input:CharSequence):Seq[CharSequence]"></a>
-      <a id="extractPhrases(CharSequence):Seq[CharSequence]"></a>
+      <a id="extractPhrases(input:CharSequence,filterSpam:Boolean):Seq[CharSequence]"></a>
+      <a id="extractPhrases(CharSequence,Boolean):Seq[CharSequence]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">extractPhrases</span><span class="params">(<span name="input">input: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>
+        <span class="name">extractPhrases</span><span class="params">(<span name="input">input: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="filterSpam">filterSpam: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor$@extractPhrases(input:CharSequence):Seq[CharSequence]" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor$@extractPhrases(input:CharSequence,filterSpam:Boolean):Seq[CharSequence]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" />
       </a>
     </span>
@@ -295,18 +295,18 @@
 </p></div><dl class="paramcmts block"><dt class="param">input</dt><dd class="cmt"><p>Input CharSequence</p></dd><dt>returns</dt><dd class="cmt"><p>Seq of phrase CharSequence
 </p></dd></dl></div>
     </li><li name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor#extractPhrases" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="extractPhrases(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]"></a>
-      <a id="extractPhrases(Seq[KoreanToken]):Seq[KoreanPhrase]"></a>
+      <a id="extractPhrases(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken],filterSpam:Boolean):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]"></a>
+      <a id="extractPhrases(Seq[KoreanToken],Boolean):Seq[KoreanPhrase]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">extractPhrases</span><span class="params">(<span name="tokens">tokens: <span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanPhraseExtractor$$KoreanPhrase.html" class="extype" name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase">KoreanPhrase</a>]</span>
+        <span class="name">extractPhrases</span><span class="params">(<span name="tokens">tokens: <span class="extype" name="scala.Seq">Seq</span>[<a href="../tokenizer/KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>, <span name="filterSpam">filterSpam: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanPhraseExtractor$$KoreanPhrase.html" class="extype" name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase">KoreanPhrase</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor$@extractPhrases(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor$@extractPhrases(tokens:Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken],filterSpam:Boolean):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" />
       </a>
     </span>
@@ -338,18 +338,18 @@
               
         </dd></dl></div>
     </li><li name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor#getCandidatePhraseChunks" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getCandidatePhraseChunks(phrases:com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]"></a>
-      <a id="getCandidatePhraseChunks(KoreanPhraseChunk):Seq[KoreanPhraseChunk]"></a>
+      <a id="getCandidatePhraseChunks(phrases:com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk,filterSpam:Boolean):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]"></a>
+      <a id="getCandidatePhraseChunks(KoreanPhraseChunk,Boolean):Seq[KoreanPhraseChunk]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getCandidatePhraseChunks</span><span class="params">(<span name="phrases">phrases: <a href="#KoreanPhraseChunk=Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]" class="extmbr" name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk">KoreanPhraseChunk</a></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="#KoreanPhraseChunk=Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]" class="extmbr" name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk">KoreanPhraseChunk</a>]</span>
+        <span class="name">getCandidatePhraseChunks</span><span class="params">(<span name="phrases">phrases: <a href="#KoreanPhraseChunk=Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]" class="extmbr" name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk">KoreanPhraseChunk</a></span>, <span name="filterSpam">filterSpam: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="#KoreanPhraseChunk=Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase]" class="extmbr" name="com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk">KoreanPhraseChunk</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor$@getCandidatePhraseChunks(phrases:com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor$@getCandidatePhraseChunks(phrases:com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk,filterSpam:Boolean):Seq[com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhraseChunk]" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" />
       </a>
     </span>

@@ -135,23 +135,7 @@
           38
         </td>
         <td>
-          485
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.util.logging.Logger.getLogger
-        </td>
-        <td style="background: #F0ADAD">
-          java.util.logging.Logger.getLogger(BatchTokenizeTweets.this.getClass().getSimpleName())
-        </td>
-      </tr><tr>
-        <td>
-          38
-        </td>
-        <td>
-          484
+          490
         </td>
         <td>
           Apply
@@ -164,10 +148,26 @@
         </td>
       </tr><tr>
         <td>
+          38
+        </td>
+        <td>
+          491
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.util.logging.Logger.getLogger
+        </td>
+        <td style="background: #F0ADAD">
+          java.util.logging.Logger.getLogger(BatchTokenizeTweets.this.getClass().getSimpleName())
+        </td>
+      </tr><tr>
+        <td>
           39
         </td>
         <td>
-          486
+          492
         </td>
         <td>
           Literal
@@ -183,23 +183,7 @@
           40
         </td>
         <td>
-          487
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Adjective
-        </td>
-        <td style="background: #F0ADAD">
-          com.twitter.penguin.korean.util.KoreanPos.Adjective
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          490
+          496
         </td>
         <td>
           Apply
@@ -215,7 +199,7 @@
           40
         </td>
         <td>
-          489
+          495
         </td>
         <td>
           Select
@@ -231,7 +215,7 @@
           40
         </td>
         <td>
-          488
+          494
         </td>
         <td>
           Select
@@ -244,26 +228,26 @@
         </td>
       </tr><tr>
         <td>
-          43
+          40
         </td>
         <td>
-          496
+          493
         </td>
         <td>
-          Block
+          Select
         </td>
         <td>
-          &lt;nosymbol&gt;
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
         </td>
         <td style="background: #F0ADAD">
-          ()
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
         </td>
       </tr><tr>
         <td>
           43
         </td>
         <td>
-          495
+          501
         </td>
         <td>
           Literal
@@ -279,7 +263,7 @@
           43
         </td>
         <td>
-          491
+          497
         </td>
         <td>
           Apply
@@ -295,7 +279,7 @@
           43
         </td>
         <td>
-          494
+          500
         </td>
         <td>
           Block
@@ -311,10 +295,26 @@
         </td>
       </tr><tr>
         <td>
+          43
+        </td>
+        <td>
+          502
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
           44
         </td>
         <td>
-          492
+          498
         </td>
         <td>
           Apply
@@ -330,7 +330,7 @@
           45
         </td>
         <td>
-          493
+          499
         </td>
         <td>
           Literal
@@ -346,37 +346,7 @@
           47
         </td>
         <td>
-          514
-        </td>
-        <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          scala.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
-  case (_1: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; {
-    val t0: Long = java.this.lang.System.currentTimeMillis();
-    val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(line, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
-    val t1: Long = java.this.lang.System.currentTimeMillis();
-    if (BatchTokenizeTweets.this.VERBOSE)
-      scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
-    else
-      ();
-    {
-      &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
-      l.::[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime](x$1)
-    }
-  }
-}
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          499
+          505
         </td>
         <td>
           Apply
@@ -392,7 +362,7 @@
           47
         </td>
         <td>
-          498
+          504
         </td>
         <td>
           Select
@@ -408,23 +378,7 @@
           47
         </td>
         <td>
-          497
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Array.apply
-        </td>
-        <td style="background: #F0ADAD">
-          args.apply(0)
-        </td>
-      </tr><tr>
-        <td>
-          47
-        </td>
-        <td>
-          515
+          521
         </td>
         <td>
           Apply
@@ -451,10 +405,56 @@
         </td>
       </tr><tr>
         <td>
+          47
+        </td>
+        <td>
+          503
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #F0ADAD">
+          args.apply(0)
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          520
+        </td>
+        <td>
+          Match
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          scala.Tuple2.apply[List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String](x0$1, x1$1) match {
+  case (_1: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], _2: String)(List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime], String)((l @ (_: List[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime])), (line @ (_: String))) =&gt; {
+    val t0: Long = java.this.lang.System.currentTimeMillis();
+    val parsed: Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken] = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(line, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3, com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4);
+    val t1: Long = java.this.lang.System.currentTimeMillis();
+    if (BatchTokenizeTweets.this.VERBOSE)
+      scala.this.Predef.println(parsed.map[String, Seq[String]](((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.text.+(&quot;/&quot;).+(t.pos)))(collection.this.Seq.canBuildFrom[String]).mkString(&quot; &quot;))
+    else
+      ();
+    {
+      &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime = BatchTokenizeTweets.this.ParseTime.apply(t1.-(t0), line.trim());
+      l.::[com.twitter.penguin.korean.qa.BatchTokenizeTweets.ParseTime](x$1)
+    }
+  }
+}
+        </td>
+      </tr><tr>
+        <td>
           48
         </td>
         <td>
-          513
+          519
         </td>
         <td>
           Block
@@ -482,7 +482,7 @@
           49
         </td>
         <td>
-          500
+          506
         </td>
         <td>
           Apply
@@ -498,7 +498,23 @@
           50
         </td>
         <td>
-          501
+          508
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          507
         </td>
         <td>
           Select
@@ -514,7 +530,7 @@
           50
         </td>
         <td>
-          504
+          510
         </td>
         <td>
           Apply
@@ -530,7 +546,7 @@
           50
         </td>
         <td>
-          503
+          509
         </td>
         <td>
           Select
@@ -540,29 +556,13 @@
         </td>
         <td style="background: #F0ADAD">
           com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          502
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
-        </td>
-        <td style="background: #F0ADAD">
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$3
         </td>
       </tr><tr>
         <td>
           51
         </td>
         <td>
-          505
+          511
         </td>
         <td>
           Apply
@@ -578,7 +578,23 @@
           53
         </td>
         <td>
-          510
+          517
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          ()
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          516
         </td>
         <td>
           Literal
@@ -594,7 +610,7 @@
           53
         </td>
         <td>
-          506
+          512
         </td>
         <td>
           Select
@@ -607,26 +623,10 @@
         </td>
       </tr><tr>
         <td>
-          53
-        </td>
-        <td>
-          511
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
           54
         </td>
         <td>
-          508
+          514
         </td>
         <td>
           Apply
@@ -642,7 +642,7 @@
           54
         </td>
         <td>
-          507
+          513
         </td>
         <td>
           Apply
@@ -658,7 +658,7 @@
           54
         </td>
         <td>
-          509
+          515
         </td>
         <td>
           Block
@@ -674,7 +674,7 @@
           56
         </td>
         <td>
-          512
+          518
         </td>
         <td>
           Apply
@@ -690,7 +690,7 @@
           59
         </td>
         <td>
-          516
+          522
         </td>
         <td>
           Select
@@ -706,7 +706,7 @@
           61
         </td>
         <td>
-          517
+          523
         </td>
         <td>
           Select
@@ -722,7 +722,7 @@
           61
         </td>
         <td>
-          519
+          525
         </td>
         <td>
           Select
@@ -738,7 +738,7 @@
           61
         </td>
         <td>
-          522
+          528
         </td>
         <td>
           Apply
@@ -754,23 +754,7 @@
           61
         </td>
         <td>
-          521
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.StringLike.format
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString(&quot;The first one \&quot;%s\&quot; took %d ms including the loading time.&quot;).format(loadingTime.chunk, loadingTime.time)
-        </td>
-      </tr><tr>
-        <td>
-          61
-        </td>
-        <td>
-          518
+          524
         </td>
         <td>
           Literal
@@ -786,7 +770,23 @@
           61
         </td>
         <td>
-          520
+          527
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;The first one \&quot;%s\&quot; took %d ms including the loading time.&quot;).format(loadingTime.chunk, loadingTime.time)
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          526
         </td>
         <td>
           Select
@@ -802,7 +802,7 @@
           63
         </td>
         <td>
-          523
+          529
         </td>
         <td>
           Select
@@ -818,23 +818,23 @@
           65
         </td>
         <td>
-          525
+          532
         </td>
         <td>
-          TypeApply
+          Select
         </td>
         <td>
-          scala.collection.immutable.List.canBuildFrom
+          scala.math.Numeric.IntIsIntegral
         </td>
         <td style="background: #F0ADAD">
-          immutable.this.List.canBuildFrom[Int]
+          math.this.Numeric.IntIsIntegral
         </td>
       </tr><tr>
         <td>
           65
         </td>
         <td>
-          528
+          534
         </td>
         <td>
           Apply
@@ -850,7 +850,23 @@
           65
         </td>
         <td>
-          524
+          531
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.List.canBuildFrom[Int]
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          530
         </td>
         <td>
           Apply
@@ -866,39 +882,7 @@
           65
         </td>
         <td>
-          527
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.collection.SeqLike.size
-        </td>
-        <td style="background: #F0ADAD">
-          parseTimes.size
-        </td>
-      </tr><tr>
-        <td>
-          65
-        </td>
-        <td>
-          526
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.math.Numeric.IntIsIntegral
-        </td>
-        <td style="background: #F0ADAD">
-          math.this.Numeric.IntIsIntegral
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          532
+          533
         </td>
         <td>
           Select
@@ -914,7 +898,7 @@
           67
         </td>
         <td>
-          531
+          537
         </td>
         <td>
           Select
@@ -930,23 +914,7 @@
           67
         </td>
         <td>
-          530
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.collection.immutable.List.canBuildFrom
-        </td>
-        <td style="background: #F0ADAD">
-          immutable.this.List.canBuildFrom[Long]
-        </td>
-      </tr><tr>
-        <td>
-          67
-        </td>
-        <td>
-          533
+          539
         </td>
         <td>
           Apply
@@ -962,7 +930,23 @@
           67
         </td>
         <td>
-          529
+          536
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          immutable.this.List.canBuildFrom[Long]
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          535
         </td>
         <td>
           Select
@@ -975,10 +959,42 @@
         </td>
       </tr><tr>
         <td>
+          67
+        </td>
+        <td>
+          538
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.SeqLike.size
+        </td>
+        <td style="background: #F0ADAD">
+          parseTimes.size
+        </td>
+      </tr><tr>
+        <td>
           68
         </td>
         <td>
-          534
+          541
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Ordering.Long
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Ordering.Long
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          540
         </td>
         <td>
           Select
@@ -994,7 +1010,7 @@
           68
         </td>
         <td>
-          536
+          542
         </td>
         <td>
           ApplyToImplicitArgs
@@ -1007,26 +1023,10 @@
         </td>
       </tr><tr>
         <td>
-          68
-        </td>
-        <td>
-          535
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.math.Ordering.Long
-        </td>
-        <td style="background: #F0ADAD">
-          math.this.Ordering.Long
-        </td>
-      </tr><tr>
-        <td>
           70
         </td>
         <td>
-          537
+          543
         </td>
         <td>
           Select
@@ -1042,7 +1042,7 @@
           70
         </td>
         <td>
-          545
+          551
         </td>
         <td>
           Apply
@@ -1061,7 +1061,7 @@
           74
         </td>
         <td>
-          538
+          544
         </td>
         <td>
           Literal
@@ -1077,7 +1077,7 @@
           76
         </td>
         <td>
-          544
+          550
         </td>
         <td>
           Apply
@@ -1096,7 +1096,7 @@
           77
         </td>
         <td>
-          539
+          545
         </td>
         <td>
           Select
@@ -1112,7 +1112,7 @@
           78
         </td>
         <td>
-          540
+          546
         </td>
         <td>
           Apply
@@ -1128,7 +1128,7 @@
           81
         </td>
         <td>
-          541
+          547
         </td>
         <td>
           Select
@@ -1144,7 +1144,7 @@
           82
         </td>
         <td>
-          542
+          548
         </td>
         <td>
           Select
@@ -1160,7 +1160,7 @@
           86
         </td>
         <td>
-          543
+          549
         </td>
         <td>
           Apply
@@ -1179,7 +1179,7 @@
           94
         </td>
         <td>
-          546
+          552
         </td>
         <td>
           Apply

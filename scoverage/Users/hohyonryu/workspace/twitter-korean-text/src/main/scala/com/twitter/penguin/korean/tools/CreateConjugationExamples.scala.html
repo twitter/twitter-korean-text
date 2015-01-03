@@ -52,37 +52,36 @@
 </span>27 <span style=''> * Create Korean predicate expansion goldenset from adjective and verb resources.
 </span>28 <span style=''> * The first argument is the test resource directory.
 </span>29 <span style=''> */
-</span>30 <span style=''>object CreateConjugationExamples {
-</span>31 <span style=''>
-</span>32 <span style=''>  case class ConjugationExample(word: String, conjugations: Seq[String])
-</span>33 <span style=''>
-</span>34 <span style=''>  def main(args: Array[String]) {
-</span>35 <span style=''>    System.err.println("Reading the verbs and adjectives..")
-</span>36 <span style=''>
-</span>37 <span style=''>    def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {
-</span>38 <span style=''>      System.err.println("Writing the expansion goldenset in " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFileName)
-</span>39 <span style=''>
-</span>40 <span style=''>      val outputPath = "src/test/resources/com/twitter/penguin/korean/util/" </span><span style='background: #F0ADAD'>+</span><span style=''> outputFileName
-</span>41 <span style=''>      val out = new FileOutputStream(outputPath)
-</span>42 <span style=''>
-</span>43 <span style=''>      val words = readWordsAsSeq(file)
-</span>44 <span style=''>      val goldenset = words.map(word =>
-</span>45 <span style=''>        ConjugationExample(word, conjugatePredicated(Set(word), isAdj).toSeq.sorted)
-</span>46 <span style=''>      )
-</span>47 <span style=''>
-</span>48 <span style=''>      goldenset.foreach {
-</span>49 <span style=''>        c => out.write(
-</span>50 <span style=''>          "%s\t%s\n".format(c.word, c.conjugations.mkString(", ")).getBytes
-</span>51 <span style=''>        )
-</span>52 <span style=''>      }
-</span>53 <span style=''>
-</span>54 <span style=''>      out.close()
-</span>55 <span style=''>    }
-</span>56 <span style=''>
-</span>57 <span style=''>    updateConjugateExamples("adjective/adjective.txt", isAdj = true, "adj_conjugate.txt")
-</span>58 <span style=''>    updateConjugateExamples("verb/verb.txt", isAdj = false, "verb_conjugate.txt")
-</span>59 <span style=''>  }
-</span>60 <span style=''>}
+</span>30 <span style=''>object CreateConjugationExamples extends Runnable  {
+</span>31 <span style=''>  case class ConjugationExample(word: String, conjugations: Seq[String])
+</span>32 <span style=''>
+</span>33 <span style=''>  def run {
+</span>34 <span style=''>    System.err.println("Reading the verbs and adjectives..")
+</span>35 <span style=''>
+</span>36 <span style=''>    def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {
+</span>37 <span style=''>      System.err.println("Writing the expansion goldenset in " </span><span style='background: #F0ADAD'>+</span><span style=''> outputFileName)
+</span>38 <span style=''>
+</span>39 <span style=''>      val outputPath = "src/test/resources/com/twitter/penguin/korean/util/" </span><span style='background: #F0ADAD'>+</span><span style=''> outputFileName
+</span>40 <span style=''>      val out = new FileOutputStream(outputPath)
+</span>41 <span style=''>
+</span>42 <span style=''>      val words = readWordsAsSeq(file)
+</span>43 <span style=''>      val goldenset = words.map(word =>
+</span>44 <span style=''>        ConjugationExample(word, conjugatePredicated(Set(word), isAdj).toSeq.sorted)
+</span>45 <span style=''>      )
+</span>46 <span style=''>
+</span>47 <span style=''>      goldenset.foreach {
+</span>48 <span style=''>        c => out.write(
+</span>49 <span style=''>          "%s\t%s\n".format(c.word, c.conjugations.mkString(", ")).getBytes
+</span>50 <span style=''>        )
+</span>51 <span style=''>      }
+</span>52 <span style=''>
+</span>53 <span style=''>      out.close()
+</span>54 <span style=''>    }
+</span>55 <span style=''>
+</span>56 <span style=''>    updateConjugateExamples("adjective/adjective.txt", isAdj = true, "adj_conjugate.txt")
+</span>57 <span style=''>    updateConjugateExamples("verb/verb.txt", isAdj = false, "verb_conjugate.txt")
+</span>58 <span style=''>  }
+</span>59 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
@@ -96,10 +95,10 @@
       </tr>
       <tr>
         <td>
-          35
+          34
         </td>
         <td>
-          1021
+          1028
         </td>
         <td>
           Apply
@@ -112,26 +111,10 @@
         </td>
       </tr><tr>
         <td>
-          38
+          37
         </td>
         <td>
-          1022
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.+
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;Writing the expansion goldenset in &quot;.+(outputFileName)
-        </td>
-      </tr><tr>
-        <td>
-          38
-        </td>
-        <td>
-          1023
+          1030
         </td>
         <td>
           Apply
@@ -144,10 +127,26 @@
         </td>
       </tr><tr>
         <td>
-          40
+          37
         </td>
         <td>
-          1024
+          1029
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Writing the expansion goldenset in &quot;.+(outputFileName)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1031
         </td>
         <td>
           Apply
@@ -160,10 +159,10 @@
         </td>
       </tr><tr>
         <td>
-          41
+          40
         </td>
         <td>
-          1025
+          1032
         </td>
         <td>
           Apply
@@ -176,10 +175,10 @@
         </td>
       </tr><tr>
         <td>
-          43
+          42
         </td>
         <td>
-          1026
+          1033
         </td>
         <td>
           Apply
@@ -192,10 +191,26 @@
         </td>
       </tr><tr>
         <td>
-          44
+          43
         </td>
         <td>
-          1031
+          1039
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          words.map[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample, Seq[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample]](((word: String) =&gt; CreateConjugationExamples.this.ConjugationExample.apply(word, com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdj).toSeq.sorted[String](math.this.Ordering.String))))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample])
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1038
         </td>
         <td>
           TypeApply
@@ -211,55 +226,7 @@
           44
         </td>
         <td>
-          1032
-        </td>
-        <td>
-          ApplyToImplicitArgs
-        </td>
-        <td>
-          scala.collection.TraversableLike.map
-        </td>
-        <td style="background: #F0ADAD">
-          words.map[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample, Seq[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample]](((word: String) =&gt; CreateConjugationExamples.this.ConjugationExample.apply(word, com.twitter.penguin.korean.util.KoreanConjugation.conjugatePredicated(scala.this.Predef.Set.apply[String](word), isAdj).toSeq.sorted[String](math.this.Ordering.String))))(collection.this.Seq.canBuildFrom[com.twitter.penguin.korean.tools.CreateConjugationExamples.ConjugationExample])
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          1028
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.math.Ordering.String
-        </td>
-        <td style="background: #F0ADAD">
-          math.this.Ordering.String
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          1027
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.generic.GenericCompanion.apply
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.Set.apply[String](word)
-        </td>
-      </tr><tr>
-        <td>
-          45
-        </td>
-        <td>
-          1030
+          1037
         </td>
         <td>
           Apply
@@ -272,10 +239,26 @@
         </td>
       </tr><tr>
         <td>
-          45
+          44
         </td>
         <td>
-          1029
+          1034
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.Set.apply[String](word)
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          1036
         </td>
         <td>
           ApplyToImplicitArgs
@@ -288,10 +271,26 @@
         </td>
       </tr><tr>
         <td>
-          48
+          44
         </td>
         <td>
           1035
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Ordering.String
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Ordering.String
+        </td>
+      </tr><tr>
+        <td>
+          47
+        </td>
+        <td>
+          1042
         </td>
         <td>
           Apply
@@ -304,10 +303,10 @@
         </td>
       </tr><tr>
         <td>
-          49
+          48
         </td>
         <td>
-          1034
+          1041
         </td>
         <td>
           Apply
@@ -320,10 +319,10 @@
         </td>
       </tr><tr>
         <td>
-          50
+          49
         </td>
         <td>
-          1033
+          1040
         </td>
         <td>
           Apply
@@ -336,10 +335,10 @@
         </td>
       </tr><tr>
         <td>
-          54
+          53
         </td>
         <td>
-          1036
+          1043
         </td>
         <td>
           Apply
@@ -352,10 +351,10 @@
         </td>
       </tr><tr>
         <td>
-          57
+          56
         </td>
         <td>
-          1037
+          1044
         </td>
         <td>
           Apply
@@ -368,10 +367,10 @@
         </td>
       </tr><tr>
         <td>
-          58
+          57
         </td>
         <td>
-          1038
+          1045
         </td>
         <td>
           Apply

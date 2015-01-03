@@ -180,7 +180,7 @@
           36
         </td>
         <td>
-          3082
+          3103
         </td>
         <td>
           Apply
@@ -196,7 +196,7 @@
           36
         </td>
         <td>
-          3081
+          3102
         </td>
         <td>
           Apply
@@ -212,7 +212,7 @@
           36
         </td>
         <td>
-          3083
+          3104
         </td>
         <td>
           Apply
@@ -228,7 +228,7 @@
           37
         </td>
         <td>
-          3084
+          3105
         </td>
         <td>
           Apply
@@ -244,7 +244,7 @@
           39
         </td>
         <td>
-          3085
+          3106
         </td>
         <td>
           Apply
@@ -260,23 +260,7 @@
           40
         </td>
         <td>
-          3087
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.Iterator.filter
-        </td>
-        <td style="background: #AEF1AE">
-          scala.io.Source.fromInputStream(stream)(scala.io.Codec.apply(&quot;UTF-8&quot;)).getLines().map[String](((x$1: String) =&gt; x$1.trim())).filter(((x$2: String) =&gt; x$2.length().&gt;(0)))
-        </td>
-      </tr><tr>
-        <td>
-          40
-        </td>
-        <td>
-          3086
+          3107
         </td>
         <td>
           Apply
@@ -289,26 +273,26 @@
         </td>
       </tr><tr>
         <td>
-          45
+          40
         </td>
         <td>
-          3089
+          3108
         </td>
         <td>
-          ApplyImplicitView
+          Apply
         </td>
         <td>
-          scala.collection.convert.WrapAsScala.mapAsScalaMap
+          scala.collection.Iterator.filter
         </td>
         <td style="background: #AEF1AE">
-          scala.collection.JavaConversions.mapAsScalaMap[CharSequence, Float](new java.util.HashMap[CharSequence,Float]())
+          scala.io.Source.fromInputStream(stream)(scala.io.Codec.apply(&quot;UTF-8&quot;)).getLines().map[String](((x$1: String) =&gt; x$1.trim())).filter(((x$2: String) =&gt; x$2.length().&gt;(0)))
         </td>
       </tr><tr>
         <td>
           45
         </td>
         <td>
-          3088
+          3109
         </td>
         <td>
           Apply
@@ -321,10 +305,26 @@
         </td>
       </tr><tr>
         <td>
+          45
+        </td>
+        <td>
+          3110
+        </td>
+        <td>
+          ApplyImplicitView
+        </td>
+        <td>
+          scala.collection.convert.WrapAsScala.mapAsScalaMap
+        </td>
+        <td style="background: #AEF1AE">
+          scala.collection.JavaConversions.mapAsScalaMap[CharSequence, Float](new java.util.HashMap[CharSequence,Float]())
+        </td>
+      </tr><tr>
+        <td>
           47
         </td>
         <td>
-          3102
+          3123
         </td>
         <td>
           Apply
@@ -348,7 +348,7 @@
           47
         </td>
         <td>
-          3101
+          3122
         </td>
         <td>
           Match
@@ -372,23 +372,7 @@
           48
         </td>
         <td>
-          3098
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          ()
-        </td>
-      </tr><tr>
-        <td>
-          48
-        </td>
-        <td>
-          3097
+          3118
         </td>
         <td>
           Block
@@ -407,7 +391,7 @@
           48
         </td>
         <td>
-          3100
+          3121
         </td>
         <td>
           If
@@ -429,7 +413,23 @@ else
           48
         </td>
         <td>
-          3099
+          3111
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.contains
+        </td>
+        <td style="background: #AEF1AE">
+          line.contains(&quot;\t&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          3120
         </td>
         <td>
           Block
@@ -445,23 +445,23 @@ else
           48
         </td>
         <td>
-          3090
+          3119
         </td>
         <td>
-          Apply
+          Literal
         </td>
         <td>
-          java.lang.String.contains
+          &lt;nosymbol&gt;
         </td>
-        <td style="background: #AEF1AE">
-          line.contains(&quot;\t&quot;)
+        <td style="background: #F0ADAD">
+          ()
         </td>
       </tr><tr>
         <td>
           49
         </td>
         <td>
-          3091
+          3112
         </td>
         <td>
           Apply
@@ -477,7 +477,23 @@ else
           50
         </td>
         <td>
-          3094
+          3116
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          3115
         </td>
         <td>
           Select
@@ -493,23 +509,7 @@ else
           50
         </td>
         <td>
-          3096
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.+=
-        </td>
-        <td style="background: #AEF1AE">
-          freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
-        </td>
-      </tr><tr>
-        <td>
-          50
-        </td>
-        <td>
-          3093
+          3114
         </td>
         <td>
           Apply
@@ -525,7 +525,23 @@ else
           50
         </td>
         <td>
-          3092
+          3117
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          freqMap.+=(scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat))
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          3113
         </td>
         <td>
           Apply
@@ -538,26 +554,10 @@ else
         </td>
       </tr><tr>
         <td>
-          50
-        </td>
-        <td>
-          3095
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[String](data.apply(0)).-&gt;[Float](scala.this.Predef.augmentString(scala.this.Predef.augmentString(data.apply(1)).slice(0, 6)).toFloat)
-        </td>
-      </tr><tr>
-        <td>
           57
         </td>
         <td>
-          3105
+          3126
         </td>
         <td>
           Match
@@ -575,23 +575,7 @@ else
           58
         </td>
         <td>
-          3103
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.contains
-        </td>
-        <td style="background: #AEF1AE">
-          line.contains(&quot; &quot;)
-        </td>
-      </tr><tr>
-        <td>
-          58
-        </td>
-        <td>
-          3104
+          3125
         </td>
         <td>
           Block
@@ -604,10 +588,26 @@ else
         </td>
       </tr><tr>
         <td>
+          58
+        </td>
+        <td>
+          3124
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.contains
+        </td>
+        <td style="background: #AEF1AE">
+          line.contains(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
           59
         </td>
         <td>
-          3111
+          3132
         </td>
         <td>
           Match
@@ -628,7 +628,7 @@ else
           60
         </td>
         <td>
-          3110
+          3131
         </td>
         <td>
           Block
@@ -647,7 +647,7 @@ else
           61
         </td>
         <td>
-          3106
+          3127
         </td>
         <td>
           Apply
@@ -663,23 +663,7 @@ else
           62
         </td>
         <td>
-          3107
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Array.apply
-        </td>
-        <td style="background: #AEF1AE">
-          data.apply(0)
-        </td>
-      </tr><tr>
-        <td>
-          62
-        </td>
-        <td>
-          3109
+          3130
         </td>
         <td>
           Apply
@@ -695,7 +679,7 @@ else
           62
         </td>
         <td>
-          3108
+          3129
         </td>
         <td>
           Apply
@@ -708,10 +692,26 @@ else
         </td>
       </tr><tr>
         <td>
+          62
+        </td>
+        <td>
+          3128
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Array.apply
+        </td>
+        <td style="background: #AEF1AE">
+          data.apply(0)
+        </td>
+      </tr><tr>
+        <td>
           63
         </td>
         <td>
-          3112
+          3133
         </td>
         <td>
           TypeApply
@@ -727,7 +727,7 @@ else
           63
         </td>
         <td>
-          3113
+          3134
         </td>
         <td>
           ApplyToImplicitArgs
@@ -750,7 +750,7 @@ else
           68
         </td>
         <td>
-          3114
+          3135
         </td>
         <td>
           Select
@@ -766,39 +766,7 @@ else
           72
         </td>
         <td>
-          3116
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1)
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          3115
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.generic.GenericCompanion.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.Set.apply[String]()
-        </td>
-      </tr><tr>
-        <td>
-          72
-        </td>
-        <td>
-          3121
+          3142
         </td>
         <td>
           Apply
@@ -816,7 +784,23 @@ else
           72
         </td>
         <td>
-          3120
+          3136
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.Set.apply[String]()
+        </td>
+      </tr><tr>
+        <td>
+          72
+        </td>
+        <td>
+          3141
         </td>
         <td>
           Match
@@ -831,10 +815,26 @@ else
         </td>
       </tr><tr>
         <td>
+          72
+        </td>
+        <td>
+          3137
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Tuple2.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Tuple2.apply[scala.collection.immutable.Set[String], String](x0$5, x1$1)
+        </td>
+      </tr><tr>
+        <td>
           74
         </td>
         <td>
-          3118
+          3139
         </td>
         <td>
           Apply
@@ -850,7 +850,7 @@ else
           74
         </td>
         <td>
-          3119
+          3140
         </td>
         <td>
           Block
@@ -866,7 +866,7 @@ else
           75
         </td>
         <td>
-          3117
+          3138
         </td>
         <td>
           TypeApply
@@ -882,7 +882,7 @@ else
           81
         </td>
         <td>
-          3122
+          3143
         </td>
         <td>
           Select
@@ -898,7 +898,7 @@ else
           82
         </td>
         <td>
-          3125
+          3146
         </td>
         <td>
           Apply
@@ -916,7 +916,7 @@ else
           83
         </td>
         <td>
-          3124
+          3145
         </td>
         <td>
           Apply
@@ -934,7 +934,7 @@ else
           83
         </td>
         <td>
-          3123
+          3144
         </td>
         <td>
           Apply
@@ -950,7 +950,7 @@ else
           89
         </td>
         <td>
-          3132
+          3153
         </td>
         <td>
           Apply
@@ -969,7 +969,7 @@ else
           90
         </td>
         <td>
-          3126
+          3147
         </td>
         <td>
           Apply
@@ -985,7 +985,7 @@ else
           91
         </td>
         <td>
-          3127
+          3148
         </td>
         <td>
           Apply
@@ -1001,7 +1001,7 @@ else
           91
         </td>
         <td>
-          3129
+          3150
         </td>
         <td>
           Block
@@ -1017,7 +1017,7 @@ else
           91
         </td>
         <td>
-          3128
+          3149
         </td>
         <td>
           Apply
@@ -1033,7 +1033,7 @@ else
           93
         </td>
         <td>
-          3130
+          3151
         </td>
         <td>
           Apply
@@ -1049,7 +1049,7 @@ else
           93
         </td>
         <td>
-          3131
+          3152
         </td>
         <td>
           Block
@@ -1065,7 +1065,7 @@ else
           100
         </td>
         <td>
-          3133
+          3154
         </td>
         <td>
           Apply
@@ -1081,7 +1081,7 @@ else
           104
         </td>
         <td>
-          3134
+          3155
         </td>
         <td>
           Apply
@@ -1097,7 +1097,7 @@ else
           108
         </td>
         <td>
-          3136
+          3157
         </td>
         <td>
           ApplyImplicitView
@@ -1113,7 +1113,7 @@ else
           108
         </td>
         <td>
-          3135
+          3156
         </td>
         <td>
           Apply
@@ -1129,7 +1129,7 @@ else
           110
         </td>
         <td>
-          3139
+          3160
         </td>
         <td>
           Apply
@@ -1145,7 +1145,7 @@ else
           110
         </td>
         <td>
-          3138
+          3159
         </td>
         <td>
           Apply
@@ -1161,23 +1161,7 @@ else
           110
         </td>
         <td>
-          3137
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Noun
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Noun
-        </td>
-      </tr><tr>
-        <td>
-          110
-        </td>
-        <td>
-          3140
+          3161
         </td>
         <td>
           Apply
@@ -1190,26 +1174,26 @@ else
         </td>
       </tr><tr>
         <td>
-          118
+          110
         </td>
         <td>
-          3142
+          3158
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.readWordsAsSet
+          com.twitter.penguin.korean.v1.util.KoreanPos.Noun
         </td>
         <td style="background: #AEF1AE">
-          KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;)
+          com.twitter.penguin.korean.v1.util.KoreanPos.Noun
         </td>
       </tr><tr>
         <td>
           118
         </td>
         <td>
-          3145
+          3166
         </td>
         <td>
           Apply
@@ -1225,23 +1209,23 @@ else
           118
         </td>
         <td>
-          3141
+          3163
         </td>
         <td>
-          Select
+          Apply
         </td>
         <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Verb
+          com.twitter.penguin.korean.v1.util.KoreanDictionaryProvider.readWordsAsSet
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Verb
+          KoreanDictionaryProvider.this.readWordsAsSet(&quot;verb/verb.txt&quot;)
         </td>
       </tr><tr>
         <td>
           118
         </td>
         <td>
-          3144
+          3165
         </td>
         <td>
           Apply
@@ -1257,7 +1241,23 @@ else
           118
         </td>
         <td>
-          3143
+          3162
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanPos.Verb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanPos.Verb
+        </td>
+      </tr><tr>
+        <td>
+          118
+        </td>
+        <td>
+          3164
         </td>
         <td>
           Select
@@ -1273,7 +1273,7 @@ else
           118
         </td>
         <td>
-          3146
+          3167
         </td>
         <td>
           Apply
@@ -1289,7 +1289,7 @@ else
           119
         </td>
         <td>
-          3148
+          3169
         </td>
         <td>
           Apply
@@ -1305,7 +1305,7 @@ else
           119
         </td>
         <td>
-          3151
+          3172
         </td>
         <td>
           Apply
@@ -1321,23 +1321,7 @@ else
           119
         </td>
         <td>
-          3147
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Adjective
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Adjective
-        </td>
-      </tr><tr>
-        <td>
-          119
-        </td>
-        <td>
-          3150
+          3171
         </td>
         <td>
           Apply
@@ -1353,23 +1337,23 @@ else
           119
         </td>
         <td>
-          3152
+          3168
         </td>
         <td>
-          Apply
+          Select
         </td>
         <td>
-          scala.collection.mutable.MapLike.+=
+          com.twitter.penguin.korean.v1.util.KoreanPos.Adjective
         </td>
         <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)))
+          com.twitter.penguin.korean.v1.util.KoreanPos.Adjective
         </td>
       </tr><tr>
         <td>
           119
         </td>
         <td>
-          3149
+          3170
         </td>
         <td>
           Literal
@@ -1382,10 +1366,26 @@ else
         </td>
       </tr><tr>
         <td>
+          119
+        </td>
+        <td>
+          3173
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.Adjective).-&gt;[com.twitter.penguin.korean.util.CharArraySet](com.twitter.penguin.korean.v1.util.KoreanConjugation.conjugatePredicates(KoreanDictionaryProvider.this.readWordsAsSet(&quot;adjective/adjective.txt&quot;), true)))
+        </td>
+      </tr><tr>
+        <td>
           120
         </td>
         <td>
-          3154
+          3175
         </td>
         <td>
           Apply
@@ -1401,7 +1401,23 @@ else
           120
         </td>
         <td>
-          3156
+          3174
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanPos.Adverb
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanPos.Adverb
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          3177
         </td>
         <td>
           Apply
@@ -1417,23 +1433,7 @@ else
           120
         </td>
         <td>
-          3153
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Adverb
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Adverb
-        </td>
-      </tr><tr>
-        <td>
-          120
-        </td>
-        <td>
-          3155
+          3176
         </td>
         <td>
           Apply
@@ -1449,7 +1449,7 @@ else
           121
         </td>
         <td>
-          3157
+          3178
         </td>
         <td>
           Select
@@ -1465,7 +1465,7 @@ else
           121
         </td>
         <td>
-          3160
+          3181
         </td>
         <td>
           Apply
@@ -1481,7 +1481,7 @@ else
           121
         </td>
         <td>
-          3159
+          3180
         </td>
         <td>
           Apply
@@ -1497,7 +1497,7 @@ else
           121
         </td>
         <td>
-          3158
+          3179
         </td>
         <td>
           Apply
@@ -1513,7 +1513,7 @@ else
           122
         </td>
         <td>
-          3163
+          3184
         </td>
         <td>
           Apply
@@ -1529,7 +1529,7 @@ else
           122
         </td>
         <td>
-          3162
+          3183
         </td>
         <td>
           Apply
@@ -1545,7 +1545,7 @@ else
           122
         </td>
         <td>
-          3161
+          3182
         </td>
         <td>
           Select
@@ -1561,7 +1561,7 @@ else
           122
         </td>
         <td>
-          3164
+          3185
         </td>
         <td>
           Apply
@@ -1577,7 +1577,7 @@ else
           123
         </td>
         <td>
-          3166
+          3187
         </td>
         <td>
           Apply
@@ -1593,23 +1593,7 @@ else
           123
         </td>
         <td>
-          3165
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Josa
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Josa
-        </td>
-      </tr><tr>
-        <td>
-          123
-        </td>
-        <td>
-          3168
+          3189
         </td>
         <td>
           Apply
@@ -1625,7 +1609,23 @@ else
           123
         </td>
         <td>
-          3167
+          3186
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanPos.Josa
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanPos.Josa
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          3188
         </td>
         <td>
           Apply
@@ -1641,23 +1641,7 @@ else
           124
         </td>
         <td>
-          3169
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Eomi
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Eomi
-        </td>
-      </tr><tr>
-        <td>
-          124
-        </td>
-        <td>
-          3172
+          3193
         </td>
         <td>
           Apply
@@ -1673,7 +1657,23 @@ else
           124
         </td>
         <td>
-          3171
+          3190
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanPos.Eomi
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanPos.Eomi
+        </td>
+      </tr><tr>
+        <td>
+          124
+        </td>
+        <td>
+          3192
         </td>
         <td>
           Apply
@@ -1689,7 +1689,7 @@ else
           124
         </td>
         <td>
-          3170
+          3191
         </td>
         <td>
           Apply
@@ -1705,7 +1705,7 @@ else
           125
         </td>
         <td>
-          3175
+          3196
         </td>
         <td>
           Apply
@@ -1721,7 +1721,7 @@ else
           125
         </td>
         <td>
-          3174
+          3195
         </td>
         <td>
           Apply
@@ -1737,7 +1737,7 @@ else
           125
         </td>
         <td>
-          3173
+          3194
         </td>
         <td>
           Select
@@ -1753,7 +1753,7 @@ else
           125
         </td>
         <td>
-          3176
+          3197
         </td>
         <td>
           Apply
@@ -1769,7 +1769,7 @@ else
           126
         </td>
         <td>
-          3178
+          3199
         </td>
         <td>
           Apply
@@ -1785,7 +1785,23 @@ else
           126
         </td>
         <td>
-          3180
+          3198
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction
+        </td>
+      </tr><tr>
+        <td>
+          126
+        </td>
+        <td>
+          3201
         </td>
         <td>
           Apply
@@ -1801,23 +1817,7 @@ else
           126
         </td>
         <td>
-          3177
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.Conjunction
-        </td>
-      </tr><tr>
-        <td>
-          126
-        </td>
-        <td>
-          3179
+          3200
         </td>
         <td>
           Apply
@@ -1833,7 +1833,23 @@ else
           127
         </td>
         <td>
-          3184
+          3202
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix
+        </td>
+      </tr><tr>
+        <td>
+          127
+        </td>
+        <td>
+          3205
         </td>
         <td>
           Apply
@@ -1849,23 +1865,7 @@ else
           127
         </td>
         <td>
-          3181
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.v1.util.KoreanPos.NounPrefix
-        </td>
-      </tr><tr>
-        <td>
-          127
-        </td>
-        <td>
-          3183
+          3204
         </td>
         <td>
           Apply
@@ -1881,7 +1881,7 @@ else
           127
         </td>
         <td>
-          3182
+          3203
         </td>
         <td>
           Apply
@@ -1897,7 +1897,7 @@ else
           128
         </td>
         <td>
-          3187
+          3208
         </td>
         <td>
           Apply
@@ -1913,7 +1913,7 @@ else
           128
         </td>
         <td>
-          3186
+          3207
         </td>
         <td>
           Apply
@@ -1929,23 +1929,7 @@ else
           128
         </td>
         <td>
-          3188
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.mutable.MapLike.+=
-        </td>
-        <td style="background: #AEF1AE">
-          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)))
-        </td>
-      </tr><tr>
-        <td>
-          128
-        </td>
-        <td>
-          3185
+          3206
         </td>
         <td>
           Select
@@ -1958,10 +1942,26 @@ else
         </td>
       </tr><tr>
         <td>
+          128
+        </td>
+        <td>
+          3209
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.mutable.MapLike.+=
+        </td>
+        <td style="background: #AEF1AE">
+          map.+=(scala.this.Predef.ArrowAssoc[com.twitter.penguin.korean.v1.util.KoreanPos.Value](com.twitter.penguin.korean.v1.util.KoreanPos.VerbPrefix).-&gt;[com.twitter.penguin.korean.util.CharArraySet](KoreanDictionaryProvider.this.readWords(&quot;verb/verb_prefix.txt&quot;)))
+        </td>
+      </tr><tr>
+        <td>
           129
         </td>
         <td>
-          3190
+          3211
         </td>
         <td>
           Apply
@@ -1977,7 +1977,7 @@ else
           129
         </td>
         <td>
-          3189
+          3210
         </td>
         <td>
           Select
@@ -1993,7 +1993,7 @@ else
           129
         </td>
         <td>
-          3192
+          3213
         </td>
         <td>
           Apply
@@ -2009,7 +2009,7 @@ else
           129
         </td>
         <td>
-          3191
+          3212
         </td>
         <td>
           Apply
@@ -2025,7 +2025,7 @@ else
           133
         </td>
         <td>
-          3199
+          3220
         </td>
         <td>
           Apply
@@ -2041,7 +2041,7 @@ else
           134
         </td>
         <td>
-          3193
+          3214
         </td>
         <td>
           Apply
@@ -2057,7 +2057,7 @@ else
           134
         </td>
         <td>
-          3195
+          3216
         </td>
         <td>
           Apply
@@ -2073,7 +2073,7 @@ else
           134
         </td>
         <td>
-          3194
+          3215
         </td>
         <td>
           Apply
@@ -2089,7 +2089,7 @@ else
           135
         </td>
         <td>
-          3196
+          3217
         </td>
         <td>
           Apply
@@ -2105,7 +2105,7 @@ else
           135
         </td>
         <td>
-          3198
+          3219
         </td>
         <td>
           Apply
@@ -2121,7 +2121,7 @@ else
           135
         </td>
         <td>
-          3197
+          3218
         </td>
         <td>
           Apply
@@ -2137,7 +2137,7 @@ else
           138
         </td>
         <td>
-          3204
+          3225
         </td>
         <td>
           Apply
@@ -2155,7 +2155,23 @@ else
           138
         </td>
         <td>
-          3203
+          3221
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;typos/typos.txt&quot;
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          3224
         </td>
         <td>
           Match
@@ -2170,26 +2186,10 @@ else
         </td>
       </tr><tr>
         <td>
-          138
-        </td>
-        <td>
-          3200
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          &quot;typos/typos.txt&quot;
-        </td>
-      </tr><tr>
-        <td>
           139
         </td>
         <td>
-          3202
+          3223
         </td>
         <td>
           Block
@@ -2205,7 +2205,7 @@ else
           139
         </td>
         <td>
-          3201
+          3222
         </td>
         <td>
           Apply

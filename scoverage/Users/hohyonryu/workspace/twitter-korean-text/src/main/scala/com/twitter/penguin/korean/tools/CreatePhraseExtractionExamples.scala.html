@@ -51,11 +51,11 @@
 </span>26 <span style=''>/**
 </span>27 <span style=''> * Create Korean Phrase Extraction Examples.
 </span>28 <span style=''> */
-</span>29 <span style=''>object CreatePhraseExtractionExamples {
+</span>29 <span style=''>object CreatePhraseExtractionExamples extends Runnable {
 </span>30 <span style=''>
 </span>31 <span style=''>  case class PhraseExample(text: String, phrases: Seq[CharSequence])
 </span>32 <span style=''>
-</span>33 <span style=''>  def main(args: Array[String]) {
+</span>33 <span style=''>  def run {
 </span>34 <span style=''>    System.err.println("Reading the sample tweets..")
 </span>35 <span style=''>
 </span>36 <span style=''>    val phrasePairs = readFileByLineFromResources("example_tweets.txt").flatMap {
@@ -100,7 +100,7 @@
           34
         </td>
         <td>
-          1072
+          1079
         </td>
         <td>
           Apply
@@ -116,7 +116,7 @@
           36
         </td>
         <td>
-          1073
+          1080
         </td>
         <td>
           Literal
@@ -132,7 +132,7 @@
           36
         </td>
         <td>
-          1084
+          1092
         </td>
         <td>
           Match
@@ -144,7 +144,7 @@
           x0$1 match {
   case (line @ _) if line.length().&gt;(0) =&gt; {
     val chunk: String = line.trim();
-    val phrases: Seq[CharSequence] = com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk);
+    val phrases: Seq[CharSequence] = com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2);
     scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](CreatePhraseExtractionExamples.this.PhraseExample.apply(chunk, phrases)))
   }
   case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
@@ -155,7 +155,7 @@
           37
         </td>
         <td>
-          1080
+          1088
         </td>
         <td>
           Block
@@ -166,7 +166,7 @@
         <td style="background: #F0ADAD">
           case (line @ _) if line.length().&gt;(0) =&gt; {
   val chunk: String = line.trim();
-  val phrases: Seq[CharSequence] = com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk);
+  val phrases: Seq[CharSequence] = com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2);
   scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](CreatePhraseExtractionExamples.this.PhraseExample.apply(chunk, phrases)))
 }
         </td>
@@ -175,7 +175,7 @@
           37
         </td>
         <td>
-          1074
+          1081
         </td>
         <td>
           Apply
@@ -191,7 +191,7 @@
           38
         </td>
         <td>
-          1075
+          1082
         </td>
         <td>
           Apply
@@ -207,7 +207,7 @@
           39
         </td>
         <td>
-          1076
+          1084
         </td>
         <td>
           Apply
@@ -216,14 +216,46 @@
           com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases
         </td>
         <td style="background: #F0ADAD">
-          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk)
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1083
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2
         </td>
       </tr><tr>
         <td>
           40
         </td>
         <td>
-          1079
+          1085
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample.apply
+        </td>
+        <td style="background: #F0ADAD">
+          CreatePhraseExtractionExamples.this.PhraseExample.apply(chunk, phrases)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          1087
         </td>
         <td>
           ApplyImplicitView
@@ -239,7 +271,7 @@
           40
         </td>
         <td>
-          1078
+          1086
         </td>
         <td>
           Apply
@@ -252,26 +284,26 @@
         </td>
       </tr><tr>
         <td>
-          40
+          41
         </td>
         <td>
-          1077
+          1091
         </td>
         <td>
-          Apply
+          Block
         </td>
         <td>
-          com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample.apply
+          &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          CreatePhraseExtractionExamples.this.PhraseExample.apply(chunk, phrases)
+          case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
         </td>
       </tr><tr>
         <td>
           41
         </td>
         <td>
-          1082
+          1090
         </td>
         <td>
           ApplyImplicitView
@@ -287,7 +319,7 @@
           41
         </td>
         <td>
-          1081
+          1089
         </td>
         <td>
           Select
@@ -300,26 +332,10 @@
         </td>
       </tr><tr>
         <td>
-          41
-        </td>
-        <td>
-          1083
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #F0ADAD">
-          case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
-        </td>
-      </tr><tr>
-        <td>
           42
         </td>
         <td>
-          1085
+          1093
         </td>
         <td>
           TypeApply
@@ -331,7 +347,7 @@
           com.twitter.penguin.korean.util.KoreanDictionaryProvider.readFileByLineFromResources(&quot;example_tweets.txt&quot;).flatMap[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](((x0$1: String) =&gt; x0$1 match {
   case (line @ _) if line.length().&gt;(0) =&gt; {
     val chunk: String = line.trim();
-    val phrases: Seq[CharSequence] = com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk);
+    val phrases: Seq[CharSequence] = com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(chunk, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2);
     scala.this.Option.option2Iterable[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](scala.Some.apply[com.twitter.penguin.korean.tools.CreatePhraseExtractionExamples.PhraseExample](CreatePhraseExtractionExamples.this.PhraseExample.apply(chunk, phrases)))
   }
   case (line @ _) =&gt; scala.this.Option.option2Iterable[Nothing](scala.None)
@@ -342,7 +358,7 @@
           45
         </td>
         <td>
-          1086
+          1094
         </td>
         <td>
           Literal
@@ -358,7 +374,7 @@
           47
         </td>
         <td>
-          1088
+          1096
         </td>
         <td>
           Apply
@@ -374,7 +390,7 @@
           47
         </td>
         <td>
-          1087
+          1095
         </td>
         <td>
           Apply
@@ -390,7 +406,7 @@
           49
         </td>
         <td>
-          1089
+          1097
         </td>
         <td>
           Apply
@@ -406,7 +422,7 @@
           50
         </td>
         <td>
-          1098
+          1106
         </td>
         <td>
           Apply
@@ -427,7 +443,7 @@
           52
         </td>
         <td>
-          1091
+          1099
         </td>
         <td>
           Apply
@@ -443,7 +459,7 @@
           52
         </td>
         <td>
-          1090
+          1098
         </td>
         <td>
           Apply
@@ -459,23 +475,7 @@
           53
         </td>
         <td>
-          1093
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.io.FileOutputStream.write
-        </td>
-        <td style="background: #F0ADAD">
-          out.write(&quot;\t&quot;.getBytes())
-        </td>
-      </tr><tr>
-        <td>
-          53
-        </td>
-        <td>
-          1092
+          1100
         </td>
         <td>
           Apply
@@ -488,10 +488,26 @@
         </td>
       </tr><tr>
         <td>
+          53
+        </td>
+        <td>
+          1101
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(&quot;\t&quot;.getBytes())
+        </td>
+      </tr><tr>
+        <td>
           54
         </td>
         <td>
-          1094
+          1102
         </td>
         <td>
           Apply
@@ -507,7 +523,7 @@
           54
         </td>
         <td>
-          1095
+          1103
         </td>
         <td>
           Apply
@@ -523,7 +539,7 @@
           55
         </td>
         <td>
-          1097
+          1105
         </td>
         <td>
           Apply
@@ -539,7 +555,7 @@
           55
         </td>
         <td>
-          1096
+          1104
         </td>
         <td>
           Apply
@@ -555,7 +571,7 @@
           57
         </td>
         <td>
-          1099
+          1107
         </td>
         <td>
           Apply
@@ -571,23 +587,7 @@
           59
         </td>
         <td>
-          1100
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.+
-        </td>
-        <td style="background: #F0ADAD">
-          &quot;Testing the new phrases &quot;.+(outputFile)
-        </td>
-      </tr><tr>
-        <td>
-          59
-        </td>
-        <td>
-          1101
+          1109
         </td>
         <td>
           Apply
@@ -597,6 +597,22 @@
         </td>
         <td style="background: #F0ADAD">
           java.this.lang.System.err.println(&quot;Testing the new phrases &quot;.+(outputFile))
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1108
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Testing the new phrases &quot;.+(outputFile)
         </td>
       </tr>
     </table>

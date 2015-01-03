@@ -1,0 +1,243 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tools/UpdateAllTheExamples.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>package com.twitter.penguin.korean.tools
+</span>2 <span style=''>
+</span>3 <span style=''>object UpdateAllTheExamples {
+</span>4 <span style=''>  def runTools(objects: Runnable*): Unit = {
+</span>5 <span style=''>    objects.foreach{o =>
+</span>6 <span style=''>      println("--- Running %s ---".format(o.getClass.getSimpleName))
+</span>7 <span style=''>      o.run
+</span>8 <span style=''>    }
+</span>9 <span style=''>    println("Finished running %s.".format(
+</span>10 <span style=''>      objects.map(_.getClass.getSimpleName).mkString(", ")
+</span>11 <span style=''>    ))
+</span>12 <span style=''>  }
+</span>13 <span style=''>
+</span>14 <span style=''>  def main(args: Array[String]) {
+</span>15 <span style=''>    runTools(
+</span>16 <span style=''>      CleanUpDictionaries,
+</span>17 <span style=''>      CreateConjugationExamples,
+</span>18 <span style=''>      CreateParsingExamples,
+</span>19 <span style=''>      CreatePhraseExtractionExamples
+</span>20 <span style=''>    )
+</span>21 <span style=''>  }
+</span>22 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line Number</th>
+        <th>Statement Id</th>
+        <th>Tree Type</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr>
+      <tr>
+        <td>
+          5
+        </td>
+        <td>
+          1116
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableLike.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          objects.foreach[Unit](((o: com.twitter.penguin.korean.tools.Runnable) =&gt; {
+  scala.this.Predef.println(scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(o.getClass().getSimpleName()));
+  o.run
+}))
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          1111
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;--- Running %s ---&quot;
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          1114
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(o.getClass().getSimpleName()))
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          1113
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(o.getClass().getSimpleName())
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          1112
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Class.getSimpleName
+        </td>
+        <td style="background: #F0ADAD">
+          o.getClass().getSimpleName()
+        </td>
+      </tr><tr>
+        <td>
+          7
+        </td>
+        <td>
+          1115
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.Runnable.run
+        </td>
+        <td style="background: #F0ADAD">
+          o.run
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          1117
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;Finished running %s.&quot;
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          1120
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(scala.this.Predef.augmentString(&quot;Finished running %s.&quot;).format(objects.map[String, Seq[String]](((x$1: com.twitter.penguin.korean.tools.Runnable) =&gt; x$1.getClass().getSimpleName()))(collection.this.Seq.canBuildFrom[String]).mkString(&quot;, &quot;)))
+        </td>
+      </tr><tr>
+        <td>
+          9
+        </td>
+        <td>
+          1119
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;Finished running %s.&quot;).format(objects.map[String, Seq[String]](((x$1: com.twitter.penguin.korean.tools.Runnable) =&gt; x$1.getClass().getSimpleName()))(collection.this.Seq.canBuildFrom[String]).mkString(&quot;, &quot;))
+        </td>
+      </tr><tr>
+        <td>
+          10
+        </td>
+        <td>
+          1118
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #F0ADAD">
+          objects.map[String, Seq[String]](((x$1: com.twitter.penguin.korean.tools.Runnable) =&gt; x$1.getClass().getSimpleName()))(collection.this.Seq.canBuildFrom[String]).mkString(&quot;, &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          15
+        </td>
+        <td>
+          1121
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tools.UpdateAllTheExamples.runTools
+        </td>
+        <td style="background: #F0ADAD">
+          UpdateAllTheExamples.this.runTools(CleanUpDictionaries, CreateConjugationExamples, CreateParsingExamples, CreatePhraseExtractionExamples)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

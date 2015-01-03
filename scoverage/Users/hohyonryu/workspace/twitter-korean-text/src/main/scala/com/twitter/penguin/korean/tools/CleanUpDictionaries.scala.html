@@ -2,7 +2,7 @@
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title id="title">
-          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tools/CleanUpDictionaries.scala.html
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala.html
         </title>
         <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -50,7 +50,7 @@
 </span>25 <span style=''>/**
 </span>26 <span style=''> * Clean up resources by removing duplicates and sorting.
 </span>27 <span style=''> */
-</span>28 <span style=''>object CleanUpDictionaries {
+</span>28 <span style=''>object CleanUpDictionaries extends Runnable  {
 </span>29 <span style=''>
 </span>30 <span style=''>  private[this] def readWords(filename: String): Set[String] = {
 </span>31 <span style=''>    Source.fromFile(filename)(io.Codec("UTF-8"))
@@ -80,7 +80,7 @@
 </span>55 <span style=''>    "verb/eomi.txt", "verb/pre_eomi.txt", "verb/verb.txt", "verb/verb_prefix.txt"
 </span>56 <span style=''>  )
 </span>57 <span style=''>
-</span>58 <span style=''>  def main(args: Array[String]) {
+</span>58 <span style=''>  def run {
 </span>59 <span style=''>    RESOURCES_TO_CLEANUP.foreach {
 </span>60 <span style=''>      f: String =>
 </span>61 <span style=''>        val outputFolder = "src/main/resources/com/twitter/penguin/korean/util/"
@@ -112,7 +112,7 @@
           31
         </td>
         <td>
-          1003
+          1010
         </td>
         <td>
           Apply
@@ -128,7 +128,7 @@
           33
         </td>
         <td>
-          1004
+          1011
         </td>
         <td>
           Apply
@@ -144,7 +144,7 @@
           34
         </td>
         <td>
-          1005
+          1012
         </td>
         <td>
           Apply
@@ -160,7 +160,7 @@
           35
         </td>
         <td>
-          1006
+          1013
         </td>
         <td>
           TypeApply
@@ -176,7 +176,7 @@
           38
         </td>
         <td>
-          1007
+          1014
         </td>
         <td>
           Apply
@@ -192,7 +192,7 @@
           59
         </td>
         <td>
-          1020
+          1027
         </td>
         <td>
           Apply
@@ -215,7 +215,7 @@
           61
         </td>
         <td>
-          1008
+          1015
         </td>
         <td>
           Literal
@@ -231,23 +231,7 @@
           62
         </td>
         <td>
-          1010
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.io.PrintStream.println
-        </td>
-        <td style="background: #F0ADAD">
-          java.this.lang.System.err.println(scala.this.Predef.augmentString(&quot;Processing %s.&quot;).format(f))
-        </td>
-      </tr><tr>
-        <td>
-          62
-        </td>
-        <td>
-          1009
+          1016
         </td>
         <td>
           Apply
@@ -260,26 +244,26 @@
         </td>
       </tr><tr>
         <td>
-          63
+          62
         </td>
         <td>
-          1013
+          1017
         </td>
         <td>
-          ApplyToImplicitArgs
+          Apply
         </td>
         <td>
-          scala.collection.SeqLike.sorted
+          java.io.PrintStream.println
         </td>
         <td style="background: #F0ADAD">
-          CleanUpDictionaries.this.readWords(outputFolder.+(f)).toList.sorted[String](math.this.Ordering.String)
+          java.this.lang.System.err.println(scala.this.Predef.augmentString(&quot;Processing %s.&quot;).format(f))
         </td>
       </tr><tr>
         <td>
           63
         </td>
         <td>
-          1012
+          1019
         </td>
         <td>
           Select
@@ -295,7 +279,7 @@
           63
         </td>
         <td>
-          1011
+          1018
         </td>
         <td>
           Apply
@@ -308,10 +292,26 @@
         </td>
       </tr><tr>
         <td>
+          63
+        </td>
+        <td>
+          1020
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.sorted
+        </td>
+        <td style="background: #F0ADAD">
+          CleanUpDictionaries.this.readWords(outputFolder.+(f)).toList.sorted[String](math.this.Ordering.String)
+        </td>
+      </tr><tr>
+        <td>
           65
         </td>
         <td>
-          1015
+          1022
         </td>
         <td>
           Apply
@@ -327,7 +327,7 @@
           65
         </td>
         <td>
-          1014
+          1021
         </td>
         <td>
           Apply
@@ -343,7 +343,7 @@
           67
         </td>
         <td>
-          1018
+          1025
         </td>
         <td>
           Apply
@@ -359,23 +359,7 @@
           68
         </td>
         <td>
-          1016
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.getBytes
-        </td>
-        <td style="background: #F0ADAD">
-          word.+(&quot;\n&quot;).getBytes()
-        </td>
-      </tr><tr>
-        <td>
-          68
-        </td>
-        <td>
-          1017
+          1024
         </td>
         <td>
           Apply
@@ -388,10 +372,26 @@
         </td>
       </tr><tr>
         <td>
+          68
+        </td>
+        <td>
+          1023
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          word.+(&quot;\n&quot;).getBytes()
+        </td>
+      </tr><tr>
+        <td>
           70
         </td>
         <td>
-          1019
+          1026
         </td>
         <td>
           Apply
