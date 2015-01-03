@@ -27,11 +27,10 @@ import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
  * Create Korean predicate expansion goldenset from adjective and verb resources.
  * The first argument is the test resource directory.
  */
-object CreateConjugationExamples {
-
+object CreateConjugationExamples extends Runnable  {
   case class ConjugationExample(word: String, conjugations: Seq[String])
 
-  def main(args: Array[String]) {
+  def run {
     System.err.println("Reading the verbs and adjectives..")
 
     def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {

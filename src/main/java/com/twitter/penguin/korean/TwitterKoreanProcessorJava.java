@@ -35,12 +35,16 @@ public class TwitterKoreanProcessorJava {
   private boolean stemmerEnabled;
   private boolean normalizerEnabled;
   private boolean keepSpaceEnabled;
+  private boolean phraseExtractorSpamFilterEnabled;
 
-  private TwitterKoreanProcessorJava(boolean normalizerEnabled, boolean stemmerEnabled, boolean keepSpaceEnabled) {
+  private TwitterKoreanProcessorJava(
+      boolean normalizerEnabled, boolean stemmerEnabled,
+      boolean keepSpaceEnabled, boolean phraseExtractorSpamFilterEnabled) {
     // Use the builder to instantiate this
     this.stemmerEnabled = stemmerEnabled;
     this.normalizerEnabled = normalizerEnabled;
     this.keepSpaceEnabled = keepSpaceEnabled;
+    this.phraseExtractorSpamFilterEnabled = phraseExtractorSpamFilterEnabled;
   }
 
   /**
@@ -121,7 +125,7 @@ public class TwitterKoreanProcessorJava {
    */
   public List<CharSequence> extractPhrases(CharSequence text) {
     return JavaConversions.seqAsJavaList(
-        TwitterKoreanProcessor.extractPhrases(text)
+        TwitterKoreanProcessor.extractPhrases(text, phraseExtractorSpamFilterEnabled)
     );
   }
 
@@ -132,6 +136,8 @@ public class TwitterKoreanProcessorJava {
     private boolean normalizerEnabled = true;
     private boolean stemmerEnabled = true;
     private boolean keepSpaceEnabled = false;
+
+    private boolean phraseExtractorSpamFilterEnabled = false;
 
     public Builder disableNormalizer() {
       normalizerEnabled = false;
@@ -148,8 +154,14 @@ public class TwitterKoreanProcessorJava {
       return this;
     }
 
+    public Builder enablePhraseExtractorSpamFilter() {
+      phraseExtractorSpamFilterEnabled = true;
+      return this;
+    }
+
+
     public TwitterKoreanProcessorJava build() {
-      return new TwitterKoreanProcessorJava(normalizerEnabled, stemmerEnabled, keepSpaceEnabled);
+      return new TwitterKoreanProcessorJava(normalizerEnabled, stemmerEnabled, keepSpaceEnabled, phraseExtractorSpamFilterEnabled);
     }
   }
 }

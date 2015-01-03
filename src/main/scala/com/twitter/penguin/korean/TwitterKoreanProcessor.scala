@@ -124,8 +124,8 @@ object TwitterKoreanProcessor {
     if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
   }
 
-  def extractPhrases(text: CharSequence): Seq[CharSequence] = {
-    KoreanPhraseExtractor.extractPhrases(text)
+  def extractPhrases(text: CharSequence, filterSpam: Boolean = false): Seq[CharSequence] = {
+    KoreanPhraseExtractor.extractPhrases(text, filterSpam)
   }
 
   /**
