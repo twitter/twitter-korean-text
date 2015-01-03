@@ -838,6 +838,7 @@
 류현진	류현진Noun
 코우토	코Noun/우Adverb/토Noun
 잘해욘	잘해욘Noun*
+여기다가	여기다Verb
 하고서는	하다Verb/서다Verb
 귀엽져	귀엽다Adjective
 지내셨나	지내다Verb
@@ -1043,6 +1044,7 @@
 경수를	경수Noun/를Josa
 지하철에서	지하철Noun/에서Josa
 공식커플	공식Noun/커플Noun
+살다가	살다Verb
 지구가	지구Noun/가Josa
 힘들텐데	힘들다Adjective
 대신해	대신Noun/하다Verb
@@ -3402,7 +3404,6 @@
 그려왔어요	그리다Verb/오다Verb
 쿠로사와	쿠로사와Noun
 유전자가	유전자Noun/가Josa
-오다가	오Noun/다가Josa
 유용한	유용Noun/한Josa
 말았어야	말다Verb
 좋아하지만	좋아하다Adjective
@@ -3623,7 +3624,6 @@
 줄수있는	주다Verb
 자리잡고	자리Noun/잡고Noun
 뒤질거야	뒤지다Verb
-울다가	울Noun/다가Josa
 몰랐네	몰르다Verb
 돋아서	돋다Adjective
 심장저격	심장Noun/저격Noun
@@ -3805,6 +3805,7 @@
 민현아	민Noun/현아Noun
 조선일보	조선일보Noun
 황당한	황당Noun/한Josa
+자다가도	자다Verb
 코토리가	코Noun/토리Noun/가Josa
 이에는	이Noun/에는Josa
 애긴데	애기Noun/인데Josa
@@ -3939,7 +3940,6 @@
 인터넷에	인터넷Noun/에Josa
 아니기때문에	아니다Adjective/때문Noun/에Josa
 얼굴도	얼굴Noun/도Josa
-살다가	살Noun/다가Josa
 전국바사라에서	전국바사라Noun/에서Josa
 뺨치게	뺨치Noun*/게Josa
 곧있으면	곧다Adjective
@@ -4432,6 +4432,7 @@
 중고로	중고Noun/로Josa
 자까님과	자까님Noun*/과Josa
 벌해주시옵소서	벌Noun/해주시Noun/오다Verb
+어디다가	어디Noun/다가Noun
 비비가	비비Noun/가Josa
 모르겠지	모르다Verb
 오해로	오해Noun/로Josa
@@ -4590,7 +4591,6 @@
 내버려둬	내버리다Verb/두다Verb
 또다른	또Noun/다른Noun
 받고싶다	받다Verb
-길가다가	길가Noun/다가Josa
 게임인	게임Noun/인Josa
 감각은	감각Noun/은Josa
 많다는걸	많다Adjective
@@ -4695,6 +4695,7 @@
 소리바다	소리바다Noun
 하기싫어	하다Verb/싫다Adjective
 우연히	우연히Adverb
+갓다가	갓Noun/다가Noun
 뒷계는	뒷계Noun*/는Josa
 웃겨서	웃기다Verb
 단어들이	단어Noun/들Suffix/이Josa
@@ -4858,6 +4859,7 @@
 자연은	자연Noun/은Josa
 것이라구요	것Noun/이라Josa/고요Noun
 결혼해요	결혼Noun/해Josa/요Noun
+외치다가	외치다Verb
 긴급특보	긴급Noun/특보Noun*
 알려주면	알다Verb
 구매가	구매Noun/가Josa
@@ -5541,7 +5543,6 @@
 이유도	이유Noun/도Josa
 덕질이	덕질Noun/이Josa
 이상의	이상Noun/의Josa
-자다가도	자Noun/다가도Josa
 잊는다	잊다Verb
 내가한다	내Noun/가하다Verb
 생일인가봐요	생일Noun/인가Josa/봐Noun/요Josa
@@ -5616,6 +5617,7 @@
 어련히	어련히Adverb
 안녕하세용	안녕하다Adjective
 논현키스방	논현Noun/키스방Noun
+영상보다가	영상Noun/보다Josa/가다Verb
 디저트를	디저트Noun/를Josa
 같은것도	같다Adjective
 알았고	알다Verb
@@ -7994,6 +7996,7 @@
 들어가자마자	들어가다Verb
 현장에서	현장Noun/에서Josa
 저사람	저Determiner/사람Noun
+거기다가	거기Noun/다가Noun
 안난다	안VerbPrefix/나다Verb
 열리면	열리다Verb
 위아래로	위아래Noun/로Josa
@@ -8440,6 +8443,7 @@
 하시죠	하다Verb
 주연의	주연Noun/의Josa
 자지도	자지Noun/도Josa
+자다가	자다Verb
 연기는	연기Noun/는Josa
 세훈아	세훈Noun/아Josa
 멍청이가	멍청이Noun/가Josa
@@ -8708,7 +8712,6 @@
 굴리는	굴리Noun*/는Josa
 어쩌지요	어쩌다Verb
 이태원	이태원Noun
-쉬다가	쉬Noun/다가Josa
 이수만이다	이수만Noun/이다Josa
 어린거	어리다Verb
 애지중지	애지중지Adverb
@@ -10387,7 +10390,6 @@
 삼천배가	삼천배Noun/가Josa
 어리니까	어리다Verb
 명량에	명량Noun/에Josa
-사다가	사Noun/다가Josa
 대화가	대화Noun/가Josa
 배고플때는	배고프다Adjective/때Noun/는Josa
 질투하는	질투Noun/하다Verb
@@ -10650,6 +10652,7 @@
 기록당첨	기록Noun/당첨Noun
 그리고싶은데	그리다Verb
 어리구나	어리다Verb
+타다가	타다Verb
 조심해야	조심Noun/하다Verb
 대박부럽다	대박Noun/부럽다Adjective
 답하고	답Noun/하다Verb
@@ -13514,7 +13517,6 @@
 착각이겠지	착각Noun/이Josa/겠다Verb
 캐릭들이	캐릭Noun/들Suffix/이Josa
 오는거야	오다Verb
-뒤적거리다가	뒤Noun/적Suffix/거리Noun/다가Josa
 피곤한거죠	피곤하다Adjective
 기운이	기운Noun/이Josa
 싶은지	싶다Verb
@@ -13650,7 +13652,6 @@
 청와대가	청와대Noun/가Josa
 이벵에	이벵Noun*/에Josa
 안하니까	알다Verb
-갓다가	갓Noun/다가Josa
 해주셔야	해주다Verb
 힘든일을	힘들다Adjective/일Noun/을Josa
 손예진	손예진Noun
@@ -13736,7 +13737,6 @@
 끝난지	끝나다Verb
 디케이드	디케이드Noun
 무리하시면	무리하다Adjective
-부리다가	부리Noun/다가Josa
 수업시간에도	수업Noun/시간Noun/에도Josa
 되세여	되다Verb
 아시구	알다Verb
@@ -14259,7 +14259,6 @@
 매력있는	매력Noun/있다Adjective
 바꾸려고	바꾸다Verb
 물어보는거	물어보다Verb
-치다가	치Noun/다가Josa
 마셨는데	마시다Verb
 미인은	미인Noun/은Josa
 아저씨한테	아저씨Noun/한테Josa
@@ -15500,7 +15499,6 @@
 할수있는걸	하다Verb
 귀찮게	귀찮다Adjective
 사소한	사소하다Adjective
-웃다가	웃Noun/다가Josa
 무리니까	무리Noun/니까Josa
 후후훗	후후훗Exclamation
 된거같은데	된거Noun/같다Adjective
@@ -17661,6 +17659,7 @@
 꼬집는다	꼬집는Noun*/다Josa
 않겠습니다	않다Verb
 달라지겠지	달라지다Verb
+탐라보다가	탐라Noun/보다Josa/가다Verb
 가슴께에	가슴Noun/께Josa/에Josa
 아무쪼록	아무쪼록Adverb
 압니까	압Noun*/니까Josa
@@ -18160,7 +18159,6 @@
 생기더라도	생기다Verb
 카드도	카드Noun/도Josa
 양도글	양도Noun/글Noun
-사려다가	사려Noun/다가Josa
 누군가에	누군가Noun/에Josa
 생각안하는데	생각Noun/알다Verb
 무기랑	무기Noun/랑Josa
@@ -19503,7 +19501,6 @@
 아카쨩	아Exclamation/카Noun/쨩Suffix
 잠시라도	잠시Noun/라도Josa
 안해도	안해Noun/도Josa
-졸다가	졸Noun/다가Josa
 사랑해도	사랑Noun/하다Verb
 인증은	인증Noun/은Josa
 매력이지	매력Noun/이지Noun
@@ -19649,6 +19646,7 @@
 비루한	비루Noun/한Josa
 심각하다	심각하다Adjective
 애긔도	애긔Noun*/도Josa
+웃다가	웃다Verb
 싶어집니다	싶다Verb/지다Verb
 할까말까	할까말까Adverb
 남았다고	남다Verb
@@ -19881,6 +19879,7 @@
 어제가	어제Noun/가Josa
 한세트	한Determiner/세트Noun
 바라고	바라다Verb
+사려다가	사다Verb
 못자요	못Noun/자Suffix/요Josa
 음악중심	음악중심Noun
 깊숙히	깊숙히Noun*
@@ -19909,7 +19908,6 @@
 착용하고	착용Noun/하고Josa
 인상이	인상Noun/이Josa
 시작할때	시작Noun/하다Verb/때Noun
-거기다가	거기Noun/다가Josa
 너희엄마	너희Noun/엄마Noun
 사람을	사람Noun/을Josa
 고생을	고생Noun/을Josa
@@ -20100,6 +20098,7 @@
 당첨후기	당첨Noun/후기Noun
 파크콘서트	파크Noun/콘서트Noun
 못생긴게	못VerbPrefix/생기다Verb
+부리다가	부리Noun/다가Noun
 올렸다가	올리다Verb
 내일부터	내일Noun/부터Josa
 변태가	변태Noun/가Josa
@@ -20376,6 +20375,7 @@
 반짝반짝	반짝반짝Adverb
 선수랑	선수Noun/랑Josa
 받은건	받다Verb
+길가다가	길가Noun/다가Noun
 들어갈	들어가다Verb
 하지망	하다Verb/망Noun
 독점할	독점Noun/하다Verb
@@ -20492,6 +20492,7 @@
 시골에서	시골Noun/에서Josa
 다니던	다니다Verb
 잠들었어	잠들다Verb
+쉬다가	쉬다Verb
 비싸니까	비싸다Adjective
 보면서도	보다Verb
 볼수있는	보다Verb
@@ -22642,6 +22643,7 @@
 축복을	축복Noun/을Josa
 문재인이	문재인Noun/이Josa
 친절하고	친절하다Adjective
+찍다가	찍다Verb
 이런게	이렇다Adjective
 인천페티쉬	인천Noun/페티쉬Noun
 홍대가라오케	홍대Noun/가라오케Noun
@@ -23844,7 +23846,6 @@
 팬스가	팬스가Noun
 칼군무	칼Noun/군무Noun
 노조미를	노조미Noun/를Josa
-놀다가	놀Noun/다가Josa
 위험하다고	위험하다Adjective
 먹은만큼	먹다Verb
 기꺼이	기꺼이Adverb
@@ -25003,7 +25004,6 @@
 귀농인들이	귀농Noun/인들Josa/이Determiner
 이참에	이참Noun/에Josa
 졸라맨	졸라맨Noun
-여기다가	여기Noun/다가Josa
 퇴직연금	퇴직Noun/연금Noun
 가슴팍에	가슴Noun/팍Noun/에Josa
 넘친다	넘치다Verb
@@ -26198,6 +26198,7 @@
 배웠어요	배우다Verb
 케텍스	케텍스Noun
 합주하기도	합주Noun/하다Verb
+두다가	두Determiner/다가Noun
 개소리가	개Noun/소리Noun/가Josa
 물어보셔도	물어보다Verb
 이유입니다	이유Noun/이다Adjective
@@ -26249,7 +26250,6 @@
 유니크해	유니크Noun/해Josa
 구리면	구리면Noun
 떨었다	떨다Verb
-자다가	자Noun/다가Josa
 예고도	예고Noun/도Josa
 안닦고	안VerbPrefix/닦다Verb
 안이뻐서	안VerbPrefix/이쁘다Adjective
@@ -26715,6 +26715,7 @@
 이틀간	이틀Noun/간Suffix
 파랑새가	파랑새Noun/가Josa
 기질이	기질Noun/이Josa
+졸다가	졸다Verb
 주소십구닷컴	주소Noun/십구Noun/닷컴Suffix
 지켜주는	지키다Verb
 강남역페티쉬	강남역Noun/페티쉬Noun
@@ -27321,6 +27322,7 @@
 헤어져	헤어지다Verb
 정하나	정하나Noun
 많으셨습니다	많다Adjective/셨습Noun*/니Josa/다Adverb
+사다가	사다Verb
 했으여	하다Verb
 사탕이	사탕Noun/이Josa
 고향이	고향이Noun
@@ -27955,7 +27957,6 @@
 히메가	히Adverb/메Noun/가Josa
 장학금	장학금Noun
 다섯개	다섯Determiner/개Noun
-햇다가	햇Noun/다가Josa
 미친다	미치다Adjective
 가끔가다	가끔가다Adverb
 마땅치	마땅치Noun*
@@ -28147,7 +28148,6 @@
 엓수니들	엓Noun*/수니Noun/들Suffix
 들어가니까	들어가다Verb
 기차나	기차Noun/나Josa
-두다가	두Noun/다가Josa
 주무시는	주무시다Verb
 푸시죠	푸시Noun/죠Josa
 안댄다	안VerbPrefix/대다Verb
@@ -28562,7 +28562,6 @@
 조명은	조명Noun/은Josa
 정리하는	정리Noun/하다Verb
 좋아하는색	좋아하다Adjective/색Noun
-영상보다가	영상Noun/보Noun/다가Josa
 한줄요약	한Determiner/줄Noun/요약Noun
 힘들다면	힘들다Adjective
 레이시	레이Noun/시Noun
@@ -28682,6 +28681,7 @@
 할려고	하다Verb
 과자가	과자Noun/가Josa
 항의방문	항의Noun/방문Noun
+짓다가	짓다Verb
 잘보시라	잘VerbPrefix/보다Verb
 마음에	마음Noun/에Josa
 만원에	만원Noun/에Josa
@@ -29340,6 +29340,7 @@
 정도면	정도Noun/면Josa
 아냐아냐	알다Verb
 포기할	포기Noun/하다Verb
+햇다가	햇Noun/다가Noun
 산케이신문이	산케이신문Noun/이Josa
 애타게	애Noun/타다Verb
 다음주가	다음주Noun/가Josa
@@ -29395,7 +29396,6 @@
 마지모지	마Noun/지모Noun/지Josa
 이상태로	이상태Noun/로Josa
 우습게	울다Verb
-자전거타다가	자전거Noun/타Noun/다가Josa
 못본거	못VerbPrefix/보다Verb
 부르는건	부르다Verb
 사랑받는	사랑Noun/받다Verb
@@ -31463,7 +31463,6 @@
 뒤에야	뒤Noun/에야Josa
 직원들	직원Noun/들Suffix
 어깨만	어깨Noun/만Josa
-어디다가	어디Noun/다가Josa
 시민이	시민Noun/이Josa
 구했는데	구Noun/하다Verb
 냄비를	냄비Noun/를Josa
@@ -32127,6 +32126,7 @@
 먹겠어	먹다Verb
 현장으로	현장Noun/으로Josa
 아니라니까	아니다Adjective
+오다가	오다Verb
 어디갔나	어디Noun/가다Verb
 아도라블	아도라블Noun*
 모르냐고	모르다Verb
@@ -32918,7 +32918,6 @@
 의자가	의자Noun/가Josa
 만든김에	만들다Verb/김Noun/에Josa
 님드라	님드Noun*/라Josa
-외치다가	외치Noun/다가Josa
 라스트로묘	라스트Noun/로Josa/묘Noun
 섹시한	섹시하다Adjective
 귀능이	귀Noun/능이Noun
@@ -34177,6 +34176,7 @@
 스튜디오	스튜디오Noun
 만난거자나	만나다Verb/자Noun/나Josa
 케로로	케로로Noun
+자전거타다가	자전거Noun/타다Verb
 티라미수	티라미수Noun
 수원소방서	수원Noun/소방Noun/서Josa
 윤일병	윤Noun*/일병Noun
@@ -34705,6 +34705,7 @@
 스타워즈	스타워즈Noun
 몰입해서	몰입Noun/해서Josa
 뜸해서	뜸Noun/해서Josa
+울다가	울다Verb
 카메라를	카메라Noun/를Josa
 리패키지	리Noun/패키지Noun
 몇신데	몇Noun/신다Verb
@@ -35086,6 +35087,7 @@
 담아두지말고	담다Verb/두다Verb
 못하는	못VerbPrefix/하다Verb
 안써봐서	안VerbPrefix/쓰다Verb/봐Noun/서Josa
+뒤적거리다가	뒤Noun/적Suffix/거리Noun/다가Noun
 야쿠르트	야쿠르트Noun
 섬머타임	섬머타임Noun
 흘렀다	흘르다Verb
@@ -35496,7 +35498,6 @@
 보고를	보고Noun/를Josa
 구속자	구속Noun/자Suffix
 제주에서	제주Noun/에서Josa
-보다가	보Noun/다가Josa
 엔딩도	엔딩Noun/도Josa
 때에는	때Noun/에는Josa
 서럽다	서럽Noun*/다Josa
@@ -35761,6 +35762,7 @@
 같은건	같다Adjective
 자유로움	자유Noun/로움Noun
 다녀왔어	다녀오다Verb
+훑다가	훑다Noun*/가Josa
 자지마	자다Verb
 들리면	들리다Verb
 내리는게	내리다Verb
@@ -38144,7 +38146,6 @@
 헉헉헉	헉헉Adverb
 공유와	공유Noun/와Josa
 깜짝할	깜짝Noun/하다Verb
-훑다가	훑Noun*/다가Josa
 하는거	하다Verb
 사랑합니당	사랑Noun/하다Verb
 심오한	심오Noun/한Josa
@@ -38596,6 +38597,7 @@
 너무예쁜데	너무Noun/예쁘다Adjective
 니코마키	니코Noun/마키Noun
 다음에는	다음Noun/에는Josa
+보다가	보다Verb
 나이거	나이Noun/거Noun
 언니와	언니Noun/와Josa
 광고에서	광고Noun/에서Josa
@@ -39028,7 +39030,6 @@
 하시는데	하다Verb
 전하면	전Noun/하다Verb
 좋지않은	좋다Adjective/않다Verb
-탐라보다가	타다Verb/라보Noun/다가Josa
 등급의	등급Noun/의Josa
 헨리씨도	헨리Noun/씨Suffix/도Josa
 호일로	호일Noun/로Josa
@@ -39117,6 +39118,7 @@
 장난감	장난감Noun
 사가현	사가현Noun
 농구하는	농구Noun/하다Verb
+놀다가	놀다Verb
 드디어	드디어Noun
 찾아보는데	찾아보다Verb
 울텐데	울다Verb
@@ -39360,6 +39362,7 @@
 제시해주세요	제시Noun/하다Verb
 의리맺으세요	의리Noun/맺다Verb
 스파이임까	스파Noun/이입Noun/니까Josa
+치다가	치다Verb
 그러는	그렇다Adjective
 같았어요	같다Adjective
 질문은	질문Noun/은Josa
@@ -40069,7 +40072,6 @@
 뿐이었다	뿐이다Adjective
 잘부탁드리고	잘VerbPrefix/부탁드리다Adjective
 하이힐	하이힐Noun
-짓다가	짓Noun/다가Josa
 수현이	수현Noun/이Josa
 손배치	손Noun/배치Noun
 썼어요	쓰다Verb
@@ -41436,7 +41438,6 @@
 대딸방	대딸방Noun
 것이었겠지만	것Noun/이다Verb
 더운게	덥다Adjective
-찍다가	찍Noun/다가Josa
 말끔히	말끔히Adverb
 오더니	오다Verb
 익숙했던	익숙하다Adjective
@@ -42097,7 +42098,6 @@
 불러주는	불다Verb
 하는거였구나	하다Verb
 건들면	건Noun/들Suffix/면Josa
-타다가	타Noun/다가Josa
 소환사의	소환Noun/사의Noun
 올라타는	올라타다Verb
 헷갈려서	헷갈리다Adjective

@@ -3,7 +3,7 @@ package com.twitter.penguin.korean.phrase_extractor
 import com.twitter.penguin.korean.TwitterKoreanProcessor
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
-import com.twitter.penguin.korean.util.{Hangul, KoreanPos}
+import com.twitter.penguin.korean.util.{KoreanDictionaryProvider, Hangul, KoreanPos}
 
 /**
  * KoreanPhraseExtractor extracts suitable phrases for trending topics.
@@ -193,7 +193,18 @@ object KoreanPhraseExtractor {
     }.phrases
   }
 
-  protected def getCandidatePhraseChunks(phrases: KoreanPhraseChunk): Seq[KoreanPhraseChunk] = {
+  protected def getCandidatePhraseChunks(phrases: KoreanPhraseChunk,
+                                         filterSpam: Boolean = false): Seq[KoreanPhraseChunk] = {
+    def isNotSpam(phrase: KoreanPhrase): Boolean = {
+
+      println(phrase)
+      println(filterSpam, phrase.tokens.exists(t => KoreanDictionaryProvider.spamNouns.contains(t.text)))
+      println()
+
+      !filterSpam || !phrase.tokens.exists(t => KoreanDictionaryProvider.spamNouns.contains(t.text))
+
+    }
+
     def isNonNounPhraseCandidate(phrase: KoreanPhrase): Boolean = {
       val trimmed = trimPhrase(phrase)
 
@@ -215,7 +226,7 @@ object KoreanPhraseExtractor {
 
     def collapseNounPhrases(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
       val (output, buffer) = phrases.foldLeft((Seq[KoreanPhrase](), Seq[KoreanPhrase]())) {
-        case ((output, buffer), phrase) if phrase.pos == Noun => (output, buffer :+ phrase)
+        case ((output, buffer), phrase) if phrase.pos == Noun && isNotSpam(phrase)=> (output, buffer :+ phrase)
         case ((output, buffer), phrase) =>
           val tempPhrases = if (buffer.length > 0) {
             Seq(KoreanPhrase(buffer.flatMap(_.tokens)), phrase)
@@ -272,18 +283,10 @@ object KoreanPhraseExtractor {
    * @param tokens A sequence of tokens
    * @return A list of KoreanPhrase
    */
-  def extractPhrases(tokens: Seq[KoreanToken]): Seq[KoreanPhrase] = {
+  def extractPhrases(tokens: Seq[KoreanToken], filterSpam: Boolean): Seq[KoreanPhrase] = {
     val collapsed = collapsePos(tokens)
-    val candidates = getCandidatePhraseChunks(collapsed)
-
-    val permutatedCandidates = candidates.flatMap {
-      case phrases if phrases.length > MinPhrasesPerPhraseChunk =>
-        (0 to phrases.length - MinPhrasesPerPhraseChunk).map {
-          i => trimPhraseChunk(phrases.slice(i, phrases.length))
-        }
-      case phrases => Seq(phrases)
-    }.filter { phraseChunk: KoreanPhraseChunk => isProperPhraseChunk(phraseChunk)
-    }.distinct
+    val candidates = getCandidatePhraseChunks(collapsed, filterSpam)
+    val permutatedCandidates = permutateCadidates(candidates)
 
     permutatedCandidates.map {
       phraseChunk: KoreanPhraseChunk => KoreanPhrase(trimPhraseChunk(phraseChunk).flatMap(_.tokens))
@@ -291,17 +294,28 @@ object KoreanPhraseExtractor {
   }
 
 
+  private def permutateCadidates(candidates: Seq[KoreanPhraseChunk]): Seq[KoreanPhraseChunk] = {
+    candidates.flatMap {
+      case phrases if phrases.length > MinPhrasesPerPhraseChunk =>
+        (0 to phrases.length - MinPhrasesPerPhraseChunk).map {
+          i => trimPhraseChunk(phrases.slice(i, phrases.length))
+        }
+      case phrases => Seq(phrases)
+    }.filter { phraseChunk: KoreanPhraseChunk => isProperPhraseChunk(phraseChunk)
+    }.distinct
+  }
+
   /**
    * Extract phrarse from input CharSequence
    *
    * @param input Input CharSequence
    * @return Seq of phrase CharSequence
    */
-  def extractPhrases(input: CharSequence): Seq[CharSequence] = {
+  def extractPhrases(input: CharSequence, filterSpam: Boolean = false): Seq[CharSequence] = {
     val tokens = TwitterKoreanProcessor.tokenize(
       input, stemming = false, keepSpace = true
     )
-    extractPhrases(tokens).map {
+    extractPhrases(tokens, filterSpam).map {
       phrase => phrase.tokens.map(_.text).mkString("")
     }
   }

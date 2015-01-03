@@ -36,6 +36,8 @@ class KoreanPhraseExtractorTest extends TestBase {
     )
   )
 
+  val spamText = "레알 시발 저거 카지노 포르노 야동 보다가 개빡쳤음"
+
   val superLongText: String = "허니버터칩정규직크리스마스" * 50
 
   def time[R](block: => R): Long = {
@@ -62,7 +64,9 @@ class KoreanPhraseExtractorTest extends TestBase {
   }
 
   test("extractPhrases correctly extracts phrases") {
-    assert(KoreanPhraseExtractor.extractPhrases(tokenize(sampleText(0).text)).mkString(", ") ===
+    assert(KoreanPhraseExtractor.extractPhrases(
+      tokenize(sampleText(0).text), filterSpam = false
+    ).mkString(", ") ===
         "블랙프라이데이Noun, 이날 미국Noun, 이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, " +
             "수백만 소비자들Noun, 크리스마스 선물Noun, 할인Noun, 할인된 가격Noun, 가격Noun, 주 목적Noun, " +
             "블랙프라이데이 쇼핑Noun, 이날Noun, 미국Noun, 수백만Noun, 소비자들Noun, " +
@@ -84,7 +88,13 @@ class KoreanPhraseExtractorTest extends TestBase {
   test("extractPhrases should correctly extract the example set") {
     assertExamples(
       "current_phrases.txt", LOG,
-      TwitterKoreanProcessor.extractPhrases(_).mkString("/")
+      KoreanPhraseExtractor.extractPhrases(_).mkString("/")
     )
+  }
+
+  test("extractPhrases should filter out spam and profane words") {
+    assert(KoreanPhraseExtractor.extractPhrases(spamText).mkString(", ") ===
+        "레알 시발 저거 카지노 포르노 야동, 시발 저거 카지노 포르노 야동, 저거 카지노 포르노 야동, 카지노 포르노 야동, 포르노 야동, 레알, 시발, 저거, 카지노, 포르노, 야동")
+    assert(KoreanPhraseExtractor.extractPhrases(spamText, filterSpam = true).mkString(", ") === "")
   }
 }

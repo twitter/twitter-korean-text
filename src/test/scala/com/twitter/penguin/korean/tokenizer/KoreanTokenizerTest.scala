@@ -199,6 +199,10 @@ class KoreanTokenizerTest extends TestBase {
       tokenize("아이럴수가").mkString(", ") ===
           "아Exclamation, 이럴Adjective, 수PreEomi, 가Eomi"
     )
+
+    assert(
+      tokenize("보다가").mkString(", ") === "보다Verb, 가Eomi"
+    )
   }
 
   test("tokenize should be able to tokenize long non-space-correctable ones") {

@@ -36,7 +36,7 @@ object KoreanConjugation {
   private[this] val CODAS_SLANG_CONSONANT = Seq('ㅋ', 'ㅎ')
   private[this] val CODAS_SLANG_VOWEL = Seq('ㅜ', 'ㅠ')
 
-  private[this] val PRE_EOMI_COMMON = "도게면네더던든고거구기긴길다자잖재죠져지진질겠".toSeq
+  private[this] val PRE_EOMI_COMMON = "거게겠고구기긴길네다더던도든면자잖재져죠지진질".toSeq
   private[this] val PRE_EOMI_1_1 = "야서써도준".toSeq
   private[this] val PRE_EOMI_1_2 = "어었".toSeq
   private[this] val PRE_EOMI_1_3 = "아았".toSeq
