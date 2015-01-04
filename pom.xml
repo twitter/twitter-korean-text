@@ -121,6 +121,10 @@
         <groupId>org.scoverage</groupId>
         <artifactId>scoverage-maven-plugin</artifactId>
         <version>${scoverage.plugin.version}</version>
+        <configuration>
+          <highlighting>true</highlighting>
+          <excludedPackages>com.twitter.penguin.korean.qa</excludedPackages>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
