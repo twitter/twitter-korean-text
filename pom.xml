@@ -123,7 +123,7 @@
         <version>${scoverage.plugin.version}</version>
         <configuration>
           <highlighting>true</highlighting>
-          <excludedPackages>com.twitter.penguin.korean.qa</excludedPackages>
+          <excludedPackages>com.twitter.penguin.korean.*</excludedPackages>
         </configuration>
       </plugin>
     </plugins>
