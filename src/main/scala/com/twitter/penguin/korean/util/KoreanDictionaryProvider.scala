@@ -63,9 +63,9 @@ object KoreanDictionaryProvider {
   }
 
 
-  protected[korean] def readWordsAsSeq(filename: String): Seq[String] = {
+  protected[korean] def readWordsAsSeq(filename: String): Seq[String] =
     readFileByLineFromResources(filename).toSeq
-  }
+
 
   protected[korean] def readWordsAsSet(filenames: String*): Set[String] = {
     filenames.foldLeft(Set[String]()) {
