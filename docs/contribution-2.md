@@ -156,9 +156,7 @@ Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가
 
 
 7. 변화한 예시가 acceptable하면 Goldenset을 업데이트 합니다.
-[src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala)
-
-이 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. 
+[src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala) 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. (IntelliJ 안에서 실행 해 주세요.)
 
 8. 다시 테스트를 실행해 봅니다.
 ```
