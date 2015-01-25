@@ -9,23 +9,25 @@ GitHub repo를 Clone해 주세요.
 Terminal에서 ```git clone https://github.com/twitter/twitter-korean-text.git``` 을 해 주시면 됩니다. 물론 git도 설치 되어 있어야 겠죠?
 Intellij Idea에서 ```pom.xml``` 파일을 열어 주세요.
 
-여기서부터는 Branch를 만들어서 사전을 수정하고 업데이트 하는 방법을 알아보겠습니다.
+**Branch를 만들어서 사전을 수정하고 업데이트 하기**
 
-1. Git Branch 만들기
+***Git Branch 만들기***
 
 git checkout -b "feature_branch_name"
 
 "feature_branch_name"에 브랜치 이름을 넣습니다. 이 예제에서는 remove_verbs_from_wiki으로 이름지었습니다.
 
-2. 코드를 업데이트 합니다. 이 예제에서는 사전을 수정해 보겠습니다. 사전 파일들은 
+***코드 업데이트***
+
+이 예제에서는 사전을 수정해 보겠습니다. 사전 파일들은 
 
 [src/main/resources/com/twitter/penguin/korean/util/](../../../tree/master/src/main/resources/com/twitter/penguin/korean/util) 에 있습니다. 
 
-3. ```src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt``` 에 동사가 들어가 있네요. 삭제했습니다. (이런 경우가 많이 있습니다. 수작업으로 없애 주어야 하는데요 여러분의 도움을 구합니다. 아울러 복합명사도 최대한 분리 되어야 합니다. 하동청룡리석불좌상 -> 하동 청룡리 석불 좌상)
+```src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt``` 에 동사가 들어가 있네요. 삭제했습니다. (이런 경우가 많이 있습니다. 수작업으로 없애 주어야 하는데요 여러분의 도움을 구합니다. 아울러 복합명사도 최대한 분리 되어야 합니다. 하동청룡리석불좌상 -> 하동 청룡리 석불 좌상)
 
 ![editor](imgs/img2-1.png)
 
-4. 사전을 정리하기 위해서 [src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala) 를 실행합니다.
+사전을 정리하기 위해서 [src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala) 를 실행합니다.
 
 파일을 열고 Run > Run... 을 실행합니다.
 
@@ -34,7 +36,9 @@ git checkout -b "feature_branch_name"
 
 사전 파일이 가나다 순으로 정렬됩니다.
 
-5. 무엇이 변경되었나 확인해 보겠습니다. 
+***변경 내용 확인***
+
+* 무엇이 변경되었나 확인해 보겠습니다. 
 ```
 ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git diff
 
@@ -166,10 +170,10 @@ Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가
 이 부분을 복사해 놓아 주세요. 나중에 코드 Review할 때 유용합니다.
 
 
-7. 변화한 예시가 acceptable하면 Goldenset을 업데이트 합니다.
+* 변화한 예시가 acceptable하면 Goldenset을 업데이트 합니다.
 [src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala) 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. (IntelliJ 안에서 실행 해 주세요.)
 
-8. 다시 테스트를 실행해 봅니다.
+* 다시 테스트를 실행해 봅니다.
 ```
 -------------------------------------------------------
  T E S T S
@@ -210,7 +214,7 @@ Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
 
 성공하였습니다.
 
-9. commit 하고 push 합니다.
+***Commit & Push ***
 
 ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git commit -am "dictionary update"
 [dictionary_update_name 8dffbfc] dictionary update
@@ -226,6 +230,7 @@ To git@github.com:twitter/twitter-korean-text.git
  * [new branch]      remove_verbs_from_wiki -> remove_verbs_from_wiki
 
 
+***Merge int master**
 10. GitHub에 Branch가 생겼습니다.
 
 ![run](imgs/img2-3.png)
