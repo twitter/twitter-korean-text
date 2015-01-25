@@ -1,4 +1,15 @@
-Part 2에서는 Git Branch를 만들어서 사전을 수정하고 업데이트 하는 방법을 알아보겠습니다.
+github에서 clone해서 설치하고 사전을 업데이트 하고 pull request를 보내는 방법을 연습해 보도록 하겠습니다.
+
+**개발 환경 설치**
+
+Scala를 설치해 주세요. [http://www.scala-lang.org/download/](http://www.scala-lang.org/download/)
+IntelliJ Idea를 설치해 주세요. [https://www.jetbrains.com/idea/download/](https://www.jetbrains.com/idea/download/)
+설치 후에는 Scala Plugin을 설치해 주세요. 환경 설정에 있습니다.
+GitHub repo를 Clone해 주세요.
+Terminal에서 ```git clone https://github.com/twitter/twitter-korean-text.git``` 을 해 주시면 됩니다. 물론 git도 설치 되어 있어야 겠죠?
+Intellij Idea에서 ```pom.xml``` 파일을 열어 주세요.
+
+여기서부터는 Branch를 만들어서 사전을 수정하고 업데이트 하는 방법을 알아보겠습니다.
 
 1. Git Branch 만들기
 
