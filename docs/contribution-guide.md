@@ -235,4 +235,4 @@ To git@github.com:twitter/twitter-korean-text.git
 
 ![run](imgs/img2-3.png)
 
-"Compare & pull request"를 누르면 Pull Request를 제가 받게 됩니다.
+"Compare & pull request"를 누르면 Pull Request를 보낼 수 있습니다.
