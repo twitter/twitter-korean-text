@@ -230,7 +230,7 @@ To git@github.com:twitter/twitter-korean-text.git
  * [new branch]      remove_verbs_from_wiki -> remove_verbs_from_wiki
 
 
-## Merge int master
+## Merge with master
 10. GitHub에 Branch가 생겼습니다.
 
 ![run](imgs/img2-3.png)
