@@ -24,7 +24,7 @@ src/main/resources/com/twitter/penguin/korean/util/ 에 있습니다.
 사전 파일이 가나다 순으로 정렬됩니다.
 
 5. 무엇이 변경되었나 확인해 보겠습니다. 
-
+```
 ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git diff
 
 diff --git a/src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt b/src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt
@@ -90,12 +90,12 @@ index 8a6d3c5..c1386d3 100644
  승탑군
 
 ...
-
+```
 
 6. 테스트를 실행해 봅니다. 
 
 ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  mvn test
-
+```
 Picked up _JAVA_OPTIONS: -Xmx2g
 [INFO] Scanning for projects...
 [WARNING]
@@ -144,77 +144,77 @@ Tests run: 66, Failures: 0, Errors: 1, Skipped: 0
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD FAILURE
 [INFO] ------------------------------------------------------------------------
-
+```
 
 테스트가 Fail하였습니다. 기존 코드와의 변화를 확인하기 위해서 5만개 정도의 어절을 test set으로 넣어 놓았습니다. 
-
+```
 Goldenset Match Error: 가야하나요 (가야하나Noun 요Josa) -> (가다Verb)
 Goldenset Match Error: 가야하나 (가야하나Noun) -> (가야Noun 하나Noun)
 Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가Josa)
-
+```
 이 부분을 복사해 놓아 주세요. 나중에 코드 Review할 때 유용합니다.
 
 
 7. 변화한 예시가 acceptable하면 Goldenset을 업데이트 합니다.
-
-src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala
+[src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](../src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala)
 
 이 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. 
 
 8. 다시 테스트를 실행해 봅니다.
+```
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Picked up _JAVA_OPTIONS: -Xmx2g
+Running com.twitter.penguin.korean.normalizer.KoreanNormalizerTest
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.508 sec
+Running com.twitter.penguin.korean.stemmer.KoreanStemmerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.771 sec
+Running com.twitter.penguin.korean.tokenizer.KoreanChunkerTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 sec
+Running com.twitter.penguin.korean.tokenizer.KoreanTokenizerTest
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.236 sec
+Running com.twitter.penguin.korean.TwitterKoreanProcessorJavaTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 sec
+Running com.twitter.penguin.korean.TwitterKoreanProcessorTest
+Nov 14, 2014 9:52:40 PM com.twitter.penguin.korean.TwitterKoreanProcessorTest$$anonfun$12 apply$mcV$sp
+INFO: Parsed 42496 chunks.
+       Total time: 5166 ms
+       Average time: 0.12 ms
+       Max time: 65 ms, 들리는게
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.387 sec
+Running com.twitter.penguin.korean.util.HangulTest
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+Running com.twitter.penguin.korean.util.KoreanConjugationTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.398 sec
+Running com.twitter.penguin.korean.util.KoreanSubstantiveTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
 
-  -------------------------------------------------------
-   T E S T S
-  -------------------------------------------------------
-  Picked up _JAVA_OPTIONS: -Xmx2g
-  Running com.twitter.penguin.korean.normalizer.KoreanNormalizerTest
-  Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.508 sec
-  Running com.twitter.penguin.korean.stemmer.KoreanStemmerTest
-  Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.771 sec
-  Running com.twitter.penguin.korean.tokenizer.KoreanChunkerTest
-  Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 sec
-  Running com.twitter.penguin.korean.tokenizer.KoreanTokenizerTest
-  Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.236 sec
-  Running com.twitter.penguin.korean.TwitterKoreanProcessorJavaTest
-  Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 sec
-  Running com.twitter.penguin.korean.TwitterKoreanProcessorTest
-  Nov 14, 2014 9:52:40 PM com.twitter.penguin.korean.TwitterKoreanProcessorTest$$anonfun$12 apply$mcV$sp
-  INFO: Parsed 42496 chunks.
-         Total time: 5166 ms
-         Average time: 0.12 ms
-         Max time: 65 ms, 들리는게
-  Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.387 sec
-  Running com.twitter.penguin.korean.util.HangulTest
-  Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
-  Running com.twitter.penguin.korean.util.KoreanConjugationTest
-  Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.398 sec
-  Running com.twitter.penguin.korean.util.KoreanSubstantiveTest
-  Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+Results :
 
-  Results :
+Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
 
-  Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+```
 
-  [INFO] ------------------------------------------------------------------------
-  [INFO] BUILD SUCCESS
-  [INFO] ------------------------------------------------------------------------
+성공하였습니다.
 
-  성공하였습니다.
+9. commit 하고 push 합니다.
 
-  9. commit 하고 push 합니다.
-
-  ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git commit -am "dictionary update"
-  [dictionary_update_name 8dffbfc] dictionary update
-   2 files changed, 8 insertions(+), 41 deletions(-)
-   rewrite src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz (61%)
-  ~/workspace/twitter-korean-text remove_verbs_from_wiki ➜  git push origin remove_verbs_from_wiki
-  Counting objects: 20, done.
-  Delta compression using up to 8 threads.
-  Compressing objects: 100% (10/10), done.
-  Writing objects: 100% (20/20), 578.94 KiB | 0 bytes/s, done.
-  Total 20 (delta 4), reused 0 (delta 0)
-  To git@github.com:twitter/twitter-korean-text.git
-   * [new branch]      remove_verbs_from_wiki -> remove_verbs_from_wiki
+~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git commit -am "dictionary update"
+[dictionary_update_name 8dffbfc] dictionary update
+ 2 files changed, 8 insertions(+), 41 deletions(-)
+ rewrite src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz (61%)
+~/workspace/twitter-korean-text remove_verbs_from_wiki ➜  git push origin remove_verbs_from_wiki
+Counting objects: 20, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (10/10), done.
+Writing objects: 100% (20/20), 578.94 KiB | 0 bytes/s, done.
+Total 20 (delta 4), reused 0 (delta 0)
+To git@github.com:twitter/twitter-korean-text.git
+ * [new branch]      remove_verbs_from_wiki -> remove_verbs_from_wiki
 
 
 10. GitHub에 Branch가 생겼습니다.
