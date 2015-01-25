@@ -70,8 +70,6 @@ mvn compile
 
 Open 'pom.xml' from your favorite IDE.
 
-[설치 튜토리얼과 Q&A](https://groups.google.com/forum/#!topic/twitter-korean-text/hAq-9ctfZ6M)
-
 ## Usage 사용 방법
 
 You can find these [examples](examples) in examples folder.
@@ -214,7 +212,8 @@ We provide tools for quality assurance and test resources. They can be found und
 
 Refer to the [general contribution guide](CONTRIBUTING.md). We will add this project-specific contribution guide later.
 
-[코드 수정해서 Pull Request 보내는 방법 튜토리얼](https://groups.google.com/forum/#!topic/twitter-korean-text/c7iL5TU0sJU)
+[설치 및 수정하는 방법 상세 안내](docs/contribution-guide.md)
+
 
 ## Performance 처리 속도
 
