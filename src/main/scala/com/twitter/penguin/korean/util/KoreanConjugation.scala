@@ -250,29 +250,4 @@ object KoreanConjugation {
       expanded -- Set("아니", "입", "입니", "나는")
     }
   }
-
-  /**
-   * Adds intentional typos at verb endings.
-   * 가래 -> 가랰ㅋㅋㅋㅋㅋ
-   * 먹 -> 머구ㅜㅜㅜㅜㅜ
-   * 닭 -> 달규ㅠㅠㅠ
-   *
-   * @param word Input string.
-   * @return Expanded words.
-   */
-  def addTypoEndings(word: String, applyToOneChar: Boolean = true): Seq[String] = {
-    decomposeHangul(word.last) match {
-      case HangulChar(o: Char, v: Char, ' ') if applyToOneChar || word.length > 1 =>
-        Seq(word) ++
-            CODAS_SLANG_CONSONANT.map(word.init + composeHangul(o, v, _))
-      case HangulChar(o: Char, v: Char, c: Char) if DOUBLE_CODAS.contains(c) && word.length > 1 =>
-        val doubleCoda = DOUBLE_CODAS(c)
-        Seq(word) ++
-            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, doubleCoda.first) + composeHangul(doubleCoda.second, _))
-      case HangulChar(o: Char, v: Char, c: Char) if word.length > 1 =>
-        Seq(word) ++
-            CODAS_SLANG_VOWEL.map(word.init + composeHangul(o, v, ' ') + composeHangul(c, _))
-      case _ => Seq(word)
-    }
-  }
 }
