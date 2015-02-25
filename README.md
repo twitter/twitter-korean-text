@@ -55,6 +55,7 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
 
+[konlpy](https://github.com/konlpy/konlpy) now includes twitter-korean-text. 파이썬에서 쉬운 활용이 가능한 [konlpy](https://github.com/konlpy/konlpy) 패키지에 포함되었습니다. 
 
 ## Get the source 소스를 원하시는 경우
 
@@ -230,6 +231,12 @@ Tweets|100K|200K|300K|400K|500K|600K|700K|800K|900K|1M
 ---|---|---|---|---|---|---|---|---|---|---
 Time in Seconds|57.59|112.09|165.05|218.11|270.54|328.52|381.09|439.71|492.94|542.12
 Average per tweet: 0.54212 ms
+
+**Benchmark test by [KoNLPy](http://konlpy.org/)**
+
+![Benchmark test](http://konlpy.org/ko/v0.4.2/_images/time.png)
+
+From [http://konlpy.org/ko/v0.4.2/morph/](http://konlpy.org/ko/v0.4.2/morph/)
 
 
 ## Author(s)
