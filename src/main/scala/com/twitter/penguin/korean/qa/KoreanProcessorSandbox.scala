@@ -25,7 +25,7 @@ import com.twitter.penguin.korean.TwitterKoreanProcessor._
  */
 object KoreanProcessorSandbox {
   def main(args: Array[String]) {
-    val s = "아직 어제거 못 들었는데 폭탄발언 했나보다.. 듣기 무섭네.."
+    val s = "와 이거 알티 이르케 많이 됐었엌ㅋㅋㅋ??"
 
     println(
       tokenize(s, stemming = false).mkString(" ")

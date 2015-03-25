@@ -124,6 +124,13 @@ object TwitterKoreanProcessor {
     if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
   }
 
+  /**
+   * Extract noun-phrases from Korean text
+   *
+   * @param text input text.
+   * @param filterSpam Whether to filter spam/slang terms
+   * @return A sequence of extracted phrases
+   */
   def extractPhrases(text: CharSequence, filterSpam: Boolean = false): Seq[CharSequence] = {
     KoreanPhraseExtractor.extractPhrases(text, filterSpam)
   }
