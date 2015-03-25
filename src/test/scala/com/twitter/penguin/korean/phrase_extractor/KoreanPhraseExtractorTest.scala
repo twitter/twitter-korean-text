@@ -32,7 +32,7 @@ class KoreanPhraseExtractorTest extends TestBase {
     ),
     SampleTextPair(
       "Galaxy S5와 iPhone 6의 경쟁",
-      "Galaxy S5와 iPhone 6의 경쟁, iPhone 6의 경쟁, Galaxy, S5, iPhone, 경쟁"
+      "Galaxy S5, iPhone 6의 경쟁, Galaxy, S5, iPhone, 경쟁"
     )
   )
 
