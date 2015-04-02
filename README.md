@@ -199,15 +199,18 @@ public class JavaTwitterKoreanTextExample {
 
 [TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala)에 지원하는 모든 기능을 모아 두었습니다. 
 
+
 ## Running Tests
 
 `mvn test` will run our unit tests
 
 모든 유닛 테스트를 실행하려면 `mvn test`를 이용해 주세요.
 
+
 ## Tools
 
 We provide tools for quality assurance and test resources. They can be found under [src/main/scala/com/twitter/penguin/korean/qa](src/main/scala/com/twitter/penguin/korean/qa) and [src/main/scala/com/twitter/penguin/korean/tools](src/main/scala/com/twitter/penguin/korean/tools).
+
  
 ## Contribution
 
