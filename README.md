@@ -51,6 +51,13 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
 
 The maven site is available here http://twitter.github.io/twitter-korean-text/ and scaladocs are here http://twitter.github.io/twitter-korean-text/scaladocs/
 
+## .net Wrapper
+
+[modamoda](https://github.com/modamoda) created repository and built simple C# wrapper project.
+
+Please visit [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS) for further information!
+
+
 ## Python Wrapper
 
 [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
