@@ -1,7 +1,7 @@
 language: java
 script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn -X clean deploy --settings settings.xml || mvn -X clean verify --settings settings.xml"
 jdk:
-  - oraclejdk8
+  - openjdk7
 branches:
   only:
     - master
