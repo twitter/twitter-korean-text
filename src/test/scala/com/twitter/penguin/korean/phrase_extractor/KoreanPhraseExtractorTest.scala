@@ -15,34 +15,36 @@ class KoreanPhraseExtractorTest extends TestBase {
   val sampleText = List[SampleTextPair](
     SampleTextPair(
       "블랙프라이데이: 이날 미국의 수백만 소비자들은 크리스마스 선물을 할인된 가격에 사는 것을 주 목적으로 블랙프라이데이 쇼핑을 한다.",
-      "블랙프라이데이, 이날 미국, 이날 미국의 수백만 소비자들, 미국의 수백만 소비자들, 수백만 소비자들, 크리스마스 선물, 할인, 할인된 가격, " +
-          "가격, 주 목적, 블랙프라이데이 쇼핑, 이날, 미국, 수백만, 소비자들, 크리스마스, 선물, 목적, 쇼핑"
+      "블랙프라이데이, 이날, 이날 미국, 이날 미국의 수백만, 미국의 수백만, 수백만, 이날 미국의 수백만 소비자들, " +
+        "미국의 수백만 소비자들, 수백만 소비자들, 크리스마스, 크리스마스 선물, 할인, 할인된 가격, 가격, 주 목적, " +
+        "블랙프라이데이 쇼핑, 미국, 소비자들, 선물, 목적, 쇼핑"
     ),
     SampleTextPair(
       "결정했어. 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지를 선물할 것이다.",
-      "결정, 마키 코레썸, 마키 코레썸 사주시는 분께는 허니버터칩, 코레썸 사주시는 분께는 허니버터칩, 허니버터칩, " +
-          "마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 코레썸 사주시는 분께는 허니버터칩 한 봉지, 허니버터칩 한 봉지, 봉지, 마키, 코레썸"
+      "결정, 마키, 마키 코레썸, 마키 코레썸 사주시는 분께는 허니버터칩, 코레썸 사주시는 분께는 허니버터칩, " +
+        "허니버터칩, 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 코레썸 사주시는 분께는 허니버터칩 한 봉지, " +
+        "허니버터칩 한 봉지, 봉지, 코레썸"
     ),
     SampleTextPair(
       "[단독]정부, 새 고용 형태 ＇중규직＇ 만든다 http://url.com 이름도 바뀌겟군. 정규직은 상규직, " +
           "비정규직은 하규직. 중규직 참 창조적이다. 결국 기업은 비정규직으로 이용할게 뻔함.",
-      "단독, 정부, 새 고용 형태, 고용 형태, 중규직, 이름, 정규직, 상규직, 비정규직, 하규직, 기업, 고용, 형태, 하규"
+      "단독, 정부, 새 고용, 새 고용 형태, 고용 형태, 중규직, 이름, 정규직, 상규직, 비정규직, 하규직, 기업, 고용, 형태, 하규"
     ),
     SampleTextPair(
       "키? ...난 절대 키가 작은 게 아냐. 이소자키나 츠루기가 비정상적으로 큰거야. 1학년이 그렇게 큰 게 말이 돼!? ",
-      "난 절대 키, 절대 키, 이소자키, 츠루기, 1학년, 절대, 이소, 자키, 학년"
+      "난 절대, 난 절대 키, 절대 키, 작은 게, 이소자키, 츠루기, 1학년, 절대, 이소, 자키, 학년"
     ),
     SampleTextPair(
       "Galaxy S5와 iPhone 6의 경쟁",
-      "Galaxy S5, iPhone 6의 경쟁, 6의 경쟁, Galaxy, S5, iPhone, 경쟁"
+      "Galaxy, Galaxy S5, iPhone, iPhone 6의, iPhone 6의 경쟁, 6의 경쟁, S5, 경쟁"
     ),
     SampleTextPair(
       "ABCㅋㅋLTE갤럭시S4ㅋㅋ꼬마가",
       "ABC, LTE갤럭시S4, 꼬마, LTE, 갤럭시, S4"
     ),
     SampleTextPair(
-      "잘 나가는 트위터의 #hashtag #해쉬태그 @mention",
-      "트위터, #hashtag, #해쉬태그"
+      "아름다운 트위터 #해쉬태그 평화로운 트위터의 #hashtag @mention",
+      "아름다운 트위터, 평화로운 트위터, 트위터, #해쉬태그, #hashtag"
     )
   )
 
@@ -112,10 +114,10 @@ class KoreanPhraseExtractorTest extends TestBase {
     assert(KoreanPhraseExtractor.extractPhrases(
       tokenize(sampleText(0).text), filterSpam = false
     ).mkString(", ") ===
-        "블랙프라이데이Noun, 이날 미국Noun, 이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, " +
-            "수백만 소비자들Noun, 크리스마스 선물Noun, 할인Noun, 할인된 가격Noun, 가격Noun, 주 목적Noun, " +
-            "블랙프라이데이 쇼핑Noun, 이날Noun, 미국Noun, 수백만Noun, 소비자들Noun, " +
-            "크리스마스Noun, 선물Noun, 목적Noun, 쇼핑Noun")
+        "블랙프라이데이Noun, 이날Noun, 이날 미국Noun, 이날 미국의 수백만Noun, 미국의 수백만Noun, 수백만Noun, " +
+          "이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, 수백만 소비자들Noun, 크리스마스Noun, " +
+          "크리스마스 선물Noun, 할인Noun, 할인된 가격Noun, 가격Noun, 주 목적Noun, 블랙프라이데이 쇼핑Noun, " +
+          "미국Noun, 소비자들Noun, 선물Noun, 목적Noun, 쇼핑Noun")
   }
 
   test("extractPhrases correctly extracts phrases from a string") {
@@ -139,7 +141,10 @@ class KoreanPhraseExtractorTest extends TestBase {
 
   test("extractPhrases should filter out spam and profane words") {
     assert(KoreanPhraseExtractor.extractPhrases(spamText).mkString(", ") ===
-        "레알 시발 저거 카지노 포르노 야동, 시발 저거 카지노 포르노 야동, 저거 카지노 포르노 야동, 카지노 포르노 야동, 포르노 야동, 레알, 시발, 저거, 카지노, 포르노, 야동")
+        "레알, 레알 시발, 레알 시발 저거, 시발 저거, 레알 시발 저거 카지노, 시발 저거 카지노, 저거 카지노, " +
+          "레알 시발 저거 카지노 포르노, 시발 저거 카지노 포르노, 저거 카지노 포르노, 카지노 포르노, " +
+          "레알 시발 저거 카지노 포르노 야동, 시발 저거 카지노 포르노 야동, 저거 카지노 포르노 야동, " +
+          "카지노 포르노 야동, 포르노 야동, 시발, 저거, 카지노, 포르노, 야동")
     assert(KoreanPhraseExtractor.extractPhrases(spamText, filterSpam = true).mkString(", ") ===
         "레알, 저거")
   }

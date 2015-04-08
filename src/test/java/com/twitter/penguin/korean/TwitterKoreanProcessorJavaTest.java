@@ -25,6 +25,10 @@ public class TwitterKoreanProcessorJavaTest {
       .enablePhraseExtractorSpamFilter()
       .build();
 
+  TwitterKoreanProcessorJava processorWithoutHashtags = new TwitterKoreanProcessorJava.Builder()
+      .disablePhraseExtractorHashtags()
+      .build();
+
   @Test
   public void testNormalize() throws Exception {
     assertEquals("힘들겠습니다 그래요ㅋㅋ", processor.normalize("힘들겟씀다 그래욬ㅋㅋㅋ"));
@@ -124,9 +128,10 @@ public class TwitterKoreanProcessorJavaTest {
 
   @Test
   public void testPhraseExtractor() {
-    String text = "아름다운 트위터를 만들어 보자. 시발";
-    assertEquals("[트위터, 시발]", processor.extractPhrases(text).toString());
+    String text = "아름다운 트위터를 만들어 보자. 시발 #욕하지_말자";
 
-    assertEquals("[트위터]", processorWithSpamFilter.extractPhrases(text).toString());
+    assertEquals("[아름다운 트위터, 시발, 트위터, #욕하지_말자]", processor.extractPhrases(text).toString());
+    assertEquals("[아름다운 트위터, 트위터, #욕하지_말자]", processorWithSpamFilter.extractPhrases(text).toString());
+    assertEquals("[아름다운 트위터, 시발, 트위터]", processorWithoutHashtags.extractPhrases(text).toString());
   }
 }

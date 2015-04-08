@@ -25,7 +25,8 @@ object KoreanPhraseExtractor {
   private val ConjunctionJosa = Set("와", "과", "의")
   type KoreanPhraseChunk = Seq[KoreanPhrase]
 
-  private val PhraseHeadTailPoses = Set(Noun, Alpha, Number)
+  private val PhraseHeadPoses = Set(Adjective, Noun, Alpha, Number)
+  private val PhrasTailPoses = Set(Noun, Alpha, Number)
 
   /**
    * 0 for optional, 1 for required
@@ -74,9 +75,9 @@ object KoreanPhraseExtractor {
   private def trimPhraseChunk(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
     def trimNonNouns: Seq[KoreanPhrase] = {
       phrases
-        .dropWhile(t => !PhraseHeadTailPoses.contains(t.pos))
+        .dropWhile(t => !PhraseHeadPoses.contains(t.pos))
         .reverse
-        .dropWhile(t => !PhraseHeadTailPoses.contains(t.pos))
+        .dropWhile(t => !PhrasTailPoses.contains(t.pos))
         .reverse
     }
 
@@ -250,22 +251,18 @@ object KoreanPhraseExtractor {
 
       def newBuffer: Seq[Seq[KoreanPhrase]] = Seq(Seq[KoreanPhrase]())
 
-      val (output, buffer) = phrases.foldLeft(
-        (Seq[KoreanPhraseChunk](), newBuffer)
-      ) {
-        case ((output, buffer), phrase)
-          if PhraseTokens.contains(phrase.pos) && isNotSpam(phrase) =>
-            (output, addPhraseToBuffer(phrase, buffer))
-        case ((output, buffer), phrase)
-          if buffer.length > 0 && isNonNounPhraseCandidate(phrase) =>
-            (output ++ buffer, addPhraseToBuffer(phrase, buffer :+ Seq[KoreanPhrase]()))
-        case ((output, buffer), phrase)
-          if isNonNounPhraseCandidate(phrase) =>
-            (output, addPhraseToBuffer(phrase, buffer))
-        case ((output, buffer), phrase)
-          if buffer.length > 0 =>
-            (output ++ buffer, newBuffer)
-        case ((output, buffer), phrase) => (output, buffer)
+      val (output, buffer) = phrases.foldLeft((Seq[KoreanPhraseChunk](), newBuffer)) {
+        case ((output, buffer), phrase) if PhraseTokens.contains(phrase.pos) && isNotSpam(phrase) =>
+          val bufferWithThisPhrase = addPhraseToBuffer(phrase, buffer)
+          if (phrase.pos == Noun) {
+            (output ++ bufferWithThisPhrase, bufferWithThisPhrase)
+          } else {
+            (output, bufferWithThisPhrase)
+          }
+        case ((output, buffer), phrase) if isNonNounPhraseCandidate(phrase) =>
+          (output, addPhraseToBuffer(phrase, buffer))
+        case ((output, buffer), phrase) =>
+          (output ++ buffer, newBuffer)
       }
       if (buffer.length > 0) output ++ buffer else output
     }
@@ -295,7 +292,6 @@ object KoreanPhraseExtractor {
   def extractPhrases(tokens: Seq[KoreanToken], filterSpam: Boolean): Seq[KoreanPhrase] = {
     val collapsed = collapsePos(tokens)
     val candidates = getCandidatePhraseChunks(collapsed, filterSpam)
-
     val permutatedCandidates = permutateCadidates(candidates)
 
     permutatedCandidates.map {

@@ -36,15 +36,19 @@ public class TwitterKoreanProcessorJava {
   private boolean normalizerEnabled;
   private boolean keepSpaceEnabled;
   private boolean phraseExtractorSpamFilterEnabled;
+  private boolean phraseExtractorHashtagsEnabled;
+
 
   private TwitterKoreanProcessorJava(
       boolean normalizerEnabled, boolean stemmerEnabled,
-      boolean keepSpaceEnabled, boolean phraseExtractorSpamFilterEnabled) {
+      boolean keepSpaceEnabled, boolean phraseExtractorSpamFilterEnabled,
+      boolean phraseExtractorHashtagsEnabled) {
     // Use the builder to instantiate this
     this.stemmerEnabled = stemmerEnabled;
     this.normalizerEnabled = normalizerEnabled;
     this.keepSpaceEnabled = keepSpaceEnabled;
     this.phraseExtractorSpamFilterEnabled = phraseExtractorSpamFilterEnabled;
+    this.phraseExtractorHashtagsEnabled = phraseExtractorHashtagsEnabled;
   }
 
   /**
@@ -125,7 +129,7 @@ public class TwitterKoreanProcessorJava {
    */
   public List<CharSequence> extractPhrases(CharSequence text) {
     return JavaConversions.seqAsJavaList(
-        TwitterKoreanProcessor.extractPhrases(text, phraseExtractorSpamFilterEnabled)
+        TwitterKoreanProcessor.extractPhrases(text, phraseExtractorSpamFilterEnabled, phraseExtractorHashtagsEnabled)
     );
   }
 
@@ -138,6 +142,7 @@ public class TwitterKoreanProcessorJava {
     private boolean keepSpaceEnabled = false;
 
     private boolean phraseExtractorSpamFilterEnabled = false;
+    private boolean phraseExtractorHashtagsEnabled = true;
 
     public Builder disableNormalizer() {
       normalizerEnabled = false;
@@ -159,9 +164,17 @@ public class TwitterKoreanProcessorJava {
       return this;
     }
 
+    public Builder disablePhraseExtractorHashtags() {
+      phraseExtractorHashtagsEnabled = false;
+      return this;
+    }
+
 
     public TwitterKoreanProcessorJava build() {
-      return new TwitterKoreanProcessorJava(normalizerEnabled, stemmerEnabled, keepSpaceEnabled, phraseExtractorSpamFilterEnabled);
+      return new TwitterKoreanProcessorJava(
+          normalizerEnabled, stemmerEnabled, keepSpaceEnabled,
+          phraseExtractorSpamFilterEnabled, phraseExtractorHashtagsEnabled
+      );
     }
   }
 }
