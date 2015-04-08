@@ -3,6 +3,8 @@ package com.twitter.penguin.korean.phrase_extractor
 import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+import com.twitter.penguin.korean.util.KoreanPos
 import com.twitter.penguin.korean.{TestBase, TwitterKoreanProcessor}
 
 class KoreanPhraseExtractorTest extends TestBase {
@@ -32,7 +34,15 @@ class KoreanPhraseExtractorTest extends TestBase {
     ),
     SampleTextPair(
       "Galaxy S5와 iPhone 6의 경쟁",
-      "Galaxy S5, iPhone 6의 경쟁, Galaxy, S5, iPhone, 경쟁"
+      "Galaxy S5, iPhone 6의 경쟁, 6의 경쟁, Galaxy, S5, iPhone, 경쟁"
+    ),
+    SampleTextPair(
+      "ABCㅋㅋLTE갤럭시S4ㅋㅋ꼬마가",
+      "ABC, LTE갤럭시S4, 꼬마, LTE, 갤럭시, S4"
+    ),
+    SampleTextPair(
+      "잘 나가는 트위터의 #hashtag #해쉬태그 @mention",
+      "트위터, #hashtag, #해쉬태그"
     )
   )
 
@@ -52,11 +62,46 @@ class KoreanPhraseExtractorTest extends TestBase {
   )
 
   test("collapsePos correctly collapse KoreanPos sequences") {
+    assert(KoreanPhraseExtractor.collapsePos(
+      Seq(
+        KoreanToken("N", KoreanPos.Noun),
+        KoreanToken("N", KoreanPos.Noun)
+      )).mkString("/") ===
+      "NNoun/NNoun"
+    )
+
+    assert(KoreanPhraseExtractor.collapsePos(
+      Seq(
+        KoreanToken("X", KoreanPos.KoreanParticle),
+        KoreanToken("p", KoreanPos.NounPrefix),
+        KoreanToken("N", KoreanPos.Noun)
+      )).mkString("/") ===
+      "XKoreanParticle/pNNoun"
+    )
+
+    assert(KoreanPhraseExtractor.collapsePos(
+      Seq(
+        KoreanToken("p", KoreanPos.NounPrefix),
+        KoreanToken("X", KoreanPos.KoreanParticle),
+        KoreanToken("N", KoreanPos.Noun)
+      )).mkString("/") ===
+      "pNoun/XKoreanParticle/NNoun"
+    )
+
+    assert(KoreanPhraseExtractor.collapsePos(
+      Seq(
+        KoreanToken("p", KoreanPos.NounPrefix),
+        KoreanToken("N", KoreanPos.Noun),
+        KoreanToken("X", KoreanPos.KoreanParticle)
+      )).mkString("/") ===
+      "pNNoun/XKoreanParticle"
+    )
+
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(0).text)).mkString("") ===
-        "블랙프라이데이Noun:Punctuation Space이날Noun Space미국Noun의Josa Space수백만Noun Space소비자들Noun은Josa" +
-            " Space크리스마스Noun Space선물Noun을Josa Space할인Noun된Verb Space가격Noun에Josa Space사는Verb" +
-            " Space것Noun을Josa Space주Noun Space목적Noun으로Josa Space블랙프라이데이Noun Space쇼핑Noun을Josa" +
-            " Space한다Verb.Punctuation")
+      "블랙프라이데이Noun:Punctuation Space이날Noun Space미국Noun의Josa Space수백만Noun Space소비자들Noun은Josa" +
+          " Space크리스마스Noun Space선물Noun을Josa Space할인Noun된Verb Space가격Noun에Josa Space사는Verb" +
+          " Space것Noun을Josa Space주Noun Space목적Noun으로Josa Space블랙프라이데이Noun Space쇼핑Noun을Josa" +
+          " Space한다Verb.Punctuation")
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(1).text)).mkString("") ===
         "결정Noun했어Verb.Punctuation Space마키Noun Space코레썸Noun Space사주시는Verb Space분께는Verb" +
