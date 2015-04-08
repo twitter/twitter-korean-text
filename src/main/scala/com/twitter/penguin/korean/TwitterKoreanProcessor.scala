@@ -131,8 +131,10 @@ object TwitterKoreanProcessor {
    * @param filterSpam Whether to filter spam/slang terms
    * @return A sequence of extracted phrases
    */
-  def extractPhrases(text: CharSequence, filterSpam: Boolean = false): Seq[CharSequence] = {
-    KoreanPhraseExtractor.extractPhrases(text, filterSpam)
+  def extractPhrases(text: CharSequence,
+                     filterSpam: Boolean = false,
+                     enableHashtags: Boolean = true): Seq[CharSequence] = {
+    KoreanPhraseExtractor.extractPhrases(text, filterSpam, enableHashtags)
   }
 
   /**
