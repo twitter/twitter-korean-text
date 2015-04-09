@@ -203,6 +203,7 @@
           <scalaVersion>${scala.version}</scalaVersion>
         </configuration>
       </plugin>
+      <!--
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
@@ -216,6 +217,7 @@
           </sourceDirectories>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
   <profiles>
