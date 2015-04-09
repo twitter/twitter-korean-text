@@ -185,6 +185,11 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.5.1</version>
       </plugin>
@@ -203,7 +208,6 @@
           <scalaVersion>${scala.version}</scalaVersion>
         </configuration>
       </plugin>
-      <!--
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
@@ -217,7 +221,6 @@
           </sourceDirectories>
         </configuration>
       </plugin>
-      -->
     </plugins>
   </build>
   <profiles>
