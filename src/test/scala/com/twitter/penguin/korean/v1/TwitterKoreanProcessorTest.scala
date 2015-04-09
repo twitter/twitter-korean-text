@@ -148,44 +148,4 @@ class TwitterKoreanProcessorTest extends FunSuite {
     )
   }
 
-  //test("tokenizeWithNormalization should correctly tokenize the goldenset") {
-  //  assert({
-  //    val input = readFileByLineFromResources("current_parsing.txt")
-
-  //    val (parseTimes, hasErrors) = input.foldLeft((List[ParseTime](), true)) {
-  //      case ((l: List[ParseTime], output: Boolean), line: String) =>
-  //        val s = line.split("\t")
-  //        val (chunk, parse) = (s(0), if (s.length == 2) s(1) else "")
-
-  //        val oldTokens = parse
-  //        val t0 = System.currentTimeMillis()
-  //        val newTokens = TwitterKoreanProcessor.tokenize(chunk).mkString("/")
-  //        val t1 = System.currentTimeMillis()
-
-  //        val oldParseMatches = oldTokens == newTokens
-
-  //        if (!oldParseMatches) {
-  //          System.err.println("Example set match error: %s \n  %s -> %s".format(
-  //            chunk, oldTokens, newTokens))
-  //        }
-
-  //        (ParseTime(t1 - t0, chunk) :: l, output && oldParseMatches)
-  //    }
-
-  //    val averageTime = parseTimes.map(_.time).sum.toDouble / parseTimes.size
-  //    val maxItem = parseTimes.maxBy(_.time)
-
-  //    LOG.log(Level.INFO, ("Parsed %d chunks. \n" +
-  //        "       Total time: %d ms \n" +
-  //        "       Average time: %.2f ms \n" +
-  //        "       Max time: %d ms, %s").format(
-  //          parseTimes.size,
-  //          parseTimes.map(_.time).sum,
-  //          averageTime,
-  //          maxItem.time,
-  //          maxItem.chunk
-  //        ))
-  //    hasErrors
-  //  }, "Some parses did not match the example set.")
-  //}
 }
