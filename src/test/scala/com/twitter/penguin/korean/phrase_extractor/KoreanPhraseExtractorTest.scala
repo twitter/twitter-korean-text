@@ -15,36 +15,50 @@ class KoreanPhraseExtractorTest extends TestBase {
   val sampleText = List[SampleTextPair](
     SampleTextPair(
       "블랙프라이데이: 이날 미국의 수백만 소비자들은 크리스마스 선물을 할인된 가격에 사는 것을 주 목적으로 블랙프라이데이 쇼핑을 한다.",
-      "블랙프라이데이, 이날, 이날 미국, 이날 미국의 수백만, 미국의 수백만, 수백만, 이날 미국의 수백만 소비자들, " +
-        "미국의 수백만 소비자들, 수백만 소비자들, 크리스마스, 크리스마스 선물, 할인, 할인된 가격, 가격, 주 목적, " +
-        "블랙프라이데이 쇼핑, 미국, 소비자들, 선물, 목적, 쇼핑"
+      "블랙프라이데이(Noun: 0, 7), 이날(Noun: 9, 2), 이날 미국(Noun: 9, 5), 이날 미국의 수백만(Noun: 9, 10), " +
+        "미국의 수백만(Noun: 12, 7), 수백만(Noun: 16, 3), 이날 미국의 수백만 소비자들(Noun: 9, 15), " +
+        "미국의 수백만 소비자들(Noun: 12, 12), 수백만 소비자들(Noun: 16, 8), 크리스마스(Noun: 26, 5), " +
+        "크리스마스 선물(Noun: 26, 8), 할인(Noun: 36, 2), 할인된 가격(Noun: 36, 6), 가격(Noun: 40, 2), " +
+        "주 목적(Noun: 50, 4), 블랙프라이데이 쇼핑(Noun: 57, 10), 미국(Noun: 12, 2), 소비자들(Noun: 20, 4), " +
+        "선물(Noun: 32, 2), 목적(Noun: 52, 2), 쇼핑(Noun: 65, 2)"
     ),
     SampleTextPair(
       "결정했어. 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지를 선물할 것이다.",
-      "결정, 마키, 마키 코레썸, 마키 코레썸 사주시는 분께는 허니버터칩, 코레썸 사주시는 분께는 허니버터칩, " +
-        "허니버터칩, 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지, 코레썸 사주시는 분께는 허니버터칩 한 봉지, " +
-        "허니버터칩 한 봉지, 봉지, 코레썸"
+      "결정(Noun: 0, 2), 마키(Noun: 6, 2), 마키 코레썸(Noun: 6, 6), " +
+        "마키 코레썸 사주시는 분께는 허니버터칩(Noun: 6, 21), 코레썸 사주시는 분께는 허니버터칩(Noun: 9, 18), " +
+        "허니버터칩(Noun: 22, 5), 마키 코레썸 사주시는 분께는 허니버터칩 한 봉지(Noun: 6, 26), " +
+        "코레썸 사주시는 분께는 허니버터칩 한 봉지(Noun: 9, 23), 허니버터칩 한 봉지(Noun: 22, 10), " +
+        "봉지(Noun: 30, 2), 코레썸(Noun: 9, 3)"
     ),
     SampleTextPair(
       "[단독]정부, 새 고용 형태 ＇중규직＇ 만든다 http://url.com 이름도 바뀌겟군. 정규직은 상규직, " +
           "비정규직은 하규직. 중규직 참 창조적이다. 결국 기업은 비정규직으로 이용할게 뻔함.",
-      "단독, 정부, 새 고용, 새 고용 형태, 고용 형태, 중규직, 이름, 정규직, 상규직, 비정규직, 하규직, 기업, 고용, 형태, 하규"
+      "단독(Noun: 1, 2), 정부(Noun: 4, 2), 새 고용(Noun: 8, 4), 새 고용 형태(Noun: 8, 7), " +
+        "고용 형태(Noun: 10, 5), 중규직(Noun: 17, 3), 이름(Noun: 41, 2), 정규직(Noun: 51, 3), " +
+        "상규직(Noun: 56, 3), 비정규직(Noun: 61, 4), 하규직(Noun: 67, 3), 기업(Noun: 88, 2), " +
+        "고용(Noun: 10, 2), 형태(Noun: 13, 2), 하규(Noun: 67, 2)"
     ),
     SampleTextPair(
       "키? ...난 절대 키가 작은 게 아냐. 이소자키나 츠루기가 비정상적으로 큰거야. 1학년이 그렇게 큰 게 말이 돼!? ",
-      "난 절대, 난 절대 키, 절대 키, 작은 게, 이소자키, 츠루기, 1학년, 절대, 이소, 자키, 학년"
+      "난 절대(Noun: 6, 4), 난 절대 키(Noun: 6, 6), 절대 키(Noun: 8, 4), 작은 게(Noun: 14, 4), " +
+        "이소자키(Noun: 23, 4), 츠루기(Noun: 29, 3), 1학년(Noun: 46, 3), 절대(Noun: 8, 2), " +
+        "이소(Noun: 23, 2), 자키(Noun: 25, 2), 학년(Noun: 47, 2)"
     ),
     SampleTextPair(
       "Galaxy S5와 iPhone 6의 경쟁",
-      "Galaxy, Galaxy S5, iPhone, iPhone 6의, iPhone 6의 경쟁, 6의 경쟁, S5, 경쟁"
+      "Galaxy(Noun: 0, 6), Galaxy S5(Noun: 0, 9), iPhone(Noun: 11, 6), " +
+        "iPhone 6의(Noun: 11, 9), iPhone 6의 경쟁(Noun: 11, 12), 6의 경쟁(Noun: 18, 5), " +
+        "S5(Noun: 7, 2), 경쟁(Noun: 21, 2)"
     ),
     SampleTextPair(
       "ABCㅋㅋLTE갤럭시S4ㅋㅋ꼬마가",
-      "ABC, LTE갤럭시S4, 꼬마, LTE, 갤럭시, S4"
+      "ABC(Noun: 0, 3), LTE갤럭시S4(Noun: 5, 8), 꼬마(Noun: 15, 2), LTE(Noun: 5, 3), " +
+        "갤럭시(Noun: 8, 3), S4(Noun: 11, 2)"
     ),
     SampleTextPair(
       "아름다운 트위터 #해쉬태그 평화로운 트위터의 #hashtag @mention",
-      "아름다운 트위터, 평화로운 트위터, 트위터, #해쉬태그, #hashtag"
+      "아름다운 트위터(Noun: 0, 8), 평화로운 트위터(Noun: 15, 8), 트위터(Noun: 5, 3), " +
+        "#해쉬태그(Hashtag: 9, 5), #hashtag(Hashtag: 25, 8)"
     )
   )
 
@@ -140,7 +154,8 @@ class KoreanPhraseExtractorTest extends TestBase {
   }
 
   test("extractPhrases should extract long noun-only phrases in reasonable time") {
-    assert(KoreanPhraseExtractor.extractPhrases(superLongText).mkString(", ") === "허니버터칩, 정규직, 크리스마스")
+    assert(KoreanPhraseExtractor.extractPhrases(superLongText).mkString(", ") ===
+      "허니버터칩(Noun: 0, 5), 정규직(Noun: 5, 3), 크리스마스(Noun: 8, 5)")
     assert(time(KoreanPhraseExtractor.extractPhrases(superLongText)) < 10000)
   }
 
@@ -153,11 +168,14 @@ class KoreanPhraseExtractorTest extends TestBase {
 
   test("extractPhrases should filter out spam and profane words") {
     assert(KoreanPhraseExtractor.extractPhrases(spamText).mkString(", ") ===
-        "레알, 레알 시발, 레알 시발 저거, 시발 저거, 레알 시발 저거 카지노, 시발 저거 카지노, 저거 카지노, " +
-          "레알 시발 저거 카지노 포르노, 시발 저거 카지노 포르노, 저거 카지노 포르노, 카지노 포르노, " +
-          "레알 시발 저거 카지노 포르노 야동, 시발 저거 카지노 포르노 야동, 저거 카지노 포르노 야동, " +
-          "카지노 포르노 야동, 포르노 야동, 시발, 저거, 카지노, 포르노, 야동")
+        "레알(Noun: 0, 2), 레알 시발(Noun: 0, 5), 레알 시발 저거(Noun: 0, 8), 시발 저거(Noun: 3, 5), " +
+          "레알 시발 저거 카지노(Noun: 0, 12), 시발 저거 카지노(Noun: 3, 9), 저거 카지노(Noun: 6, 6), " +
+          "레알 시발 저거 카지노 포르노(Noun: 0, 16), 시발 저거 카지노 포르노(Noun: 3, 13), " +
+          "저거 카지노 포르노(Noun: 6, 10), 카지노 포르노(Noun: 9, 7), " +
+          "레알 시발 저거 카지노 포르노 야동(Noun: 0, 19), 시발 저거 카지노 포르노 야동(Noun: 3, 16), " +
+          "저거 카지노 포르노 야동(Noun: 6, 13), 카지노 포르노 야동(Noun: 9, 10), 포르노 야동(Noun: 13, 6), " +
+          "시발(Noun: 3, 2), 저거(Noun: 6, 2), 카지노(Noun: 9, 3), 포르노(Noun: 13, 3), 야동(Noun: 17, 2)")
     assert(KoreanPhraseExtractor.extractPhrases(spamText, filterSpam = true).mkString(", ") ===
-        "레알, 저거")
+        "레알(Noun: 0, 2), 저거(Noun: 6, 2)")
   }
 }

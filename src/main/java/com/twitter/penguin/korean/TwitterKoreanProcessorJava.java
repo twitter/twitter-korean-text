@@ -23,6 +23,7 @@ import java.util.List;
 import scala.collection.JavaConversions;
 import scala.collection.Seq;
 
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
 import com.twitter.penguin.korean.stemmer.KoreanStemmer;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
 
@@ -102,7 +103,7 @@ public class TwitterKoreanProcessorJava {
    * @param text Input text.
    * @return List of phrase CharSequences.
    */
-  public List<CharSequence> extractPhrases(CharSequence text) {
+  public List<KoreanPhraseExtractor.KoreanPhrase> extractPhrases(CharSequence text) {
     return JavaConversions.seqAsJavaList(
         TwitterKoreanProcessor.extractPhrases(text, phraseExtractorSpamFilterEnabled, phraseExtractorHashtagsEnabled)
     );

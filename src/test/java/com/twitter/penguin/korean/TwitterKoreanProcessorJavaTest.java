@@ -106,8 +106,17 @@ public class TwitterKoreanProcessorJavaTest {
   public void testPhraseExtractor() {
     String text = "아름다운 트위터를 만들어 보자. 시발 #욕하지_말자";
 
-    assertEquals("[아름다운 트위터, 시발, 트위터, #욕하지_말자]", processor.extractPhrases(text).toString());
-    assertEquals("[아름다운 트위터, 트위터, #욕하지_말자]", processorWithSpamFilter.extractPhrases(text).toString());
-    assertEquals("[아름다운 트위터, 시발, 트위터]", processorWithoutHashtags.extractPhrases(text).toString());
+    assertEquals(
+        "[아름다운 트위터(Noun: 0, 8), 시발(Noun: 18, 2), 트위터(Noun: 5, 3), #욕하지_말자(Hashtag: 21, 7)]",
+        processor.extractPhrases(text).toString()
+    );
+    assertEquals(
+        "[아름다운 트위터(Noun: 0, 8), 트위터(Noun: 5, 3), #욕하지_말자(Hashtag: 21, 7)]",
+        processorWithSpamFilter.extractPhrases(text).toString()
+    );
+    assertEquals(
+        "[아름다운 트위터(Noun: 0, 8), 시발(Noun: 18, 2), 트위터(Noun: 5, 3)]",
+        processorWithoutHashtags.extractPhrases(text).toString()
+    );
   }
 }

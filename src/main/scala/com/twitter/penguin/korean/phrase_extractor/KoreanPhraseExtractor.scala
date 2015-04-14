@@ -115,17 +115,17 @@ object KoreanPhraseExtractor {
 
       def checkMaxLength: Boolean = {
         phraseChunkWithoutSpaces.length <= MaxPhrasesPerPhraseChunk &&
-          phraseChunkWithoutSpaces.map(_.getTextLength).sum <= MaxCharsPerPhraseChunkWithoutSpaces
+          phraseChunkWithoutSpaces.map(_.length).sum <= MaxCharsPerPhraseChunkWithoutSpaces
       }
 
       def checkMinLength: Boolean = {
         phraseChunkWithoutSpaces.length >= MinPhrasesPerPhraseChunk ||
           (phraseChunkWithoutSpaces.length < MinPhrasesPerPhraseChunk &&
-            phraseChunkWithoutSpaces.map(_.getTextLength).sum >= MinCharsPerPhraseChunkWithoutSpaces)
+            phraseChunkWithoutSpaces.map(_.length).sum >= MinCharsPerPhraseChunkWithoutSpaces)
       }
 
       def checkMinLengthPerToken: Boolean = {
-        phraseChunkWithoutSpaces.exists(_.getTextLength > 1)
+        phraseChunkWithoutSpaces.exists(_.length > 1)
       }
 
       checkMaxLength && checkMinLength && checkMinLengthPerToken
@@ -136,12 +136,15 @@ object KoreanPhraseExtractor {
 
   case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos = Noun) {
     override def toString(): String = {
-      s"${this.tokens.map(_.text).mkString("")}($pos: ${tokens.head.offset}, ${this.getTextLength})"
+      s"${this.text}($pos: ${this.offset}, ${this.length})"
     }
 
-    def getTextLength = {
-      this.tokens.map(_.text.length).sum
-    }
+    def offset = this.tokens.head.offset
+
+    def text = this.tokens.map(_.text).mkString("")
+
+    def length = this.tokens.map(_.text.length).sum
+
   }
 
   case class PhraseBuffer(phrases: List[KoreanPhrase], curTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
@@ -204,7 +207,7 @@ object KoreanPhraseExtractor {
     val (l, buffer) = chunks.foldLeft((List[KoreanPhraseChunk](), Set[String]())) {
       case ((l: List[KoreanPhraseChunk], buffer: Set[String]), chunk: KoreanPhraseChunk) =>
         val phraseText = chunk.map(_.tokens.map(_.text).mkString("")).mkString("")
-        if (buffer.contains(phraseText)){
+        if (buffer.contains(phraseText)) {
           (l, buffer)
         } else {
           (chunk :: l, buffer + phraseText)
@@ -285,7 +288,7 @@ object KoreanPhraseExtractor {
         phrase =>
           val trimmed = trimPhrase(phrase)
           phrase.pos == Noun && isNotSpam(phrase) &&
-            (trimmed.getTextLength >= MinCharsPerPhraseChunkWithoutSpaces ||
+            (trimmed.length >= MinCharsPerPhraseChunkWithoutSpaces ||
               trimmed.tokens.length >= MinPhrasesPerPhraseChunk)
       }.map(phrase => Seq(trimPhrase(phrase)))
     }
@@ -333,20 +336,22 @@ object KoreanPhraseExtractor {
    */
   def extractPhrases(input: CharSequence,
                      filterSpam: Boolean = false,
-                     addHashtags: Boolean = true): Seq[CharSequence] = {
+                     addHashtags: Boolean = true): Seq[KoreanPhrase] = {
 
     val tokens = TwitterKoreanProcessor.tokenize(
       input, stemming = false, keepSpace = true
     )
 
-    val phrases = extractPhrases(tokens, filterSpam).map {
-      phrase => phrase.tokens.map(_.text).mkString("")
+    val phrases = extractPhrases(tokens, filterSpam)
+
+    val hashtags = tokens.filter {
+      t: KoreanToken => t.pos == KoreanPos.Hashtag
+    }.map {
+      t: KoreanToken => KoreanPhrase(Seq(t), KoreanPos.Hashtag)
     }
 
-    val hashtags = tokens.filter { t: KoreanToken => t.pos == KoreanPos.Hashtag }
-
     if (addHashtags) {
-      phrases ++ hashtags.map(_.text)
+      phrases ++ hashtags
     } else {
       phrases
     }

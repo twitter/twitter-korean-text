@@ -20,6 +20,7 @@ package com.twitter.penguin.korean
 
 import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
@@ -84,7 +85,7 @@ object TwitterKoreanProcessor {
    */
   def extractPhrases(text: CharSequence,
                      filterSpam: Boolean = false,
-                     enableHashtags: Boolean = true): Seq[CharSequence] = {
+                     enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
     KoreanPhraseExtractor.extractPhrases(text, filterSpam, enableHashtags)
   }
 
