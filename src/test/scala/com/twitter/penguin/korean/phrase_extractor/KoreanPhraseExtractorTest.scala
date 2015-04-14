@@ -66,58 +66,70 @@ class KoreanPhraseExtractorTest extends TestBase {
   test("collapsePos correctly collapse KoreanPos sequences") {
     assert(KoreanPhraseExtractor.collapsePos(
       Seq(
-        KoreanToken("N", KoreanPos.Noun),
-        KoreanToken("N", KoreanPos.Noun)
+        KoreanToken("N", KoreanPos.Noun, 0, 1),
+        KoreanToken("N", KoreanPos.Noun, 1, 1)
       )).mkString("/") ===
-      "NNoun/NNoun"
+      "N(Noun: 0, 1)/N(Noun: 1, 1)"
     )
 
     assert(KoreanPhraseExtractor.collapsePos(
       Seq(
-        KoreanToken("X", KoreanPos.KoreanParticle),
-        KoreanToken("p", KoreanPos.NounPrefix),
-        KoreanToken("N", KoreanPos.Noun)
+        KoreanToken("X", KoreanPos.KoreanParticle, 0, 1),
+        KoreanToken("p", KoreanPos.NounPrefix, 1, 1),
+        KoreanToken("N", KoreanPos.Noun, 2, 1)
       )).mkString("/") ===
-      "XKoreanParticle/pNNoun"
+      "X(KoreanParticle: 0, 1)/pN(Noun: 1, 2)"
     )
 
     assert(KoreanPhraseExtractor.collapsePos(
       Seq(
-        KoreanToken("p", KoreanPos.NounPrefix),
-        KoreanToken("X", KoreanPos.KoreanParticle),
-        KoreanToken("N", KoreanPos.Noun)
+        KoreanToken("p", KoreanPos.NounPrefix, 0, 1),
+        KoreanToken("X", KoreanPos.KoreanParticle, 1, 1),
+        KoreanToken("N", KoreanPos.Noun, 2, 1)
       )).mkString("/") ===
-      "pNoun/XKoreanParticle/NNoun"
+      "p(Noun: 0, 1)/X(KoreanParticle: 1, 1)/N(Noun: 2, 1)"
     )
 
     assert(KoreanPhraseExtractor.collapsePos(
       Seq(
-        KoreanToken("p", KoreanPos.NounPrefix),
-        KoreanToken("N", KoreanPos.Noun),
-        KoreanToken("X", KoreanPos.KoreanParticle)
+        KoreanToken("p", KoreanPos.NounPrefix, 0, 1),
+        KoreanToken("N", KoreanPos.Noun, 1, 1),
+        KoreanToken("X", KoreanPos.KoreanParticle, 2, 1)
       )).mkString("/") ===
-      "pNNoun/XKoreanParticle"
+      "pN(Noun: 0, 2)/X(KoreanParticle: 2, 1)"
     )
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(0).text)).mkString("") ===
-      "블랙프라이데이Noun:Punctuation Space이날Noun Space미국Noun의Josa Space수백만Noun Space소비자들Noun은Josa" +
-          " Space크리스마스Noun Space선물Noun을Josa Space할인Noun된Verb Space가격Noun에Josa Space사는Verb" +
-          " Space것Noun을Josa Space주Noun Space목적Noun으로Josa Space블랙프라이데이Noun Space쇼핑Noun을Josa" +
-          " Space한다Verb.Punctuation")
+      "블랙프라이데이(Noun: 0, 7):(Punctuation: 7, 1) (Space: 8, 1)이날(Noun: 9, 2) (Space: 11, 1)" +
+        "미국(Noun: 12, 2)의(Josa: 14, 1) (Space: 15, 1)수백만(Noun: 16, 3) (Space: 19, 1)" +
+        "소비자들(Noun: 20, 4)은(Josa: 24, 1) (Space: 25, 1)크리스마스(Noun: 26, 5) (Space: 31, 1)" +
+        "선물(Noun: 32, 2)을(Josa: 34, 1) (Space: 35, 1)할인(Noun: 36, 2)" +
+        "된(Verb: 38, 1) (Space: 39, 1)가격(Noun: 40, 2)에(Josa: 42, 1) (Space: 43, 1)" +
+        "사는(Verb: 44, 2) (Space: 46, 1)것(Noun: 47, 1)을(Josa: 48, 1) (Space: 49, 1)" +
+        "주(Noun: 50, 1) (Space: 51, 1)목적(Noun: 52, 2)으로(Josa: 54, 2) (Space: 56, 1)" +
+        "블랙프라이데이(Noun: 57, 7) (Space: 64, 1)쇼핑(Noun: 65, 2)을(Josa: 67, 1) (Space: 68, 1)" +
+        "한다(Verb: 69, 2).(Punctuation: 71, 1)")
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(1).text)).mkString("") ===
-        "결정Noun했어Verb.Punctuation Space마키Noun Space코레썸Noun Space사주시는Verb Space분께는Verb" +
-            " Space허니버터칩Noun Space한Verb Space봉지Noun를Josa Space선물할Verb Space것Noun이다Josa.Punctuation")
+        "결정(Noun: 0, 2)했어(Verb: 2, 2).(Punctuation: 4, 1) (Space: 5, 1)" +
+          "마키(Noun: 6, 2) (Space: 8, 1)코레썸(Noun: 9, 3) (Space: 12, 1)" +
+          "사주시는(Verb: 13, 4) (Space: 17, 1)분께는(Verb: 18, 3) (Space: 21, 1)" +
+          "허니버터칩(Noun: 22, 5) (Space: 27, 1)한(Verb: 28, 1) (Space: 29, 1)" +
+          "봉지(Noun: 30, 2)를(Josa: 32, 1) (Space: 33, 1)선물할(Verb: 34, 3) (Space: 37, 1)" +
+          "것(Noun: 38, 1)이다(Josa: 39, 2).(Punctuation: 41, 1)")
   }
 
   test("extractPhrases correctly extracts phrases") {
     assert(KoreanPhraseExtractor.extractPhrases(
       tokenize(sampleText(0).text), filterSpam = false
     ).mkString(", ") ===
-        "블랙프라이데이Noun, 이날Noun, 이날 미국Noun, 이날 미국의 수백만Noun, 미국의 수백만Noun, 수백만Noun, " +
-          "이날 미국의 수백만 소비자들Noun, 미국의 수백만 소비자들Noun, 수백만 소비자들Noun, 크리스마스Noun, " +
-          "크리스마스 선물Noun, 할인Noun, 할인된 가격Noun, 가격Noun, 주 목적Noun, 블랙프라이데이 쇼핑Noun, " +
-          "미국Noun, 소비자들Noun, 선물Noun, 목적Noun, 쇼핑Noun")
+        "블랙프라이데이(Noun: 0, 7), 이날(Noun: 9, 2), 이날 미국(Noun: 9, 5), 이날 미국의 수백만(Noun: 9, 10), " +
+          "미국의 수백만(Noun: 12, 7), 수백만(Noun: 16, 3), 이날 미국의 수백만 소비자들(Noun: 9, 15), " +
+          "미국의 수백만 소비자들(Noun: 12, 12), 수백만 소비자들(Noun: 16, 8), 크리스마스(Noun: 26, 5), " +
+          "크리스마스 선물(Noun: 26, 8), 할인(Noun: 36, 2), 할인된 가격(Noun: 36, 6), 가격(Noun: 40, 2), " +
+          "주 목적(Noun: 50, 4), 블랙프라이데이 쇼핑(Noun: 57, 10), " +
+          "미국(Noun: 12, 2), 소비자들(Noun: 20, 4), 선물(Noun: 32, 2), 목적(Noun: 52, 2), " +
+          "쇼핑(Noun: 65, 2)")
   }
 
   test("extractPhrases correctly extracts phrases from a string") {

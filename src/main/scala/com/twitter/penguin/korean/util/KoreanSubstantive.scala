@@ -96,7 +96,9 @@ object KoreanSubstantive {
     val (nodes, collapsing) = posNodes.foldLeft((List[KoreanToken](), false)) {
       case ((pl: List[KoreanToken], collapsing: Boolean), p: KoreanToken)
         if p.pos == Noun && p.text.length == 1 && collapsing =>
-        (KoreanToken(pl.head.text + p.text, Noun, unknown = true) :: pl.tail, true)
+        val text = pl.head.text + p.text
+        val offset = pl.head.offset
+        (KoreanToken(text, Noun, offset, text.length, unknown = true) :: pl.tail, true)
       case ((pl: List[KoreanToken], collapsing: Boolean), p: KoreanToken)
         if p.pos == Noun && p.text.length == 1 && !collapsing =>
         (p :: pl, true)

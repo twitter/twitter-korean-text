@@ -23,8 +23,6 @@ import java.util.List;
 import scala.collection.JavaConversions;
 import scala.collection.Seq;
 
-import com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegment;
-import com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText;
 import com.twitter.penguin.korean.stemmer.KoreanStemmer;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
 
@@ -68,7 +66,7 @@ public class TwitterKoreanProcessorJava {
    * @param text Input text.
    * @return StemmedTextWithTokens(text, tokens)
    */
-  public KoreanStemmer.StemmedTextWithTokens stem(CharSequence text) {
+  public CharSequence stem(CharSequence text) {
     return TwitterKoreanProcessor.stem(text);
   }
 
@@ -96,29 +94,6 @@ public class TwitterKoreanProcessorJava {
         text, normalizerEnabled, stemmerEnabled, keepSpaceEnabled
     );
     return JavaConversions.seqAsJavaList(tokenized);
-  }
-
-  /**
-   * Tokenize into KoreanSegments, which includes the indices
-   *
-   * @param text Input text.
-   * @return A list of KoreanSegments.
-   */
-  public List<KoreanSegment> tokenizeWithIndex(CharSequence text) {
-    return JavaConversions.seqAsJavaList(
-        TwitterKoreanProcessor.tokenizeWithIndex(text)
-    );
-  }
-
-  /**
-   * Tokenize into KoreanSegmentWithText, which includes
-   * the stemmed text and the KoreanSegments
-   *
-   * @param text Input text.
-   * @return KoreanSegmentWithText(text, KoreanSegments)
-   */
-  public KoreanSegmentWithText tokenizeWithIndexWithStemmer(CharSequence text) {
-    return TwitterKoreanProcessor.tokenizeWithIndexWithStemmer(text);
   }
 
   /**

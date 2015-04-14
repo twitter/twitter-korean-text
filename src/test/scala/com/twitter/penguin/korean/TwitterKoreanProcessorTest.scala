@@ -70,80 +70,41 @@ class TwitterKoreanProcessorTest extends TestBase {
   test("tokenize should tokenize into a sequence of KoreanTokens") {
     assert(
       tokenize("이태민 복근있다..!!!!!!  11자...ㅋㅋㅋㅋ 요뎡왕댜는 복근 따위 없어도돼 얼굴이 대신하니까!!!! ").mkString(" ")
-          === "이태민Noun 복근Noun 있다Adjective ..!!!!!!Punctuation 11Number 자Noun " +
-          "...Punctuation ㅋㅋKoreanParticle 요정Noun 왕자Noun 는Josa 복근Noun 따위Noun " +
-          "없다Adjective 돼다Verb 얼굴Noun 이Josa 대신Noun 하다Verb !!!!Punctuation"
+          === "이태민(Noun: 0, 3) 복근(Noun: 4, 2) 있다(Adjective: 6, 2) ..!!!!!!(Punctuation: 8, 8) " +
+        "11(Number: 18, 2) 자(Noun: 20, 1) ...(Punctuation: 21, 3) ㅋㅋ(KoreanParticle: 24, 2) " +
+        "요정(Noun: 27, 2) 왕자(Noun: 29, 2) 는(Josa: 31, 1) 복근(Noun: 33, 2) 따위(Noun: 36, 2) " +
+        "없다(Adjective: 39, 3) 돼다(Verb: 42, 1) 얼굴(Noun: 44, 2) 이(Josa: 46, 1) 대신(Noun: 48, 2) " +
+        "하다(Verb: 50, 3) !!!!(Punctuation: 53, 4)"
     )
 
     assert(
       tokenize("축하드리구요 부상얼른얼른 나으셔서 더좋은모습계속계속 보여주세요!! 얼른 부산오십쇼!! 보고싶습니다!!! 사랑해여 김캡틴♥♥♥").mkString(" ")
-          === "축하Noun 드리다Verb 부상Noun 얼른얼른Adverb 낫다Verb 더Noun 좋다Adjective 모습Noun 계속계속Adverb 보이다Verb " +
-          "!!Punctuation 얼른Noun 부산Noun 오십Noun 쇼Noun !!Punctuation 보다Verb " +
-          "!!!Punctuation 사랑Noun 하다Verb 김Noun 캡틴Noun ♥♥♥Foreign"
+          === "축하(Noun: 0, 2) 드리다(Verb: 2, 4) 부상(Noun: 7, 2) 얼른얼른(Adverb: 9, 4) " +
+        "낫다(Verb: 14, 4) 더(Noun: 19, 1) 좋다(Adjective: 20, 2) 모습(Noun: 22, 2) " +
+        "계속계속(Adverb: 24, 4) 보이다(Verb: 29, 5) !!(Punctuation: 34, 2) 얼른(Noun: 37, 2) " +
+        "부산(Noun: 40, 2) 오십(Noun: 42, 2) 쇼(Noun: 44, 1) !!(Punctuation: 45, 2) " +
+        "보다(Verb: 48, 6) !!!(Punctuation: 54, 3) 사랑(Noun: 58, 2) 하다(Verb: 60, 2) " +
+        "김(Noun: 63, 1) 캡틴(Noun: 64, 2) ♥♥♥(Foreign: 66, 3)"
     )
 
     assert(
       tokenize("와아아 페르세우스 유성우가 친창에 떨어진다!!!! 별이다!!!").mkString(" ")
-          === "와아아Exclamation 페르세우스Noun 유성우Noun 가Josa 친창Noun* 에Josa " +
-          "떨어지다Verb !!!!Punctuation 별Noun 이다Josa !!!Punctuation"
+          === "와아아(Exclamation: 0, 3) 페르세우스(Noun: 4, 5) 유성우(Noun: 10, 3) 가(Josa: 13, 1) " +
+        "친창*(Noun: 15, 2) 에(Josa: 17, 1) 떨어지다(Verb: 19, 4) !!!!(Punctuation: 23, 4) " +
+        "별(Noun: 28, 1) 이다(Josa: 29, 2) !!!(Punctuation: 31, 3)"
     )
 
     assert(
       tokenize("'넥서스' 갤럭시 Galaxy S5").mkString(" ")
-          === "'Punctuation 넥서스Noun 'Punctuation 갤럭시Noun GalaxyAlpha SAlpha 5Number"
-    )
-  }
-
-  test("tokenizeTexWithIndex should correctly return indices of each token") {
-    assert(
-      tokenizeWithIndex("한국어가 있는 Sentence")
-          === Seq(
-        KoreanSegment(0, 3, KoreanToken("한국어", Noun)),
-        KoreanSegment(3, 1, KoreanToken("가", Josa)),
-        KoreanSegment(5, 2, KoreanToken("있는", Adjective)),
-        KoreanSegment(8, 8, KoreanToken("Sentence", Alpha))
-      )
-    )
-
-    assert(
-      tokenizeWithIndex("^///^규앙ㅇ")
-          === Seq(
-        KoreanSegment(0, 5, KoreanToken("^///^", Punctuation)),
-        KoreanSegment(5, 2, KoreanToken("규앙", Exclamation)),
-        KoreanSegment(7, 1, KoreanToken("ㅇ", KoreanParticle))
-      )
-    )
-  }
-
-  test("tokenizeTexWithIndex should correctly return indices of stemmed tokens") {
-    assert(
-      tokenizeWithIndexWithStemmer("한국어가 있는 Sentence")
-          === KoreanSegmentWithText(
-        (new StringBuilder).append("한국어가 있다 Sentence"), Seq(
-          KoreanSegment(0, 3, KoreanToken("한국어", Noun)),
-          KoreanSegment(3, 1, KoreanToken("가", Josa)),
-          KoreanSegment(5, 2, KoreanToken("있다", Adjective)),
-          KoreanSegment(8, 8, KoreanToken("Sentence", Alpha))
-        )
-      )
-    )
-
-    assert(
-      tokenizeWithIndexWithStemmer("^///^규앙ㅇ")
-          === KoreanSegmentWithText(
-        (new StringBuilder).append("^///^규앙ㅇ"), Seq(
-          KoreanSegment(0, 5, KoreanToken("^///^", Punctuation)),
-          KoreanSegment(5, 2, KoreanToken("규앙", Exclamation)),
-          KoreanSegment(7, 1, KoreanToken("ㅇ", KoreanParticle))
-        )
-      )
+          === "'(Punctuation: 0, 1) 넥서스(Noun: 1, 3) '(Punctuation: 4, 1) " +
+        "갤럭시(Noun: 6, 3) Galaxy(Alpha: 10, 6) S(Alpha: 17, 1) 5(Number: 18, 1)"
     )
   }
 
   test("tokenize should correctly tokenize ignoring punctuations") {
     assert(
       tokenize("^///^규앙ㅇ").mkString(" ")
-          === "^///^Punctuation 규앙Exclamation ㅇKoreanParticle"
+          === "^///^(Punctuation: 0, 5) 규앙(Exclamation: 5, 2) ㅇ(KoreanParticle: 7, 1)"
     )
   }
 

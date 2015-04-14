@@ -97,14 +97,14 @@ object KoreanTokenizer {
     def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
   }
 
-  case class KoreanToken(text: String, pos: KoreanPos, unknown: Boolean = false) {
+  case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int, unknown: Boolean = false) {
     override def toString: String = {
       val unknownStar = if (unknown) "*" else ""
-      text + pos.toString + unknownStar
+      s"$text$unknownStar(${pos.toString}: $offset, $length)"
     }
 
     def copyWithNewPos(pos: KoreanPos): KoreanToken = {
-      KoreanToken(this.text, pos, this.unknown)
+      KoreanToken(this.text, pos, this.offset, this.length, this.unknown)
     }
   }
 
@@ -165,13 +165,13 @@ object KoreanTokenizer {
    *              for performance optimization. This method is private and is called only by tokenize.
    * @return The best possible parse.
    */
-  private[this] def parseKoreanChunk(chunk: String): Seq[KoreanToken] = {
+  private[this] def parseKoreanChunk(chunk: KoreanToken): Seq[KoreanToken] = {
 
     // Direct match
     koreanDictionary.foreach {
       case (pos, dict) =>
-        if (dict.contains(chunk)) {
-          return Seq(KoreanToken(chunk, pos))
+        if (dict.contains(chunk.text)) {
+          return Seq(KoreanToken(chunk.text, pos, chunk.offset, chunk.length))
         }
     }
 
@@ -191,7 +191,7 @@ object KoreanTokenizer {
       end <- 1 to chunk.length;
       start <- end - 1 to(Seq(end - MAX_TRACE_BACK, 0).max, -1)
     ) {
-      val word = chunk.slice(start, end)
+      val word = chunk.text.slice(start, end)
 
       val curSolutions = solutions(start)
 
@@ -209,9 +209,9 @@ object KoreanTokenizer {
             val candidateToAdd =
               if (t.curTrie.curPos == Noun && !koreanDictionary(Noun).contains(word.toCharArray)) {
                 val unknown = !isName(word) && !isKoreanNumber(word) && !isKoreanNameVariation(word)
-                ParsedChunk(Seq(KoreanToken(word, Noun, unknown)), t.words)
+                ParsedChunk(Seq(KoreanToken(word, Noun, chunk.offset + start, word.length, unknown)), t.words)
               } else {
-                ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos)), t.words)
+                ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos, chunk.offset + start, word.length)), t.words)
               }
 
             val nextTrie = t.curTrie.nextTrie.map {
@@ -244,7 +244,7 @@ object KoreanTokenizer {
     chunk(text, keepSpace).flatMap {
       case token: KoreanToken if token.pos == Korean =>
         // Get the best parse of each chunk
-        val parsed = parseKoreanChunk(token.text)
+        val parsed = parseKoreanChunk(token)
 
         // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
         collapseNouns(parsed)

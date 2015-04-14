@@ -128,32 +128,32 @@ class KoreanSubstantiveTest extends TestBase {
 
   test("collapseNouns should collapse single-length nouns correctly") {
     assert(
-      collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun), KoreanToken("토", Noun)))
-          === Seq(KoreanToken("마코토", Noun, unknown = true))
+      collapseNouns(Seq(KoreanToken("마", Noun, 0, 1), KoreanToken("코", Noun, 1, 1), KoreanToken("토", Noun, 2, 1)))
+        === Seq(KoreanToken("마코토", Noun, 0, 3, unknown = true))
     )
 
     assert(
-      collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun),
-        KoreanToken("토", Noun), KoreanToken("를", Josa)))
-          === Seq(KoreanToken("마코토", Noun, unknown = true), KoreanToken("를", Josa))
+      collapseNouns(Seq(KoreanToken("마", Noun, 0, 1), KoreanToken("코", Noun, 1, 1),
+        KoreanToken("토", Noun, 2, 1), KoreanToken("를", Josa, 3, 1)))
+        === Seq(KoreanToken("마코토", Noun, 0, 3, unknown = true), KoreanToken("를", Josa, 3, 1))
     )
 
     assert(
-      collapseNouns(Seq(KoreanToken("개", NounPrefix), KoreanToken("마", Noun),
-        KoreanToken("코", Noun), KoreanToken("토", Noun)))
-          === Seq(KoreanToken("개", NounPrefix), KoreanToken("마코토", Noun, unknown = true))
+      collapseNouns(Seq(KoreanToken("개", NounPrefix, 0, 1), KoreanToken("마", Noun, 1, 1),
+        KoreanToken("코", Noun, 2, 1), KoreanToken("토", Noun, 3, 1)))
+        === Seq(KoreanToken("개", NounPrefix, 0, 1), KoreanToken("마코토", Noun, 1, 3, unknown = true))
     )
 
     assert(
-      collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun),
-        KoreanToken("토", Noun), KoreanToken("사람", Noun)))
-          === Seq(KoreanToken("마코토", Noun, unknown = true), KoreanToken("사람", Noun))
+      collapseNouns(Seq(KoreanToken("마", Noun, 0, 1), KoreanToken("코", Noun, 1, 1),
+        KoreanToken("토", Noun, 2, 1), KoreanToken("사람", Noun, 3, 2)))
+        === Seq(KoreanToken("마코토", Noun, 0, 3, unknown = true), KoreanToken("사람", Noun, 3, 2))
     )
 
     assert(
-      collapseNouns(Seq(KoreanToken("마", Noun), KoreanToken("코", Noun),
-        KoreanToken("사람", Noun), KoreanToken("토", Noun)))
-          === Seq(KoreanToken("마코", Noun, unknown = true), KoreanToken("사람", Noun), KoreanToken("토", Noun))
+      collapseNouns(Seq(KoreanToken("마", Noun, 0, 1), KoreanToken("코", Noun, 1, 1),
+        KoreanToken("사람", Noun, 2, 2), KoreanToken("토", Noun, 4, 1)))
+        === Seq(KoreanToken("마코", Noun, 0, 2, unknown = true), KoreanToken("사람", Noun, 2, 2), KoreanToken("토", Noun, 4, 1))
     )
   }
 

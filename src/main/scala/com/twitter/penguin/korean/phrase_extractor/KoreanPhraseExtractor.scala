@@ -136,7 +136,7 @@ object KoreanPhraseExtractor {
 
   case class KoreanPhrase(tokens: Seq[KoreanToken], pos: KoreanPos = Noun) {
     override def toString(): String = {
-      this.tokens.map(_.text).mkString("") + pos
+      s"${this.tokens.map(_.text).mkString("")}($pos: ${tokens.head.offset}, ${this.getTextLength})"
     }
 
     def getTextLength = {
@@ -198,6 +198,19 @@ object KoreanPhraseExtractor {
           CollapseTrie, output.ending
         )
     }.phrases
+  }
+
+  private def distinctPhrases(chunks: Seq[KoreanPhraseChunk]): Seq[KoreanPhraseChunk] = {
+    val (l, buffer) = chunks.foldLeft((List[KoreanPhraseChunk](), Set[String]())) {
+      case ((l: List[KoreanPhraseChunk], buffer: Set[String]), chunk: KoreanPhraseChunk) =>
+        val phraseText = chunk.map(_.tokens.map(_.text).mkString("")).mkString("")
+        if (buffer.contains(phraseText)){
+          (l, buffer)
+        } else {
+          (chunk :: l, buffer + phraseText)
+        }
+    }
+    l.reverse
   }
 
   protected def getCandidatePhraseChunks(phrases: KoreanPhraseChunk,
@@ -280,7 +293,7 @@ object KoreanPhraseExtractor {
     val nounPhrases: KoreanPhraseChunk = collapseNounPhrases(phrases)
     val phraseCollapsed = collapsePhrases(nounPhrases)
 
-    (phraseCollapsed.map(trimPhraseChunk) ++ getSingleTokenNouns).distinct
+    distinctPhrases(phraseCollapsed.map(trimPhraseChunk) ++ getSingleTokenNouns)
   }
 
   /**
@@ -301,14 +314,15 @@ object KoreanPhraseExtractor {
 
 
   private def permutateCadidates(candidates: Seq[KoreanPhraseChunk]): Seq[KoreanPhraseChunk] = {
-    candidates.flatMap {
+    val permutated = candidates.flatMap {
       case phrases if phrases.length > MinPhrasesPerPhraseChunk =>
         (0 to phrases.length - MinPhrasesPerPhraseChunk).map {
           i => trimPhraseChunk(phrases.slice(i, phrases.length))
         }
       case phrases => Seq(phrases)
     }.filter { phraseChunk: KoreanPhraseChunk => isProperPhraseChunk(phraseChunk)
-    }.distinct
+    }
+    distinctPhrases(permutated)
   }
 
   /**

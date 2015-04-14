@@ -19,7 +19,6 @@
 package com.twitter.penguin.korean.stemmer
 
 import com.twitter.penguin.korean.TestBase
-import com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
@@ -28,23 +27,23 @@ class KoreanStemmerTest extends TestBase {
 
   val sampleText1 = "새로운 스테밍을 추가했었다."
   val sampleStems1 = Seq(
-    KoreanToken("새롭다", Adjective),
-    KoreanToken("스테밍", Noun),
-    KoreanToken("을", Josa),
-    KoreanToken("추가", Noun),
-    KoreanToken("하다", Verb),
-    KoreanToken(".", Punctuation)
+    KoreanToken("새롭다", Adjective, 0, 3),
+    KoreanToken("스테밍", Noun, 4, 3),
+    KoreanToken("을", Josa, 7,1),
+    KoreanToken("추가", Noun, 9,2),
+    KoreanToken("하다", Verb, 11,3),
+    KoreanToken(".", Punctuation, 14,1)
   )
 
   val sampleText2 = "그런 사람 없습니다.."
-  val sampleStems2 = Seq(KoreanToken("그렇다", Adjective),
-    KoreanToken("사람", Noun),
-    KoreanToken("없다", Adjective),
-    KoreanToken("..", Punctuation)
+  val sampleStems2 = Seq(KoreanToken("그렇다", Adjective, 0, 2),
+    KoreanToken("사람", Noun, 3, 2),
+    KoreanToken("없다", Adjective, 6, 4),
+    KoreanToken("..", Punctuation, 10, 2)
   )
 
   val sampleText3 = "라고만"
-  val sampleStems3 = Seq(KoreanToken("라고만", Eomi))
+  val sampleStems3 = Seq(KoreanToken("라고만", Eomi, 0,3))
 
   test("stemPredicates should stem predicates from Korean tokens") {
     assert(
@@ -69,59 +68,59 @@ class KoreanStemmerTest extends TestBase {
   test("stem should transform the original text along with the tokens") {
     assert(
       KoreanStemmer.stem(sampleText1)
-          === StemmedTextWithTokens((new StringBuilder).append("새롭다 스테밍을 추가하다."), sampleStems1)
+          === (new StringBuilder).append("새롭다 스테밍을 추가하다.")
     )
     assert(
       KoreanStemmer.stem(sampleText2)
-          === StemmedTextWithTokens((new StringBuilder).append("그렇다 사람 없다.."), sampleStems2)
+          === (new StringBuilder).append("그렇다 사람 없다..")
     )
   }
 
   test("stem should stem adjectives correctly") {
     val words = Map(
-      "예뻐도" -> "예쁘다Adjective",
-      "예뻐서" -> "예쁘다Adjective",
-      "예뻤다" -> "예쁘다Adjective",
-      "예뻤었겠지" -> "예쁘다Adjective",
-      "예뻤지" -> "예쁘다Adjective",
-      "예쁘겠지" -> "예쁘다Adjective",
-      "예쁘긴" -> "예쁘다Adjective",
-      "예쁘지만" -> "예쁘다Adjective",
-      "예쁜 것 같다" -> "예쁘다Adjective 것Noun 같다Adjective",
-      "예쁜건 아니잖아" -> "예쁘다Adjective 아니다Adjective",
-      "예쁠 수 있을까" -> "예쁘다Adjective 수Noun 있다Adjective",
-      "예쁠" -> "예쁘다Adjective",
-      "예쁠수있을까" -> "예쁘다Adjective",
-      "예쁜" -> "예쁘다Adjective"
+      "예뻐도" -> "예쁘다",
+      "예뻐서" -> "예쁘다",
+      "예뻤다" -> "예쁘다",
+      "예뻤었겠지" -> "예쁘다",
+      "예뻤지" -> "예쁘다",
+      "예쁘겠지" -> "예쁘다",
+      "예쁘긴" -> "예쁘다",
+      "예쁘지만" -> "예쁘다",
+      "예쁜 것 같다" -> "예쁘다 것 같다",
+      "예쁜건 아니잖아" -> "예쁘다 아니다",
+      "예쁠 수 있을까" -> "예쁘다 수 있다",
+      "예쁠" -> "예쁘다",
+      "예쁠수있을까" -> "예쁘다",
+      "예쁜" -> "예쁘다"
     )
     words.foreach {
       case (word, stem) =>
         val stemmed = KoreanStemmer.stem(word)
-        assert(stem === stemmed.tokens.mkString(" "))
+        assert(stem === stemmed.toString)
     }
   }
 
   test("stem should stem verbs correctly") {
     val words = Map(
-      "먹어도" -> "먹다Verb",
-      "먹어서" -> "먹다Verb",
-      "먹었다" -> "먹다Verb",
-      "먹었었겠지" -> "먹다Verb",
-      "먹었지" -> "먹다Verb",
-      "먹겠지" -> "먹다Verb",
-      "먹긴" -> "먹다Verb",
-      "먹지만" -> "먹다Verb",
-      "먹은 것 같다" -> "먹다Verb 것Noun 같다Adjective",
-      "먹은건 아니잖아" -> "먹다Verb 아니다Adjective",
-      "먹을 수 있을까" -> "먹다Verb 수Noun 있다Adjective",
-      "먹을" -> "먹다Verb",
-      "먹을수있을까" -> "먹다Verb",
-      "먹은" -> "먹다Verb"
+      "먹어도" -> "먹다",
+      "먹어서" -> "먹다",
+      "먹었다" -> "먹다",
+      "먹었었겠지" -> "먹다",
+      "먹었지" -> "먹다",
+      "먹겠지" -> "먹다",
+      "먹긴" -> "먹다",
+      "먹지만" -> "먹다",
+      "먹은 것 같다" -> "먹다 것 같다",
+      "먹은건 아니잖아" -> "먹다 아니다",
+      "먹을 수 있을까" -> "먹다 수 있다",
+      "먹을" -> "먹다",
+      "먹을수있을까" -> "먹다",
+      "먹은" -> "먹다"
     )
     words.foreach {
       case (word, stem) =>
         val stemmed = KoreanStemmer.stem(word)
-        assert(stem === stemmed.tokens.mkString(" "))
+        assert(stem === stemmed.toString)
     }
   }
 }
