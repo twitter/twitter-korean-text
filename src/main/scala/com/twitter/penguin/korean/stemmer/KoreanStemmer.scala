@@ -14,31 +14,36 @@ object KoreanStemmer {
 
   private val EndingsForNouns = Set("하다", "되다", "없다")
 
-  case class StemmedTextWithTokens(text: CharSequence, tokens: Seq[KoreanToken])
-
   /**
    * Removes Ending tokens recovering the root form of predicates
    *
    * @param tokens A sequence of tokens
-   * @return A sequence of collapsed Korean tokens ([새, 로, 운, 사람] -> [[새, 로, 운].], 사람)
+   * @return A sequence of collapsed Korean tokens ([새, 로, 운, 사람] -> [[새, 로, 운], 사람])
    */
-  def stemPredicatesCore(tokens: Seq[KoreanToken]): Seq[Seq[KoreanToken]] = {
+  def stemPredicates(tokens: Seq[KoreanToken]): Seq[KoreanToken] = {
     if (!tokens.exists(t => t.pos == Verb || t.pos == Adjective)) {
-      return tokens.map(t => Seq(t));
+      return tokens
     }
 
-    val stemmed = tokens.map {
-      case token: KoreanToken if Endings.contains(token.pos) => None
-      case token: KoreanToken if Predicates.contains(token.pos) =>
-        Some(
+    val stemmed = tokens.foldLeft(List[KoreanToken]()) {
+      case (l: List[KoreanToken], token: KoreanToken) if Endings.contains(token.pos) =>
+        if (Predicates.contains(l.head.pos)) {
+          val prevToken = l.head
           KoreanToken(
-            predicateStems(token.pos)(token.text),
-
-            token.pos, token.unknown
-          )
-        )
-      case token => Some(token)
-    }
+            prevToken.text,
+            prevToken.pos, prevToken.offset, prevToken.length + token.length, prevToken.unknown
+          ) :: l.tail
+        } else {
+          l
+        }
+      case (l: List[KoreanToken], token: KoreanToken) if Predicates.contains(token.pos) =>
+        val text = predicateStems(token.pos)(token.text)
+        KoreanToken(
+          text,
+          token.pos, token.offset, token.length, token.unknown
+        ) :: l
+      case (l: List[KoreanToken], token: KoreanToken) => token :: l
+    }.reverse
 
     def validNounHeading(token: KoreanToken): Boolean = {
       val heading = token.text.take(token.text.length - 2)
@@ -51,29 +56,19 @@ object KoreanStemmer {
       validLength && validPos && validEndings && validNouns
     }
 
-    stemmed.map {
-      case Some(token) if validNounHeading(token) =>
+    stemmed.flatMap {
+      case token if validNounHeading(token) =>
         val heading = token.text.take(token.text.length - 2)
         val ending = token.text.takeRight(2)
 
         Seq(
-          KoreanToken(heading, Noun),
-          KoreanToken(ending, token.pos)
+          KoreanToken(heading, Noun, token.offset, heading.length),
+          KoreanToken(ending, token.pos, token.offset + heading.length, token.length - heading.length)
         )
-      case Some(token) => Seq(token)
-      case None => Seq()
+      case token => Seq(token)
     }
   }
 
-  /**
-   * Removes Ending tokens recovering the root form of predicates
-   *
-   * @param tokens A sequence of tokens
-   * @return A list of Korean tokens
-   */
-  def stemPredicates(tokens: Seq[KoreanToken]): Seq[KoreanToken] = {
-    stemPredicatesCore(tokens).flatMap(c => c)
-  }
 
   /**
    * Stem tokens
@@ -81,23 +76,20 @@ object KoreanStemmer {
    * @param text Input text
    * @return StemmedTextWithTokens
    */
-  def stem(text: CharSequence): StemmedTextWithTokens = {
+  def stem(text: CharSequence): CharSequence = {
     val tokenized = KoreanTokenizer.tokenize(text)
 
-    val stemmed = stemPredicatesCore(tokenized)
-    val mapped = tokenized.zip(stemmed)
+    val stemmed = stemPredicates(tokenized)
 
     val s = text.toString
-    // transform the original text to the stemmed text
-    val (sb, i) = mapped.foldLeft(new StringBuilder(), 0) {
-      case ((sb: StringBuilder, i: Int), (token: KoreanToken, stemmedTokens: Seq[KoreanToken])) =>
-        val segStart = s.indexOf(token.text, i)
-        sb.append(s.substring(i, segStart))
-        sb.append(stemmedTokens.map(_.text).mkString(""))
-        (sb, segStart + token.text.length)
+    val (sb, i) = stemmed.foldLeft(new StringBuilder(), 0) {
+      case ((sb: StringBuilder, i: Int), token: KoreanToken) =>
+        sb.append(s.substring(i, token.offset))
+        sb.append(token.text)
+        (sb, token.offset + token.length)
     }
     sb.append(s.substring(i, text.length))
 
-    StemmedTextWithTokens(sb, stemmed.flatten)
+    sb
   }
 }

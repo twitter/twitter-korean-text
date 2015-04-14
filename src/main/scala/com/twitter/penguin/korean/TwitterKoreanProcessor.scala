@@ -20,8 +20,8 @@ package com.twitter.penguin.korean
 
 import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
-import com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 
@@ -29,24 +29,6 @@ import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
  * TwitterKoreanTokenizer provides error and slang tolerant Korean tokenization.
  */
 object TwitterKoreanProcessor {
-
-  /**
-   * Korean Segment includes each token's start offset, length, and the token itself.
-   *
-   * @param start Offset of the token
-   * @param length Length of the token
-   * @param token Token
-   */
-  case class KoreanSegment(start: Int, length: Int, token: KoreanToken)
-
-  /**
-   * Wraps a text and the sequence of KoreanSegments
-   *
-   * @param text Input text.
-   * @param segments Sequence of Korean Segments.
-   */
-  case class KoreanSegmentWithText(text: CharSequence, segments: Seq[KoreanSegment])
-
   /**
    * Normalize Korean text. Uses KoreanNormalizer.normalize().
    *
@@ -61,9 +43,8 @@ object TwitterKoreanProcessor {
    * @param text Input text
    * @return A sequence of stemmed tokens
    */
-  def stem(text: CharSequence): StemmedTextWithTokens = {
-    KoreanStemmer.stem(text)
-  }
+  def stem(text: CharSequence): CharSequence = KoreanStemmer.stem(text)
+
 
   /**
    * Tokenize text into a sequence of token strings.
@@ -75,35 +56,6 @@ object TwitterKoreanProcessor {
    */
   def tokenizeToStrings(text: CharSequence, normalize: Boolean = true, stem: Boolean = true, keepSpace: Boolean = false): Seq[String] = {
     tokenize(text, normalize, stem, keepSpace).map(_.text.toString)
-  }
-
-  /**
-   * Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
-   * and the full information of each token.
-   *
-   * This is useful for Lucene integration. Normalization is not supported for this feature.
-   * For stemming support, use tokenizeWithIndexWithStemmer
-   *
-   * @param text Input text.
-   * @return A sequence of KoreanSegments.
-   */
-  def tokenizeWithIndex(text: CharSequence): Seq[KoreanSegment] = {
-    val tokens: Seq[KoreanToken] = tokenize(text, normalizization = false, stemming = false)
-    getKoreanSegments(text, tokens)
-  }
-
-  /**
-   * Tokenize text into a KoreanSegmentWithText,
-   * which includes stemmed input text and a sequence stemmed tokens
-   *
-   * This is useful for Lucene integration. Normalization is not supported for this feature.
-   *
-   * @param text Input text.
-   * @return KoreanSegmentWithText
-   */
-  def tokenizeWithIndexWithStemmer(text: CharSequence): KoreanSegmentWithText = {
-    val stemmed: StemmedTextWithTokens = KoreanStemmer.stem(text)
-    KoreanSegmentWithText(stemmed.text, getKoreanSegments(stemmed.text, stemmed.tokens))
   }
 
   /**
@@ -133,24 +85,8 @@ object TwitterKoreanProcessor {
    */
   def extractPhrases(text: CharSequence,
                      filterSpam: Boolean = false,
-                     enableHashtags: Boolean = true): Seq[CharSequence] = {
+                     enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
     KoreanPhraseExtractor.extractPhrases(text, filterSpam, enableHashtags)
   }
 
-  /**
-   * Align text with tokens to get indices (useful for Lucene integration)
-   * @param text Input CharSequence
-   * @param tokens A sequence of Tokens
-   * @return  A sequence of KoreanSegments
-   */
-  private def getKoreanSegments(text: CharSequence, tokens: Seq[KoreanToken]): Seq[KoreanSegment] = {
-    val s = text.toString
-    // Match text with the tokenization results to get offset and length of each token
-    val (output, i) = tokens.foldLeft(List[KoreanSegment](), 0) {
-      case ((l: List[KoreanSegment], i: Int), token: KoreanToken) =>
-        val segStart = s.indexOf(token.text, i)
-        (KoreanSegment(segStart, token.text.length, token) :: l, segStart + token.text.length)
-    }
-    output.reverse
-  }
 }

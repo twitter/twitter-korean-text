@@ -25,6 +25,8 @@ import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos
 import com.twitter.penguin.korean.util.KoreanPos._
 
+case class KoreanChunk(text: String, offset: Int, length: Int)
+
 /**
  * Split input text into Korean Chunks (어절)
  */
@@ -55,7 +57,7 @@ object KoreanChunker {
   private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
     def disjoint(that: ChunkMatch): Boolean = {
       (that.start < this.start && that.end <= this.start) ||
-          (that.start >= this.end && that.end > this.end)
+        (that.start >= this.end && that.end > this.end)
     }
   }
 
@@ -131,8 +133,8 @@ object KoreanChunker {
    *            CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation
    * @return sequence of Korean chunk strings
    */
-  def getChunksByPos(input: String, pos: KoreanPos): Seq[String] = {
-    chunk(input).filter(_.pos == pos).map(_.text)
+  def getChunksByPos(input: String, pos: KoreanPos): Seq[KoreanToken] = {
+    chunk(input).filter(_.pos == pos)
   }
 
   /**
@@ -144,9 +146,16 @@ object KoreanChunker {
    */
   def chunk(input: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
     val splitRegex = if (keepSpace) SPACE_REGEX_DELIMITER_KEEP_SPACES else SPACE_REGEX_DELIMITER
-    input.toString
-        .split(splitRegex)
-        .flatMap(s => splitChunks(s, keepSpace))
-        .map(m => KoreanToken(m.text, m.pos))
+    val s = input.toString
+
+    val (l: List[KoreanToken], i: Int) = s.split(splitRegex).flatMap {
+      s => splitChunks(s, keepSpace)
+    }.foldLeft(List[KoreanToken](), 0) {
+      case ((l: List[KoreanToken], i: Int), m: ChunkMatch) =>
+        val segStart = s.indexOf(m.text, i)
+        (KoreanToken(m.text, m.pos, segStart, m.text.length) :: l, segStart + m.text.length)
+    }
+    l.reverse
+
   }
 }
