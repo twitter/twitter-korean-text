@@ -45,7 +45,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>2.4.2</version>
+    <version>3.0</version>
   </dependency>
 ```
 
@@ -87,6 +87,7 @@ You can find these [examples](examples) in examples folder.
 from Scala
 ```scala
 import com.twitter.penguin.korean.TwitterKoreanProcessor
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 
 object ScalaTwitterKoreanTextExample {
@@ -95,38 +96,38 @@ object ScalaTwitterKoreanTextExample {
     val parsed: Seq[String] = TwitterKoreanProcessor
         .tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(parsed)
-    // ArraySeq(한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ)
+    // List(한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ)
 
     // Tokenize with Part-of-Speech information
-    val parsedPos: Seq[KoreanTokenizer.KoreanToken] = 
+    val parsedPos: Seq[KoreanTokenizer.KoreanToken] =
       TwitterKoreanProcessor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(parsedPos)
-    // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle)
+    // List(한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하다(Verb: 7, 2), 예시(Noun: 10, 2), 이다(Adjective: 12, 3), ㅋㅋ(KoreanParticle: 15, 2))
 
     // Tokenize without stemming
-    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] = 
+    val parsedPosNoStemming: Seq[KoreanTokenizer.KoreanToken] =
       TwitterKoreanProcessor
           .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = true, stemming = false)
     println(parsedPosNoStemming)
-    // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle)
+    // List(한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 다(Eomi: 14, 1), ㅋㅋ(KoreanParticle: 15, 2))
 
     // Tokenize without normalization and stemming
     val parsedPosParsingOnly: Seq[KoreanTokenizer.KoreanToken] = TwitterKoreanProcessor
       .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ", normalizization = false, stemming = false)
     println(parsedPosParsingOnly)
-    // ArraySeq(한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle)
+    // List(한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 닼*(Noun: 14, 1), ㅋㅋㅋㅋㅋ(KoreanParticle: 15, 5))
 
     // Phrase extraction
-    val phrases: Seq[CharSequence] = TwitterKoreanProcessor
+    val phrases: Seq[KoreanPhrase] = TwitterKoreanProcessor
         .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발")
     println(phrases)
-    // List(한국어, 처리, 처리하는 예시, 예시, 시발)
+    // List(한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2), 시발(Noun: 18, 2))
 
     // Phrase extraction with the spam filter enabled
-    val phrasesSpamFilitered: Seq[CharSequence] = TwitterKoreanProcessor
+    val phrasesSpamFilitered: Seq[KoreanPhrase] = TwitterKoreanProcessor
         .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발", filterSpam = true)
     println(phrasesSpamFilitered)
-    // List(한국어, 처리, 처리하는 예시, 예시)
+    // List(한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2))
   }
 }
 ```
@@ -136,6 +137,7 @@ from Java
 import java.util.List;
 
 import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
 
 public class JavaTwitterKoreanTextExample {
@@ -150,7 +152,7 @@ public class JavaTwitterKoreanTextExample {
     List<KoreanTokenizer.KoreanToken> parsed = processor
         .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
-    // output: [한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle]
+    // output: [한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하다(Verb: 7, 2), 예시(Noun: 10, 2), 이다(Adjective: 12, 3), ㅋㅋ(KoreanParticle: 15, 2)]
 
 
     // Tokenize without stemmer
@@ -160,11 +162,11 @@ public class JavaTwitterKoreanTextExample {
 
     parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
-    // output: [한국어, 를, 처리, 하는, 예시, 입, 니다, ㅋㅋ]
+    // output: [한국어, 를, 처리, 하는, 예시, 입니, 다, ㅋㅋ]
 
     parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
-    // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle]
+    // output: [한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 다(Eomi: 14, 1), ㅋㅋ(KoreanParticle: 15, 2)]
 
 
     // Tokenize with neither normalization nor stemmer
@@ -175,16 +177,16 @@ public class JavaTwitterKoreanTextExample {
 
     parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
-    // output: [한국어, 를, 처리, 하는, 예시, 입, 니, 닼, ㅋㅋㅋㅋㅋ]
+    // output: [한국어, 를, 처리, 하는, 예시, 입니, 닼, ㅋㅋㅋㅋㅋ]
 
     parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
-    // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle]
+    // output: [한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 닼*(Noun: 14, 1), ㅋㅋㅋㅋㅋ(KoreanParticle: 15, 5)]
 
-    List<CharSequence> phrases = processor
+    List<KoreanPhraseExtractor.KoreanPhrase> phrases = processor
         .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
     System.out.println(phrases);
-    // output: [한국어, 처리, 처리하는 예시, 예시, 시발]
+    // output: [한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2), 시발(Noun: 18, 2)]
 
     processor = new TwitterKoreanProcessorJava.Builder()
         .disableNormalizer()
@@ -194,7 +196,7 @@ public class JavaTwitterKoreanTextExample {
 
     phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
     System.out.println(phrases);
-    // output: [한국어, 처리, 처리하는 예시, 예시]
+    // output: [한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2)]
   }
 }
 ```
