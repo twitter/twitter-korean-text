@@ -19,6 +19,7 @@
 import java.util.List;
 
 import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
+import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
 
 public class JavaTwitterKoreanTextExample {
@@ -33,7 +34,7 @@ public class JavaTwitterKoreanTextExample {
     List<KoreanTokenizer.KoreanToken> parsed = processor
         .tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
-    // output: [한국어Noun, 를Josa, 처리Noun, 하다Verb, 예시Noun, 이다Adjective, ㅋㅋKoreanParticle]
+    // output: [한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하다(Verb: 7, 2), 예시(Noun: 10, 2), 이다(Adjective: 12, 3), ㅋㅋ(KoreanParticle: 15, 2)]
 
 
     // Tokenize without stemmer
@@ -43,11 +44,11 @@ public class JavaTwitterKoreanTextExample {
 
     parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
-    // output: [한국어, 를, 처리, 하는, 예시, 입, 니다, ㅋㅋ]
+    // output: [한국어, 를, 처리, 하는, 예시, 입니, 다, ㅋㅋ]
 
     parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
-    // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Adjective, 니다Eomi, ㅋㅋKoreanParticle]
+    // output: [한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 다(Eomi: 14, 1), ㅋㅋ(KoreanParticle: 15, 2)]
 
 
     // Tokenize with neither normalization nor stemmer
@@ -58,16 +59,16 @@ public class JavaTwitterKoreanTextExample {
 
     parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
-    // output: [한국어, 를, 처리, 하는, 예시, 입, 니, 닼, ㅋㅋㅋㅋㅋ]
+    // output: [한국어, 를, 처리, 하는, 예시, 입니, 닼, ㅋㅋㅋㅋㅋ]
 
     parsed = processor.tokenize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsed);
-    // output: [한국어Noun, 를Josa, 처리Noun, 하는Verb, 예시Noun, 입Noun, 니Josa, 닼Noun*, ㅋㅋㅋㅋㅋKoreanParticle]
+    // output: [한국어(Noun: 0, 3), 를(Josa: 3, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 닼*(Noun: 14, 1), ㅋㅋㅋㅋㅋ(KoreanParticle: 15, 5)]
 
-    List<CharSequence> phrases = processor
+    List<KoreanPhraseExtractor.KoreanPhrase> phrases = processor
         .extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
     System.out.println(phrases);
-    // output: [한국어, 처리, 처리하는 예시, 예시, 시발]
+    // output: [한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2), 시발(Noun: 18, 2)]
 
     processor = new TwitterKoreanProcessorJava.Builder()
         .disableNormalizer()
@@ -77,6 +78,6 @@ public class JavaTwitterKoreanTextExample {
 
     phrases = processor.extractPhrases("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ 시발");
     System.out.println(phrases);
-    // output: [한국어, 처리, 처리하는 예시, 예시]
+    // output: [한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2)]
   }
 }
