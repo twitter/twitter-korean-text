@@ -17,14 +17,14 @@
  */
 package com.twitter.penguin.korean;
 
-public class TwitterKoreanTextToken {
+public class KoreanTokenJava {
   String text;
-  TwitterKoreanTextPos pos;
+  KoreanPosJava pos;
   int offset;
   int length;
   boolean unknown;
 
-  public TwitterKoreanTextToken(String text, TwitterKoreanTextPos pos, int offset, int length, boolean unknown) {
+  public KoreanTokenJava(String text, KoreanPosJava pos, int offset, int length, boolean unknown) {
     this.text = text;
     this.pos = pos;
     this.offset = offset;

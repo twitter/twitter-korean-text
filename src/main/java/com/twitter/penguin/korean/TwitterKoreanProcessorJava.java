@@ -79,17 +79,17 @@ public class TwitterKoreanProcessorJava {
    * @param text Input text.
    * @return A list of Korean Tokens
    */
-  public List<TwitterKoreanTextToken> tokenize(CharSequence text) {
+  public List<KoreanTokenJava> tokenize(CharSequence text) {
     Iterator<KoreanToken> tokenized = TwitterKoreanProcessor.tokenize(
         text, normalizerEnabled, stemmerEnabled, keepSpaceEnabled
     ).iterator();
 
-    List<TwitterKoreanTextToken> output = Lists.newLinkedList();
+    List<KoreanTokenJava> output = Lists.newLinkedList();
     while (tokenized.hasNext()) {
       KoreanToken token = tokenized.next();
-      output.add(new TwitterKoreanTextToken(
+      output.add(new KoreanTokenJava(
           token.text(),
-          TwitterKoreanTextPos.valueOf(token.pos().toString()),
+          KoreanPosJava.valueOf(token.pos().toString()),
           token.offset(),
           token.length(),
           token.unknown()

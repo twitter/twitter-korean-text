@@ -21,7 +21,7 @@ package com.twitter.penguin.korean;
  * These enum class doesn't follow Java's POS capitalization convention intentionally
  * to match with Scala's com.twitter.penguin.korean.util.KoreanPos enumeration.
  */
-public enum TwitterKoreanTextPos {
+public enum KoreanPosJava {
   // Word leved POS
   Noun, Verb, Adjective,
   Adverb, Determiner, Exclamation,
