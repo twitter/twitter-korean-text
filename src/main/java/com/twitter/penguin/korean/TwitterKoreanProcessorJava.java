@@ -20,11 +20,13 @@ package com.twitter.penguin.korean;
 
 import java.util.List;
 
+import scala.collection.Iterator;
 import scala.collection.JavaConversions;
 import scala.collection.Seq;
 
+import com.google.common.collect.Lists;
+
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
-import com.twitter.penguin.korean.stemmer.KoreanStemmer;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
 
 /**
@@ -77,11 +79,24 @@ public class TwitterKoreanProcessorJava {
    * @param text Input text.
    * @return A list of Korean Tokens
    */
-  public List<KoreanToken> tokenize(CharSequence text) {
-    Seq<KoreanToken> tokenized = TwitterKoreanProcessor.tokenize(
+  public List<KoreanTokenJava> tokenize(CharSequence text) {
+    Iterator<KoreanToken> tokenized = TwitterKoreanProcessor.tokenize(
         text, normalizerEnabled, stemmerEnabled, keepSpaceEnabled
-    );
-    return JavaConversions.seqAsJavaList(tokenized);
+    ).iterator();
+
+    List<KoreanTokenJava> output = Lists.newLinkedList();
+    while (tokenized.hasNext()) {
+      KoreanToken token = tokenized.next();
+      output.add(new KoreanTokenJava(
+          token.text(),
+          KoreanPosJava.valueOf(token.pos().toString()),
+          token.offset(),
+          token.length(),
+          token.unknown()
+      ));
+
+    }
+    return output;
   }
 
   /**
