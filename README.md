@@ -57,6 +57,9 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 Please visit [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS) for further information!
 
+## node.js Wrapper
+
+[Ch0p](https://github.com/Ch0p) Kindly offered an awesome node.js wrapper. Check it out here: [twtkrjs](https://github.com/Ch0p/twtkrjs)
 
 ## Python Wrapper
 
