@@ -24,7 +24,7 @@ object ScalaTwitterKoreanTextExample {
   def main(args: Array[String]) {
     // Tokenize into List<String>
     val parsed: Seq[String] = TwitterKoreanProcessor
-        .tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
+        .tokensToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ")
     println(parsed)
     // List(한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ)
 

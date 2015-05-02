@@ -97,7 +97,7 @@ object KoreanTokenizer {
     def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
   }
 
-  case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int, unknown: Boolean = false) {
+  case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int,  unknown: Boolean = false) {
     override def toString: String = {
       val unknownStar = if (unknown) "*" else ""
       s"$text$unknownStar(${pos.toString}: $offset, $length)"
@@ -240,8 +240,8 @@ object KoreanTokenizer {
    * @param text Input Korean chunk
    * @return sequence of KoreanTokens
    */
-  def tokenize(text: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
-    chunk(text, keepSpace).flatMap {
+  def tokenize(text: CharSequence): Seq[KoreanToken] = {
+    chunk(text).flatMap {
       case token: KoreanToken if token.pos == Korean =>
         // Get the best parse of each chunk
         val parsed = parseKoreanChunk(token)

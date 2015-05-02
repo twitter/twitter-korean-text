@@ -1,9 +1,8 @@
 package com.twitter.penguin.korean.phrase_extractor
 
-import com.twitter.penguin.korean.TwitterKoreanProcessor
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
-import com.twitter.penguin.korean.util.{KoreanDictionaryProvider, Hangul, KoreanPos}
+import com.twitter.penguin.korean.util.{Hangul, KoreanDictionaryProvider, KoreanPos}
 
 /**
  * KoreanPhraseExtractor extracts suitable phrases for trending topics.
@@ -303,15 +302,31 @@ object KoreanPhraseExtractor {
    * Find suitable phrases
    *
    * @param tokens A sequence of tokens
+   * @param filterSpam true if spam words and slangs to be filtered out
+   * @param addHashtags true if #hashtags to be included
    * @return A list of KoreanPhrase
    */
-  def extractPhrases(tokens: Seq[KoreanToken], filterSpam: Boolean): Seq[KoreanPhrase] = {
+  def extractPhrases(tokens: Seq[KoreanToken],
+                     filterSpam: Boolean = false,
+                     addHashtags: Boolean = true): Seq[KoreanPhrase] = {
+    val hashtags = tokens.filter {
+      t: KoreanToken => t.pos == KoreanPos.Hashtag
+    }.map {
+      t: KoreanToken => KoreanPhrase(Seq(t), KoreanPos.Hashtag)
+    }
+
     val collapsed = collapsePos(tokens)
     val candidates = getCandidatePhraseChunks(collapsed, filterSpam)
     val permutatedCandidates = permutateCadidates(candidates)
 
-    permutatedCandidates.map {
+    val phrases = permutatedCandidates.map {
       phraseChunk: KoreanPhraseChunk => KoreanPhrase(trimPhraseChunk(phraseChunk).flatMap(_.tokens))
+    }
+
+    if (addHashtags) {
+      phrases ++ hashtags
+    } else {
+      phrases
     }
   }
 
@@ -327,34 +342,4 @@ object KoreanPhraseExtractor {
     }
     distinctPhrases(permutated)
   }
-
-  /**
-   * Extract phrarse from input CharSequence
-   *
-   * @param input Input CharSequence
-   * @return Seq of phrase CharSequence
-   */
-  def extractPhrases(input: CharSequence,
-                     filterSpam: Boolean = false,
-                     addHashtags: Boolean = true): Seq[KoreanPhrase] = {
-
-    val tokens = TwitterKoreanProcessor.tokenize(
-      input, stemming = false, keepSpace = true
-    )
-
-    val phrases = extractPhrases(tokens, filterSpam)
-
-    val hashtags = tokens.filter {
-      t: KoreanToken => t.pos == KoreanPos.Hashtag
-    }.map {
-      t: KoreanToken => KoreanPhrase(Seq(t), KoreanPos.Hashtag)
-    }
-
-    if (addHashtags) {
-      phrases ++ hashtags
-    } else {
-      phrases
-    }
-  }
-
 }

@@ -18,7 +18,7 @@
 
 package com.twitter.penguin.korean.stemmer
 
-import com.twitter.penguin.korean.TestBase
+import com.twitter.penguin.korean.{TwitterKoreanProcessor, TestBase}
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos._
@@ -26,53 +26,50 @@ import com.twitter.penguin.korean.util.KoreanPos._
 class KoreanStemmerTest extends TestBase {
 
   val sampleText1 = "새로운 스테밍을 추가했었다."
+  val sampleTokens1 = KoreanTokenizer.tokenize(sampleText1)
   val sampleStems1 = Seq(
     KoreanToken("새롭다", Adjective, 0, 3),
+    KoreanToken(" ", Space, 3, 1),
     KoreanToken("스테밍", Noun, 4, 3),
     KoreanToken("을", Josa, 7,1),
+    KoreanToken(" ", Space, 8, 1),
     KoreanToken("추가", Noun, 9,2),
     KoreanToken("하다", Verb, 11,3),
     KoreanToken(".", Punctuation, 14,1)
   )
 
   val sampleText2 = "그런 사람 없습니다.."
-  val sampleStems2 = Seq(KoreanToken("그렇다", Adjective, 0, 2),
+  val sampleTokens2 = KoreanTokenizer.tokenize(sampleText2)
+  val sampleStems2 = Seq(
+    KoreanToken("그렇다", Adjective, 0, 2),
+    KoreanToken(" ", Space, 2, 1),
     KoreanToken("사람", Noun, 3, 2),
+    KoreanToken(" ", Space, 5, 1),
     KoreanToken("없다", Adjective, 6, 4),
     KoreanToken("..", Punctuation, 10, 2)
   )
 
   val sampleText3 = "라고만"
+  val sampleTokens3 = KoreanTokenizer.tokenize(sampleText3)
   val sampleStems3 = Seq(KoreanToken("라고만", Eomi, 0,3))
 
   test("stemPredicates should stem predicates from Korean tokens") {
     assert(
-      KoreanStemmer.stemPredicates(
+      KoreanStemmer.stem(
         KoreanTokenizer.tokenize(sampleText1)
       ) === sampleStems1
     )
 
     assert(
-      KoreanStemmer.stemPredicates(
+      KoreanStemmer.stem(
         KoreanTokenizer.tokenize(sampleText2)
       ) === sampleStems2
     )
 
     assert(
-      KoreanStemmer.stemPredicates(
+      KoreanStemmer.stem(
         KoreanTokenizer.tokenize(sampleText3)
       ) === sampleStems3
-    )
-  }
-
-  test("stem should transform the original text along with the tokens") {
-    assert(
-      KoreanStemmer.stem(sampleText1)
-          === (new StringBuilder).append("새롭다 스테밍을 추가하다.")
-    )
-    assert(
-      KoreanStemmer.stem(sampleText2)
-          === (new StringBuilder).append("그렇다 사람 없다..")
     )
   }
 
@@ -95,7 +92,8 @@ class KoreanStemmerTest extends TestBase {
     )
     words.foreach {
       case (word, stem) =>
-        val stemmed = KoreanStemmer.stem(word)
+        val tokens = KoreanTokenizer.tokenize(word)
+        val stemmed = KoreanStemmer.stem(tokens).map(_.text).mkString("")
         assert(stem === stemmed.toString)
     }
   }
@@ -119,7 +117,8 @@ class KoreanStemmerTest extends TestBase {
     )
     words.foreach {
       case (word, stem) =>
-        val stemmed = KoreanStemmer.stem(word)
+        val tokens = KoreanTokenizer.tokenize(word)
+        val stemmed = KoreanStemmer.stem(tokens).map(_.text).mkString("")
         assert(stem === stemmed.toString)
     }
   }

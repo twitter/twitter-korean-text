@@ -27,7 +27,7 @@ public class JavaTwitterKoreanTextExample {
     // Tokenize with normalization + stemmer
     TwitterKoreanProcessorJava processor = new TwitterKoreanProcessorJava.Builder().build();
 
-    List<String> parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    List<String> parsedStrings = processor.tokensToJavaStringList("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
     // output: [한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ]
 
@@ -42,7 +42,7 @@ public class JavaTwitterKoreanTextExample {
             .disableStemmer()
             .build();
 
-    parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    parsedStrings = processor.tokensToJavaStringList("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
     // output: [한국어, 를, 처리, 하는, 예시, 입니, 다, ㅋㅋ]
 
@@ -57,7 +57,7 @@ public class JavaTwitterKoreanTextExample {
         .disableStemmer()
         .build();
 
-    parsedStrings = processor.tokenizeToStrings("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
+    parsedStrings = processor.tokensToJavaStringList("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ");
     System.out.println(parsedStrings);
     // output: [한국어, 를, 처리, 하는, 예시, 입니, 닼, ㅋㅋㅋㅋㅋ]
 
