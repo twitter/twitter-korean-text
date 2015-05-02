@@ -27,12 +27,18 @@ object KoreanProcessorSandbox {
   def main(args: Array[String]) {
     val s = "와 이거 알티 이르케 많이 됐었엌ㅋㅋㅋ??"
 
+    val tokens = tokenize(s)
+
     println(
-      tokenize(s, stemming = false).mkString(" ")
+      tokens.mkString(" ")
     )
 
     println(
-      extractPhrases(s)
+      stem(tokens).mkString(" ")
+    )
+
+    println(
+      extractPhrases(tokens)
     )
   }
 }

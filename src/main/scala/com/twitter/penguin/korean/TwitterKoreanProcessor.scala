@@ -24,6 +24,7 @@ import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanP
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+import com.twitter.penguin.korean.util.KoreanPos
 
 /**
  * TwitterKoreanTokenizer provides error and slang tolerant Korean tokenization.
@@ -37,56 +38,46 @@ object TwitterKoreanProcessor {
    */
   def normalize(text: CharSequence): CharSequence = KoreanNormalizer.normalize(text)
 
-  /**
-   * Wrapper for Korean stemmer
-   *
-   * @param text Input text
-   * @return A sequence of stemmed tokens
-   */
-  def stem(text: CharSequence): CharSequence = KoreanStemmer.stem(text)
-
-
-  /**
-   * Tokenize text into a sequence of token strings.
-   *
-   * @param text input text
-   * @param normalize option to enable the normalizer
-   * @param stem option to enable the stemmer
-   * @return A sequence of token strings.
-   */
-  def tokenizeToStrings(text: CharSequence, normalize: Boolean = true, stem: Boolean = true, keepSpace: Boolean = false): Seq[String] = {
-    tokenize(text, normalize, stem, keepSpace).map(_.text.toString)
-  }
 
   /**
    * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
    * whether a token is an out-of-vocabulary term.
    *
    * @param text input text
-   * @param normalizization option to enable the normalizer
-   * @param stemming option to enable the stemmer
    * @return A sequence of KoreanTokens.
    */
-  def tokenize(text: CharSequence,
-               normalizization: Boolean = true,
-               stemming: Boolean = true,
-               keepSpace: Boolean = false): Seq[KoreanToken] = {
-    val normalized = if (normalizization) KoreanNormalizer.normalize(text) else text
-    val tokenized = KoreanTokenizer.tokenize(normalized, keepSpace)
-    if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
+  def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
+
+  /**
+    * Wrapper for Korean stemmer
+   *
+   * @param tokens Korean tokens
+   * @return A sequence of stemmed tokens
+   */
+  def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = KoreanStemmer.stem(tokens)
+
+  /**
+    * Tokenize text into a sequence of token strings. This excludes spaces.
+   *
+   * @param tokens Korean tokens
+   * @return A sequence of token strings.
+   */
+  def tokensToStrings(tokens: Seq[KoreanToken]): Seq[String] = {
+    tokens.filterNot(t => t.pos == KoreanPos.Space).map(_.text.toString)
   }
 
   /**
    * Extract noun-phrases from Korean text
    *
-   * @param text input text.
-   * @param filterSpam Whether to filter spam/slang terms
+   * @param tokens Korean tokens
+   * @param filterSpam true if spam/slang terms to be filtered out (default: false)
+   * @param enableHashtags true if #hashtags to be included (default: true)
    * @return A sequence of extracted phrases
    */
-  def extractPhrases(text: CharSequence,
+  def extractPhrases(tokens: Seq[KoreanToken],
                      filterSpam: Boolean = false,
                      enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
-    KoreanPhraseExtractor.extractPhrases(text, filterSpam, enableHashtags)
+    KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
   }
 
 }

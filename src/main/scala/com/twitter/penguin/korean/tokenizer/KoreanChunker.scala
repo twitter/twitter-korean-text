@@ -47,12 +47,10 @@ object KoreanChunker {
 
   private val CHUNKING_ORDER = Seq(Space, URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
   private val SPACE_REGEX_DELIMITER_KEEP_SPACES = """((?<=\s+)|(?=\s+))"""
-  private val SPACE_REGEX_DELIMITER = """\s+"""
 
   protected[korean] def getChunks(input: String, keepSpace: Boolean = false): Seq[String] = {
-    chunk(input, keepSpace).map(_.text)
+    chunk(input).map(_.text)
   }
-
 
   private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
     def disjoint(that: ChunkMatch): Boolean = {
@@ -79,9 +77,8 @@ object KoreanChunker {
     }
   }
 
-  private[this] def splitChunks(text: String, keepSpace: Boolean = false): List[ChunkMatch] = {
-    val splitRegex = if (keepSpace) SPACE_REGEX_DELIMITER_KEEP_SPACES else SPACE_REGEX_DELIMITER
-    val chunks = text.split(splitRegex).flatMap { s =>
+  private[this] def splitChunks(text: String): List[ChunkMatch] = {
+    val chunks = text.split(SPACE_REGEX_DELIMITER_KEEP_SPACES).flatMap { s =>
       CHUNKING_ORDER.foldLeft(List[ChunkMatch]()) {
         (l, pos) =>
           val m = POS_PATTERNS(pos).matcher(s)
@@ -144,12 +141,12 @@ object KoreanChunker {
    * @param input input string
    * @return sequence of KoreanTokens
    */
-  def chunk(input: CharSequence, keepSpace: Boolean = false): Seq[KoreanToken] = {
-    val splitRegex = if (keepSpace) SPACE_REGEX_DELIMITER_KEEP_SPACES else SPACE_REGEX_DELIMITER
+  def chunk(input: CharSequence): Seq[KoreanToken] = {
+    val splitRegex = SPACE_REGEX_DELIMITER_KEEP_SPACES
     val s = input.toString
 
     val (l: List[KoreanToken], i: Int) = s.split(splitRegex).flatMap {
-      s => splitChunks(s, keepSpace)
+      s => splitChunks(s)
     }.foldLeft(List[KoreanToken](), 0) {
       case ((l: List[KoreanToken], i: Int), m: ChunkMatch) =>
         val segStart = s.indexOf(m.text, i)

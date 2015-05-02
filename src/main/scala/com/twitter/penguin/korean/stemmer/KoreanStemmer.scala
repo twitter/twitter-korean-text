@@ -1,6 +1,5 @@
 package com.twitter.penguin.korean.stemmer
 
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 import com.twitter.penguin.korean.util.KoreanPos._
@@ -18,9 +17,9 @@ object KoreanStemmer {
    * Removes Ending tokens recovering the root form of predicates
    *
    * @param tokens A sequence of tokens
-   * @return A sequence of collapsed Korean tokens ([새, 로, 운, 사람] -> [[새, 로, 운], 사람])
+   * @return A sequence of collapsed Korean tokens
    */
-  def stemPredicates(tokens: Seq[KoreanToken]): Seq[KoreanToken] = {
+  def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = {
     if (!tokens.exists(t => t.pos == Verb || t.pos == Adjective)) {
       return tokens
     }
@@ -67,29 +66,5 @@ object KoreanStemmer {
         )
       case token => Seq(token)
     }
-  }
-
-
-  /**
-   * Stem tokens
-   *
-   * @param text Input text
-   * @return StemmedTextWithTokens
-   */
-  def stem(text: CharSequence): CharSequence = {
-    val tokenized = KoreanTokenizer.tokenize(text)
-
-    val stemmed = stemPredicates(tokenized)
-
-    val s = text.toString
-    val (sb, i) = stemmed.foldLeft(new StringBuilder(), 0) {
-      case ((sb: StringBuilder, i: Int), token: KoreanToken) =>
-        sb.append(s.substring(i, token.offset))
-        sb.append(token.text)
-        (sb, token.offset + token.length)
-    }
-    sb.append(s.substring(i, text.length))
-
-    sb
   }
 }

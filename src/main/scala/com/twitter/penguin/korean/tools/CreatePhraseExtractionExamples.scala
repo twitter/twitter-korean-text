@@ -37,7 +37,8 @@ object CreatePhraseExtractionExamples extends Runnable {
     val phrasePairs = readFileByLineFromResources("example_tweets.txt").flatMap {
       case line if line.length > 0 =>
         val chunk = line.trim
-        val phrases = extractPhrases(chunk)
+        val tokens = tokenize(chunk)
+        val phrases = extractPhrases(tokens)
         Some(PhraseExample(chunk, phrases))
       case line => None
     }.toSet

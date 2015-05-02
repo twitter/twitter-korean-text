@@ -3,6 +3,7 @@ package com.twitter.penguin.korean.phrase_extractor
 import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
+import com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos
 import com.twitter.penguin.korean.{TestBase, TwitterKoreanProcessor}
@@ -32,7 +33,7 @@ class KoreanPhraseExtractorTest extends TestBase {
     ),
     SampleTextPair(
       "[단독]정부, 새 고용 형태 ＇중규직＇ 만든다 http://url.com 이름도 바뀌겟군. 정규직은 상규직, " +
-          "비정규직은 하규직. 중규직 참 창조적이다. 결국 기업은 비정규직으로 이용할게 뻔함.",
+        "비정규직은 하규직. 중규직 참 창조적이다. 결국 기업은 비정규직으로 이용할게 뻔함.",
       "단독(Noun: 1, 2), 정부(Noun: 4, 2), 새 고용(Noun: 8, 4), 새 고용 형태(Noun: 8, 7), " +
         "고용 형태(Noun: 10, 5), 중규직(Noun: 17, 3), 이름(Noun: 41, 2), 정규직(Noun: 51, 3), " +
         "상규직(Noun: 56, 3), 비정규직(Noun: 61, 4), 하규직(Noun: 67, 3), 기업(Noun: 88, 2), " +
@@ -72,10 +73,6 @@ class KoreanPhraseExtractorTest extends TestBase {
     val t1 = System.currentTimeMillis()
     t1 - t0
   }
-
-  def tokenize(text: String) = TwitterKoreanProcessor.tokenize(
-    text, stemming = false, keepSpace = true
-  )
 
   test("collapsePos correctly collapse KoreanPos sequences") {
     assert(KoreanPhraseExtractor.collapsePos(
@@ -125,57 +122,64 @@ class KoreanPhraseExtractorTest extends TestBase {
         "한다(Verb: 69, 2).(Punctuation: 71, 1)")
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(1).text)).mkString("") ===
-        "결정(Noun: 0, 2)했어(Verb: 2, 2).(Punctuation: 4, 1) (Space: 5, 1)" +
-          "마키(Noun: 6, 2) (Space: 8, 1)코레썸(Noun: 9, 3) (Space: 12, 1)" +
-          "사주시는(Verb: 13, 4) (Space: 17, 1)분께는(Verb: 18, 3) (Space: 21, 1)" +
-          "허니버터칩(Noun: 22, 5) (Space: 27, 1)한(Verb: 28, 1) (Space: 29, 1)" +
-          "봉지(Noun: 30, 2)를(Josa: 32, 1) (Space: 33, 1)선물할(Verb: 34, 3) (Space: 37, 1)" +
-          "것(Noun: 38, 1)이다(Josa: 39, 2).(Punctuation: 41, 1)")
+      "결정(Noun: 0, 2)했어(Verb: 2, 2).(Punctuation: 4, 1) (Space: 5, 1)" +
+        "마키(Noun: 6, 2) (Space: 8, 1)코레썸(Noun: 9, 3) (Space: 12, 1)" +
+        "사주시는(Verb: 13, 4) (Space: 17, 1)분께는(Verb: 18, 3) (Space: 21, 1)" +
+        "허니버터칩(Noun: 22, 5) (Space: 27, 1)한(Verb: 28, 1) (Space: 29, 1)" +
+        "봉지(Noun: 30, 2)를(Josa: 32, 1) (Space: 33, 1)선물할(Verb: 34, 3) (Space: 37, 1)" +
+        "것(Noun: 38, 1)이다(Josa: 39, 2).(Punctuation: 41, 1)")
   }
 
   test("extractPhrases correctly extracts phrases") {
     assert(KoreanPhraseExtractor.extractPhrases(
       tokenize(sampleText(0).text), filterSpam = false
     ).mkString(", ") ===
-        "블랙프라이데이(Noun: 0, 7), 이날(Noun: 9, 2), 이날 미국(Noun: 9, 5), 이날 미국의 수백만(Noun: 9, 10), " +
-          "미국의 수백만(Noun: 12, 7), 수백만(Noun: 16, 3), 이날 미국의 수백만 소비자들(Noun: 9, 15), " +
-          "미국의 수백만 소비자들(Noun: 12, 12), 수백만 소비자들(Noun: 16, 8), 크리스마스(Noun: 26, 5), " +
-          "크리스마스 선물(Noun: 26, 8), 할인(Noun: 36, 2), 할인된 가격(Noun: 36, 6), 가격(Noun: 40, 2), " +
-          "주 목적(Noun: 50, 4), 블랙프라이데이 쇼핑(Noun: 57, 10), " +
-          "미국(Noun: 12, 2), 소비자들(Noun: 20, 4), 선물(Noun: 32, 2), 목적(Noun: 52, 2), " +
-          "쇼핑(Noun: 65, 2)")
+      "블랙프라이데이(Noun: 0, 7), 이날(Noun: 9, 2), 이날 미국(Noun: 9, 5), 이날 미국의 수백만(Noun: 9, 10), " +
+        "미국의 수백만(Noun: 12, 7), 수백만(Noun: 16, 3), 이날 미국의 수백만 소비자들(Noun: 9, 15), " +
+        "미국의 수백만 소비자들(Noun: 12, 12), 수백만 소비자들(Noun: 16, 8), 크리스마스(Noun: 26, 5), " +
+        "크리스마스 선물(Noun: 26, 8), 할인(Noun: 36, 2), 할인된 가격(Noun: 36, 6), 가격(Noun: 40, 2), " +
+        "주 목적(Noun: 50, 4), 블랙프라이데이 쇼핑(Noun: 57, 10), " +
+        "미국(Noun: 12, 2), 소비자들(Noun: 20, 4), 선물(Noun: 32, 2), 목적(Noun: 52, 2), " +
+        "쇼핑(Noun: 65, 2)")
   }
 
   test("extractPhrases correctly extracts phrases from a string") {
     sampleText.foreach {
       case SampleTextPair(text: String, phrases: String) =>
-        assert(KoreanPhraseExtractor.extractPhrases(text).mkString(", ") === phrases)
+        val tokens = tokenize(text)
+        assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") === phrases)
     }
   }
 
   test("extractPhrases should extract long noun-only phrases in reasonable time") {
-    assert(KoreanPhraseExtractor.extractPhrases(superLongText).mkString(", ") ===
+    val tokens = tokenize(superLongText)
+    assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") ===
       "허니버터칩(Noun: 0, 5), 정규직(Noun: 5, 3), 크리스마스(Noun: 8, 5)")
-    assert(time(KoreanPhraseExtractor.extractPhrases(superLongText)) < 10000)
+    assert(time(KoreanPhraseExtractor.extractPhrases(tokens)) < 10000)
   }
 
   test("extractPhrases should correctly extract the example set") {
+    def phraseExtractor(text: String) = {
+      val tokens = tokenize(text)
+      KoreanPhraseExtractor.extractPhrases(tokens).mkString("/")
+    }
     assertExamples(
       "current_phrases.txt", LOG,
-      KoreanPhraseExtractor.extractPhrases(_).mkString("/")
+      phraseExtractor
     )
   }
 
   test("extractPhrases should filter out spam and profane words") {
-    assert(KoreanPhraseExtractor.extractPhrases(spamText).mkString(", ") ===
-        "레알(Noun: 0, 2), 레알 시발(Noun: 0, 5), 레알 시발 저거(Noun: 0, 8), 시발 저거(Noun: 3, 5), " +
-          "레알 시발 저거 카지노(Noun: 0, 12), 시발 저거 카지노(Noun: 3, 9), 저거 카지노(Noun: 6, 6), " +
-          "레알 시발 저거 카지노 포르노(Noun: 0, 16), 시발 저거 카지노 포르노(Noun: 3, 13), " +
-          "저거 카지노 포르노(Noun: 6, 10), 카지노 포르노(Noun: 9, 7), " +
-          "레알 시발 저거 카지노 포르노 야동(Noun: 0, 19), 시발 저거 카지노 포르노 야동(Noun: 3, 16), " +
-          "저거 카지노 포르노 야동(Noun: 6, 13), 카지노 포르노 야동(Noun: 9, 10), 포르노 야동(Noun: 13, 6), " +
-          "시발(Noun: 3, 2), 저거(Noun: 6, 2), 카지노(Noun: 9, 3), 포르노(Noun: 13, 3), 야동(Noun: 17, 2)")
-    assert(KoreanPhraseExtractor.extractPhrases(spamText, filterSpam = true).mkString(", ") ===
-        "레알(Noun: 0, 2), 저거(Noun: 6, 2)")
+    val tokens = tokenize(spamText)
+    assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") ===
+      "레알(Noun: 0, 2), 레알 시발(Noun: 0, 5), 레알 시발 저거(Noun: 0, 8), 시발 저거(Noun: 3, 5), " +
+        "레알 시발 저거 카지노(Noun: 0, 12), 시발 저거 카지노(Noun: 3, 9), 저거 카지노(Noun: 6, 6), " +
+        "레알 시발 저거 카지노 포르노(Noun: 0, 16), 시발 저거 카지노 포르노(Noun: 3, 13), " +
+        "저거 카지노 포르노(Noun: 6, 10), 카지노 포르노(Noun: 9, 7), " +
+        "레알 시발 저거 카지노 포르노 야동(Noun: 0, 19), 시발 저거 카지노 포르노 야동(Noun: 3, 16), " +
+        "저거 카지노 포르노 야동(Noun: 6, 13), 카지노 포르노 야동(Noun: 9, 10), 포르노 야동(Noun: 13, 6), " +
+        "시발(Noun: 3, 2), 저거(Noun: 6, 2), 카지노(Noun: 9, 3), 포르노(Noun: 13, 3), 야동(Noun: 17, 2)")
+    assert(KoreanPhraseExtractor.extractPhrases(tokens, filterSpam = true).mkString(", ") ===
+      "레알(Noun: 0, 2), 저거(Noun: 6, 2)")
   }
 }
