@@ -32,6 +32,26 @@ public class KoreanTokenJava {
     this.unknown = unknown;
   }
 
+  public String getText() {
+    return text;
+  }
+
+  public KoreanPosJava getPos() {
+    return pos;
+  }
+
+  public int getOffset() {
+    return offset;
+  }
+
+  public int getLength() {
+    return length;
+  }
+
+  public boolean isUnknown() {
+    return unknown;
+  }
+
   @Override
   public String toString() {
     String unknownStar = "";

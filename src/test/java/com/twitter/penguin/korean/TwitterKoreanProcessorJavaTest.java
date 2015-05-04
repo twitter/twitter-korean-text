@@ -30,9 +30,8 @@ public class TwitterKoreanProcessorJavaTest {
     Seq<KoreanTokenizer.KoreanToken> stemmed = TwitterKoreanProcessorJava.stem(tokens);
 
     assertEquals(
-        "[아름답다(Adjective: 0, 4),  (Space: 4, 1), 강산(Noun: 5, 2), 을(Josa: 7, 1), " +
-            " (Space: 8, 1), 귀엽다(Adjective: 9, 4),  (Space: 13, 1)," +
-            " 먹다(Verb: 14, 3), .(Punctuation: 17, 1)]",
+        "[아름답다(Adjective: 0, 4), 강산(Noun: 5, 2), 을(Josa: 7, 1), 귀엽다(Adjective: 9, 4), " +
+            "먹다(Verb: 14, 3), .(Punctuation: 17, 1)]",
         TwitterKoreanProcessorJava.tokensToJavaKoreanTokenList(stemmed).toString());
 
     assertEquals("[아름답다, 강산, 을, 귀엽다, 먹다, .]",
@@ -44,8 +43,13 @@ public class TwitterKoreanProcessorJavaTest {
     String text = "착한강아지상을 받은 루루";
     Seq<KoreanTokenizer.KoreanToken> tokens = TwitterKoreanProcessorJava.tokenize(text);
     assertEquals(
+        "[착한, 강아지, 상, 을,  , 받은,  , 루루]",
+        TwitterKoreanProcessorJava.tokensToJavaStringList(tokens, true).toString()
+    );
+
+    assertEquals(
         "[착한, 강아지, 상, 을, 받은, 루루]",
-        TwitterKoreanProcessorJava.tokensToJavaStringList(tokens).toString()
+        TwitterKoreanProcessorJava.tokensToJavaStringList(tokens, false).toString()
     );
   }
 
@@ -56,7 +60,13 @@ public class TwitterKoreanProcessorJavaTest {
     assertEquals(
         "[착한(Adjective: 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), 을(Josa: 6, 1), " +
             " (Space: 7, 1), 받은(Verb: 8, 2),  (Space: 10, 1), 루루(Noun: 11, 2)]",
-        TwitterKoreanProcessorJava.tokensToJavaKoreanTokenList(tokens).toString()
+        TwitterKoreanProcessorJava.tokensToJavaKoreanTokenList(tokens, true).toString()
+    );
+
+    assertEquals(
+        "[착한(Adjective: 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), 을(Josa: 6, 1), " +
+            "받은(Verb: 8, 2), 루루(Noun: 11, 2)]",
+        TwitterKoreanProcessorJava.tokensToJavaKoreanTokenList(tokens, false).toString()
     );
   }
 

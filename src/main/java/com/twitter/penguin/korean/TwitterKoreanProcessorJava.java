@@ -59,27 +59,36 @@ public final class TwitterKoreanProcessorJava {
   }
 
 
+
   /**
    * Transforms the tokenization output to List<KoreanTokenJava>
    *
    * @param tokens Korean tokens (output of tokenize(CharSequence text)).
    * @return List of KoreanTokenJava.
    */
-  public static List<KoreanTokenJava> tokensToJavaKoreanTokenList(Seq<KoreanToken> tokens) {
+  public static List<KoreanTokenJava> tokensToJavaKoreanTokenList(Seq<KoreanToken> tokens, boolean keepSpace) {
     Iterator<KoreanToken> tokenized = tokens.iterator();
     List<KoreanTokenJava> output = Lists.newLinkedList();
     while (tokenized.hasNext()) {
       KoreanToken token = tokenized.next();
-      output.add(new KoreanTokenJava(
-          token.text(),
-          KoreanPosJava.valueOf(token.pos().toString()),
-          token.offset(),
-          token.length(),
-          token.unknown()
-      ));
+      if (keepSpace || token.pos() != KoreanPos.Space()) {
+        output.add(new KoreanTokenJava(
+            token.text(),
+            KoreanPosJava.valueOf(token.pos().toString()),
+            token.offset(),
+            token.length(),
+            token.unknown()
+        ));
+      }
     }
     return output;
   }
+
+  // Default behavior of keepSpace is false
+  public static List<KoreanTokenJava> tokensToJavaKoreanTokenList(Seq<KoreanToken> tokens) {
+    return tokensToJavaKoreanTokenList(tokens, false);
+  }
+
 
   /**
    * Tokenize with the builder options into a String Iterable.
@@ -87,17 +96,22 @@ public final class TwitterKoreanProcessorJava {
    * @param tokens Korean tokens (output of tokenize(CharSequence text)).
    * @return List of token strings.
    */
-  public static List<String> tokensToJavaStringList(Seq<KoreanToken> tokens) {
+  public static List<String> tokensToJavaStringList(Seq<KoreanToken> tokens, boolean keepSpace) {
     Iterator<KoreanToken> tokenized = tokens.iterator();
     List<String> output = Lists.newLinkedList();
     while (tokenized.hasNext()) {
       final KoreanToken token = tokenized.next();
 
-      if (token.pos() != KoreanPos.Space()) {
+      if (keepSpace || token.pos() != KoreanPos.Space()) {
         output.add(token.text());
       }
     }
     return output;
+  }
+
+  // Default behavior of keepSpace is false
+  public static List<String> tokensToJavaStringList(Seq<KoreanToken> tokens) {
+    return tokensToJavaStringList(tokens, false);
   }
 
 
