@@ -21,6 +21,7 @@ package com.twitter.penguin.korean.tools
 import java.io.FileOutputStream
 
 import com.twitter.penguin.korean.TwitterKoreanProcessor._
+import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.util.KoreanDictionaryProvider._
 
@@ -37,7 +38,8 @@ object CreatePhraseExtractionExamples extends Runnable {
     val phrasePairs = readFileByLineFromResources("example_tweets.txt").flatMap {
       case line if line.length > 0 =>
         val chunk = line.trim
-        val tokens = tokenize(chunk)
+        val normalized = KoreanNormalizer.normalize(chunk)
+        val tokens = tokenize(normalized)
         val phrases = extractPhrases(tokens)
         Some(PhraseExample(chunk, phrases))
       case line => None

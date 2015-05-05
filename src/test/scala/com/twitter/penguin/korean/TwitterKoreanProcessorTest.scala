@@ -52,10 +52,10 @@ class TwitterKoreanProcessorTest extends TestBase {
 
     assert(
       tokenize("얼른 부산오십쇼!! 보고싶습니다!!! 사랑해여 김캡틴♥♥♥").mkString("/")
-          === "얼른(Noun: 0, 2)/ (Space: 2, 1)/부산(Noun: 3, 2)/오십(Noun: 5, 2)/쇼(Noun: 7, 1)/" +
+          === "얼른(Noun: 0, 2)/ (Space: 2, 1)/부산(ProperNoun: 3, 2)/오십(Noun: 5, 2)/쇼(Noun: 7, 1)/" +
         "!!(Punctuation: 8, 2)/ (Space: 10, 1)/보고(Verb: 11, 2)/싶(PreEomi: 13, 1)/" +
         "습니다(Eomi: 14, 3)/!!!(Punctuation: 17, 3)/ (Space: 20, 1)/사랑해(Verb: 21, 3)/" +
-        "여(Eomi: 24, 1)/ (Space: 25, 1)/김(Noun: 26, 1)/캡틴(Noun: 27, 2)/♥♥♥(Foreign: 29, 3)"
+        "여(Eomi: 24, 1)/ (Space: 25, 1)/김(Noun: 26, 1)/캡틴(ProperNoun: 27, 2)/♥♥♥(Foreign: 29, 3)"
     )
 
     assert(
@@ -106,18 +106,18 @@ class TwitterKoreanProcessorTest extends TestBase {
 
   test("tokenize should tokenize company names correctly") {
     assert(
-      tokenize("삼성전자서비스").mkString("/") === "삼성(Noun: 0, 2)/전자(Noun: 2, 2)/서비스(Noun: 4, 3)"
+      tokenize("삼성전자서비스").mkString("/") === "삼성(ProperNoun: 0, 2)/전자(Noun: 2, 2)/서비스(Noun: 4, 3)"
     )
 
     assert(
-      tokenize("삼성정밀화학").mkString("/") === "삼성(Noun: 0, 2)/정밀(Noun: 2, 2)/화학(Noun: 4, 2)"
+      tokenize("삼성정밀화학").mkString("/") === "삼성(ProperNoun: 0, 2)/정밀(Noun: 2, 2)/화학(Noun: 4, 2)"
     )
 
     assert(
       tokenize("삼성그룹 현대중공업 한화케미칼 삼성전자스토어").mkString("/") ===
-        "삼성(Noun: 0, 2)/그룹(Noun: 2, 2)/ (Space: 4, 1)/현대(Noun: 5, 2)/중공업(Noun: 7, 3)/" +
-          " (Space: 10, 1)/한화(Noun: 11, 2)/케미칼(Noun: 13, 3)/ (Space: 16, 1)/삼성(Noun: 17, 2)/" +
-          "전자(Noun: 19, 2)/스토어(Noun: 21, 3)"
+        "삼성(ProperNoun: 0, 2)/그룹(ProperNoun: 2, 2)/ (Space: 4, 1)/현대(Noun: 5, 2)/중공업(Noun: 7, 3)/" +
+          " (Space: 10, 1)/한화(ProperNoun: 11, 2)/케미칼(ProperNoun: 13, 3)/ (Space: 16, 1)/삼성(ProperNoun: 17, 2)/" +
+          "전자(Noun: 19, 2)/스토어(ProperNoun: 21, 3)"
     )
   }
 

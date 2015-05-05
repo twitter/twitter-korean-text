@@ -120,7 +120,7 @@ class KoreanTokenizerTest extends TestBase {
   test("tokenize should return expected tokens") {
     assert(
       tokenize("개루루야") ===
-        List(KoreanToken("개", Noun, 0, 1), KoreanToken("루루", Noun, 1, 2), KoreanToken("야", Josa, 3, 1))
+        List(KoreanToken("개", Noun, 0, 1), KoreanToken("루루", ProperNoun, 1, 2), KoreanToken("야", Josa, 3, 1))
     )
 
     assert(
@@ -152,7 +152,7 @@ class KoreanTokenizerTest extends TestBase {
       tokenize("쵸귀여운개루루") ===
         List(
           KoreanToken("쵸", VerbPrefix, 0, 1), KoreanToken("귀여운", Adjective, 1, 3),
-          KoreanToken("개", Noun, 4, 1), KoreanToken("루루", Noun, 5, 2)
+          KoreanToken("개", Noun, 4, 1), KoreanToken("루루", ProperNoun, 5, 2)
         )
     )
 
@@ -176,20 +176,20 @@ class KoreanTokenizerTest extends TestBase {
   test("tokenize should handle unknown nouns") {
     assert(
       tokenize("개컁컁아") ===
-        List(KoreanToken("개컁컁", Noun, 0, 3, unknown = true), KoreanToken("아", Josa, 3, 1))
+        List(KoreanToken("개컁컁", ProperNoun, 0, 3, unknown = true), KoreanToken("아", Josa, 3, 1))
     )
 
     assert(
       tokenize("안녕하세요쿛툐캬님") ===
         List(KoreanToken("안녕하세", Adjective, 0, 4), KoreanToken("요", Eomi, 4, 1),
-          KoreanToken("쿛툐캬", Noun, 5, 3, unknown = true), KoreanToken("님", Suffix, 8, 1))
+          KoreanToken("쿛툐캬", ProperNoun, 5, 3, unknown = true), KoreanToken("님", Suffix, 8, 1))
     )
   }
 
   test("tokenize should handle edge cases") {
     assert(
       tokenize("이승기가") ===
-        List(KoreanToken("이승기", Noun, 0, 3), KoreanToken("가", Josa, 3, 1))
+        List(KoreanToken("이승기", ProperNoun, 0, 3), KoreanToken("가", Josa, 3, 1))
     )
 
     assert(

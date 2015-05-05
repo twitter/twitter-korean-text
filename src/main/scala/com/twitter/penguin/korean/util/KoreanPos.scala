@@ -70,7 +70,9 @@ object KoreanPos extends Enumeration {
   Email, URL, CashTag,
 
   // Functional POS
-  Space, Others = Value
+  Space, Others,
+
+  ProperNoun = Value
 
   val OtherPoses = Set(Korean, Foreign, Number, KoreanParticle, Alpha,
     Punctuation, Hashtag, ScreenName,

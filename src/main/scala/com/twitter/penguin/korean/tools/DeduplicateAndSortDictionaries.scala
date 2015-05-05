@@ -25,7 +25,7 @@ import scala.io.Source
 /**
  * Clean up resources by removing duplicates and sorting.
  */
-object CleanUpDictionaries extends Runnable  {
+object DeduplicateAndSortDictionaries extends Runnable  {
 
   private[this] def readWords(filename: String): Set[String] = {
     Source.fromFile(filename)(io.Codec("UTF-8"))

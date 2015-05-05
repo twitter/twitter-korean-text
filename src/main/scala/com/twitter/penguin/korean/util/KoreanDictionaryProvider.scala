@@ -131,6 +131,12 @@ object KoreanDictionaryProvider {
 
   lazy val spamNouns = readWords("noun/spam.txt", "noun/profane.txt")
 
+  val properNouns: CharArraySet = readWords("noun/entities.txt",
+    "noun/names.txt", "noun/twitter.txt", "noun/lol.txt", "noun/company_names.txt",
+    "noun/foreign.txt", "noun/geolocations.txt",
+    "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
+    "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt")
+
   lazy val nameDictionay = Map(
     'family_name -> readWords("substantives/family_names.txt"),
     'given_name -> readWords("substantives/given_names.txt"),
