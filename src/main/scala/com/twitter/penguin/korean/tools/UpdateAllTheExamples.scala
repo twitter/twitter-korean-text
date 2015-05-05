@@ -13,7 +13,7 @@ object UpdateAllTheExamples {
 
   def main(args: Array[String]) {
     runTools(
-      CleanUpDictionaries,
+      DeduplicateAndSortDictionaries,
       CreateConjugationExamples,
       CreateParsingExamples,
       CreatePhraseExtractionExamples

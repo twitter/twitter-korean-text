@@ -34,5 +34,7 @@ public enum KoreanPosJava {
   Email, URL, CashTag,
 
   // Functional POS
-  Space, Others;
+  Space, Others,
+
+  ProperNoun;
 }

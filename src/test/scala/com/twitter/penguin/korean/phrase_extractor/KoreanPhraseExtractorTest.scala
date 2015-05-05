@@ -4,6 +4,7 @@ import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
 import com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
+import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos
 import com.twitter.penguin.korean.{TestBase, TwitterKoreanProcessor}
@@ -112,7 +113,7 @@ class KoreanPhraseExtractorTest extends TestBase {
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(0).text)).mkString("") ===
       "블랙프라이데이(Noun: 0, 7):(Punctuation: 7, 1) (Space: 8, 1)이날(Noun: 9, 2) (Space: 11, 1)" +
-        "미국(Noun: 12, 2)의(Josa: 14, 1) (Space: 15, 1)수백만(Noun: 16, 3) (Space: 19, 1)" +
+        "미국(ProperNoun: 12, 2)의(Josa: 14, 1) (Space: 15, 1)수백만(Noun: 16, 3) (Space: 19, 1)" +
         "소비자들(Noun: 20, 4)은(Josa: 24, 1) (Space: 25, 1)크리스마스(Noun: 26, 5) (Space: 31, 1)" +
         "선물(Noun: 32, 2)을(Josa: 34, 1) (Space: 35, 1)할인(Noun: 36, 2)" +
         "된(Verb: 38, 1) (Space: 39, 1)가격(Noun: 40, 2)에(Josa: 42, 1) (Space: 43, 1)" +
@@ -123,7 +124,7 @@ class KoreanPhraseExtractorTest extends TestBase {
 
     assert(KoreanPhraseExtractor.collapsePos(tokenize(sampleText(1).text)).mkString("") ===
       "결정(Noun: 0, 2)했어(Verb: 2, 2).(Punctuation: 4, 1) (Space: 5, 1)" +
-        "마키(Noun: 6, 2) (Space: 8, 1)코레썸(Noun: 9, 3) (Space: 12, 1)" +
+        "마키(Noun: 6, 2) (Space: 8, 1)코레썸(ProperNoun: 9, 3) (Space: 12, 1)" +
         "사주시는(Verb: 13, 4) (Space: 17, 1)분께는(Verb: 18, 3) (Space: 21, 1)" +
         "허니버터칩(Noun: 22, 5) (Space: 27, 1)한(Verb: 28, 1) (Space: 29, 1)" +
         "봉지(Noun: 30, 2)를(Josa: 32, 1) (Space: 33, 1)선물할(Verb: 34, 3) (Space: 37, 1)" +
@@ -160,7 +161,8 @@ class KoreanPhraseExtractorTest extends TestBase {
 
   test("extractPhrases should correctly extract the example set") {
     def phraseExtractor(text: String) = {
-      val tokens = tokenize(text)
+      val normalized = KoreanNormalizer.normalize(text)
+      val tokens = tokenize(normalized)
       KoreanPhraseExtractor.extractPhrases(tokens).mkString("/")
     }
     assertExamples(

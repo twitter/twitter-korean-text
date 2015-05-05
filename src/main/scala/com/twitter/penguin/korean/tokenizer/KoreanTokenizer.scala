@@ -52,7 +52,8 @@ object KoreanTokenizer {
   private val WEIGHT_PREFFERED_PATTERN = 0.6f
   private val WEIGHT_DETERMINER = -0.01f
 
-  private val PREFERRED_PATTERN = Seq(Noun, Josa)
+  private val PREFERRED_PATTERN_NOUN = Seq(Noun, Josa)
+  private val PREFERRED_PATTERN_PROPER_NOUN = Seq(ProperNoun, Josa)
 
   /**
    * A candidate parse for a chunk.
@@ -66,22 +67,25 @@ object KoreanTokenizer {
     }
 
     lazy val score = countTokens * WEIGHT_TOKENS +
-        countUnknowns * WEIGHT_UNKNOWNS +
-        words * WEIGHT_WORDS +
-        getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
-        getFreqScore * WEIGHT_FREQ +
-        countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
-        isExactMatch * WEIGHT_EXACT_MATCH +
-        isAllNouns * WEIGHT_ALL_NOUN +
-        isPreferredPattern * WEIGHT_PREFFERED_PATTERN +
-        countPos(Determiner) * WEIGHT_DETERMINER
+      countUnknowns * WEIGHT_UNKNOWNS +
+      words * WEIGHT_WORDS +
+      getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
+      getFreqScore * WEIGHT_FREQ +
+      countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
+      isExactMatch * WEIGHT_EXACT_MATCH +
+      isAllNouns * WEIGHT_ALL_NOUN +
+      isPreferredPattern * WEIGHT_PREFFERED_PATTERN +
+      countPos(Determiner) * WEIGHT_DETERMINER
 
-    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown}
+    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
     lazy val countTokens = this.posNodes.size
 
     lazy val isExactMatch = if (this.posNodes.size == 1) 0 else 1
-    lazy val isAllNouns = if (this.posNodes.exists(_.pos != Noun)) 1 else 0
-    lazy val isPreferredPattern = if (posNodes.size == 2 && posNodes.map(_.pos) == PREFERRED_PATTERN) 0 else 1
+    lazy val isAllNouns = if (this.posNodes.exists(t => t.pos != Noun && t.pos != ProperNoun)) 1 else 0
+    lazy val isPreferredPattern = if (
+      posNodes.size == 2 &&
+        (posNodes.map(_.pos) == PREFERRED_PATTERN_NOUN || posNodes.map(_.pos) == PREFERRED_PATTERN_PROPER_NOUN)
+    ) 0 else 1
 
     lazy val posTieBreaker = this.posNodes.map(_.pos.id).sum
 
@@ -90,14 +94,15 @@ object KoreanTokenizer {
     }
 
     lazy val getFreqScore = this.posNodes.foldLeft(0f) {
-      case (output: Float, p: KoreanToken) if p.pos == Noun => output + (1f - koreanEntityFreq.getOrElse(p.text, 0f))
+      case (output: Float, p: KoreanToken) if p.pos == Noun || p.pos == ProperNoun =>
+        output + (1f - koreanEntityFreq.getOrElse(p.text, 0f))
       case (output: Float, p: KoreanToken) => output + 1.0f
     } / this.posNodes.size
 
-    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
+    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos }
   }
 
-  case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int,  unknown: Boolean = false) {
+  case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int, unknown: Boolean = false) {
     override def toString: String = {
       val unknownStar = if (unknown) "*" else ""
       s"$text$unknownStar(${pos.toString}: $offset, $length)"
@@ -208,10 +213,15 @@ object KoreanTokenizer {
           }.map { case t: PossibleTrie =>
             val candidateToAdd =
               if (t.curTrie.curPos == Noun && !koreanDictionary(Noun).contains(word.toCharArray)) {
-                val unknown = !isName(word) && !isKoreanNumber(word) && !isKoreanNameVariation(word)
-                ParsedChunk(Seq(KoreanToken(word, Noun, chunk.offset + start, word.length, unknown)), t.words)
+                val isWordName: Boolean = isName(word)
+                val isWordKoreanNameVariation: Boolean = isKoreanNameVariation(word)
+
+                val unknown = !isWordName && !isKoreanNumber(word) && !isWordKoreanNameVariation
+                val pos = if (unknown || isWordName || isWordKoreanNameVariation) ProperNoun else Noun
+                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length, unknown)), t.words)
               } else {
-                ParsedChunk(Seq(KoreanToken(word, t.curTrie.curPos, chunk.offset + start, word.length)), t.words)
+                val pos = if (t.curTrie.curPos == Noun && properNouns.contains(word.toCharArray)) ProperNoun else t.curTrie.curPos
+                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length)), t.words)
               }
 
             val nextTrie = t.curTrie.nextTrie.map {

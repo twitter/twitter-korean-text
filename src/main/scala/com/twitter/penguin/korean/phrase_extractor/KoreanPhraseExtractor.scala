@@ -20,12 +20,12 @@ object KoreanPhraseExtractor {
   private val ModifyingPredicateEndings: Set[Char] = Set('ㄹ', 'ㄴ')
   private val ModifyingPredicateExceptions: Set[Char] = Set('만')
 
-  private val PhraseTokens = Set(Noun, Space)
+  private val PhraseTokens = Set(Noun, ProperNoun, Space)
   private val ConjunctionJosa = Set("와", "과", "의")
   type KoreanPhraseChunk = Seq[KoreanPhrase]
 
-  private val PhraseHeadPoses = Set(Adjective, Noun, Alpha, Number)
-  private val PhrasTailPoses = Set(Noun, Alpha, Number)
+  private val PhraseHeadPoses = Set(Adjective, Noun, ProperNoun, Alpha, Number)
+  private val PhrasTailPoses = Set(Noun, ProperNoun, Alpha, Number)
 
   /**
    * 0 for optional, 1 for required
@@ -246,7 +246,7 @@ object KoreanPhraseExtractor {
 
     def collapseNounPhrases(phrases: KoreanPhraseChunk): KoreanPhraseChunk = {
       val (output, buffer) = phrases.foldLeft((Seq[KoreanPhrase](), Seq[KoreanPhrase]())) {
-        case ((output, buffer), phrase) if phrase.pos == Noun =>
+        case ((output, buffer), phrase) if phrase.pos == Noun || phrase.pos == ProperNoun =>
           (output, buffer :+ phrase)
         case ((output, buffer), phrase) =>
           val tempPhrases = if (buffer.length > 0) {
@@ -269,7 +269,7 @@ object KoreanPhraseExtractor {
       val (output, buffer) = phrases.foldLeft((Seq[KoreanPhraseChunk](), newBuffer)) {
         case ((output, buffer), phrase) if PhraseTokens.contains(phrase.pos) && isNotSpam(phrase) =>
           val bufferWithThisPhrase = addPhraseToBuffer(phrase, buffer)
-          if (phrase.pos == Noun) {
+          if (phrase.pos == Noun || phrase.pos == ProperNoun) {
             (output ++ bufferWithThisPhrase, bufferWithThisPhrase)
           } else {
             (output, bufferWithThisPhrase)
@@ -286,7 +286,7 @@ object KoreanPhraseExtractor {
       phrases.filter {
         phrase =>
           val trimmed = trimPhrase(phrase)
-          phrase.pos == Noun && isNotSpam(phrase) &&
+          (phrase.pos == Noun || phrase.pos == ProperNoun) && isNotSpam(phrase) &&
             (trimmed.length >= MinCharsPerPhraseChunkWithoutSpaces ||
               trimmed.tokens.length >= MinPhrasesPerPhraseChunk)
       }.map(phrase => Seq(trimPhrase(phrase)))
