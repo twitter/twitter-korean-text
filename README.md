@@ -68,6 +68,10 @@ Please visit [https://github.com/modamoda/TwitterKoreanProcessorCS](https://gith
 
 Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes twitter-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 포함되었습니다. 
 
+### Ruby Wrapper
+[JunSangPil](https://github.com/jun85664396/) kindly offered a Ruby wrapper: https://github.com/jun85664396/twkorean-ruby
+
+
 ## Get the source 소스를 원하시는 경우
 
 Clone the git repo and build using maven.
