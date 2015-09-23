@@ -54,13 +54,11 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 ## Wrappers
 ### .net Wrapper
 
-[modamoda](https://github.com/modamoda) created repository and built simple C# wrapper project.
-
-Please visit [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS) for further information!
+[modamoda](https://github.com/modamoda) kindly offered a .net wrapper: [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS)
 
 ### node.js Wrapper
 
-[Ch0p](https://github.com/Ch0p) Kindly offered an awesome node.js wrapper. Check it out here: [twtkrjs](https://github.com/Ch0p/twtkrjs)
+[Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
 
 ### Python Wrapper
 
