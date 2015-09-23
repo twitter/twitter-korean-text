@@ -77,7 +77,7 @@ object KoreanNormalizer {
     val codaNNormalized = normalizeCodaN(repeatingNormalized)
     // Typo correction: 하겟다 -> 하겠다
     val typoCorrected = correctTypo(codaNNormalized)
-    // Spaces, tabs, new lines are replaces with a single space.
+    // Spaces, tabs, new lines are replaced with a single space.
     WHITESPACE_REGEX.replaceAllIn(typoCorrected, " ")
   }
 

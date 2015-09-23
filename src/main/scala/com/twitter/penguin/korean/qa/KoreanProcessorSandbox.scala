@@ -25,7 +25,7 @@ import com.twitter.penguin.korean.TwitterKoreanProcessor._
  */
 object KoreanProcessorSandbox {
   def main(args: Array[String]) {
-    val s = "와 이거 알티 이르케 많이 됐었엌ㅋㅋㅋ??"
+    val s = "새로운 스테밍을 추가했었다. 트위터 주식 25% 상승. 주식 400원. 400원. $TWTR $200 20% 상승"
 
     val tokens = tokenize(s)
 
