@@ -67,12 +67,8 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 * Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes twitter-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 포함되었습니다. 
 
 ### Ruby Wrapper
-[JunSangPil](https://github.com/jun85664396/) kindly offered a Ruby wrapper: https://github.com/jun85664396/twkorean-ruby
 
-
-### Ruby Wrapper
-
-[jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper. 
+[jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper: 
 [twkorean-ruby](https://github.com/jun85664396/twkorean-ruby)
 
 ## Get the source 소스를 원하시는 경우
