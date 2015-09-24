@@ -70,6 +70,11 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 [JunSangPil](https://github.com/jun85664396/) kindly offered a Ruby wrapper: https://github.com/jun85664396/twkorean-ruby
 
 
+### Ruby Wrapper
+
+[jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper. 
+[twkorean-ruby](https://github.com/jun85664396/twkorean-ruby)
+
 ## Get the source 소스를 원하시는 경우
 
 Clone the git repo and build using maven.
