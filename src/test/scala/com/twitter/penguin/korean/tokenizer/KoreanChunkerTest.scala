@@ -50,6 +50,63 @@ class KoreanChunkerTest extends TestBase {
     )
   }
 
+  test("getChunks should correctly extract numbers") {
+    assert(
+      getChunks("300위안짜리 밥").mkString("/")
+        === "300위안/짜리/ /밥"
+    )
+
+    assert(
+      getChunks("200달러와 300유로").mkString("/")
+        === "200달러/와/ /300유로"
+    )
+
+    assert(
+      getChunks("$200이나 한다").mkString("/")
+        === "$200/이나/ /한다"
+    )
+
+    assert(
+      getChunks("300옌이었다.").mkString("/")
+        === "300옌/이었다/."
+    )
+
+    assert(
+      getChunks("3,453,123,123원 3억3천만원").mkString("/")
+        === "3,453,123,123원/ /3억/3천만원"
+    )
+
+    assert(
+      getChunks("6/4 지방 선거").mkString("/")
+        === "6/4/ /지방/ /선거"
+    )
+
+    assert(
+      getChunks("6.4 지방 선거").mkString("/")
+        === "6.4/ /지방/ /선거"
+    )
+
+    assert(
+      getChunks("6-4 지방 선거").mkString("/")
+        === "6-4/ /지방/ /선거"
+    )
+
+    assert(
+      getChunks("6.25 전쟁").mkString("/")
+        === "6.25/ /전쟁"
+    )
+
+    assert(
+      getChunks("1998년 5월 28일").mkString("/")
+        === "1998년/ /5월/ /28일"
+    )
+
+    assert(
+      getChunks("62:45의 결과").mkString("/")
+        === "62:45/의/ /결과"
+    )
+  }
+
   test("getChunkTokens should correctly find chunks with correct POS tags") {
     assert(
       chunk("한국어와 English와 1234와 pic.twitter.com " +
@@ -57,12 +114,12 @@ class KoreanChunkerTest extends TestBase {
         "page=1&gCode=soc&arcid=0008599913&code=41121111 " +
         "hohyonryu@twitter.com 갤럭시 S5").mkString("/")
         ===
-      "한국어와(Korean: 0, 4)/ (Space: 4, 1)/English(Alpha: 5, 7)/와(Korean: 12, 1)/" +
-        " (Space: 13, 1)/1234(Number: 14, 4)/와(Korean: 18, 1)/ (Space: 19, 1)/" +
-        "pic.twitter.com(URL: 20, 15)/ (Space: 35, 1)/http://news.kukinews.com/" +
-        "article/view.asp?page=1&gCode=soc&arcid=0008599913&code=41121111(URL: 36, 89)/" +
-        " (Space: 125, 1)/hohyonryu@twitter.com(Email: 126, 21)/ (Space: 147, 1)/" +
-        "갤럭시(Korean: 148, 3)/ (Space: 151, 1)/S(Alpha: 152, 1)/5(Number: 153, 1)"
+        "한국어와(Korean: 0, 4)/ (Space: 4, 1)/English(Alpha: 5, 7)/와(Korean: 12, 1)/" +
+          " (Space: 13, 1)/1234(Number: 14, 4)/와(Korean: 18, 1)/ (Space: 19, 1)/" +
+          "pic.twitter.com(URL: 20, 15)/ (Space: 35, 1)/http://news.kukinews.com/" +
+          "article/view.asp?page=1&gCode=soc&arcid=0008599913&code=41121111(URL: 36, 89)/" +
+          " (Space: 125, 1)/hohyonryu@twitter.com(Email: 126, 21)/ (Space: 147, 1)/" +
+          "갤럭시(Korean: 148, 3)/ (Space: 151, 1)/S(Alpha: 152, 1)/5(Number: 153, 1)"
     )
 
     assert(

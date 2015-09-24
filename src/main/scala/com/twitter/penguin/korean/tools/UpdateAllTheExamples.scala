@@ -3,7 +3,7 @@ package com.twitter.penguin.korean.tools
 object UpdateAllTheExamples {
   def runTools(objects: Runnable*): Unit = {
     objects.foreach{o =>
-      println("--- Running %s ---".format(o.getClass.getSimpleName))
+      println("--- Running %s ---".format(o.getClass.getSimpleName.init))
       o.run
     }
     println("Finished running %s.".format(

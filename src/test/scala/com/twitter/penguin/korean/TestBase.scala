@@ -53,7 +53,7 @@ object TestBase {
           val oldParseMatches = oldTokens == newTokens
 
           if (!oldParseMatches) {
-            System.err.println("Example set match error: %s \n  %s -> %s".format(
+            System.err.println("Example set match error: %s \n - EXPECTED: %s\n - ACTUAL  : %s".format(
               chunk, oldTokens, newTokens))
           }
 
