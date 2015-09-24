@@ -147,15 +147,14 @@ class KoreanPhraseExtractorTest extends TestBase {
   test("extractPhrases correctly extracts phrases from a string") {
     sampleText.foreach {
       case SampleTextPair(text: String, phrases: String) =>
-        val tokens = tokenize(text)
-        assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") === phrases)
+        assertExtraction(text, phrases)
     }
   }
 
   test("extractPhrases should extract long noun-only phrases in reasonable time") {
+    assertExtraction(superLongText, "허니버터칩(Noun: 0, 5), 정규직(Noun: 5, 3), 크리스마스(Noun: 8, 5)")
+
     val tokens = tokenize(superLongText)
-    assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") ===
-      "허니버터칩(Noun: 0, 5), 정규직(Noun: 5, 3), 크리스마스(Noun: 8, 5)")
     assert(time(KoreanPhraseExtractor.extractPhrases(tokens)) < 10000)
   }
 
@@ -172,16 +171,43 @@ class KoreanPhraseExtractorTest extends TestBase {
   }
 
   test("extractPhrases should filter out spam and profane words") {
-    val tokens = tokenize(spamText)
-    assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") ===
-      "레알(Noun: 0, 2), 레알 시발(Noun: 0, 5), 레알 시발 저거(Noun: 0, 8), 시발 저거(Noun: 3, 5), " +
-        "레알 시발 저거 카지노(Noun: 0, 12), 시발 저거 카지노(Noun: 3, 9), 저거 카지노(Noun: 6, 6), " +
-        "레알 시발 저거 카지노 포르노(Noun: 0, 16), 시발 저거 카지노 포르노(Noun: 3, 13), " +
-        "저거 카지노 포르노(Noun: 6, 10), 카지노 포르노(Noun: 9, 7), " +
-        "레알 시발 저거 카지노 포르노 야동(Noun: 0, 19), 시발 저거 카지노 포르노 야동(Noun: 3, 16), " +
-        "저거 카지노 포르노 야동(Noun: 6, 13), 카지노 포르노 야동(Noun: 9, 10), 포르노 야동(Noun: 13, 6), " +
-        "시발(Noun: 3, 2), 저거(Noun: 6, 2), 카지노(Noun: 9, 3), 포르노(Noun: 13, 3), 야동(Noun: 17, 2)")
-    assert(KoreanPhraseExtractor.extractPhrases(tokens, filterSpam = true).mkString(", ") ===
+    assertExtraction(spamText, "레알(Noun: 0, 2), 레알 시발(Noun: 0, 5), 레알 시발 저거(Noun: 0, 8), 시발 저거(Noun: 3, 5), " +
+      "레알 시발 저거 카지노(Noun: 0, 12), 시발 저거 카지노(Noun: 3, 9), 저거 카지노(Noun: 6, 6), " +
+      "레알 시발 저거 카지노 포르노(Noun: 0, 16), 시발 저거 카지노 포르노(Noun: 3, 13), " +
+      "저거 카지노 포르노(Noun: 6, 10), 카지노 포르노(Noun: 9, 7), " +
+      "레알 시발 저거 카지노 포르노 야동(Noun: 0, 19), 시발 저거 카지노 포르노 야동(Noun: 3, 16), " +
+      "저거 카지노 포르노 야동(Noun: 6, 13), 카지노 포르노 야동(Noun: 9, 10), 포르노 야동(Noun: 13, 6), " +
+      "시발(Noun: 3, 2), 저거(Noun: 6, 2), 카지노(Noun: 9, 3), 포르노(Noun: 13, 3), 야동(Noun: 17, 2)")
+
+
+    assert(KoreanPhraseExtractor.extractPhrases(tokenize(spamText), filterSpam = true).mkString(", ") ===
       "레알(Noun: 0, 2), 저거(Noun: 6, 2)")
+  }
+
+  test("extractPhrases should detect numbers with special chars") {
+    assertExtraction("트위터 25.2% 상승.",
+      "트위터(Noun: 0, 3), 트위터 25.2%(Noun: 0, 9), 트위터 25.2% 상승(Noun: 0, 12), " +
+        "25.2% 상승(Noun: 4, 8), 25.2%(Noun: 4, 5), 상승(Noun: 10, 2)")
+
+    assertExtraction("짜장면 3400원.", "짜장면(Noun: 0, 3), 짜장면 3400원(Noun: 0, 9), 3400원(Noun: 4, 5)")
+
+    assertExtraction("떡볶이 3,444,231원 + 400원.",
+      "떡볶이(Noun: 0, 3), 떡볶이 3,444,231원(Noun: 0, 14), 400원(Noun: 17, 4), 3,444,231원(Noun: 4, 10)")
+
+    assertExtraction("트위터 $200으로 상승",
+      "트위터(Noun: 0, 3), 트위터 $200(Noun: 0, 8), 상승(Noun: 11, 2), $200(Noun: 4, 4)")
+
+    assertExtraction("1,200.34원. 1,200.34엔. 1,200.34옌. 1,200.34위안.",
+      "1,200.34원(Noun: 0, 9), 1,200.34엔(Noun: 11, 9), 1,200.34옌(Noun: 22, 9), 1,200.34위안(Noun: 33, 10)")
+
+    assertExtraction("200달러 3위 3000유로",
+      "200달러(Noun: 0, 5), 200달러 3위(Noun: 0, 8), 200달러 3위 3000유로(Noun: 0, 15), " +
+        "3위 3000유로(Noun: 6, 9), 3000유로(Noun: 9, 6)")
+  }
+
+  def assertExtraction(s: String, expected: String): Unit = {
+    val tokens = tokenize(s)
+    assert(KoreanPhraseExtractor.extractPhrases(tokens).mkString(", ") ===
+      expected)
   }
 }

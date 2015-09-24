@@ -150,7 +150,6 @@ object KoreanPhraseExtractor {
 
 
   protected[korean] def collapsePos(tokens: Seq[KoreanToken]): Seq[KoreanPhrase] = {
-
     def getTries(token: KoreanToken, trie: List[KoreanPosTrie]): (KoreanPosTrie, List[KoreanPosTrie]) = {
       val curTrie = trie.filter(_.curPos == token.pos).head
       val nextTrie = curTrie.nextTrie.map {
@@ -309,10 +308,10 @@ object KoreanPhraseExtractor {
   def extractPhrases(tokens: Seq[KoreanToken],
                      filterSpam: Boolean = false,
                      addHashtags: Boolean = true): Seq[KoreanPhrase] = {
-    val hashtags = tokens.filter {
-      t: KoreanToken => t.pos == KoreanPos.Hashtag
-    }.map {
-      t: KoreanToken => KoreanPhrase(Seq(t), KoreanPos.Hashtag)
+    val hashtags = tokens.flatMap {
+      case t: KoreanToken if t.pos == KoreanPos.Hashtag => Some(KoreanPhrase(Seq(t), KoreanPos.Hashtag))
+      case t: KoreanToken if t.pos == KoreanPos.CashTag => Some(KoreanPhrase(Seq(t), KoreanPos.CashTag))
+      case _ => None
     }
 
     val collapsed = collapsePos(tokens)

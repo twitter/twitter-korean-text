@@ -34,7 +34,9 @@ object KoreanChunker {
   private val POS_PATTERNS = Map(
     Korean -> """([가-힣]+)""".r.pattern,
     Alpha -> """(\p{Alpha}+)""".r.pattern,
-    Number -> """(\p{Digit}+)""".r.pattern,
+    Number -> ("""(\$?\p{Digit}+"""
+      + """(,\p{Digit}{3})*([/~:\.-]\p{Digit}+)?"""
+      + """(천|만|억|조)*(%|원|달러|위안|옌|엔|유로|등|년|월|일|회|시간|시|분|초)?)""").r.pattern,
     KoreanParticle -> """([ㄱ-ㅣ]+)""".r.pattern,
     Punctuation -> """(\p{Punct}+)""".r.pattern,
     URL -> Regex.VALID_URL,
@@ -45,7 +47,7 @@ object KoreanChunker {
     Space -> """\s+""".r.pattern
   )
 
-  private val CHUNKING_ORDER = Seq(Space, URL, Email, ScreenName, Hashtag, CashTag, Korean, KoreanParticle, Number, Alpha, Punctuation)
+  private val CHUNKING_ORDER = Seq(Space, URL, Email, ScreenName, Hashtag, CashTag, Number, Korean, KoreanParticle, Alpha, Punctuation)
   private val SPACE_REGEX_DELIMITER_KEEP_SPACES = """((?<=\s+)|(?=\s+))"""
 
   protected[korean] def getChunks(input: String, keepSpace: Boolean = false): Seq[String] = {
