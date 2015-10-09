@@ -39,12 +39,14 @@ object KoreanSubstantive {
   }
 
   protected[korean] def isName(chunk: CharSequence): Boolean = {
-    if (nameDictionay('full_name).contains(chunk) ||
-        nameDictionay('given_name).contains(chunk)) return true
+    if (nameDictionary('full_name).contains(chunk) ||
+        nameDictionary('given_name).contains(chunk)) return true
 
-    if (chunk.length() != 3) return false
-    nameDictionay('family_name).contains(chunk.charAt(0).toString) &&
-        nameDictionay('given_name).contains(chunk.subSequence(1, 3).toString)
+    if (chunk.length() < 3) return false
+    (nameDictionary('family_name).contains(chunk.charAt(0).toString) &&
+        nameDictionary('given_name).contains(chunk.subSequence(1, 3).toString)) ||
+      (nameDictionary('family_name).contains(chunk.subSequence(0, 2).toString) &&
+        nameDictionary('given_name).contains(chunk.subSequence(2, 4).toString))
   }
 
   private val NUMBER_CHARS = "일이삼사오육칠팔구천백십해경조억만".map(_.toInt).toSet
