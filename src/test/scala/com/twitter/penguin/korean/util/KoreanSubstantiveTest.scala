@@ -89,7 +89,7 @@ class KoreanSubstantiveTest extends TestBase {
   test ("isName should correctly identify 4-char person names") {
     assert(isName("독고영재"))
     assert(isName("제갈경준"))
-    assert(isName("유호현진"))
+    assert(!isName("유호현진"))
   }
 
   test("isKoreanNumber should return true if the text is a Korean number") {
