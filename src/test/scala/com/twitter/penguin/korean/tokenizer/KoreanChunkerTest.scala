@@ -135,4 +135,12 @@ class KoreanChunkerTest extends TestBase {
         "우하하(Korean: 42, 3)"
     )
   }
+
+  test("getChunkTokens should correctly detect Korean-specific punctuations.") {
+    assert(
+      chunk("중·고등학교에서…").mkString("/")
+        === "중(Korean: 0, 1)/·(Punctuation: 1, 1)/고등학교에서(Korean: 2, 6)/…(Punctuation: 8, 1)"
+    )
+  }
+
 }
