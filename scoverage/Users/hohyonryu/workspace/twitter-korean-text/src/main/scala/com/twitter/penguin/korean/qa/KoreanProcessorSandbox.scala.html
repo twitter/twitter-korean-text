@@ -50,34 +50,45 @@
 </span>25 <span style=''> */
 </span>26 <span style=''>object KoreanProcessorSandbox {
 </span>27 <span style=''>  def main(args: Array[String]) {
-</span>28 <span style=''>    val s = "한국어를 처리하는 예시입니다 ㅋㅋ"
+</span>28 <span style=''>    val s = "새로운 스테밍을 추가했었다. 트위터 주식 25% 상승. 주식 400원. 400원. $TWTR $200 20% 상승"
 </span>29 <span style=''>
-</span>30 <span style=''>    println(
-</span>31 <span style=''>      tokenize(s, stemming = false).mkString(" ")
-</span>32 <span style=''>    )
-</span>33 <span style=''>
-</span>34 <span style=''>    println(
-</span>35 <span style=''>      extractPhrases(s)
-</span>36 <span style=''>    )
-</span>37 <span style=''>  }
-</span>38 <span style=''>}
+</span>30 <span style=''>    val tokens = tokenize(s)
+</span>31 <span style=''>
+</span>32 <span style=''>    println(
+</span>33 <span style=''>      tokens.mkString(" ")
+</span>34 <span style=''>    )
+</span>35 <span style=''>
+</span>36 <span style=''>    println(
+</span>37 <span style=''>      stem(tokens).mkString(" ")
+</span>38 <span style=''>    )
+</span>39 <span style=''>
+</span>40 <span style=''>    println(
+</span>41 <span style=''>      extractPhrases(tokens)
+</span>42 <span style=''>    )
+</span>43 <span style=''>  }
+</span>44 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
             <table cellspacing="0" cellpadding="0" class="table statementlist">
       <tr>
-        <th>Line Number</th>
-        <th>Statement Id</th>
-        <th>Tree Type</th>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
         <th>Symbol</th>
         <th>Code</th>
-      </tr>
-      <tr>
+      </tr><tr>
         <td>
           28
         </td>
         <td>
-          553
+          524
+        </td>
+        <td>
+          899
+          -
+          899
         </td>
         <td>
           Literal
@@ -86,14 +97,40 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #F0ADAD">
-          &quot;한국어를 처리하는 예시입니다 ㅋㅋ&quot;
+          &quot;새로운 스테밍을 추가했었다. 트위터 주식 25% 상승. 주식 400원. 400원. $TWTR $200 20% 상승&quot;
         </td>
       </tr><tr>
         <td>
           30
         </td>
         <td>
-          555
+          525
+        </td>
+        <td>
+          991
+          -
+          991
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(s)
+        </td>
+      </tr><tr>
+        <td>
+          32
+        </td>
+        <td>
+          527
+        </td>
+        <td>
+          1007
+          -
+          1007
         </td>
         <td>
           Apply
@@ -102,20 +139,19 @@
           scala.Predef.println
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.println({
-  &lt;artifact&gt; val x$1: String = s;
-  &lt;artifact&gt; val x$2: Boolean = false;
-  &lt;artifact&gt; val x$3: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2;
-  &lt;artifact&gt; val x$4: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4;
-  com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(x$1, x$3, x$2, x$4)
-}.mkString(&quot; &quot;))
+          scala.this.Predef.println(tokens.mkString(&quot; &quot;))
         </td>
       </tr><tr>
         <td>
-          31
+          33
         </td>
         <td>
-          554
+          526
+        </td>
+        <td>
+          1030
+          -
+          1030
         </td>
         <td>
           Apply
@@ -124,20 +160,19 @@
           scala.collection.TraversableOnce.mkString
         </td>
         <td style="background: #F0ADAD">
-          {
-  &lt;artifact&gt; val x$1: String = s;
-  &lt;artifact&gt; val x$2: Boolean = false;
-  &lt;artifact&gt; val x$3: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$2;
-  &lt;artifact&gt; val x$4: Boolean = com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4;
-  com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize(x$1, x$3, x$2, x$4)
-}.mkString(&quot; &quot;)
+          tokens.mkString(&quot; &quot;)
         </td>
       </tr><tr>
         <td>
-          34
+          36
         </td>
         <td>
-          558
+          529
+        </td>
+        <td>
+          1054
+          -
+          1054
         </td>
         <td>
           Apply
@@ -146,14 +181,61 @@
           scala.Predef.println
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.println(com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(s, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2))
+          scala.this.Predef.println(com.twitter.penguin.korean.TwitterKoreanProcessor.stem(tokens).mkString(&quot; &quot;))
         </td>
       </tr><tr>
         <td>
-          35
+          37
         </td>
         <td>
-          557
+          528
+        </td>
+        <td>
+          1083
+          -
+          1083
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.mkString
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.stem(tokens).mkString(&quot; &quot;)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          533
+        </td>
+        <td>
+          1107
+          -
+          1107
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(tokens, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$3))
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          532
+        </td>
+        <td>
+          1129
+          -
+          1129
         </td>
         <td>
           Apply
@@ -162,14 +244,40 @@
           com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases
         </td>
         <td style="background: #F0ADAD">
-          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(s, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2)
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases(tokens, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$2, com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$3)
         </td>
       </tr><tr>
         <td>
-          35
+          41
         </td>
         <td>
-          556
+          531
+        </td>
+        <td>
+          1115
+          -
+          1115
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$3
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.TwitterKoreanProcessor.extractPhrases$default$3
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          530
+        </td>
+        <td>
+          1115
+          -
+          1115
         </td>
         <td>
           Select

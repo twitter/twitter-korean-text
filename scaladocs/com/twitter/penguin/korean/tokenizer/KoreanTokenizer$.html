@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>KoreanTokenizer - Korean Text Processing Utilities 2.4.3-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer</title>
-          <meta name="description" content="KoreanTokenizer - Korean Text Processing Utilities 2.4.3 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
-          <meta name="keywords" content="KoreanTokenizer Korean Text Processing Utilities 2.4.3 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
+          <title>KoreanTokenizer - Korean Text Processing Utilities 4.1.5-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer</title>
+          <meta name="description" content="KoreanTokenizer - Korean Text Processing Utilities 4.1.5 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
+          <meta name="keywords" content="KoreanTokenizer Korean Text Processing Utilities 4.1.5 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -28,11 +28,13 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../../../../lib/object_big.png" />
+        <img alt="Object" src="../../../../../lib/object_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean.tokenizer">tokenizer</a></p>
-        <h1>KoreanTokenizer</h1> <span class="permalink">
+        <h1>KoreanTokenizer</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="com.twitter.penguin.korean.tokenizer">package tokenizer</a>
+          </div></span></h3><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       </div>
@@ -79,7 +81,6 @@ the initial cache has to be updated by running tools.CreateInitialCache.
               <li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li>
             </ol>
-            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
           </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -106,7 +107,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@CandidateParseextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -119,11 +120,11 @@ the initial cache has to be updated by running tools.CreateInitialCache.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="KoreanTokenizer$$KoreanToken.html"><span class="name">KoreanToken</span></a><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="KoreanTokenizer$$KoreanToken.html"><span class="name">KoreanToken</span></a><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@KoreanTokenextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -140,12 +141,11 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@ParsedChunkextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">A candidate parse for a chunk.</p><div class="fullcomment"><div class="comment cmt"><p>A candidate parse for a chunk.
-</p></div><dl class="paramcmts block"><dt class="param">posNodes</dt><dd class="cmt"><p>Sequence of KoreanTokens.</p></dd><dt class="param">words</dt><dd class="cmt"><p>Number of words in this candidate parse.
-</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">posNodes</dt><dd class="cmt"><p>Sequence of KoreanTokens.</p></dd><dt class="param">words</dt><dd class="cmt"><p>Number of words in this candidate parse.</p></dd></dl></div>
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.ParsedChunkWithMinScore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ParsedChunkWithMinScoreextendsProductwithSerializable"></a>
       <a id="ParsedChunkWithMinScore:ParsedChunkWithMinScore"></a>
@@ -159,7 +159,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@ParsedChunkWithMinScoreextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -176,7 +176,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@PossibleTrieextendsProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -200,7 +200,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -217,7 +217,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@##():Int" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -234,7 +234,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@==(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -251,7 +251,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -268,7 +268,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@clone():Object" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -291,7 +291,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -308,7 +308,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -325,7 +325,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@finalize():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -348,7 +348,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@getClass():Class[_]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -365,7 +365,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@hashCode():Int" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -382,7 +382,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -399,7 +399,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -416,7 +416,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@notify():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -433,7 +433,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@notifyAll():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -450,7 +450,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -467,30 +467,29 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@toString():String" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer#tokenize" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tokenize(text:CharSequence,keepSpace:Boolean):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
-      <a id="tokenize(CharSequence,Boolean):Seq[KoreanToken]"></a>
+      <a id="tokenize(text:CharSequence):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]"></a>
+      <a id="tokenize(CharSequence):Seq[KoreanToken]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>, <span name="keepSpace">keepSpace: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
+        <span class="name">tokenize</span><span class="params">(<span name="text">text: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="KoreanTokenizer$$KoreanToken.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@tokenize(text:CharSequence,keepSpace:Boolean):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+      <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@tokenize(text:CharSequence):Seq[com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Parse Korean text into a sequence of KoreanTokens
 </p><div class="fullcomment"><div class="comment cmt"><p>Parse Korean text into a sequence of KoreanTokens
-</p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input Korean chunk</p></dd><dt>returns</dt><dd class="cmt"><p>sequence of KoreanTokens
-</p></dd></dl></div>
+</p></div><dl class="paramcmts block"><dt class="param">text</dt><dd class="cmt"><p>Input Korean chunk</p></dd><dt>returns</dt><dd class="cmt"><p>sequence of KoreanTokens</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -504,7 +503,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@wait():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -527,7 +526,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -550,7 +549,7 @@ the initial cache has to be updated by running tools.CreateInitialCache.
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$@wait(x$1:Long):Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>

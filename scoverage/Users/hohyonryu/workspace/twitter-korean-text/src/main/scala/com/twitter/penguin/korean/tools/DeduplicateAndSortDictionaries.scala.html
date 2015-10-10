@@ -1,0 +1,500 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tools/DeduplicateAndSortDictionaries.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2014 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.tools
+</span>20 <span style=''>
+</span>21 <span style=''>import java.io.FileOutputStream
+</span>22 <span style=''>
+</span>23 <span style=''>import scala.io.Source
+</span>24 <span style=''>
+</span>25 <span style=''>/**
+</span>26 <span style=''> * Clean up resources by removing duplicates and sorting.
+</span>27 <span style=''> */
+</span>28 <span style=''>object DeduplicateAndSortDictionaries extends Runnable  {
+</span>29 <span style=''>
+</span>30 <span style=''>  private[this] def readWords(filename: String): Set[String] = {
+</span>31 <span style=''>    Source.fromFile(filename)(io.Codec("UTF-8"))
+</span>32 <span style=''>        .getLines()
+</span>33 <span style=''>        .map(_.trim)
+</span>34 <span style=''>        .filter(_.length </span><span style='background: #F0ADAD'>></span><span style=''> 0)
+</span>35 <span style=''>        .toSet
+</span>36 <span style=''>  }
+</span>37 <span style=''>
+</span>38 <span style=''>  private val RESOURCES_TO_CLEANUP = Seq(
+</span>39 <span style=''>    "noun/nouns.txt", "noun/entities.txt", "noun/spam.txt",
+</span>40 <span style=''>    "noun/names.txt", "noun/twitter.txt", "noun/lol.txt",
+</span>41 <span style=''>    "noun/slangs.txt", "noun/company_names.txt",
+</span>42 <span style=''>    "noun/foreign.txt", "noun/geolocations.txt", "noun/profane.txt",
+</span>43 <span style=''>    "noun/kpop.txt", "noun/bible.txt",
+</span>44 <span style=''>    "noun/wikipedia_title_nouns.txt", "noun/pokemon.txt", "noun/congress.txt",
+</span>45 <span style=''>
+</span>46 <span style=''>    "substantives/noun_prefix.txt", "substantives/suffix.txt",
+</span>47 <span style=''>    "substantives/family_names.txt", "substantives/given_names.txt",
+</span>48 <span style=''>
+</span>49 <span style=''>    "adjective/adjective.txt", "adverb/adverb.txt",
+</span>50 <span style=''>
+</span>51 <span style=''>    "auxiliary/determiner.txt", "auxiliary/exclamation.txt", "auxiliary/conjunctions.txt",
+</span>52 <span style=''>
+</span>53 <span style=''>    "josa/josa.txt", "typos/typos.txt",
+</span>54 <span style=''>
+</span>55 <span style=''>    "verb/eomi.txt", "verb/pre_eomi.txt", "verb/verb.txt", "verb/verb_prefix.txt"
+</span>56 <span style=''>  )
+</span>57 <span style=''>
+</span>58 <span style=''>  def run {
+</span>59 <span style=''>    RESOURCES_TO_CLEANUP.foreach {
+</span>60 <span style=''>      f: String =>
+</span>61 <span style=''>        val outputFolder = "src/main/resources/com/twitter/penguin/korean/util/"
+</span>62 <span style=''>        System.err.println("Processing %s.".format(f))
+</span>63 <span style=''>        val words = readWords(outputFolder </span><span style='background: #F0ADAD'>+</span><span style=''> f).toList.sorted
+</span>64 <span style=''>
+</span>65 <span style=''>        val out = new FileOutputStream(outputFolder </span><span style='background: #F0ADAD'>+</span><span style=''> f)
+</span>66 <span style=''>
+</span>67 <span style=''>        words.foreach {
+</span>68 <span style=''>          word: String => out.write((word + "\n").getBytes)
+</span>69 <span style=''>        }
+</span>70 <span style=''>        out.close()
+</span>71 <span style=''>    }
+</span>72 <span style=''>  }
+</span>73 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          31
+        </td>
+        <td>
+          1065
+        </td>
+        <td>
+          988
+          -
+          988
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.io.Codec.apply
+        </td>
+        <td style="background: #F0ADAD">
+          scala.io.Codec.apply(&quot;UTF-8&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          1066
+        </td>
+        <td>
+          1034
+          -
+          1034
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.trim
+        </td>
+        <td style="background: #F0ADAD">
+          x$1.trim()
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          1067
+        </td>
+        <td>
+          1065
+          -
+          1066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Int.&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          x$2.length().&gt;(0)
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          1068
+        </td>
+        <td>
+          1079
+          -
+          1079
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toSet
+        </td>
+        <td style="background: #F0ADAD">
+          scala.io.Source.fromFile(filename)(scala.io.Codec.apply(&quot;UTF-8&quot;)).getLines().map[String](((x$1: String) =&gt; x$1.trim())).filter(((x$2: String) =&gt; x$2.length().&gt;(0))).toSet[String]
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          1069
+        </td>
+        <td>
+          1130
+          -
+          1130
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.generic.GenericCompanion.apply
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.apply[String](&quot;noun/nouns.txt&quot;, &quot;noun/entities.txt&quot;, &quot;noun/spam.txt&quot;, &quot;noun/names.txt&quot;, &quot;noun/twitter.txt&quot;, &quot;noun/lol.txt&quot;, &quot;noun/slangs.txt&quot;, &quot;noun/company_names.txt&quot;, &quot;noun/foreign.txt&quot;, &quot;noun/geolocations.txt&quot;, &quot;noun/profane.txt&quot;, &quot;noun/kpop.txt&quot;, &quot;noun/bible.txt&quot;, &quot;noun/wikipedia_title_nouns.txt&quot;, &quot;noun/pokemon.txt&quot;, &quot;noun/congress.txt&quot;, &quot;substantives/noun_prefix.txt&quot;, &quot;substantives/suffix.txt&quot;, &quot;substantives/family_names.txt&quot;, &quot;substantives/given_names.txt&quot;, &quot;adjective/adjective.txt&quot;, &quot;adverb/adverb.txt&quot;, &quot;auxiliary/determiner.txt&quot;, &quot;auxiliary/exclamation.txt&quot;, &quot;auxiliary/conjunctions.txt&quot;, &quot;josa/josa.txt&quot;, &quot;typos/typos.txt&quot;, &quot;verb/eomi.txt&quot;, &quot;verb/pre_eomi.txt&quot;, &quot;verb/verb.txt&quot;, &quot;verb/verb_prefix.txt&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          1082
+        </td>
+        <td>
+          1938
+          -
+          1938
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.IterableLike.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          DeduplicateAndSortDictionaries.this.RESOURCES_TO_CLEANUP.foreach[Unit](((f: String) =&gt; {
+  val outputFolder: String = &quot;src/main/resources/com/twitter/penguin/korean/util/&quot;;
+  java.this.lang.System.err.println(scala.this.Predef.augmentString(&quot;Processing %s.&quot;).format(f));
+  val words: List[String] = DeduplicateAndSortDictionaries.this.readWords(outputFolder.+(f)).toList.sorted[String](math.this.Ordering.String);
+  val out: java.io.FileOutputStream = new java.io.FileOutputStream(outputFolder.+(f));
+  words.foreach[Unit](((word: String) =&gt; out.write(word.+(&quot;\n&quot;).getBytes())));
+  out.close()
+}))
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          1070
+        </td>
+        <td>
+          1986
+          -
+          1986
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          &quot;src/main/resources/com/twitter/penguin/korean/util/&quot;
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1072
+        </td>
+        <td>
+          2066
+          -
+          2066
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.PrintStream.println
+        </td>
+        <td style="background: #F0ADAD">
+          java.this.lang.System.err.println(scala.this.Predef.augmentString(&quot;Processing %s.&quot;).format(f))
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          1071
+        </td>
+        <td>
+          2090
+          -
+          2090
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.format
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.augmentString(&quot;Processing %s.&quot;).format(f)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1073
+        </td>
+        <td>
+          2138
+          -
+          2139
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          outputFolder.+(f)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1075
+        </td>
+        <td>
+          2150
+          -
+          2150
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.SeqLike.sorted
+        </td>
+        <td style="background: #F0ADAD">
+          DeduplicateAndSortDictionaries.this.readWords(outputFolder.+(f)).toList.sorted[String](math.this.Ordering.String)
+        </td>
+      </tr><tr>
+        <td>
+          63
+        </td>
+        <td>
+          1074
+        </td>
+        <td>
+          2150
+          -
+          2150
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.math.Ordering.String
+        </td>
+        <td style="background: #F0ADAD">
+          math.this.Ordering.String
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          1076
+        </td>
+        <td>
+          2210
+          -
+          2211
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.+
+        </td>
+        <td style="background: #F0ADAD">
+          outputFolder.+(f)
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          1077
+        </td>
+        <td>
+          2176
+          -
+          2176
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.&lt;init&gt;
+        </td>
+        <td style="background: #F0ADAD">
+          new java.io.FileOutputStream(outputFolder.+(f))
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          1080
+        </td>
+        <td>
+          2238
+          -
+          2238
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.List.foreach
+        </td>
+        <td style="background: #F0ADAD">
+          words.foreach[Unit](((word: String) =&gt; out.write(word.+(&quot;\n&quot;).getBytes())))
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1079
+        </td>
+        <td>
+          2275
+          -
+          2275
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.write
+        </td>
+        <td style="background: #F0ADAD">
+          out.write(word.+(&quot;\n&quot;).getBytes())
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          1078
+        </td>
+        <td>
+          2290
+          -
+          2290
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.getBytes
+        </td>
+        <td style="background: #F0ADAD">
+          word.+(&quot;\n&quot;).getBytes()
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          1081
+        </td>
+        <td>
+          2327
+          -
+          2327
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.io.FileOutputStream.close
+        </td>
+        <td style="background: #F0ADAD">
+          out.close()
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

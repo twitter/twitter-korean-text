@@ -45,150 +45,101 @@
 </span>20 <span style=''>
 </span>21 <span style=''>import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 </span>22 <span style=''>import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
-</span>23 <span style=''>import com.twitter.penguin.korean.stemmer.KoreanStemmer
-</span>24 <span style=''>import com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens
-</span>25 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
+</span>23 <span style=''>import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
+</span>24 <span style=''>import com.twitter.penguin.korean.stemmer.KoreanStemmer
+</span>25 <span style=''>import com.twitter.penguin.korean.tokenizer.{KoreanSentenceSplitter, Sentence, KoreanTokenizer}
 </span>26 <span style=''>import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
-</span>27 <span style=''>
-</span>28 <span style=''>/**
-</span>29 <span style=''> * TwitterKoreanTokenizer provides error and slang tolerant Korean tokenization.
-</span>30 <span style=''> */
-</span>31 <span style=''>object TwitterKoreanProcessor {
-</span>32 <span style=''>
+</span>27 <span style=''>import com.twitter.penguin.korean.util.KoreanPos
+</span>28 <span style=''>
+</span>29 <span style=''>/**
+</span>30 <span style=''> * TwitterKoreanTokenizer provides error and slang tolerant Korean tokenization.
+</span>31 <span style=''> */
+</span>32 <span style=''>object TwitterKoreanProcessor {
 </span>33 <span style=''>  /**
-</span>34 <span style=''>   * Korean Segment includes each token's start offset, length, and the token itself.
+</span>34 <span style=''>   * Normalize Korean text. Uses KoreanNormalizer.normalize().
 </span>35 <span style=''>   *
-</span>36 <span style=''>   * @param start Offset of the token
-</span>37 <span style=''>   * @param length Length of the token
-</span>38 <span style=''>   * @param token Token
-</span>39 <span style=''>   */
-</span>40 <span style=''>  case class KoreanSegment(start: Int, length: Int, token: KoreanToken)
+</span>36 <span style=''>   * @param text Input text
+</span>37 <span style=''>   * @return Normalized Korean text
+</span>38 <span style=''>   */
+</span>39 <span style=''>  def normalize(text: CharSequence): CharSequence = KoreanNormalizer.normalize(text)
+</span>40 <span style=''>
 </span>41 <span style=''>
 </span>42 <span style=''>  /**
-</span>43 <span style=''>   * Wraps a text and the sequence of KoreanSegments
-</span>44 <span style=''>   *
-</span>45 <span style=''>   * @param text Input text.
-</span>46 <span style=''>   * @param segments Sequence of Korean Segments.
-</span>47 <span style=''>   */
-</span>48 <span style=''>  case class KoreanSegmentWithText(text: CharSequence, segments: Seq[KoreanSegment])
-</span>49 <span style=''>
-</span>50 <span style=''>  /**
-</span>51 <span style=''>   * Normalize Korean text. Uses KoreanNormalizer.normalize().
-</span>52 <span style=''>   *
-</span>53 <span style=''>   * @param text Input text
-</span>54 <span style=''>   * @return Normalized Korean text
-</span>55 <span style=''>   */
-</span>56 <span style=''>  def normalize(text: CharSequence): CharSequence = KoreanNormalizer.normalize(text)
-</span>57 <span style=''>
-</span>58 <span style=''>  /**
-</span>59 <span style=''>   * Wrapper for Korean stemmer
-</span>60 <span style=''>   *
-</span>61 <span style=''>   * @param text Input text
-</span>62 <span style=''>   * @return A sequence of stemmed tokens
-</span>63 <span style=''>   */
-</span>64 <span style=''>  def stem(text: CharSequence): StemmedTextWithTokens = {
-</span>65 <span style=''>    KoreanStemmer.stem(text)
-</span>66 <span style=''>  }
-</span>67 <span style=''>
-</span>68 <span style=''>  /**
-</span>69 <span style=''>   * Tokenize text into a sequence of token strings.
-</span>70 <span style=''>   *
-</span>71 <span style=''>   * @param text input text
-</span>72 <span style=''>   * @param normalize option to enable the normalizer
-</span>73 <span style=''>   * @param stem option to enable the stemmer
-</span>74 <span style=''>   * @return A sequence of token strings.
-</span>75 <span style=''>   */
-</span>76 <span style=''>  def tokenizeToStrings(text: CharSequence, normalize: Boolean = true, stem: Boolean = true, keepSpace: Boolean = false): Seq[String] = {
-</span>77 <span style=''>    tokenize(text, normalize, stem, keepSpace).map(_.text.toString)
-</span>78 <span style=''>  }
-</span>79 <span style=''>
-</span>80 <span style=''>  /**
-</span>81 <span style=''>   * Tokenize text into a sequence of KoreanSegments, which includes start offset, the length,
-</span>82 <span style=''>   * and the full information of each token.
-</span>83 <span style=''>   *
-</span>84 <span style=''>   * This is useful for Lucene integration. Normalization is not supported for this feature.
-</span>85 <span style=''>   * For stemming support, use tokenizeWithIndexWithStemmer
-</span>86 <span style=''>   *
-</span>87 <span style=''>   * @param text Input text.
-</span>88 <span style=''>   * @return A sequence of KoreanSegments.
-</span>89 <span style=''>   */
-</span>90 <span style=''>  def tokenizeWithIndex(text: CharSequence): Seq[KoreanSegment] = {
-</span>91 <span style=''>    val tokens: Seq[KoreanToken] = tokenize(text, normalizization = false, stemming = false)
-</span>92 <span style=''>    getKoreanSegments(text, tokens)
-</span>93 <span style=''>  }
-</span>94 <span style=''>
-</span>95 <span style=''>  /**
-</span>96 <span style=''>   * Tokenize text into a KoreanSegmentWithText,
-</span>97 <span style=''>   * which includes stemmed input text and a sequence stemmed tokens
-</span>98 <span style=''>   *
-</span>99 <span style=''>   * This is useful for Lucene integration. Normalization is not supported for this feature.
-</span>100 <span style=''>   *
-</span>101 <span style=''>   * @param text Input text.
-</span>102 <span style=''>   * @return KoreanSegmentWithText
-</span>103 <span style=''>   */
-</span>104 <span style=''>  def tokenizeWithIndexWithStemmer(text: CharSequence): KoreanSegmentWithText = {
-</span>105 <span style=''>    val stemmed: StemmedTextWithTokens = KoreanStemmer.stem(text)
-</span>106 <span style=''>    KoreanSegmentWithText(stemmed.text, getKoreanSegments(stemmed.text, stemmed.tokens))
-</span>107 <span style=''>  }
-</span>108 <span style=''>
-</span>109 <span style=''>  /**
-</span>110 <span style=''>   * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
-</span>111 <span style=''>   * whether a token is an out-of-vocabulary term.
-</span>112 <span style=''>   *
-</span>113 <span style=''>   * @param text input text
-</span>114 <span style=''>   * @param normalizization option to enable the normalizer
-</span>115 <span style=''>   * @param stemming option to enable the stemmer
-</span>116 <span style=''>   * @return A sequence of KoreanTokens.
-</span>117 <span style=''>   */
-</span>118 <span style=''>  def tokenize(text: CharSequence,
-</span>119 <span style=''>               normalizization: Boolean = true,
-</span>120 <span style=''>               stemming: Boolean = true,
-</span>121 <span style=''>               keepSpace: Boolean = false): Seq[KoreanToken] = {
-</span>122 <span style=''>    val normalized = if (normalizization) KoreanNormalizer.normalize(text) else text
-</span>123 <span style=''>    val tokenized = KoreanTokenizer.tokenize(normalized, keepSpace)
-</span>124 <span style=''>    if (stemming) KoreanStemmer.stemPredicates(tokenized) else tokenized
-</span>125 <span style=''>  }
-</span>126 <span style=''>
-</span>127 <span style=''>  def extractPhrases(text: CharSequence, filterSpam: Boolean = false): Seq[CharSequence] = {
-</span>128 <span style=''>    KoreanPhraseExtractor.extractPhrases(text, filterSpam)
-</span>129 <span style=''>  }
-</span>130 <span style=''>
-</span>131 <span style=''>  /**
-</span>132 <span style=''>   * Align text with tokens to get indices (useful for Lucene integration)
-</span>133 <span style=''>   * @param text Input CharSequence
-</span>134 <span style=''>   * @param tokens A sequence of Tokens
-</span>135 <span style=''>   * @return  A sequence of KoreanSegments
-</span>136 <span style=''>   */
-</span>137 <span style=''>  private def getKoreanSegments(text: CharSequence, tokens: Seq[KoreanToken]): Seq[KoreanSegment] = {
-</span>138 <span style=''>    val s = text.toString
-</span>139 <span style=''>    // Match text with the tokenization results to get offset and length of each token
-</span>140 <span style=''>    val (output, i) = tokens.foldLeft(List[KoreanSegment](), 0) {
-</span>141 <span style=''>      case ((l: List[KoreanSegment], i: Int), token: KoreanToken) =>
-</span>142 <span style=''>        val segStart = s.indexOf(token.text, i)
-</span>143 <span style=''>        (KoreanSegment(segStart, token.text.length, token) :: l, segStart + token.text.length)
-</span>144 <span style=''>    }
-</span>145 <span style=''>    output.reverse
-</span>146 <span style=''>  }
-</span>147 <span style=''>}
+</span>43 <span style=''>   * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
+</span>44 <span style=''>   * whether a token is an out-of-vocabulary term.
+</span>45 <span style=''>   *
+</span>46 <span style=''>   * @param text input text
+</span>47 <span style=''>   * @return A sequence of KoreanTokens.
+</span>48 <span style=''>   */
+</span>49 <span style=''>  def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
+</span>50 <span style=''>
+</span>51 <span style=''>  /**
+</span>52 <span style=''>   * Wrapper for Korean stemmer
+</span>53 <span style=''>   *
+</span>54 <span style=''>   * @param tokens Korean tokens
+</span>55 <span style=''>   * @return A sequence of stemmed tokens
+</span>56 <span style=''>   */
+</span>57 <span style=''>  def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = KoreanStemmer.stem(tokens)
+</span>58 <span style=''>
+</span>59 <span style=''>  /**
+</span>60 <span style=''>   * Tokenize text into a sequence of token strings. This excludes spaces.
+</span>61 <span style=''>   *
+</span>62 <span style=''>   * @param tokens Korean tokens
+</span>63 <span style=''>   * @return A sequence of token strings.
+</span>64 <span style=''>   */
+</span>65 <span style=''>  def tokensToStrings(tokens: Seq[KoreanToken]): Seq[String] = {
+</span>66 <span style=''>    tokens.filterNot(t => t.pos </span><span style='background: #F0ADAD'>==</span><span style=''> KoreanPos.Space).map(_.text.toString)
+</span>67 <span style=''>  }
+</span>68 <span style=''>
+</span>69 <span style=''>  /**
+</span>70 <span style=''>   * Split input text into sentences.
+</span>71 <span style=''>   *
+</span>72 <span style=''>   * @param text input text
+</span>73 <span style=''>   * @return A sequence of sentences.
+</span>74 <span style=''>   */
+</span>75 <span style=''>  def splitSentences(text: CharSequence): Seq[Sentence] = {
+</span>76 <span style=''>    KoreanSentenceSplitter.split(text)
+</span>77 <span style=''>  }
+</span>78 <span style=''>
+</span>79 <span style=''>  /**
+</span>80 <span style=''>   * Extract noun-phrases from Korean text
+</span>81 <span style=''>   *
+</span>82 <span style=''>   * @param tokens Korean tokens
+</span>83 <span style=''>   * @param filterSpam true if spam/slang terms to be filtered out (default: false)
+</span>84 <span style=''>   * @param enableHashtags true if #hashtags to be included (default: true)
+</span>85 <span style=''>   * @return A sequence of extracted phrases
+</span>86 <span style=''>   */
+</span>87 <span style=''>  def extractPhrases(tokens: Seq[KoreanToken],
+</span>88 <span style=''>                     filterSpam: Boolean = false,
+</span>89 <span style=''>                     enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
+</span>90 <span style=''>    KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
+</span>91 <span style=''>  }
+</span>92 <span style=''>
+</span>93 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
             <table cellspacing="0" cellpadding="0" class="table statementlist">
       <tr>
-        <th>Line Number</th>
-        <th>Statement Id</th>
-        <th>Tree Type</th>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
         <th>Symbol</th>
         <th>Code</th>
-      </tr>
-      <tr>
+      </tr><tr>
         <td>
-          56
+          39
         </td>
         <td>
           1
         </td>
         <td>
+          1535
+          -
+          1535
+        </td>
+        <td>
           Apply
         </td>
         <td>
@@ -199,298 +150,15 @@
         </td>
       </tr><tr>
         <td>
-          65
+          49
         </td>
         <td>
           2
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stem
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stem(text)
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          5
-        </td>
-        <td>
-          ApplyToImplicitArgs
-        </td>
-        <td>
-          scala.collection.TraversableLike.map
-        </td>
-        <td style="background: #AEF1AE">
-          TwitterKoreanProcessor.this.tokenize(text, normalize, stem, keepSpace).map[String, Seq[String]](((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.text.toString()))(collection.this.Seq.canBuildFrom[String])
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          4
-        </td>
-        <td>
-          TypeApply
-        </td>
-        <td>
-          scala.collection.Seq.canBuildFrom
-        </td>
-        <td style="background: #AEF1AE">
-          collection.this.Seq.canBuildFrom[String]
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          3
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.String.toString
-        </td>
-        <td style="background: #AEF1AE">
-          x$1.text.toString()
-        </td>
-      </tr><tr>
-        <td>
-          91
-        </td>
-        <td>
-          8
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize$default$4
-        </td>
-        <td style="background: #AEF1AE">
-          TwitterKoreanProcessor.this.tokenize$default$4
-        </td>
-      </tr><tr>
-        <td>
-          91
-        </td>
-        <td>
-          7
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          false
-        </td>
-      </tr><tr>
-        <td>
-          91
-        </td>
-        <td>
-          9
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenize
-        </td>
-        <td style="background: #AEF1AE">
-          TwitterKoreanProcessor.this.tokenize(text, false, false, TwitterKoreanProcessor.this.tokenize$default$4)
-        </td>
-      </tr><tr>
-        <td>
-          91
-        </td>
-        <td>
-          6
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          false
-        </td>
-      </tr><tr>
-        <td>
-          92
-        </td>
-        <td>
-          10
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.getKoreanSegments
-        </td>
-        <td style="background: #AEF1AE">
-          TwitterKoreanProcessor.this.getKoreanSegments(text, tokens)
-        </td>
-      </tr><tr>
-        <td>
-          105
-        </td>
-        <td>
-          11
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stem
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stem(text)
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          14
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens.tokens
-        </td>
-        <td style="background: #AEF1AE">
-          stemmed.tokens
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          13
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens.text
-        </td>
-        <td style="background: #AEF1AE">
-          stemmed.text
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          16
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.KoreanSegmentWithText.apply
-        </td>
-        <td style="background: #AEF1AE">
-          TwitterKoreanProcessor.this.KoreanSegmentWithText.apply(stemmed.text, TwitterKoreanProcessor.this.getKoreanSegments(stemmed.text, stemmed.tokens))
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          12
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.StemmedTextWithTokens.text
-        </td>
-        <td style="background: #AEF1AE">
-          stemmed.text
-        </td>
-      </tr><tr>
-        <td>
-          106
-        </td>
-        <td>
-          15
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.getKoreanSegments
-        </td>
-        <td style="background: #AEF1AE">
-          TwitterKoreanProcessor.this.getKoreanSegments(stemmed.text, stemmed.tokens)
-        </td>
-      </tr><tr>
-        <td>
-          122
-        </td>
-        <td>
-          17
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalize
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalize(text)
-        </td>
-      </tr><tr>
-        <td>
-          122
-        </td>
-        <td>
-          19
-        </td>
-        <td>
-          Ident
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.text
-        </td>
-        <td style="background: #AEF1AE">
-          text
-        </td>
-      </tr><tr>
-        <td>
-          122
-        </td>
-        <td>
-          18
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalize
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.normalizer.KoreanNormalizer.normalize(text)
-        </td>
-      </tr><tr>
-        <td>
-          123
-        </td>
-        <td>
-          20
+          1858
+          -
+          1858
         </td>
         <td>
           Apply
@@ -499,62 +167,166 @@
           com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(normalized, keepSpace)
+          com.twitter.penguin.korean.tokenizer.KoreanTokenizer.tokenize(text)
         </td>
       </tr><tr>
         <td>
-          124
+          57
         </td>
         <td>
-          23
+          3
         </td>
         <td>
-          Ident
-        </td>
-        <td>
-          com.twitter.penguin.korean.TwitterKoreanProcessor.tokenized
-        </td>
-        <td style="background: #AEF1AE">
-          tokenized
-        </td>
-      </tr><tr>
-        <td>
-          124
-        </td>
-        <td>
-          22
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stemPredicates
-        </td>
-        <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stemPredicates(tokenized)
-        </td>
-      </tr><tr>
-        <td>
-          124
-        </td>
-        <td>
-          21
+          2065
+          -
+          2065
         </td>
         <td>
           Apply
         </td>
         <td>
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stemPredicates
+          com.twitter.penguin.korean.stemmer.KoreanStemmer.stem
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.stemmer.KoreanStemmer.stemPredicates(tokenized)
+          com.twitter.penguin.korean.stemmer.KoreanStemmer.stem(tokens)
         </td>
       </tr><tr>
         <td>
-          128
+          66
         </td>
         <td>
-          24
+          8
+        </td>
+        <td>
+          2362
+          -
+          2362
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.TraversableLike.map
+        </td>
+        <td style="background: #F0ADAD">
+          tokens.filterNot(((t: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space))).map[String, Seq[String]](((x$1: com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken) =&gt; x$1.text.toString()))(collection.this.Seq.canBuildFrom[String])
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          5
+        </td>
+        <td>
+          2339
+          -
+          2341
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Object.==
+        </td>
+        <td style="background: #F0ADAD">
+          t.pos.==(com.twitter.penguin.korean.util.KoreanPos.Space)
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          4
+        </td>
+        <td>
+          2352
+          -
+          2352
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+        <td style="background: #F0ADAD">
+          com.twitter.penguin.korean.util.KoreanPos.Space
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          7
+        </td>
+        <td>
+          2362
+          -
+          2362
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.Seq.canBuildFrom
+        </td>
+        <td style="background: #F0ADAD">
+          collection.this.Seq.canBuildFrom[String]
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          2370
+          -
+          2370
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.String.toString
+        </td>
+        <td style="background: #F0ADAD">
+          x$1.text.toString()
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          9
+        </td>
+        <td>
+          2598
+          -
+          2598
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.KoreanSentenceSplitter.split
+        </td>
+        <td style="background: #AEF1AE">
+          com.twitter.penguin.korean.tokenizer.KoreanSentenceSplitter.split(text)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          3121
+          -
+          3121
         </td>
         <td>
           Apply
@@ -563,71 +335,7 @@
           com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.extractPhrases
         </td>
         <td style="background: #AEF1AE">
-          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.extractPhrases(text, filterSpam)
-        </td>
-      </tr><tr>
-        <td>
-          138
-        </td>
-        <td>
-          25
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          java.lang.Object.toString
-        </td>
-        <td style="background: #AEF1AE">
-          text.toString()
-        </td>
-      </tr><tr>
-        <td>
-          140
-        </td>
-        <td>
-          26
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Tuple2._1
-        </td>
-        <td style="background: #AEF1AE">
-          x$3._1
-        </td>
-      </tr><tr>
-        <td>
-          140
-        </td>
-        <td>
-          27
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Tuple2._2
-        </td>
-        <td style="background: #AEF1AE">
-          x$3._2
-        </td>
-      </tr><tr>
-        <td>
-          145
-        </td>
-        <td>
-          28
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.collection.immutable.List.reverse
-        </td>
-        <td style="background: #AEF1AE">
-          output.reverse
+          com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
         </td>
       </tr>
     </table>

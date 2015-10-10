@@ -1,0 +1,400 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          /Users/hohyonryu/workspace/twitter-korean-text/src/main/scala/com/twitter/penguin/korean/tokenizer/KoreanSentenceSplitter.scala.html
+        </title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier;'>1 <span style=''>/*
+</span>2 <span style=''> * Twitter Korean Text - Scala library to process Korean text
+</span>3 <span style=''> *
+</span>4 <span style=''> * Copyright 2015 Twitter, Inc.
+</span>5 <span style=''> *
+</span>6 <span style=''> * Licensed under the Apache License, Version 2.0 (the "License");
+</span>7 <span style=''> * you may not use this file except in compliance with the License.
+</span>8 <span style=''> * You may obtain a copy of the License at
+</span>9 <span style=''> *
+</span>10 <span style=''> *   http://www.apache.org/licenses/LICENSE-2.0
+</span>11 <span style=''> *
+</span>12 <span style=''> * Unless required by applicable law or agreed to in writing, software
+</span>13 <span style=''> * distributed under the License is distributed on an "AS IS" BASIS,
+</span>14 <span style=''> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+</span>15 <span style=''> * See the License for the specific language governing permissions and
+</span>16 <span style=''> * limitations under the License.
+</span>17 <span style=''> */
+</span>18 <span style=''>
+</span>19 <span style=''>package com.twitter.penguin.korean.tokenizer
+</span>20 <span style=''>
+</span>21 <span style=''>case class Sentence(text: String, start: Int, end: Int) {
+</span>22 <span style=''>  override def toString: String = s"$text($start,$end)"
+</span>23 <span style=''>}
+</span>24 <span style=''>
+</span>25 <span style=''>object KoreanSentenceSplitter {
+</span>26 <span style=''>  val re =
+</span>27 <span style=''>    """(?x)[^.!?…\s]   # First char is non-punct, non-ws
+</span>28 <span style=''>      [^.!?…]*         # Greedily consume up to punctuation.
+</span>29 <span style=''>      (?:              # Group for unrolling the loop.
+</span>30 <span style=''>        [.!?…]         # (special) inner punctuation ok if
+</span>31 <span style=''>        (?!['\"]?\s|$) # not followed by ws or EOS.
+</span>32 <span style=''>        [^.!?…]*       # Greedily consume up to punctuation.
+</span>33 <span style=''>      )*               # Zero or more (special normal*)
+</span>34 <span style=''>      [.!?…]?          # Optional ending punctuation.
+</span>35 <span style=''>      ['\"]?           # Optional closing quote.
+</span>36 <span style=''>      (?=\s|$)""".r
+</span>37 <span style=''>
+</span>38 <span style=''>  def split(s: CharSequence) = {
+</span>39 <span style=''>    re.findAllMatchIn(s)
+</span>40 <span style=''>      .map(m => Sentence(m.group(0), m.start(0), m.end(0)))
+</span>41 <span style=''>      .toSeq
+</span>42 <span style=''>  }
+</span>43 <span style=''>}
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          696
+        </td>
+        <td>
+          801
+          -
+          801
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          699
+        </td>
+        <td>
+          818
+          -
+          818
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          702
+        </td>
+        <td>
+          815
+          -
+          815
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.Sentence.end
+        </td>
+        <td style="background: #AEF1AE">
+          Sentence.this.end
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          701
+        </td>
+        <td>
+          808
+          -
+          808
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.Sentence.start
+        </td>
+        <td style="background: #AEF1AE">
+          Sentence.this.start
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          698
+        </td>
+        <td>
+          813
+          -
+          813
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;,&quot;
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          697
+        </td>
+        <td>
+          806
+          -
+          806
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;(&quot;
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          700
+        </td>
+        <td>
+          802
+          -
+          802
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.Sentence.text
+        </td>
+        <td style="background: #AEF1AE">
+          Sentence.this.text
+        </td>
+      </tr><tr>
+        <td>
+          22
+        </td>
+        <td>
+          703
+        </td>
+        <td>
+          799
+          -
+          799
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.StringContext.s
+        </td>
+        <td style="background: #AEF1AE">
+          scala.StringContext.apply(&quot;&quot;, &quot;(&quot;, &quot;,&quot;, &quot;)&quot;).s(Sentence.this.text, Sentence.this.start, Sentence.this.end)
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          704
+        </td>
+        <td>
+          871
+          -
+          871
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          &quot;(?x)[^.!?…\\s]   # First char is non-punct, non-ws\n      [^.!?…]*         # Greedily consume up to punctuation.\n      (?:              # Group for unrolling the loop.\n        [.!?…]         # (special) inner punctuation ok if\n        (?![\'\\\&quot;]?\\s|$) # not followed by ws or EOS.\n        [^.!?…]*       # Greedily consume up to punctuation.\n      )*               # Zero or more (special normal*)\n      [.!?…]?          # Optional ending punctuation.\n      [\'\\\&quot;]?           # Optional closing quote.\n      (?=\\s|$)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          705
+        </td>
+        <td>
+          1389
+          -
+          1389
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.immutable.StringLike.r
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(&quot;(?x)[^.!?…\\s]   # First char is non-punct, non-ws\n      [^.!?…]*         # Greedily consume up to punctuation.\n      (?:              # Group for unrolling the loop.\n        [.!?…]         # (special) inner punctuation ok if\n        (?![\'\\\&quot;]?\\s|$) # not followed by ws or EOS.\n        [^.!?…]*       # Greedily consume up to punctuation.\n      )*               # Zero or more (special normal*)\n      [.!?…]?          # Optional ending punctuation.\n      [\'\\\&quot;]?           # Optional closing quote.\n      (?=\\s|$)&quot;).r
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          708
+        </td>
+        <td>
+          1504
+          -
+          1504
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.Match.end
+        </td>
+        <td style="background: #AEF1AE">
+          m.end(0)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          707
+        </td>
+        <td>
+          1494
+          -
+          1494
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.Match.start
+        </td>
+        <td style="background: #AEF1AE">
+          m.start(0)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          706
+        </td>
+        <td>
+          1482
+          -
+          1482
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.util.matching.Regex.MatchData.group
+        </td>
+        <td style="background: #AEF1AE">
+          m.group(0)
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          709
+        </td>
+        <td>
+          1474
+          -
+          1474
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.tokenizer.Sentence.apply
+        </td>
+        <td style="background: #AEF1AE">
+          Sentence.apply(m.group(0), m.start(0), m.end(0))
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          710
+        </td>
+        <td>
+          1517
+          -
+          1517
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.collection.TraversableOnce.toSeq
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanSentenceSplitter.this.re.findAllMatchIn(s).map[com.twitter.penguin.korean.tokenizer.Sentence](((m: scala.util.matching.Regex.Match) =&gt; Sentence.apply(m.group(0), m.start(0), m.end(0)))).toSeq
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

@@ -28,7 +28,7 @@
 </span>3 <span style=''>object UpdateAllTheExamples {
 </span>4 <span style=''>  def runTools(objects: Runnable*): Unit = {
 </span>5 <span style=''>    objects.foreach{o =>
-</span>6 <span style=''>      println("--- Running %s ---".format(o.getClass.getSimpleName))
+</span>6 <span style=''>      println("--- Running %s ---".format(o.getClass.getSimpleName.init))
 </span>7 <span style=''>      o.run
 </span>8 <span style=''>    }
 </span>9 <span style=''>    println("Finished running %s.".format(
@@ -38,7 +38,7 @@
 </span>13 <span style=''>
 </span>14 <span style=''>  def main(args: Array[String]) {
 </span>15 <span style=''>    runTools(
-</span>16 <span style=''>      CleanUpDictionaries,
+</span>16 <span style=''>      DeduplicateAndSortDictionaries,
 </span>17 <span style=''>      CreateConjugationExamples,
 </span>18 <span style=''>      CreateParsingExamples,
 </span>19 <span style=''>      CreatePhraseExtractionExamples
@@ -50,18 +50,23 @@
           <div class="tab-pane" id="statementlist">
             <table cellspacing="0" cellpadding="0" class="table statementlist">
       <tr>
-        <th>Line Number</th>
-        <th>Statement Id</th>
-        <th>Tree Type</th>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
         <th>Symbol</th>
         <th>Code</th>
-      </tr>
-      <tr>
+      </tr><tr>
         <td>
           5
         </td>
         <td>
-          1116
+          1090
+        </td>
+        <td>
+          136
+          -
+          136
         </td>
         <td>
           Apply
@@ -71,7 +76,7 @@
         </td>
         <td style="background: #F0ADAD">
           objects.foreach[Unit](((o: com.twitter.penguin.korean.tools.Runnable) =&gt; {
-  scala.this.Predef.println(scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(o.getClass().getSimpleName()));
+  scala.this.Predef.println(scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(scala.this.Predef.augmentString(o.getClass().getSimpleName()).init));
   o.run
 }))
         </td>
@@ -80,7 +85,54 @@
           6
         </td>
         <td>
-          1111
+          1088
+        </td>
+        <td>
+          155
+          -
+          155
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.println
+        </td>
+        <td style="background: #F0ADAD">
+          scala.this.Predef.println(scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(scala.this.Predef.augmentString(o.getClass().getSimpleName()).init))
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          1085
+        </td>
+        <td>
+          195
+          -
+          195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          java.lang.Class.getSimpleName
+        </td>
+        <td style="background: #F0ADAD">
+          o.getClass().getSimpleName()
+        </td>
+      </tr><tr>
+        <td>
+          6
+        </td>
+        <td>
+          1084
+        </td>
+        <td>
+          156
+          -
+          156
         </td>
         <td>
           Literal
@@ -96,23 +148,12 @@
           6
         </td>
         <td>
-          1114
+          1087
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.println
-        </td>
-        <td style="background: #F0ADAD">
-          scala.this.Predef.println(scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(o.getClass().getSimpleName()))
-        </td>
-      </tr><tr>
-        <td>
-          6
-        </td>
-        <td>
-          1113
+          183
+          -
+          183
         </td>
         <td>
           Apply
@@ -121,30 +162,40 @@
           scala.collection.immutable.StringLike.format
         </td>
         <td style="background: #F0ADAD">
-          scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(o.getClass().getSimpleName())
+          scala.this.Predef.augmentString(&quot;--- Running %s ---&quot;).format(scala.this.Predef.augmentString(o.getClass().getSimpleName()).init)
         </td>
       </tr><tr>
         <td>
           6
         </td>
         <td>
-          1112
+          1086
         </td>
         <td>
-          Apply
+          209
+          -
+          209
         </td>
         <td>
-          java.lang.Class.getSimpleName
+          Select
+        </td>
+        <td>
+          scala.collection.IndexedSeqOptimized.init
         </td>
         <td style="background: #F0ADAD">
-          o.getClass().getSimpleName()
+          scala.this.Predef.augmentString(o.getClass().getSimpleName()).init
         </td>
       </tr><tr>
         <td>
           7
         </td>
         <td>
-          1115
+          1089
+        </td>
+        <td>
+          224
+          -
+          224
         </td>
         <td>
           Select
@@ -160,7 +211,12 @@
           9
         </td>
         <td>
-          1117
+          1091
+        </td>
+        <td>
+          246
+          -
+          246
         </td>
         <td>
           Literal
@@ -176,7 +232,12 @@
           9
         </td>
         <td>
-          1120
+          1094
+        </td>
+        <td>
+          245
+          -
+          245
         </td>
         <td>
           Apply
@@ -192,7 +253,12 @@
           9
         </td>
         <td>
-          1119
+          1093
+        </td>
+        <td>
+          275
+          -
+          275
         </td>
         <td>
           Apply
@@ -208,7 +274,12 @@
           10
         </td>
         <td>
-          1118
+          1092
+        </td>
+        <td>
+          329
+          -
+          329
         </td>
         <td>
           Apply
@@ -224,7 +295,12 @@
           15
         </td>
         <td>
-          1121
+          1095
+        </td>
+        <td>
+          394
+          -
+          394
         </td>
         <td>
           Apply
@@ -233,7 +309,7 @@
           com.twitter.penguin.korean.tools.UpdateAllTheExamples.runTools
         </td>
         <td style="background: #F0ADAD">
-          UpdateAllTheExamples.this.runTools(CleanUpDictionaries, CreateConjugationExamples, CreateParsingExamples, CreatePhraseExtractionExamples)
+          UpdateAllTheExamples.this.runTools(DeduplicateAndSortDictionaries, CreateConjugationExamples, CreateParsingExamples, CreatePhraseExtractionExamples)
         </td>
       </tr>
     </table>

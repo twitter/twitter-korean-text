@@ -95,514 +95,105 @@
 </span>70 <span style=''>  Email, URL, CashTag,
 </span>71 <span style=''>
 </span>72 <span style=''>  // Functional POS
-</span>73 <span style=''>  Space, Others = Value
+</span>73 <span style=''>  Space, Others,
 </span>74 <span style=''>
-</span>75 <span style=''>  val OtherPoses = Set(Korean, Foreign, Number, KoreanParticle, Alpha,
-</span>76 <span style=''>    Punctuation, Hashtag, ScreenName,
-</span>77 <span style=''>    Email, URL, CashTag)
-</span>78 <span style=''>
-</span>79 <span style=''>  val shortCut = Map(
-</span>80 <span style=''>    'N' </span><span style='background: #AEF1AE'>-></span><span style=''> Noun,
-</span>81 <span style=''>    'V' </span><span style='background: #AEF1AE'>-></span><span style=''> Verb,
-</span>82 <span style=''>    'J' </span><span style='background: #AEF1AE'>-></span><span style=''> Adjective,
-</span>83 <span style=''>    'A' </span><span style='background: #AEF1AE'>-></span><span style=''> Adverb,
-</span>84 <span style=''>    'D' </span><span style='background: #AEF1AE'>-></span><span style=''> Determiner,
-</span>85 <span style=''>    'E' </span><span style='background: #AEF1AE'>-></span><span style=''> Exclamation,
-</span>86 <span style=''>    'C' </span><span style='background: #AEF1AE'>-></span><span style=''> Conjunction,
-</span>87 <span style=''>
-</span>88 <span style=''>    'j' </span><span style='background: #AEF1AE'>-></span><span style=''> Josa,
-</span>89 <span style=''>    'e' </span><span style='background: #AEF1AE'>-></span><span style=''> Eomi,
-</span>90 <span style=''>    'r' </span><span style='background: #AEF1AE'>-></span><span style=''> PreEomi,
-</span>91 <span style=''>    'p' </span><span style='background: #AEF1AE'>-></span><span style=''> NounPrefix,
-</span>92 <span style=''>    'v' </span><span style='background: #AEF1AE'>-></span><span style=''> VerbPrefix,
-</span>93 <span style=''>    's' </span><span style='background: #AEF1AE'>-></span><span style=''> Suffix,
-</span>94 <span style=''>
-</span>95 <span style=''>    'a' </span><span style='background: #AEF1AE'>-></span><span style=''> Alpha,
-</span>96 <span style=''>    'n' </span><span style='background: #AEF1AE'>-></span><span style=''> Number,
-</span>97 <span style=''>
-</span>98 <span style=''>    'o' </span><span style='background: #AEF1AE'>-></span><span style=''> Others
-</span>99 <span style=''>  )
-</span>100 <span style=''>
-</span>101 <span style=''>  case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
+</span>75 <span style=''>  ProperNoun = Value
+</span>76 <span style=''>
+</span>77 <span style=''>  val OtherPoses = Set(Korean, Foreign, Number, KoreanParticle, Alpha,
+</span>78 <span style=''>    Punctuation, Hashtag, ScreenName,
+</span>79 <span style=''>    Email, URL, CashTag)
+</span>80 <span style=''>
+</span>81 <span style=''>  val shortCut = Map(
+</span>82 <span style=''>    'N' </span><span style='background: #AEF1AE'>-></span><span style=''> Noun,
+</span>83 <span style=''>    'V' </span><span style='background: #AEF1AE'>-></span><span style=''> Verb,
+</span>84 <span style=''>    'J' </span><span style='background: #AEF1AE'>-></span><span style=''> Adjective,
+</span>85 <span style=''>    'A' </span><span style='background: #AEF1AE'>-></span><span style=''> Adverb,
+</span>86 <span style=''>    'D' </span><span style='background: #AEF1AE'>-></span><span style=''> Determiner,
+</span>87 <span style=''>    'E' </span><span style='background: #AEF1AE'>-></span><span style=''> Exclamation,
+</span>88 <span style=''>    'C' </span><span style='background: #AEF1AE'>-></span><span style=''> Conjunction,
+</span>89 <span style=''>
+</span>90 <span style=''>    'j' </span><span style='background: #AEF1AE'>-></span><span style=''> Josa,
+</span>91 <span style=''>    'e' </span><span style='background: #AEF1AE'>-></span><span style=''> Eomi,
+</span>92 <span style=''>    'r' </span><span style='background: #AEF1AE'>-></span><span style=''> PreEomi,
+</span>93 <span style=''>    'p' </span><span style='background: #AEF1AE'>-></span><span style=''> NounPrefix,
+</span>94 <span style=''>    'v' </span><span style='background: #AEF1AE'>-></span><span style=''> VerbPrefix,
+</span>95 <span style=''>    's' </span><span style='background: #AEF1AE'>-></span><span style=''> Suffix,
+</span>96 <span style=''>
+</span>97 <span style=''>    'a' </span><span style='background: #AEF1AE'>-></span><span style=''> Alpha,
+</span>98 <span style=''>    'n' </span><span style='background: #AEF1AE'>-></span><span style=''> Number,
+</span>99 <span style=''>
+</span>100 <span style=''>    'o' </span><span style='background: #AEF1AE'>-></span><span style=''> Others
+</span>101 <span style=''>  )
 </span>102 <span style=''>
-</span>103 <span style=''>  val selfNode = KoreanPosTrie(null, null, ending = None)
+</span>103 <span style=''>  case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Option[KoreanPos])
 </span>104 <span style=''>
-</span>105 <span style=''>  protected[korean] def buildTrie(s: String, ending_pos: KoreanPos): List[KoreanPosTrie] = {
-</span>106 <span style=''>    def isFinal(rest: String): Boolean = {
-</span>107 <span style=''>      val isNextOptional = rest.foldLeft(true) {
-</span>108 <span style=''>        case (output: Boolean, c: Char) if c </span><span style='background: #AEF1AE'>== '+' || c ==</span><span style=''> '1' => false
-</span>109 <span style=''>        case (output: Boolean, c: Char) => output
-</span>110 <span style=''>      }
-</span>111 <span style=''>      rest.length </span><span style='background: #AEF1AE'>== 0 ||</span><span style=''> isNextOptional
-</span>112 <span style=''>    }
-</span>113 <span style=''>
-</span>114 <span style=''>    if (s.length </span><span style='background: #AEF1AE'><</span><span style=''> 2) {
-</span>115 <span style=''>      return List()
-</span>116 <span style=''>    }
-</span>117 <span style=''>
-</span>118 <span style=''>    val pos = shortCut(s.charAt(0))
-</span>119 <span style=''>    val rule = s.charAt(1)
-</span>120 <span style=''>    val rest = if (s.length </span><span style='background: #AEF1AE'>></span><span style=''> 1) {
-</span>121 <span style=''>      s.slice(2, s.length)
-</span>122 <span style=''>    } else {
-</span>123 <span style=''>      ""
-</span>124 <span style=''>    }
-</span>125 <span style=''>
-</span>126 <span style=''>    val end: Option[KoreanPos] = if (isFinal(rest)) Some(ending_pos) else None
+</span>105 <span style=''>  val selfNode = KoreanPosTrie(null, null, ending = None)
+</span>106 <span style=''>
+</span>107 <span style=''>  protected[korean] def buildTrie(s: String, ending_pos: KoreanPos): List[KoreanPosTrie] = {
+</span>108 <span style=''>    def isFinal(rest: String): Boolean = {
+</span>109 <span style=''>      val isNextOptional = rest.foldLeft(true) {
+</span>110 <span style=''>        case (output: Boolean, c: Char) if c </span><span style='background: #AEF1AE'>== '+' || c ==</span><span style=''> '1' => false
+</span>111 <span style=''>        case (output: Boolean, c: Char) => output
+</span>112 <span style=''>      }
+</span>113 <span style=''>      rest.length </span><span style='background: #AEF1AE'>== 0 ||</span><span style=''> isNextOptional
+</span>114 <span style=''>    }
+</span>115 <span style=''>
+</span>116 <span style=''>    if (s.length </span><span style='background: #AEF1AE'><</span><span style=''> 2) {
+</span>117 <span style=''>      return List()
+</span>118 <span style=''>    }
+</span>119 <span style=''>
+</span>120 <span style=''>    val pos = shortCut(s.charAt(0))
+</span>121 <span style=''>    val rule = s.charAt(1)
+</span>122 <span style=''>    val rest = if (s.length </span><span style='background: #AEF1AE'>></span><span style=''> 1) {
+</span>123 <span style=''>      s.slice(2, s.length)
+</span>124 <span style=''>    } else {
+</span>125 <span style=''>      ""
+</span>126 <span style=''>    }
 </span>127 <span style=''>
-</span>128 <span style=''>    rule match {
-</span>129 <span style=''>      case '+' =>
-</span>130 <span style=''>        List(KoreanPosTrie(pos, selfNode </span><span style='background: #AEF1AE'>::</span><span style=''> buildTrie(rest, ending_pos), end))
-</span>131 <span style=''>      case '*' =>
-</span>132 <span style=''>        List(KoreanPosTrie(pos, selfNode </span><span style='background: #AEF1AE'>::</span><span style=''> buildTrie(rest, ending_pos), end)) </span><span style='background: #AEF1AE'>++</span><span style=''> buildTrie(rest, ending_pos)
-</span>133 <span style=''>      case '1' =>
-</span>134 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end))
-</span>135 <span style=''>      case '0' =>
-</span>136 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end)) </span><span style='background: #AEF1AE'>++</span><span style=''> buildTrie(rest, ending_pos)
-</span>137 <span style=''>    }
-</span>138 <span style=''>  }
-</span>139 <span style=''>
-</span>140 <span style=''>  protected[korean] def getTrie(sequences: Map[String, KoreanPos]): List[KoreanPosTrie] =
-</span>141 <span style=''>    sequences.foldLeft(List[KoreanPosTrie]()) {
-</span>142 <span style=''>      case (results: List[KoreanPosTrie], (s: String, ending_pos: KoreanPos)) =>
-</span>143 <span style=''>        buildTrie(s, ending_pos) </span><span style='background: #AEF1AE'>:::</span><span style=''> results
-</span>144 <span style=''>    }
-</span>145 <span style=''>
-</span>146 <span style=''>  val Predicates = Set(Verb, Adjective)
-</span>147 <span style=''>}
+</span>128 <span style=''>    val end: Option[KoreanPos] = if (isFinal(rest)) Some(ending_pos) else None
+</span>129 <span style=''>
+</span>130 <span style=''>    rule match {
+</span>131 <span style=''>      case '+' =>
+</span>132 <span style=''>        List(KoreanPosTrie(pos, selfNode </span><span style='background: #AEF1AE'>::</span><span style=''> buildTrie(rest, ending_pos), end))
+</span>133 <span style=''>      case '*' =>
+</span>134 <span style=''>        List(KoreanPosTrie(pos, selfNode </span><span style='background: #AEF1AE'>::</span><span style=''> buildTrie(rest, ending_pos), end)) </span><span style='background: #AEF1AE'>++</span><span style=''> buildTrie(rest, ending_pos)
+</span>135 <span style=''>      case '1' =>
+</span>136 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end))
+</span>137 <span style=''>      case '0' =>
+</span>138 <span style=''>        List(KoreanPosTrie(pos, buildTrie(rest, ending_pos), end)) </span><span style='background: #AEF1AE'>++</span><span style=''> buildTrie(rest, ending_pos)
+</span>139 <span style=''>    }
+</span>140 <span style=''>  }
+</span>141 <span style=''>
+</span>142 <span style=''>  protected[korean] def getTrie(sequences: Map[String, KoreanPos]): List[KoreanPosTrie] =
+</span>143 <span style=''>    sequences.foldLeft(List[KoreanPosTrie]()) {
+</span>144 <span style=''>      case (results: List[KoreanPosTrie], (s: String, ending_pos: KoreanPos)) =>
+</span>145 <span style=''>        buildTrie(s, ending_pos) </span><span style='background: #AEF1AE'>:::</span><span style=''> results
+</span>146 <span style=''>    }
+</span>147 <span style=''>
+</span>148 <span style=''>  val Predicates = Set(Verb, Adjective)
+</span>149 <span style=''>}
 </span></pre>
           </div>
           <div class="tab-pane" id="statementlist">
             <table cellspacing="0" cellpadding="0" class="table statementlist">
       <tr>
-        <th>Line Number</th>
-        <th>Statement Id</th>
-        <th>Tree Type</th>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
         <th>Symbol</th>
         <th>Code</th>
-      </tr>
-      <tr>
-        <td>
-          73
-        </td>
-        <td>
-          1779
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
       </tr><tr>
         <td>
-          73
+          75
         </td>
         <td>
-          1788
+          1689
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1797
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1782
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1791
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1773
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1781
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1790
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1772
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1793
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1784
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1775
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1778
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1787
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1796
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1786
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1795
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1777
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1789
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1780
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1771
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1783
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1774
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1792
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1794
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1776
-        </td>
-        <td>
-          Select
-        </td>
-        <td>
-          scala.Enumeration.Value
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Value
-        </td>
-      </tr><tr>
-        <td>
-          73
-        </td>
-        <td>
-          1785
+          2135
+          -
+          2135
         </td>
         <td>
           Select
@@ -618,7 +209,579 @@
           75
         </td>
         <td>
-          1799
+          1698
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1680
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1692
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1674
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1683
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1677
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1695
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1686
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1694
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1697
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1679
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1688
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1673
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1682
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1691
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1676
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1685
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1675
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1693
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1684
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1696
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1687
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1678
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1672
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1681
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1690
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          1699
+        </td>
+        <td>
+          2135
+          -
+          2135
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          scala.Enumeration.Value
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Value
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          1701
+        </td>
+        <td>
+          2173
+          -
+          2173
         </td>
         <td>
           Select
@@ -631,10 +794,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          77
         </td>
         <td>
-          1802
+          1704
+        </td>
+        <td>
+          2206
+          -
+          2206
         </td>
         <td>
           Select
@@ -647,26 +815,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          77
         </td>
         <td>
-          1798
+          1703
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Korean
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Korean
-        </td>
-      </tr><tr>
-        <td>
-          75
-        </td>
-        <td>
-          1801
+          2190
+          -
+          2190
         </td>
         <td>
           Select
@@ -679,10 +836,36 @@
         </td>
       </tr><tr>
         <td>
-          75
+          77
         </td>
         <td>
-          1800
+          1700
+        </td>
+        <td>
+          2165
+          -
+          2165
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Korean
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Korean
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          1702
+        </td>
+        <td>
+          2182
+          -
+          2182
         </td>
         <td>
           Select
@@ -695,10 +878,15 @@
         </td>
       </tr><tr>
         <td>
-          75
+          77
         </td>
         <td>
-          1809
+          1711
+        </td>
+        <td>
+          2164
+          -
+          2164
         </td>
         <td>
           Apply
@@ -711,10 +899,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          78
         </td>
         <td>
-          1805
+          1707
+        </td>
+        <td>
+          2239
+          -
+          2239
         </td>
         <td>
           Select
@@ -727,10 +920,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          78
         </td>
         <td>
-          1804
+          1706
+        </td>
+        <td>
+          2230
+          -
+          2230
         </td>
         <td>
           Select
@@ -743,10 +941,15 @@
         </td>
       </tr><tr>
         <td>
-          76
+          78
         </td>
         <td>
-          1803
+          1705
+        </td>
+        <td>
+          2217
+          -
+          2217
         </td>
         <td>
           Select
@@ -759,26 +962,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          79
         </td>
         <td>
-          1806
+          1710
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Email
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Email
-        </td>
-      </tr><tr>
-        <td>
-          77
-        </td>
-        <td>
-          1808
+          2267
+          -
+          2267
         </td>
         <td>
           Select
@@ -791,10 +983,15 @@
         </td>
       </tr><tr>
         <td>
-          77
+          79
         </td>
         <td>
-          1807
+          1709
+        </td>
+        <td>
+          2262
+          -
+          2262
         </td>
         <td>
           Select
@@ -810,7 +1007,33 @@
           79
         </td>
         <td>
-          1858
+          1708
+        </td>
+        <td>
+          2255
+          -
+          2255
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Email
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Email
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          1760
+        </td>
+        <td>
+          2297
+          -
+          2297
         </td>
         <td>
           Apply
@@ -823,10 +1046,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          82
         </td>
         <td>
-          1811
+          1713
+        </td>
+        <td>
+          2310
+          -
+          2310
         </td>
         <td>
           Select
@@ -839,10 +1067,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          82
         </td>
         <td>
-          1810
+          1712
+        </td>
+        <td>
+          2303
+          -
+          2303
         </td>
         <td>
           Literal
@@ -855,10 +1088,15 @@
         </td>
       </tr><tr>
         <td>
-          80
+          82
         </td>
         <td>
-          1812
+          1714
+        </td>
+        <td>
+          2307
+          -
+          2309
         </td>
         <td>
           Apply
@@ -871,26 +1109,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          83
         </td>
         <td>
-          1815
+          1716
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[Char]('V').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Verb)
-        </td>
-      </tr><tr>
-        <td>
-          81
-        </td>
-        <td>
-          1814
+          2327
+          -
+          2327
         </td>
         <td>
           Select
@@ -903,10 +1130,15 @@
         </td>
       </tr><tr>
         <td>
-          81
+          83
         </td>
         <td>
-          1813
+          1715
+        </td>
+        <td>
+          2320
+          -
+          2320
         </td>
         <td>
           Literal
@@ -919,10 +1151,36 @@
         </td>
       </tr><tr>
         <td>
-          82
+          83
         </td>
         <td>
-          1817
+          1717
+        </td>
+        <td>
+          2324
+          -
+          2326
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('V').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Verb)
+        </td>
+      </tr><tr>
+        <td>
+          84
+        </td>
+        <td>
+          1719
+        </td>
+        <td>
+          2344
+          -
+          2344
         </td>
         <td>
           Select
@@ -935,10 +1193,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          84
         </td>
         <td>
-          1816
+          1718
+        </td>
+        <td>
+          2337
+          -
+          2337
         </td>
         <td>
           Literal
@@ -951,10 +1214,15 @@
         </td>
       </tr><tr>
         <td>
-          82
+          84
         </td>
         <td>
-          1818
+          1720
+        </td>
+        <td>
+          2341
+          -
+          2343
         </td>
         <td>
           Apply
@@ -967,10 +1235,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          85
         </td>
         <td>
-          1820
+          1722
+        </td>
+        <td>
+          2366
+          -
+          2366
         </td>
         <td>
           Select
@@ -983,10 +1256,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          85
         </td>
         <td>
-          1819
+          1721
+        </td>
+        <td>
+          2359
+          -
+          2359
         </td>
         <td>
           Literal
@@ -999,10 +1277,15 @@
         </td>
       </tr><tr>
         <td>
-          83
+          85
         </td>
         <td>
-          1821
+          1723
+        </td>
+        <td>
+          2363
+          -
+          2365
         </td>
         <td>
           Apply
@@ -1015,26 +1298,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          86
         </td>
         <td>
-          1824
+          1725
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[Char]('D').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Determiner)
-        </td>
-      </tr><tr>
-        <td>
-          84
-        </td>
-        <td>
-          1823
+          2385
+          -
+          2385
         </td>
         <td>
           Select
@@ -1047,10 +1319,15 @@
         </td>
       </tr><tr>
         <td>
-          84
+          86
         </td>
         <td>
-          1822
+          1724
+        </td>
+        <td>
+          2378
+          -
+          2378
         </td>
         <td>
           Literal
@@ -1063,10 +1340,36 @@
         </td>
       </tr><tr>
         <td>
-          85
+          86
         </td>
         <td>
-          1826
+          1726
+        </td>
+        <td>
+          2382
+          -
+          2384
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('D').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Determiner)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          1728
+        </td>
+        <td>
+          2408
+          -
+          2408
         </td>
         <td>
           Select
@@ -1079,10 +1382,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          87
         </td>
         <td>
-          1825
+          1727
+        </td>
+        <td>
+          2401
+          -
+          2401
         </td>
         <td>
           Literal
@@ -1095,10 +1403,15 @@
         </td>
       </tr><tr>
         <td>
-          85
+          87
         </td>
         <td>
-          1827
+          1729
+        </td>
+        <td>
+          2405
+          -
+          2407
         </td>
         <td>
           Apply
@@ -1111,10 +1424,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          88
         </td>
         <td>
-          1829
+          1731
+        </td>
+        <td>
+          2432
+          -
+          2432
         </td>
         <td>
           Select
@@ -1127,10 +1445,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          88
         </td>
         <td>
-          1828
+          1730
+        </td>
+        <td>
+          2425
+          -
+          2425
         </td>
         <td>
           Literal
@@ -1143,10 +1466,15 @@
         </td>
       </tr><tr>
         <td>
-          86
+          88
         </td>
         <td>
-          1830
+          1732
+        </td>
+        <td>
+          2429
+          -
+          2431
         </td>
         <td>
           Apply
@@ -1159,26 +1487,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          90
         </td>
         <td>
-          1833
+          1734
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          scala.Predef.ArrowAssoc.-&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[Char]('j').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Josa)
-        </td>
-      </tr><tr>
-        <td>
-          88
-        </td>
-        <td>
-          1832
+          2457
+          -
+          2457
         </td>
         <td>
           Select
@@ -1191,10 +1508,15 @@
         </td>
       </tr><tr>
         <td>
-          88
+          90
         </td>
         <td>
-          1831
+          1733
+        </td>
+        <td>
+          2450
+          -
+          2450
         </td>
         <td>
           Literal
@@ -1207,10 +1529,36 @@
         </td>
       </tr><tr>
         <td>
-          89
+          90
         </td>
         <td>
-          1835
+          1735
+        </td>
+        <td>
+          2454
+          -
+          2456
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('j').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Josa)
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          1737
+        </td>
+        <td>
+          2474
+          -
+          2474
         </td>
         <td>
           Select
@@ -1223,10 +1571,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          91
         </td>
         <td>
-          1834
+          1736
+        </td>
+        <td>
+          2467
+          -
+          2467
         </td>
         <td>
           Literal
@@ -1239,10 +1592,15 @@
         </td>
       </tr><tr>
         <td>
-          89
+          91
         </td>
         <td>
-          1836
+          1738
+        </td>
+        <td>
+          2471
+          -
+          2473
         </td>
         <td>
           Apply
@@ -1255,26 +1613,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          92
         </td>
         <td>
-          1838
+          1739
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.PreEomi
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.PreEomi
-        </td>
-      </tr><tr>
-        <td>
-          90
-        </td>
-        <td>
-          1837
+          2484
+          -
+          2484
         </td>
         <td>
           Literal
@@ -1287,10 +1634,15 @@
         </td>
       </tr><tr>
         <td>
-          90
+          92
         </td>
         <td>
-          1839
+          1741
+        </td>
+        <td>
+          2488
+          -
+          2490
         </td>
         <td>
           Apply
@@ -1303,26 +1655,36 @@
         </td>
       </tr><tr>
         <td>
-          91
+          92
         </td>
         <td>
-          1842
+          1740
         </td>
         <td>
-          Apply
+          2491
+          -
+          2491
         </td>
         <td>
-          scala.Predef.ArrowAssoc.-&gt;
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.PreEomi
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[Char]('p').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.NounPrefix)
+          KoreanPos.this.PreEomi
         </td>
       </tr><tr>
         <td>
-          91
+          93
         </td>
         <td>
-          1841
+          1743
+        </td>
+        <td>
+          2511
+          -
+          2511
         </td>
         <td>
           Select
@@ -1335,10 +1697,15 @@
         </td>
       </tr><tr>
         <td>
-          91
+          93
         </td>
         <td>
-          1840
+          1742
+        </td>
+        <td>
+          2504
+          -
+          2504
         </td>
         <td>
           Literal
@@ -1351,10 +1718,36 @@
         </td>
       </tr><tr>
         <td>
-          92
+          93
         </td>
         <td>
-          1844
+          1744
+        </td>
+        <td>
+          2508
+          -
+          2510
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('p').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.NounPrefix)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          1746
+        </td>
+        <td>
+          2534
+          -
+          2534
         </td>
         <td>
           Select
@@ -1367,10 +1760,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          94
         </td>
         <td>
-          1843
+          1745
+        </td>
+        <td>
+          2527
+          -
+          2527
         </td>
         <td>
           Literal
@@ -1383,10 +1781,15 @@
         </td>
       </tr><tr>
         <td>
-          92
+          94
         </td>
         <td>
-          1845
+          1747
+        </td>
+        <td>
+          2531
+          -
+          2533
         </td>
         <td>
           Apply
@@ -1399,26 +1802,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          95
         </td>
         <td>
-          1847
+          1748
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Suffix
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Suffix
-        </td>
-      </tr><tr>
-        <td>
-          93
-        </td>
-        <td>
-          1846
+          2550
+          -
+          2550
         </td>
         <td>
           Literal
@@ -1431,10 +1823,15 @@
         </td>
       </tr><tr>
         <td>
-          93
+          95
         </td>
         <td>
-          1848
+          1750
+        </td>
+        <td>
+          2554
+          -
+          2556
         </td>
         <td>
           Apply
@@ -1450,23 +1847,33 @@
           95
         </td>
         <td>
-          1851
+          1749
         </td>
         <td>
-          Apply
+          2557
+          -
+          2557
         </td>
         <td>
-          scala.Predef.ArrowAssoc.-&gt;
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Suffix
         </td>
         <td style="background: #AEF1AE">
-          scala.this.Predef.ArrowAssoc[Char]('a').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Alpha)
+          KoreanPos.this.Suffix
         </td>
       </tr><tr>
         <td>
-          95
+          97
         </td>
         <td>
-          1850
+          1752
+        </td>
+        <td>
+          2577
+          -
+          2577
         </td>
         <td>
           Select
@@ -1479,10 +1886,15 @@
         </td>
       </tr><tr>
         <td>
-          95
+          97
         </td>
         <td>
-          1849
+          1751
+        </td>
+        <td>
+          2570
+          -
+          2570
         </td>
         <td>
           Literal
@@ -1495,10 +1907,36 @@
         </td>
       </tr><tr>
         <td>
-          96
+          97
         </td>
         <td>
-          1853
+          1753
+        </td>
+        <td>
+          2574
+          -
+          2576
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.Predef.ArrowAssoc.-&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.ArrowAssoc[Char]('a').-&gt;[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Alpha)
+        </td>
+      </tr><tr>
+        <td>
+          98
+        </td>
+        <td>
+          1755
+        </td>
+        <td>
+          2595
+          -
+          2595
         </td>
         <td>
           Select
@@ -1511,10 +1949,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          98
         </td>
         <td>
-          1852
+          1754
+        </td>
+        <td>
+          2588
+          -
+          2588
         </td>
         <td>
           Literal
@@ -1527,10 +1970,15 @@
         </td>
       </tr><tr>
         <td>
-          96
+          98
         </td>
         <td>
-          1854
+          1756
+        </td>
+        <td>
+          2592
+          -
+          2594
         </td>
         <td>
           Apply
@@ -1543,26 +1991,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          100
         </td>
         <td>
-          1856
+          1757
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Others
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Others
-        </td>
-      </tr><tr>
-        <td>
-          98
-        </td>
-        <td>
-          1855
+          2608
+          -
+          2608
         </td>
         <td>
           Literal
@@ -1575,10 +2012,15 @@
         </td>
       </tr><tr>
         <td>
-          98
+          100
         </td>
         <td>
-          1857
+          1759
+        </td>
+        <td>
+          2612
+          -
+          2614
         </td>
         <td>
           Apply
@@ -1591,10 +2033,36 @@
         </td>
       </tr><tr>
         <td>
-          103
+          100
         </td>
         <td>
-          1859
+          1758
+        </td>
+        <td>
+          2615
+          -
+          2615
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Others
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Others
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          1761
+        </td>
+        <td>
+          2763
+          -
+          2763
         </td>
         <td>
           Literal
@@ -1607,10 +2075,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          105
         </td>
         <td>
-          1862
+          1764
+        </td>
+        <td>
+          2762
+          -
+          2762
         </td>
         <td>
           Apply
@@ -1623,10 +2096,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          105
         </td>
         <td>
-          1861
+          1763
+        </td>
+        <td>
+          2784
+          -
+          2784
         </td>
         <td>
           Select
@@ -1639,10 +2117,15 @@
         </td>
       </tr><tr>
         <td>
-          103
+          105
         </td>
         <td>
-          1860
+          1762
+        </td>
+        <td>
+          2769
+          -
+          2769
         </td>
         <td>
           Literal
@@ -1655,61 +2138,15 @@
         </td>
       </tr><tr>
         <td>
-          107
+          109
         </td>
         <td>
-          1871
+          1770
         </td>
         <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Tuple2.apply[Boolean, Char](x0$1, x1$1) match {
-  case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) if c.==('+').||(c.==('1')) =&gt; false
-  case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) =&gt; output
-}
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          1864
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.Tuple2.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Tuple2.apply[Boolean, Char](x0$1, x1$1)
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          1863
-        </td>
-        <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          true
-        </td>
-      </tr><tr>
-        <td>
-          107
-        </td>
-        <td>
-          1872
+          2974
+          -
+          2974
         </td>
         <td>
           Apply
@@ -1725,10 +2162,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          109
         </td>
         <td>
-          1868
+          1765
+        </td>
+        <td>
+          2968
+          -
+          2968
         </td>
         <td>
           Literal
@@ -1737,14 +2179,19 @@
           &lt;nosymbol&gt;
         </td>
         <td style="background: #AEF1AE">
-          false
+          true
         </td>
       </tr><tr>
         <td>
-          108
+          110
         </td>
         <td>
-          1865
+          1766
+        </td>
+        <td>
+          3024
+          -
+          3024
         </td>
         <td>
           Literal
@@ -1757,10 +2204,36 @@
         </td>
       </tr><tr>
         <td>
-          108
+          110
         </td>
         <td>
-          1867
+          1769
+        </td>
+        <td>
+          3043
+          -
+          3043
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          false
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          1768
+        </td>
+        <td>
+          3021
+          -
+          3035
         </td>
         <td>
           Apply
@@ -1773,26 +2246,15 @@
         </td>
       </tr><tr>
         <td>
-          108
+          110
         </td>
         <td>
-          1869
+          1767
         </td>
         <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) if c.==('+').||(c.==('1')) =&gt; false
-        </td>
-      </tr><tr>
-        <td>
-          108
-        </td>
-        <td>
-          1866
+          3033
+          -
+          3035
         </td>
         <td>
           Apply
@@ -1805,26 +2267,15 @@
         </td>
       </tr><tr>
         <td>
-          109
+          113
         </td>
         <td>
-          1870
+          1771
         </td>
         <td>
-          Ident
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case (_1: Boolean, _2: Char)(Boolean, Char)((output @ (_: Boolean)), (c @ (_: Char))) =&gt; output
-        </td>
-      </tr><tr>
-        <td>
-          111
-        </td>
-        <td>
-          1873
+          3125
+          -
+          3132
         </td>
         <td>
           Apply
@@ -1837,10 +2288,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          116
         </td>
         <td>
-          1874
+          1772
+        </td>
+        <td>
+          3172
+          -
+          3173
         </td>
         <td>
           Apply
@@ -1853,10 +2309,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          116
         </td>
         <td>
-          1877
+          1775
+        </td>
+        <td>
+          3159
+          -
+          3159
         </td>
         <td>
           Literal
@@ -1869,10 +2330,15 @@
         </td>
       </tr><tr>
         <td>
-          114
+          116
         </td>
         <td>
-          1878
+          1776
+        </td>
+        <td>
+          3159
+          -
+          3159
         </td>
         <td>
           Block
@@ -1885,26 +2351,15 @@
         </td>
       </tr><tr>
         <td>
-          115
+          117
         </td>
         <td>
-          1876
+          1773
         </td>
         <td>
-          Return
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.buildTrie
-        </td>
-        <td style="background: #AEF1AE">
-          return immutable.this.Nil
-        </td>
-      </tr><tr>
-        <td>
-          115
-        </td>
-        <td>
-          1875
+          3196
+          -
+          3196
         </td>
         <td>
           Select
@@ -1917,10 +2372,36 @@
         </td>
       </tr><tr>
         <td>
-          118
+          117
         </td>
         <td>
-          1880
+          1774
+        </td>
+        <td>
+          3185
+          -
+          3185
+        </td>
+        <td>
+          Return
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.buildTrie
+        </td>
+        <td style="background: #AEF1AE">
+          return immutable.this.Nil
+        </td>
+      </tr><tr>
+        <td>
+          120
+        </td>
+        <td>
+          1778
+        </td>
+        <td>
+          3228
+          -
+          3228
         </td>
         <td>
           Apply
@@ -1933,10 +2414,15 @@
         </td>
       </tr><tr>
         <td>
-          118
+          120
         </td>
         <td>
-          1879
+          1777
+        </td>
+        <td>
+          3237
+          -
+          3237
         </td>
         <td>
           Apply
@@ -1949,10 +2435,15 @@
         </td>
       </tr><tr>
         <td>
-          119
+          121
         </td>
         <td>
-          1881
+          1779
+        </td>
+        <td>
+          3265
+          -
+          3265
         </td>
         <td>
           Apply
@@ -1965,10 +2456,15 @@
         </td>
       </tr><tr>
         <td>
-          120
+          122
         </td>
         <td>
-          1882
+          1780
+        </td>
+        <td>
+          3297
+          -
+          3298
         </td>
         <td>
           Apply
@@ -1981,58 +2477,15 @@
         </td>
       </tr><tr>
         <td>
-          121
+          123
         </td>
         <td>
-          1883
+          1782
         </td>
         <td>
-          Literal
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          2
-        </td>
-      </tr><tr>
-        <td>
-          121
-        </td>
-        <td>
-          1886
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          scala.collection.immutable.StringOps.slice
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(s).slice(2, s.length())
-        </td>
-      </tr><tr>
-        <td>
-          121
-        </td>
-        <td>
-          1885
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.StringOps.slice
-        </td>
-        <td style="background: #AEF1AE">
-          scala.this.Predef.augmentString(s).slice(2, s.length())
-        </td>
-      </tr><tr>
-        <td>
-          121
-        </td>
-        <td>
-          1884
+          3323
+          -
+          3323
         </td>
         <td>
           Apply
@@ -2048,7 +2501,75 @@
           123
         </td>
         <td>
-          1888
+          1781
+        </td>
+        <td>
+          3318
+          -
+          3318
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;nosymbol&gt;
+        </td>
+        <td style="background: #AEF1AE">
+          2
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1784
+        </td>
+        <td>
+          3317
+          -
+          3317
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.collection.immutable.StringOps.slice
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(s).slice(2, s.length())
+        </td>
+      </tr><tr>
+        <td>
+          123
+        </td>
+        <td>
+          1783
+        </td>
+        <td>
+          3317
+          -
+          3317
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          scala.collection.immutable.StringOps.slice
+        </td>
+        <td style="background: #AEF1AE">
+          scala.this.Predef.augmentString(s).slice(2, s.length())
+        </td>
+      </tr><tr>
+        <td>
+          125
+        </td>
+        <td>
+          1786
+        </td>
+        <td>
+          3350
+          -
+          3350
         </td>
         <td>
           Block
@@ -2061,10 +2582,15 @@
         </td>
       </tr><tr>
         <td>
-          123
+          125
         </td>
         <td>
-          1887
+          1785
+        </td>
+        <td>
+          3350
+          -
+          3350
         </td>
         <td>
           Literal
@@ -2077,58 +2603,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          128
         </td>
         <td>
-          1892
+          1788
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          scala.None
-        </td>
-        <td style="background: #AEF1AE">
-          scala.None
-        </td>
-      </tr><tr>
-        <td>
-          126
-        </td>
-        <td>
-          1889
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.isFinal
-        </td>
-        <td style="background: #AEF1AE">
-          isFinal(rest)
-        </td>
-      </tr><tr>
-        <td>
-          126
-        </td>
-        <td>
-          1891
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          scala.Some.apply
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Some.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](ending_pos)
-        </td>
-      </tr><tr>
-        <td>
-          126
-        </td>
-        <td>
-          1890
+          3416
+          -
+          3416
         </td>
         <td>
           Apply
@@ -2141,10 +2624,15 @@
         </td>
       </tr><tr>
         <td>
-          126
+          128
         </td>
         <td>
-          1893
+          1791
+        </td>
+        <td>
+          3434
+          -
+          3434
         </td>
         <td>
           Block
@@ -2160,34 +2648,75 @@
           128
         </td>
         <td>
-          1914
+          1790
         </td>
         <td>
-          Match
+          3434
+          -
+          3434
         </td>
         <td>
-          &lt;nosymbol&gt;
+          Select
+        </td>
+        <td>
+          scala.None
         </td>
         <td style="background: #AEF1AE">
-          rule match {
-  case '+' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, {
-    &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = KoreanPos.this.selfNode;
-    KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$1)
-  }, end))
-  case '*' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; &lt;artifact&gt; val x$2: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = KoreanPos.this.selfNode;
-  KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$2)
-}, end)).++[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](KoreanPos.this.buildTrie(rest, ending_pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
-  case '1' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end))
-  case '0' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)).++[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](KoreanPos.this.buildTrie(rest, ending_pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
-}
+          scala.None
         </td>
       </tr><tr>
         <td>
-          130
+          128
         </td>
         <td>
-          1895
+          1787
+        </td>
+        <td>
+          3404
+          -
+          3404
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.isFinal
+        </td>
+        <td style="background: #AEF1AE">
+          isFinal(rest)
+        </td>
+      </tr><tr>
+        <td>
+          128
+        </td>
+        <td>
+          1789
+        </td>
+        <td>
+          3416
+          -
+          3416
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          scala.Some.apply
+        </td>
+        <td style="background: #AEF1AE">
+          scala.Some.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPos](ending_pos)
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          1793
+        </td>
+        <td>
+          3501
+          -
+          3501
         </td>
         <td>
           Apply
@@ -2203,29 +2732,15 @@
         </td>
       </tr><tr>
         <td>
-          130
+          132
         </td>
         <td>
-          1897
+          1792
         </td>
         <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case '+' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; &lt;artifact&gt; val x$1: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = KoreanPos.this.selfNode;
-  KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$1)
-}, end))
-        </td>
-      </tr><tr>
-        <td>
-          130
-        </td>
-        <td>
-          1894
+          3516
+          -
+          3518
         </td>
         <td>
           Apply
@@ -2238,10 +2753,15 @@
         </td>
       </tr><tr>
         <td>
-          130
+          132
         </td>
         <td>
-          1896
+          1794
+        </td>
+        <td>
+          3487
+          -
+          3487
         </td>
         <td>
           Apply
@@ -2257,42 +2777,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          134
         </td>
         <td>
-          1901
+          1797
         </td>
         <td>
-          TypeApply
-        </td>
-        <td>
-          scala.collection.immutable.List.canBuildFrom
-        </td>
-        <td style="background: #AEF1AE">
-          immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          1898
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.List.::
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$2)
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          1900
+          3663
+          -
+          3663
         </td>
         <td>
           Apply
@@ -2305,48 +2798,15 @@
         </td>
       </tr><tr>
         <td>
-          132
+          134
         </td>
         <td>
-          1903
+          1799
         </td>
         <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case '*' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; &lt;artifact&gt; val x$2: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = KoreanPos.this.selfNode;
-  KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$2)
-}, end)).++[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](KoreanPos.this.buildTrie(rest, ending_pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          1899
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.apply
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.KoreanPosTrie.apply(pos, {
-  &lt;synthetic&gt; &lt;artifact&gt; val x$2: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = KoreanPos.this.selfNode;
-  KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$2)
-}, end)
-        </td>
-      </tr><tr>
-        <td>
-          132
-        </td>
-        <td>
-          1902
+          3651
+          -
+          3653
         </td>
         <td>
           ApplyToImplicitArgs
@@ -2365,55 +2825,12 @@
           134
         </td>
         <td>
-          1904
+          1796
         </td>
         <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.buildTrie
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.buildTrie(rest, ending_pos)
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1907
-        </td>
-        <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case '1' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end))
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1906
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          scala.collection.immutable.List.apply
-        </td>
-        <td style="background: #AEF1AE">
-          immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end))
-        </td>
-      </tr><tr>
-        <td>
-          134
-        </td>
-        <td>
-          1905
+          3598
+          -
+          3598
         </td>
         <td>
           Apply
@@ -2422,94 +2839,43 @@
           com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.apply
         </td>
         <td style="background: #AEF1AE">
-          KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)
+          KoreanPos.this.KoreanPosTrie.apply(pos, {
+  &lt;synthetic&gt; &lt;artifact&gt; val x$2: com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie = KoreanPos.this.selfNode;
+  KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$2)
+}, end)
         </td>
       </tr><tr>
         <td>
-          136
+          134
         </td>
         <td>
-          1910
+          1795
+        </td>
+        <td>
+          3613
+          -
+          3615
         </td>
         <td>
           Apply
         </td>
         <td>
-          com.twitter.penguin.korean.util.KoreanPos.buildTrie
+          scala.collection.immutable.List.::
         </td>
         <td style="background: #AEF1AE">
-          KoreanPos.this.buildTrie(rest, ending_pos)
+          KoreanPos.this.buildTrie(rest, ending_pos).::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$2)
         </td>
       </tr><tr>
         <td>
-          136
+          134
         </td>
         <td>
-          1913
+          1798
         </td>
         <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case '0' =&gt; immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)).++[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](KoreanPos.this.buildTrie(rest, ending_pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
-        </td>
-      </tr><tr>
-        <td>
-          136
-        </td>
-        <td>
-          1909
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.apply
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)
-        </td>
-      </tr><tr>
-        <td>
-          136
-        </td>
-        <td>
-          1912
-        </td>
-        <td>
-          ApplyToImplicitArgs
-        </td>
-        <td>
-          scala.collection.immutable.List.++
-        </td>
-        <td style="background: #AEF1AE">
-          immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)).++[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](KoreanPos.this.buildTrie(rest, ending_pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
-        </td>
-      </tr><tr>
-        <td>
-          136
-        </td>
-        <td>
-          1908
-        </td>
-        <td>
-          Apply
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.buildTrie
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.buildTrie(rest, ending_pos)
-        </td>
-      </tr><tr>
-        <td>
-          136
-        </td>
-        <td>
-          1911
+          3651
+          -
+          3651
         </td>
         <td>
           TypeApply
@@ -2522,47 +2888,183 @@
         </td>
       </tr><tr>
         <td>
-          141
+          136
         </td>
         <td>
-          1919
+          1802
         </td>
         <td>
-          Match
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          scala.Tuple2.apply[List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie], (String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos)](x0$2, x1$2) match {
-  case (_1: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie], _2: (String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos))(List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie], (String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos))((results @ (_: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])), (_1: String, _2: com.twitter.penguin.korean.util.KoreanPos.KoreanPos)(String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos)((s @ (_: String)), (ending_pos @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPos)))) =&gt; {
-    &lt;synthetic&gt; &lt;artifact&gt; val x$3: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = KoreanPos.this.buildTrie(s, ending_pos);
-    results.:::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$3)
-  }
-}
-        </td>
-      </tr><tr>
-        <td>
-          141
-        </td>
-        <td>
-          1916
+          3712
+          -
+          3712
         </td>
         <td>
           Apply
         </td>
         <td>
-          scala.Tuple2.apply
+          scala.collection.immutable.List.apply
         </td>
         <td style="background: #AEF1AE">
-          scala.Tuple2.apply[List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie], (String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos)](x0$2, x1$2)
+          immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end))
         </td>
       </tr><tr>
         <td>
-          141
+          136
         </td>
         <td>
-          1915
+          1801
+        </td>
+        <td>
+          3726
+          -
+          3726
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)
+        </td>
+      </tr><tr>
+        <td>
+          136
+        </td>
+        <td>
+          1800
+        </td>
+        <td>
+          3741
+          -
+          3741
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.buildTrie
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.buildTrie(rest, ending_pos)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1806
+        </td>
+        <td>
+          3852
+          -
+          3852
+        </td>
+        <td>
+          TypeApply
+        </td>
+        <td>
+          scala.collection.immutable.List.canBuildFrom
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1805
+        </td>
+        <td>
+          3864
+          -
+          3864
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.buildTrie
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.buildTrie(rest, ending_pos)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1804
+        </td>
+        <td>
+          3811
+          -
+          3811
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie.apply
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1807
+        </td>
+        <td>
+          3852
+          -
+          3854
+        </td>
+        <td>
+          ApplyToImplicitArgs
+        </td>
+        <td>
+          scala.collection.immutable.List.++
+        </td>
+        <td style="background: #AEF1AE">
+          immutable.this.List.apply[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](KoreanPos.this.KoreanPosTrie.apply(pos, KoreanPos.this.buildTrie(rest, ending_pos), end)).++[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie, List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie]](KoreanPos.this.buildTrie(rest, ending_pos))(immutable.this.List.canBuildFrom[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])
+        </td>
+      </tr><tr>
+        <td>
+          138
+        </td>
+        <td>
+          1803
+        </td>
+        <td>
+          3826
+          -
+          3826
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.buildTrie
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.buildTrie(rest, ending_pos)
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          1808
+        </td>
+        <td>
+          4026
+          -
+          4026
         </td>
         <td>
           Select
@@ -2575,10 +3077,15 @@
         </td>
       </tr><tr>
         <td>
-          141
+          143
         </td>
         <td>
-          1920
+          1810
+        </td>
+        <td>
+          4030
+          -
+          4030
         </td>
         <td>
           Apply
@@ -2596,29 +3103,15 @@
         </td>
       </tr><tr>
         <td>
-          143
+          145
         </td>
         <td>
-          1918
+          1809
         </td>
         <td>
-          Block
-        </td>
-        <td>
-          &lt;nosymbol&gt;
-        </td>
-        <td style="background: #AEF1AE">
-          case (_1: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie], _2: (String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos))(List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie], (String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos))((results @ (_: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie])), (_1: String, _2: com.twitter.penguin.korean.util.KoreanPos.KoreanPos)(String, com.twitter.penguin.korean.util.KoreanPos.KoreanPos)((s @ (_: String)), (ending_pos @ (_: com.twitter.penguin.korean.util.KoreanPos.KoreanPos)))) =&gt; {
-  &lt;synthetic&gt; &lt;artifact&gt; val x$3: List[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie] = KoreanPos.this.buildTrie(s, ending_pos);
-  results.:::[com.twitter.penguin.korean.util.KoreanPos.KoreanPosTrie](x$3)
-}
-        </td>
-      </tr><tr>
-        <td>
-          143
-        </td>
-        <td>
-          1917
+          4146
+          -
+          4149
         </td>
         <td>
           Apply
@@ -2631,26 +3124,15 @@
         </td>
       </tr><tr>
         <td>
-          146
+          148
         </td>
         <td>
-          1922
+          1811
         </td>
         <td>
-          Select
-        </td>
-        <td>
-          com.twitter.penguin.korean.util.KoreanPos.Adjective
-        </td>
-        <td style="background: #AEF1AE">
-          KoreanPos.this.Adjective
-        </td>
-      </tr><tr>
-        <td>
-          146
-        </td>
-        <td>
-          1921
+          4188
+          -
+          4188
         </td>
         <td>
           Select
@@ -2663,10 +3145,15 @@
         </td>
       </tr><tr>
         <td>
-          146
+          148
         </td>
         <td>
-          1923
+          1813
+        </td>
+        <td>
+          4187
+          -
+          4187
         </td>
         <td>
           Apply
@@ -2676,6 +3163,27 @@
         </td>
         <td style="background: #AEF1AE">
           scala.this.Predef.Set.apply[com.twitter.penguin.korean.util.KoreanPos.Value](KoreanPos.this.Verb, KoreanPos.this.Adjective)
+        </td>
+      </tr><tr>
+        <td>
+          148
+        </td>
+        <td>
+          1812
+        </td>
+        <td>
+          4194
+          -
+          4194
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          com.twitter.penguin.korean.util.KoreanPos.Adjective
+        </td>
+        <td style="background: #AEF1AE">
+          KoreanPos.this.Adjective
         </td>
       </tr>
     </table>

@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>KoreanToken - Korean Text Processing Utilities 2.4.3-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken</title>
-          <meta name="description" content="KoreanToken - Korean Text Processing Utilities 2.4.3 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" />
-          <meta name="keywords" content="KoreanToken Korean Text Processing Utilities 2.4.3 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" />
+          <title>KoreanToken - Korean Text Processing Utilities 4.1.5-SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken</title>
+          <meta name="description" content="KoreanToken - Korean Text Processing Utilities 4.1.5 - SNAPSHOT API - com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" />
+          <meta name="keywords" content="KoreanToken Korean Text Processing Utilities 4.1.5 SNAPSHOT API com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -28,11 +28,13 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../../../../lib/class_big.png" />
+        <img alt="Class" src="../../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.twitter">twitter</a>.<a href="../../package.html" class="extype" name="com.twitter.penguin">penguin</a>.<a href="../package.html" class="extype" name="com.twitter.penguin.korean">korean</a>.<a href="package.html" class="extype" name="com.twitter.penguin.korean.tokenizer">tokenizer</a>.<a href="KoreanTokenizer$.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer">KoreanTokenizer</a></p>
-        <h1>KoreanToken</h1> <span class="permalink">
+        <h1>KoreanToken</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="KoreanTokenizer$.html" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer">package KoreanTokenizer</a>
+          </div></span></h3><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       </div>
@@ -43,7 +45,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">KoreanToken</span><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">KoreanToken</span><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -75,7 +77,6 @@
               <li class="hideall out"><span>Hide All</span></li>
               <li class="showall in"><span>Show all</span></li>
             </ol>
-            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
           </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -88,7 +89,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(text:String,pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos,unknown:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken"></a>
+      <a id="&lt;init&gt;(text:String,pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos,offset:Int,length:Int,unknown:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken"></a>
       <a id="&lt;init&gt;:KoreanToken"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -96,11 +97,11 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">KoreanToken</span><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span>
+        <span class="name">KoreanToken</span><span class="params">(<span name="text">text: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="pos">pos: <a href="../util/KoreanPos$.html#KoreanPos=com.twitter.penguin.korean.util.KoreanPos.Value" class="extmbr" name="com.twitter.penguin.korean.util.KoreanPos.KoreanPos">KoreanPos</a></span>, <span name="offset">offset: <span class="extype" name="scala.Int">Int</span></span>, <span name="length">length: <span class="extype" name="scala.Int">Int</span></span>, <span name="unknown">unknown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@&lt;init&gt;(text:String,pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos,unknown:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+      <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@&lt;init&gt;(text:String,pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos,offset:Int,length:Int,unknown:Boolean):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -126,7 +127,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@!=(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -143,7 +144,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@##():Int" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -160,7 +161,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@==(x$1:Any):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -177,7 +178,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@asInstanceOf[T0]:T0" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -194,7 +195,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@clone():Object" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -217,7 +218,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@copyWithNewPos(pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos):com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -234,7 +235,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -251,7 +252,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@finalize():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -274,7 +275,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@getClass():Class[_]" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -291,10 +292,27 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#length" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="length:Int"></a>
+      <a id="length:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">length</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@length:Int" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -308,7 +326,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -325,7 +343,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@notify():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -342,10 +360,27 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@notifyAll():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#offset" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="offset:Int"></a>
+      <a id="offset:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">offset</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@offset:Int" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
     </li><li name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken#pos" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos"></a>
       <a id="pos:KoreanPos"></a>
@@ -359,7 +394,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@pos:com.twitter.penguin.korean.util.KoreanPos.KoreanPos" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -376,7 +411,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -393,7 +428,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@text:String" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -410,7 +445,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@toString():String" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken">KoreanToken</a> → AnyRef → Any</dd></dl></div>
@@ -427,7 +462,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@unknown:Boolean" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
@@ -444,7 +479,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@wait():Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -467,7 +502,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -490,7 +525,7 @@
       </span>
       </h4><span class="permalink">
       <a href="../../../../../index.html#com.twitter.penguin.korean.tokenizer.KoreanTokenizer$$KoreanToken@wait(x$1:Long):Unit" title="Permalink" target="_top">
-        <img src="../../../../../lib/permalink.png" />
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
