@@ -39,7 +39,7 @@
     <connection>scm:git:https://github.com/twitter/twitter-korean-text.git</connection>
     <developerConnection>scm:git:git@github.com:twitter/twitter-korean-text.git
     </developerConnection>
-    <tag>korean-text-4.1.1</tag>
+    <tag>korean-text-4.1.4</tag>
   </scm>
   <prerequisites>
     <maven>3.0.4</maven>
@@ -107,7 +107,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>16.0.1</version>
+      <version>18.0</version>
     </dependency>
   </dependencies>
   <reporting>
