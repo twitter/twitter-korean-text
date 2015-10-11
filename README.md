@@ -36,6 +36,12 @@ Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다.
 
 Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
 
+## API
+[scaladoc](http://twitter.github.io/twitter-korean-text/scaladocs/#com.twitter.penguin.korean.TwitterKoreanProcessor$)
+
+[Auto-generated Documentation](http://twitter.github.io/twitter-korean-text)
+
+
 ## Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
 
@@ -45,7 +51,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>4.0</version>
+    <version>4.1.4</version>
   </dependency>
 ```
 
