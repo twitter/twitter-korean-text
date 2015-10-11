@@ -22,8 +22,11 @@ case class Sentence(text: String, start: Int, end: Int) {
   override def toString: String = s"$text($start,$end)"
 }
 
+/**
+ * Sentence Splitter
+ */
 object KoreanSentenceSplitter {
-  val re =
+  private val re =
     """(?x)[^.!?…\s]   # First char is non-punct, non-ws
       [^.!?…]*         # Greedily consume up to punctuation.
       (?:              # Group for unrolling the loop.

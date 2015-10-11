@@ -142,5 +142,4 @@ class KoreanChunkerTest extends TestBase {
         === "중(Korean: 0, 1)/·(Punctuation: 1, 1)/고등학교에서(Korean: 2, 6)/…(Punctuation: 8, 1)"
     )
   }
-
 }
