@@ -20,6 +20,12 @@ package com.twitter.penguin.korean.tokenizer
 
 case class Sentence(text: String, start: Int, end: Int) {
   override def toString: String = s"$text($start,$end)"
+
+  def sentenceString: String = s"$text"
+
+  def startPos: Int = start
+
+  def endPos: Int = end
 }
 
 object KoreanSentenceSplitter {
