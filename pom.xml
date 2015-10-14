@@ -19,9 +19,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.twitter.penguin</groupId>
-  <artifactId>korean-text</artifactId>
+  <artifactId>korean-text-scala-2.10</artifactId>
   <packaging>jar</packaging>
-  <version>4.1.5-SNAPSHOT</version>
+  <version>4.1.4-SNAPSHOT</version>
   <name>Korean Text Processing Utilities</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
   <description>Scala library to process Korean text</description>
@@ -60,7 +60,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
-    <scala.version>2.11.7</scala.version>
+    <scala.version>2.10.4</scala.version>
     <scoverage.plugin.version>1.0.4</scoverage.plugin.version>
     <encoding>UTF-8</encoding>
   </properties>
@@ -94,7 +94,7 @@
     </dependency>
     <dependency>
       <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_2.11</artifactId>
+      <artifactId>scalatest_2.10</artifactId>
       <version>2.2.4</version>
       <scope>test</scope>
     </dependency>
