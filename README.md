@@ -39,7 +39,7 @@ Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twit
 ## API
 [scaladoc](http://twitter.github.io/twitter-korean-text/scaladocs/#com.twitter.penguin.korean.TwitterKoreanProcessor$)
 
-[Machine-generated Documentation](http://twitter.github.io/twitter-korean-text)
+[mavendoc](http://twitter.github.io/twitter-korean-text)
 
 
 ## Maven
