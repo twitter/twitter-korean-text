@@ -27,15 +27,15 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable
 
 /**
- * Provides Korean tokenization.
- *
- * Chunk: 어절 - 공백으로 구분되어 있는 단위 (사랑하는사람을)
- * Word: 단어 - 하나의 문장 구성 요소 (사랑하는, 사람을)
- * Token: 토큰 - 형태소와 비슷한 단위이지만 문법적으로 정확하지는 않음 (사랑, 하는, 사람, 을)
- *
- * Whenever there is an updates in the behavior of KoreanParser,
- * the initial cache has to be updated by running tools.CreateInitialCache.
- */
+  * Provides Korean tokenization.
+  *
+  * Chunk: 어절 - 공백으로 구분되어 있는 단위 (사랑하는사람을)
+  * Word: 단어 - 하나의 문장 구성 요소 (사랑하는, 사람을)
+  * Token: 토큰 - 형태소와 비슷한 단위이지만 문법적으로 정확하지는 않음 (사랑, 하는, 사람, 을)
+  *
+  * Whenever there is an updates in the behavior of KoreanParser,
+  * the initial cache has to be updated by running tools.CreateInitialCache.
+  */
 object KoreanTokenizer {
   val TOP_N_PER_STATE = 3
 
@@ -52,27 +52,27 @@ object KoreanTokenizer {
   val PREFERRED_PATTERN = Seq(Noun, Josa)
 
   /**
-   * A candidate parse for a chunk.
-   *
-   * @param posNodes Sequence of KoreanTokens.
-   * @param words Number of words in this candidate parse.
-   */
+    * A candidate parse for a chunk.
+    *
+    * @param posNodes Sequence of KoreanTokens.
+    * @param words Number of words in this candidate parse.
+    */
   case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int) {
     def ++(that: ParsedChunk) = {
       ParsedChunk(this.posNodes ++ that.posNodes, this.words + that.words)
     }
 
     lazy val score = countTokens * WEIGHT_TOKENS +
-        countUnknowns * WEIGHT_UNKNOWNS +
-        words * WEIGHT_WORDS +
-        getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
-        getFreqScore * WEIGHT_FREQ +
-        countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
-        isExactMatch * WEIGHT_EXACT_MATCH +
-        isAllNouns * WEIGHT_ALL_NOUN +
-        isPreferredPattern * WEIGHT_PREFFERED_PATTERN
+      countUnknowns * WEIGHT_UNKNOWNS +
+      words * WEIGHT_WORDS +
+      getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
+      getFreqScore * WEIGHT_FREQ +
+      countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
+      isExactMatch * WEIGHT_EXACT_MATCH +
+      isAllNouns * WEIGHT_ALL_NOUN +
+      isPreferredPattern * WEIGHT_PREFFERED_PATTERN
 
-    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown}
+    lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
     lazy val countTokens = this.posNodes.size
 
     lazy val isExactMatch = if (this.posNodes.size == 1) 0 else 1
@@ -90,7 +90,7 @@ object KoreanTokenizer {
       case (output: Float, p: KoreanToken) => output + 1.0f
     } / this.posNodes.size
 
-    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos}
+    def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos }
   }
 
   case class KoreanPosTrie(curPos: KoreanPos, nextTrie: List[KoreanPosTrie], ending: Boolean)
@@ -107,33 +107,33 @@ object KoreanTokenizer {
   }
 
   /**
-   * 0 for optional, 1 for required
-   * * for optional repeatable, + for required repeatable
-   *
-   * Substantive: 체언 (초거대기업의)
-   * Predicate: 용언 (하였었습니다, 개예뻤었다)
-   * Modifier: 수식언 (모르는 할수도있는 보이기도하는 예뻐 예쁜 완전 레알 초인간적인 잘 잘한)
-   * Standalone: 독립언
-   * Functional: 관계언 (조사)
-   *
-   * N Noun: 명사 (Nouns, Pronouns, Company Names, Proper Noun, Person Names, Numerals, Standalone, Dependent)
-   * V Verb: 동사 (하, 먹, 자, 차)
-   * J Adjective: 형용사 (예쁘다, 크다, 작다)
-   * A Adverb: 부사 (잘, 매우, 빨리, 반드시, 과연)
-   * D Determiner: 관형사 (새, 헌, 참, 첫, 이, 그, 저)
-   * E Exclamation: 감탄사 (헐, ㅋㅋㅋ, 어머나, 얼씨구)
-   *
-   * C Conjunction: 접속사
-   *
-   * j SubstantiveJosa: 조사 (의, 에, 에서)
-   * l AdverbialJosa: 부사격 조사 (~인, ~의, ~일)
-   * e Eomi: 어말어미 (다, 요, 여, 하댘ㅋㅋ)
-   * r PreEomi: 선어말어미 (었)
-   *
-   * p NounPrefix: 접두사 ('초'대박)
-   * v VerbPrefix: 동사 접두어 ('쳐'먹어)
-   * s Suffix: 접미사 (~적)
-   */
+    * 0 for optional, 1 for required
+    * * for optional repeatable, + for required repeatable
+    *
+    * Substantive: 체언 (초거대기업의)
+    * Predicate: 용언 (하였었습니다, 개예뻤었다)
+    * Modifier: 수식언 (모르는 할수도있는 보이기도하는 예뻐 예쁜 완전 레알 초인간적인 잘 잘한)
+    * Standalone: 독립언
+    * Functional: 관계언 (조사)
+    *
+    * N Noun: 명사 (Nouns, Pronouns, Company Names, Proper Noun, Person Names, Numerals, Standalone, Dependent)
+    * V Verb: 동사 (하, 먹, 자, 차)
+    * J Adjective: 형용사 (예쁘다, 크다, 작다)
+    * A Adverb: 부사 (잘, 매우, 빨리, 반드시, 과연)
+    * D Determiner: 관형사 (새, 헌, 참, 첫, 이, 그, 저)
+    * E Exclamation: 감탄사 (헐, ㅋㅋㅋ, 어머나, 얼씨구)
+    *
+    * C Conjunction: 접속사
+    *
+    * j SubstantiveJosa: 조사 (의, 에, 에서)
+    * l AdverbialJosa: 부사격 조사 (~인, ~의, ~일)
+    * e Eomi: 어말어미 (다, 요, 여, 하댘ㅋㅋ)
+    * r PreEomi: 선어말어미 (었)
+    *
+    * p NounPrefix: 접두사 ('초'대박)
+    * v VerbPrefix: 동사 접두어 ('쳐'먹어)
+    * s Suffix: 접미사 (~적)
+    */
   val SequenceDefinition = List(
     // Substantive
     "D0p*N1s0j0",
@@ -194,12 +194,12 @@ object KoreanTokenizer {
   case class PossibleTrie(curTrie: KoreanPosTrie, words: Int)
 
   /**
-   * Recursively find the best parse.
-   *
-   * @param chunk Input chunk. The input has to be entirely. Check for input validity is skipped
-   *              for performance optimization. This method is private and is called only by tokenize.
-   * @return The best possible parse.
-   */
+    * Recursively find the best parse.
+    *
+    * @param chunk Input chunk. The input has to be entirely. Check for input validity is skipped
+    *              for performance optimization. This method is private and is called only by tokenize.
+    * @return The best possible parse.
+    */
   private[this] def parseKoreanChunk(chunk: String): Seq[KoreanToken] = {
 
     // Buffer for solutions
@@ -263,20 +263,26 @@ object KoreanTokenizer {
   }
 
   /**
-   * Parse Korean text into a sequence of KoreanTokens
-   *
-   * @param text Input Korean chunk
-   * @return sequence of KoreanTokens
-   */
+    * Parse Korean text into a sequence of KoreanTokens
+    *
+    * @param text Input Korean chunk
+    * @return sequence of KoreanTokens
+    */
   def tokenize(text: CharSequence): Seq[KoreanToken] = {
-    chunk(text).flatMap {
-      case token: KoreanToken if token.pos == Korean =>
-        // Get the best parse of each chunk
-        val parsed = parseKoreanChunk(token.text)
+    try {
+      chunk(text).flatMap {
+        case token: KoreanToken if token.pos == Korean =>
+          // Get the best parse of each chunk
+          val parsed = parseKoreanChunk(token.text)
 
-        // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
-        collapseNouns(parsed)
-      case token: KoreanToken => Seq(token)
+          // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
+          collapseNouns(parsed)
+        case token: KoreanToken => Seq(token)
+      }
+    } catch {
+      case e: Exception =>
+        System.err.println(s"Error tokenizing a chunk: $text")
+        throw e
     }
   }
 }
