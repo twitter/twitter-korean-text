@@ -21,7 +21,7 @@
   <groupId>com.twitter.penguin</groupId>
   <artifactId>korean-text-scala-2.10</artifactId>
   <packaging>jar</packaging>
-  <version>4.1.5</version>
+  <version>4.1.6-SNAPSHOT</version>
   <name>Korean Text Processing Utilities</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
   <description>Scala library to process Korean text</description>
@@ -39,7 +39,7 @@
     <connection>scm:git:https://github.com/twitter/twitter-korean-text.git</connection>
     <developerConnection>scm:git:git@github.com:twitter/twitter-korean-text.git
     </developerConnection>
-    <tag>korean-text-scala-2.10-4.1.5</tag>
+    <tag>korean-text-scala-2.10-4.1.4</tag>
   </scm>
   <prerequisites>
     <maven>3.0.4</maven>
