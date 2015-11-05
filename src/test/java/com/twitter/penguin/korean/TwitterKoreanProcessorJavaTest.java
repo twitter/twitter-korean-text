@@ -1,10 +1,13 @@
 package com.twitter.penguin.korean;
 
+import java.util.List;
+
 import scala.collection.Seq;
 
 import org.junit.Test;
 
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
+import com.twitter.penguin.korean.tokenizer.Sentence;
 
 import static org.junit.Assert.assertEquals;
 
@@ -91,5 +94,17 @@ public class TwitterKoreanProcessorJavaTest {
         "[아름다운 트위터(Noun: 0, 8), 시발(Noun: 18, 2), 트위터(Noun: 5, 3)]",
         TwitterKoreanProcessorJava.extractPhrases(tokens, false, false).toString()
     );
+  }
+
+  @Test
+  public void testSentenceSplitter() {
+    String text = "가을이다! 남자는 가을을 탄다...... 그렇지? 루루야! 버버리코트 사러 가자!!!!";
+    List<Sentence> tokens = TwitterKoreanProcessorJava.splitSentences(text);
+
+    assertEquals(
+        "[가을이다!(0,5), 남자는 가을을 탄다......(6,22), 그렇지?(23,27), 루루야!(28,32), 버버리코트 사러 가자!!!!(33,48)]",
+        tokens.toString()
+    );
+
   }
 }

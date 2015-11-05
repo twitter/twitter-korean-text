@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
+import com.twitter.penguin.korean.tokenizer.Sentence;
 import com.twitter.penguin.korean.util.KoreanPos;
 
 /**
@@ -124,6 +125,18 @@ public final class TwitterKoreanProcessorJava {
   public static Seq<KoreanToken> stem(Seq<KoreanToken> tokens) {
 
     return TwitterKoreanProcessor.stem(tokens);
+  }
+
+  /**
+   * Split input text into sentences.
+   *
+   * @param text Input text.
+   * @return List of Sentence objects.
+   */
+  public static List<Sentence> splitSentences(CharSequence text) {
+    return JavaConversions.seqAsJavaList(
+        TwitterKoreanProcessor.splitSentences(text)
+    );
   }
 
   /**

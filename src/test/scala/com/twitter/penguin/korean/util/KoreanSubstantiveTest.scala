@@ -59,10 +59,9 @@ class KoreanSubstantiveTest extends TestBase {
     assert(isJosaAttachable('프', '라'))
   }
 
-  test("isName should return false if input length is not 3") {
+  test("isName should return false if input length less than 3") {
     assert(!isName("김"))
     assert(!isName("관진"))
-    assert(!isName("유호현진"))
   }
 
   test("isName should correctly identify 3-char person names") {
@@ -85,6 +84,12 @@ class KoreanSubstantiveTest extends TestBase {
     assert(!isName("철지난"))
     assert(!isName("수용액"))
     assert(!isName("눈맞춰"))
+  }
+
+  test ("isName should correctly identify 4-char person names") {
+    assert(isName("독고영재"))
+    assert(isName("제갈경준"))
+    assert(!isName("유호현진"))
   }
 
   test("isKoreanNumber should return true if the text is a Korean number") {

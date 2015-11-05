@@ -33920,7 +33920,7 @@
 카를이	카를(ProperNoun: 0, 2)/이(Josa: 2, 1)
 때문인지	때문(Noun: 0, 2)/인지(Josa: 2, 2)
 울산입싸방	울산(ProperNoun: 0, 2)/입싸방(Noun: 2, 3)
-영재야	영재(Noun: 0, 2)/야(Josa: 2, 1)
+영재야	영재(ProperNoun: 0, 2)/야(Josa: 2, 1)
 오늘부터	오늘(Noun: 0, 2)/부터(Josa: 2, 2)
 싸움이	싸움(Noun: 0, 2)/이(Josa: 2, 1)
 월급이	월급(Noun: 0, 2)/이(Josa: 2, 1)

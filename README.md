@@ -27,6 +27,9 @@ twitter-korean-text는 normalization, tokenization, stemming, phrase extraction 
 
 * 한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어, 처리, 예시, 처리하는 예시
 
+Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU)
+
+
 ## Try it here
 
 Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
@@ -35,6 +38,12 @@ Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다.
 [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
 
 Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
+
+## API
+[scaladoc](http://twitter.github.io/twitter-korean-text/scaladocs/#com.twitter.penguin.korean.TwitterKoreanProcessor$)
+
+[mavendoc](http://twitter.github.io/twitter-korean-text)
+
 
 ## Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
@@ -45,7 +54,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   <dependency>
     <groupId>com.twitter.penguin</groupId>
     <artifactId>korean-text</artifactId>
-    <version>4.0</version>
+    <version>4.1.4</version>
   </dependency>
 ```
 
@@ -67,8 +76,9 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 * Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes twitter-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 포함되었습니다. 
 
 ### Ruby Wrapper
-[JunSangPil](https://github.com/jun85664396/) kindly offered a Ruby wrapper: https://github.com/jun85664396/twkorean-ruby
 
+[jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper: 
+[twkorean-ruby](https://github.com/jun85664396/twkorean-ruby)
 
 ## Get the source 소스를 원하시는 경우
 

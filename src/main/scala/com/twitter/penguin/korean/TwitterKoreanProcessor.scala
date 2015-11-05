@@ -22,7 +22,7 @@ import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
+import com.twitter.penguin.korean.tokenizer.{KoreanSentenceSplitter, Sentence, KoreanTokenizer}
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos
 
@@ -49,7 +49,7 @@ object TwitterKoreanProcessor {
   def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
 
   /**
-    * Wrapper for Korean stemmer
+   * Wrapper for Korean stemmer
    *
    * @param tokens Korean tokens
    * @return A sequence of stemmed tokens
@@ -57,13 +57,23 @@ object TwitterKoreanProcessor {
   def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = KoreanStemmer.stem(tokens)
 
   /**
-    * Tokenize text into a sequence of token strings. This excludes spaces.
+   * Tokenize text into a sequence of token strings. This excludes spaces.
    *
    * @param tokens Korean tokens
    * @return A sequence of token strings.
    */
   def tokensToStrings(tokens: Seq[KoreanToken]): Seq[String] = {
     tokens.filterNot(t => t.pos == KoreanPos.Space).map(_.text.toString)
+  }
+
+  /**
+   * Split input text into sentences.
+   *
+   * @param text input text
+   * @return A sequence of sentences.
+   */
+  def splitSentences(text: CharSequence): Seq[Sentence] = {
+    KoreanSentenceSplitter.split(text)
   }
 
   /**
