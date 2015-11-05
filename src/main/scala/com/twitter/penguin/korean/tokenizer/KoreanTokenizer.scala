@@ -251,14 +251,20 @@ object KoreanTokenizer {
    * @return sequence of KoreanTokens
    */
   def tokenize(text: CharSequence): Seq[KoreanToken] = {
-    chunk(text).flatMap {
-      case token: KoreanToken if token.pos == Korean =>
-        // Get the best parse of each chunk
-        val parsed = parseKoreanChunk(token)
+    try {
+      chunk(text).flatMap {
+        case token: KoreanToken if token.pos == Korean =>
+          // Get the best parse of each chunk
+          val parsed = parseKoreanChunk(token)
 
-        // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
-        collapseNouns(parsed)
-      case token: KoreanToken => Seq(token)
+          // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
+          collapseNouns(parsed)
+        case token: KoreanToken => Seq(token)
+      }
+    } catch {
+      case e: Exception =>
+        System.err.println(s"Error tokenizing a chunk: $text")
+        throw e
     }
   }
 }
