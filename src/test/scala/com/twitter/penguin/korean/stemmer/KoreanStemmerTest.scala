@@ -56,6 +56,7 @@ class KoreanStemmerTest extends TestBase {
   val sampleText4 = "하...나는 아이유가 좋아요."
   val sampleTokens4 = KoreanTokenizer.tokenize(sampleText4)
   val sampleStems4 = Seq(
+    KoreanToken("하", Punctuation, 1, 3),
     KoreanToken("...", Punctuation, 1, 3),
     KoreanToken("나", Noun, 4, 1),
     KoreanToken("는", Josa, 5, 1),
@@ -86,6 +87,7 @@ class KoreanStemmerTest extends TestBase {
       ) === sampleStems3
     )
 
+    println(sampleTokens4)
     assert(
       KoreanStemmer.stem(
         KoreanTokenizer.tokenize(sampleText4)
