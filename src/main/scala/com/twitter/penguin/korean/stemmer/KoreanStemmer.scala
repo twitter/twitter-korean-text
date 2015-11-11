@@ -25,8 +25,8 @@ object KoreanStemmer {
     }
 
     val stemmed = tokens.foldLeft(List[KoreanToken]()) {
-      case (l: List[KoreanToken], token: KoreanToken) if Endings.contains(token.pos) =>
-        if (!l.isEmpty && Predicates.contains(l.head.pos)) {
+      case (l: List[KoreanToken], token: KoreanToken) if l.nonEmpty && Endings.contains(token.pos) =>
+        if (Predicates.contains(l.head.pos)) {
           val prevToken = l.head
           KoreanToken(
             prevToken.text,
