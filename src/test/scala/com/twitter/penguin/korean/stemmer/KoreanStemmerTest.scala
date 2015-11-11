@@ -53,6 +53,20 @@ class KoreanStemmerTest extends TestBase {
   val sampleTokens3 = KoreanTokenizer.tokenize(sampleText3)
   val sampleStems3 = Seq(KoreanToken("라고만", Eomi, 0,3))
 
+  val sampleText4 = "하...나는 아이유가 좋아요."
+  val sampleTokens4 = KoreanTokenizer.tokenize(sampleText4)
+  val sampleStems4 = Seq(
+    KoreanToken("...", Punctuation, 1, 3),
+    KoreanToken("나", Noun, 4, 1),
+    KoreanToken("는", Josa, 5, 1),
+    KoreanToken(" ", Space, 6, 1),
+    KoreanToken("아이유", ProperNoun, 7, 3),
+    KoreanToken("가", Josa, 10, 1),
+    KoreanToken(" ", Space, 11, 1),
+    KoreanToken("좋다", Adjective, 12, 3),
+    KoreanToken(".", Punctuation, 15, 1)
+  )
+
   test("stemPredicates should stem predicates from Korean tokens") {
     assert(
       KoreanStemmer.stem(
@@ -70,6 +84,12 @@ class KoreanStemmerTest extends TestBase {
       KoreanStemmer.stem(
         KoreanTokenizer.tokenize(sampleText3)
       ) === sampleStems3
+    )
+
+    assert(
+      KoreanStemmer.stem(
+        KoreanTokenizer.tokenize(sampleText4)
+      ) === sampleStems4
     )
   }
 
