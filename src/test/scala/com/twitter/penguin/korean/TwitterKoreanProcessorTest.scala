@@ -48,6 +48,14 @@ class TwitterKoreanProcessorTest extends TestBase {
     )
 
     assert(
+      tokenize("삼겹살 바베큐는 뼈가 너무많다. 생된장이 예술이다.").mkString("/")
+        === "삼겹살(Noun: 0, 3)/ (Space: 3, 1)/바베큐(Noun: 4, 3)/는(Josa: 7, 1)/" +
+        " (Space: 8, 1)/뼈(Noun: 9, 1)/가(Josa: 10, 1)/ (Space: 11, 1)/너무(Adverb: 12, 2)/많다(Adjective: 14, 2)/" +
+        ".(Punctuation: 16, 1)/ (Space: 17, 1)/생(Noun: 18, 1)/된장(Noun: 19, 2)/이(Josa: 21, 1)/" +
+        " (Space: 22, 1)/예술(Noun: 23, 2)/이다(Josa: 25, 2)/.(Punctuation: 27, 1)"
+    )
+
+    assert(
       tokenize("얼른 부산오십쇼!! 보고싶습니다!!! 사랑해여 김캡틴♥♥♥").mkString("/")
         === "얼른(Noun: 0, 2)/ (Space: 2, 1)/부산(ProperNoun: 3, 2)/오십(Noun: 5, 2)/쇼(Noun: 7, 1)/" +
         "!!(Punctuation: 8, 2)/ (Space: 10, 1)/보고(Verb: 11, 2)/싶(PreEomi: 13, 1)/" +
