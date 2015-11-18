@@ -84,17 +84,18 @@ object KoreanTokenizer {
   private val koreanPosTrie = KoreanPos.getTrie(SequenceDefinition)
 
   /**
-    * Parse Korean text into a sequence of KoreanTokens
+    * Parse Korean text into a sequence of KoreanTokens with custom parameters
     *
     * @param text Input Korean chunk
     * @return sequence of KoreanTokens
     */
-  def tokenize(text: CharSequence): Seq[KoreanToken] = {
+  def tokenize(text: CharSequence,
+      profile: TokenizerProfile = TokenizerProfile.defaultProfile): Seq[KoreanToken] = {
     try {
       chunk(text).flatMap {
         case token: KoreanToken if token.pos == Korean =>
           // Get the best parse of each chunk
-          val parsed = parseKoreanChunk(token)
+          val parsed = parseKoreanChunk(token, profile)
 
           // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
           collapseNouns(parsed)
@@ -115,7 +116,7 @@ object KoreanTokenizer {
     * @return The best possible parse.
     */
   private[this] def parseKoreanChunk(chunk: KoreanToken,
-      profile: TokenizationProfile = TokenizationProfile.defaultProfile): Seq[KoreanToken] = {
+      profile: TokenizerProfile = TokenizerProfile.defaultProfile): Seq[KoreanToken] = {
     // Direct match
     // This may produce 하 -> PreEomi
     koreanDictionary.foreach {
@@ -195,31 +196,6 @@ object KoreanTokenizer {
     solutions(chunk.length).minBy(c => c.parse.score).parse.posNodes
   }
 
-  /**
-    * Parse Korean text into a sequence of KoreanTokens with custom parameters
-    *
-    * @param text Input Korean chunk
-    * @return sequence of KoreanTokens
-    */
-  def tokenize(text: CharSequence, profile: TokenizationProfile): Seq[KoreanToken] = {
-    try {
-      chunk(text).flatMap {
-        case token: KoreanToken if token.pos == Korean =>
-          // Get the best parse of each chunk
-          val parsed = parseKoreanChunk(token, profile)
-
-          // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
-          collapseNouns(parsed)
-        case token: KoreanToken => Seq(token)
-      }
-    } catch {
-      case e: Exception =>
-        System.err.println(s"Error tokenizing a chunk: $text")
-        throw e
-    }
-  }
-
-
   case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int,
       unknown: Boolean = false) {
     override def toString: String = {
@@ -232,11 +208,9 @@ object KoreanTokenizer {
     }
   }
 
-  case class ParsedChunkWithMinScore(parsedChunk: Option[ParsedChunk], score: Float)
-
-  case class CandidateParse(parse: ParsedChunk, curTrie: List[KoreanPosTrie],
+  private case class CandidateParse(parse: ParsedChunk, curTrie: List[KoreanPosTrie],
       ending: Option[KoreanPos])
 
-  case class PossibleTrie(curTrie: KoreanPosTrie, words: Int)
+  private case class PossibleTrie(curTrie: KoreanPosTrie, words: Int)
 
 }

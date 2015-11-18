@@ -22,7 +22,7 @@ import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
 import com.twitter.penguin.korean.TwitterKoreanProcessor.{tokenize, _}
-import com.twitter.penguin.korean.tokenizer.TokenizationProfile
+import com.twitter.penguin.korean.tokenizer.TokenizerProfile
 
 class TwitterKoreanProcessorTest extends TestBase {
   val LOG = Logger.getLogger(getClass.getSimpleName)
@@ -84,7 +84,7 @@ class TwitterKoreanProcessorTest extends TestBase {
       tokenize("스윗박스가 점점 좁아지더니, 의자 두개 붙여놓은 것만큼 좁아졌어요. 맘에드는이성분과 앉으면 가까워질거에요 ㅎㅎ").mkString("/")
           !== tokenize(
         "스윗박스가 점점 좁아지더니, 의자 두개 붙여놓은 것만큼 좁아졌어요. 맘에드는이성분과 앉으면 가까워질거에요 ㅎㅎ",
-        TokenizationProfile(
+        TokenizerProfile(
           unknownPosCount = 1.0f,
           allNoun = 10,
           preferredPattern = 4
