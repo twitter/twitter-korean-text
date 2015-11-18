@@ -41,26 +41,41 @@ object KoreanTokenizer {
   private val TOP_N_PER_STATE = 5
   private val MAX_TRACE_BACK = 8
 
-  // Lower score is better
-  private val WEIGHT_TOKENS = 0.18f
-  private val WEIGHT_UNKNOWNS = 0.3f
-  private val WEIGHT_WORDS = 0.3f
-  private val WEIGHT_UNKNOWN_COVERAGE = 0.5f
-  private val WEIGHT_FREQ = 0.2f
-  private val WEIGHT_POS_UNKNOWNS = 10.0f
-  private val WEIGHT_EXACT_MATCH = 0.5f
-  private val WEIGHT_ALL_NOUN = 0.1f
-  private val WEIGHT_PREFFERED_PATTERN = 0.6f
-  private val WEIGHT_DETERMINER = -0.01f
-  private val WEIGHT_EXCLAMATION = 0.01f
+  case class KoreanTokenizerParameters(
+    // Lower score is better
+    WEIGHT_TOKENS: Float = 0.18f,
+    WEIGHT_UNKNOWNS: Float = 0.3f,
+    WEIGHT_WORDS: Float = 0.3f,
+    WEIGHT_UNKNOWN_COVERAGE: Float = 0.5f,
+    WEIGHT_FREQ: Float = 0.2f,
+    WEIGHT_POS_UNKNOWNS: Float = 10.0f,
+    WEIGHT_EXACT_MATCH: Float = 0.5f,
+    WEIGHT_ALL_NOUN: Float = 0.1f,
+    WEIGHT_PREFFERED_PATTERN: Float = 0.6f,
+    WEIGHT_DETERMINER: Float = -0.01f,
+    WEIGHT_EXCLAMATION: Float = 0.01f,
+    // supress suffix when tied
+    WEIGHT_INITIAL_POSTPOSITION: Float = 0.2f,
+    WEIGHT_HA_VERB: Float = 0.3f,
+    PREFERRED_PATTERNS: Seq[Seq[KoreanPos]] = Seq(Seq(Noun, Josa), Seq(ProperNoun, Josa))
+  )
 
-  // supress suffix when tied
-  private val WEIGHT_INITIAL_POSTPOSITION = 0.2f
-
-  private val WEIGHT_HA_VERB = 0.3f
-
-  private val PREFERRED_PATTERNS = Seq(Seq(Noun, Josa), Seq(ProperNoun, Josa))
-
+  private val defaultParameters:KoreanTokenizerParameters = KoreanTokenizerParameters(
+    WEIGHT_TOKENS = 0.18f,
+    WEIGHT_UNKNOWNS = 0.3f,
+    WEIGHT_WORDS = 0.3f,
+    WEIGHT_UNKNOWN_COVERAGE = 0.5f,
+    WEIGHT_FREQ = 0.2f,
+    WEIGHT_POS_UNKNOWNS = 10.0f,
+    WEIGHT_EXACT_MATCH = 0.5f,
+    WEIGHT_ALL_NOUN = 0.1f,
+    WEIGHT_PREFFERED_PATTERN = 0.6f,
+    WEIGHT_DETERMINER = -0.01f,
+    WEIGHT_EXCLAMATION = 0.01f,
+    WEIGHT_INITIAL_POSTPOSITION = 0.2f,
+    WEIGHT_HA_VERB = 0.3f,
+    PREFERRED_PATTERNS = Seq(Seq(Noun, Josa), Seq(ProperNoun, Josa))
+  )
 
   /**
     * A candidate parse for a chunk.
@@ -68,24 +83,24 @@ object KoreanTokenizer {
     * @param posNodes Sequence of KoreanTokens.
     * @param words Number of words in this candidate parse.
     */
-  case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int) {
+  case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int, parameters: KoreanTokenizerParameters = defaultParameters) {
     def ++(that: ParsedChunk) = {
-      ParsedChunk(this.posNodes ++ that.posNodes, this.words + that.words)
+      ParsedChunk(this.posNodes ++ that.posNodes, this.words + that.words, parameters)
     }
 
-    lazy val score = countTokens * WEIGHT_TOKENS +
-      countUnknowns * WEIGHT_UNKNOWNS +
-      words * WEIGHT_WORDS +
-      getUnknownCoverage * WEIGHT_UNKNOWN_COVERAGE +
-      getFreqScore * WEIGHT_FREQ +
-      countPos(Unknown) * WEIGHT_POS_UNKNOWNS +
-      isExactMatch * WEIGHT_EXACT_MATCH +
-      isAllNouns * WEIGHT_ALL_NOUN +
-      isPreferredPattern * WEIGHT_PREFFERED_PATTERN +
-      countPos(Determiner) * WEIGHT_DETERMINER +
-      countPos(Exclamation) * WEIGHT_EXCLAMATION +
-      isInitialPostPosition * WEIGHT_INITIAL_POSTPOSITION +
-      isNounHa * WEIGHT_HA_VERB
+    lazy val score = countTokens * parameters.WEIGHT_TOKENS +
+      countUnknowns * parameters.WEIGHT_UNKNOWNS +
+      words * parameters.WEIGHT_WORDS +
+      getUnknownCoverage * parameters.WEIGHT_UNKNOWN_COVERAGE +
+      getFreqScore * parameters.WEIGHT_FREQ +
+      countPos(Unknown) * parameters.WEIGHT_POS_UNKNOWNS +
+      isExactMatch * parameters.WEIGHT_EXACT_MATCH +
+      isAllNouns * parameters.WEIGHT_ALL_NOUN +
+      isPreferredPattern * parameters.WEIGHT_PREFFERED_PATTERN +
+      countPos(Determiner) * parameters.WEIGHT_DETERMINER +
+      countPos(Exclamation) * parameters.WEIGHT_EXCLAMATION +
+      isInitialPostPosition * parameters.WEIGHT_INITIAL_POSTPOSITION +
+      isNounHa * parameters.WEIGHT_HA_VERB
 
     lazy val countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
     lazy val countTokens = this.posNodes.size
@@ -98,7 +113,7 @@ object KoreanTokenizer {
     lazy val isExactMatch = if (this.posNodes.size == 1) 0 else 1
     lazy val isAllNouns = if (this.posNodes.exists(t => t.pos != Noun && t.pos != ProperNoun)) 1 else 0
     lazy val isPreferredPattern = if (
-      posNodes.size == 2 && PREFERRED_PATTERNS.contains(posNodes.map(_.pos))
+      posNodes.size == 2 && parameters.PREFERRED_PATTERNS.contains(posNodes.map(_.pos))
     ) 0
     else 1
 
@@ -190,7 +205,7 @@ object KoreanTokenizer {
     *              for performance optimization. This method is private and is called only by tokenize.
     * @return The best possible parse.
     */
-  private[this] def parseKoreanChunk(chunk: KoreanToken): Seq[KoreanToken] = {
+  private[this] def parseKoreanChunk(chunk: KoreanToken, parameters: Option[KoreanTokenizerParameters]): Seq[KoreanToken] = {
     // Direct match
     // This may produce 하 -> PreEomi
     koreanDictionary.foreach {
@@ -199,6 +214,10 @@ object KoreanTokenizer {
           return Seq(KoreanToken(chunk.text, pos, chunk.offset, chunk.length))
         }
     }
+    val tokenizerParameters: KoreanTokenizerParameters = parameters match {
+      case Some(custom) => custom
+      case None => defaultParameters
+    }
 
     // Buffer for solutions
     val solutions: mutable.Map[Int, List[CandidateParse]] = new java.util.HashMap[Int, List[CandidateParse]]
@@ -206,7 +225,7 @@ object KoreanTokenizer {
     // Initial state
     solutions += 0 -> List(
       CandidateParse(
-        ParsedChunk(Seq[KoreanToken](), 1),
+        ParsedChunk(Seq[KoreanToken](), 1, tokenizerParameters),
         koreanPosTrie, ending = None
       )
     )
@@ -238,10 +257,10 @@ object KoreanTokenizer {
 
                 val unknown = !isWordName && !isKoreanNumber(word) && !isWordKoreanNameVariation
                 val pos = if (unknown || isWordName || isWordKoreanNameVariation) ProperNoun else Noun
-                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length, unknown)), t.words)
+                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length, unknown)), t.words, tokenizerParameters)
               } else {
                 val pos = if (t.curTrie.curPos == Noun && properNouns.contains(word.toCharArray)) ProperNoun else t.curTrie.curPos
-                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length)), t.words)
+                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length)), t.words, tokenizerParameters)
               }
 
             val nextTrie = t.curTrie.nextTrie.map {
@@ -275,7 +294,31 @@ object KoreanTokenizer {
       chunk(text).flatMap {
         case token: KoreanToken if token.pos == Korean =>
           // Get the best parse of each chunk
-          val parsed = parseKoreanChunk(token)
+          val parsed = parseKoreanChunk(token, None)
+
+          // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
+          collapseNouns(parsed)
+        case token: KoreanToken => Seq(token)
+      }
+    } catch {
+      case e: Exception =>
+        System.err.println(s"Error tokenizing a chunk: $text")
+        throw e
+    }
+  }
+
+  /**
+    * Parse Korean text into a sequence of KoreanTokens with custom parameters
+    *
+    * @param text Input Korean chunk
+    * @return sequence of KoreanTokens
+    */
+  def tokenize(text: CharSequence, parameters: KoreanTokenizerParameters): Seq[KoreanToken] = {
+    try {
+      chunk(text).flatMap {
+        case token: KoreanToken if token.pos == Korean =>
+          // Get the best parse of each chunk
+          val parsed = parseKoreanChunk(token, Some(parameters))
 
           // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
           collapseNouns(parsed)

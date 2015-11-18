@@ -22,6 +22,8 @@ import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
 import com.twitter.penguin.korean.TwitterKoreanProcessor.{tokenize, _}
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanTokenizerParameters
+import com.twitter.penguin.korean.util.KoreanPos.{ProperNoun, Josa, Noun}
 
 class TwitterKoreanProcessorTest extends TestBase {
   val LOG = Logger.getLogger(getClass.getSimpleName)
@@ -75,6 +77,30 @@ class TwitterKoreanProcessorTest extends TestBase {
         === "'(Punctuation: 0, 1)/넥서스(Noun: 1, 3)/'(Punctuation: 4, 1)/ (Space: 5, 1)/" +
         "갤럭시(Noun: 6, 3)/ (Space: 9, 1)/Galaxy(Alpha: 10, 6)/ (Space: 16, 1)/" +
         "S(Alpha: 17, 1)/5(Number: 18, 1)"
+    )
+  }
+
+  test("tokenizer should correctly reflect custom parameters") {
+    assert(
+      tokenize("스윗박스가 점점 좁아지더니, 의자 두개 붙여놓은 것만큼 좁아졌어요. 맘에드는이성분과 앉으면 가까워질거에요 ㅎㅎ").mkString("/")
+        !== tokenize(
+        "스윗박스가 점점 좁아지더니, 의자 두개 붙여놓은 것만큼 좁아졌어요. 맘에드는이성분과 앉으면 가까워질거에요 ㅎㅎ",
+        KoreanTokenizerParameters(
+          WEIGHT_TOKENS = 0.18f,
+          WEIGHT_UNKNOWNS = 0.3f,
+          WEIGHT_WORDS = 0.3f,
+          WEIGHT_UNKNOWN_COVERAGE = 0.5f,
+          WEIGHT_FREQ = 0.2f,
+          WEIGHT_POS_UNKNOWNS = 1.0f,
+          WEIGHT_EXACT_MATCH = 5f,
+          WEIGHT_ALL_NOUN = 10f,
+          WEIGHT_PREFFERED_PATTERN = 4f,
+          WEIGHT_DETERMINER = -0.01f,
+          WEIGHT_EXCLAMATION = 0.01f,
+          WEIGHT_INITIAL_POSTPOSITION = 0.2f,
+          WEIGHT_HA_VERB = 0.3f,
+          PREFERRED_PATTERNS = Seq(Seq(Noun, Josa), Seq(ProperNoun, Josa))
+        ))
     )
   }
 
