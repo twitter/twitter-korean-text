@@ -23,7 +23,7 @@ import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.tokenizer.{KoreanSentenceSplitter, Sentence, KoreanTokenizer}
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.{KoreanTokenizerParameters, KoreanToken}
 import com.twitter.penguin.korean.util.KoreanPos
 
 /**
@@ -47,6 +47,18 @@ object TwitterKoreanProcessor {
    * @return A sequence of KoreanTokens.
    */
   def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
+
+  /**
+    * Tokenize text (with custom parameters) into a sequence of KoreanTokens,
+    * which includes part-of-speech information and whether a token is an out-of-vocabulary term.
+    *
+    * @param text input text
+    * @return A sequence of KoreanTokens.
+    */
+  def tokenize(
+    text: CharSequence,
+    parameters: KoreanTokenizerParameters
+  ): Seq[KoreanToken] = KoreanTokenizer.tokenize(text, parameters)
 
   /**
    * Wrapper for Korean stemmer
