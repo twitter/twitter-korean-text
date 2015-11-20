@@ -168,7 +168,6 @@ class KoreanTokenizerTest extends TestBase {
 
     assert(
       tokenize("라고만") ===
-        // why the behavior has changed?
         List(KoreanToken("라고만", Eomi, 0, 3))
     )
   }
@@ -204,6 +203,14 @@ class KoreanTokenizerTest extends TestBase {
 
     assert(
       tokenize("보다가").mkString(", ") === "보다(Verb: 0, 2), 가(Eomi: 2, 1)"
+    )
+
+    assert(
+      tokenize("하...").mkString(", ") === "하(Exclamation: 0, 1), ...(Punctuation: 1, 3)"
+    )
+
+    assert(
+      tokenize("시전하는").mkString(", ") === "시전(Noun: 0, 2), 하는(Verb: 2, 2)"
     )
   }
 
