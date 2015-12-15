@@ -41,9 +41,9 @@ object KoreanDetokenizer {
   }
 
   private def collapseTokens(tokenized: Seq[KoreanToken]): List[String] = {
-    val (output, prefix) = tokenized.foldLeft((List[String](), false)) {
-      case ((output: List[String], prefix: Boolean), token: KoreanToken) =>
-        if (prefix || SuffixPos.contains(token.pos)) {
+    val (output, isPrefix) = tokenized.foldLeft((List[String](), false)) {
+      case ((output: List[String], isPrefix: Boolean), token: KoreanToken) =>
+        if (isPrefix || SuffixPos.contains(token.pos)) {
           val attached = output.lastOption.getOrElse("") + token.text
           (output.init :+ attached, false)
         } else if (PrefixPos.contains(token.pos)) {
