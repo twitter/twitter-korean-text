@@ -32,12 +32,27 @@ case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int,
       countPos(Determiner) * profile.determinerPosCount +
       countPos(Exclamation) * profile.exclamationPosCount +
       isInitialPostPosition * profile.initialPostPosition +
-      isNounHa * profile.haVerb
+      isNounHa * profile.haVerb +
+      hasSpaceOutOfGuide * profile.spaceGuidePenalty
 
   def countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
+
   def countTokens = this.posNodes.size
+
   def isInitialPostPosition = if (suffixes.contains(this.posNodes.head.pos)) 1 else 0
+
   def isExactMatch = if (this.posNodes.size == 1) 0 else 1
+
+  def hasSpaceOutOfGuide = if (profile.spaceGuide.isEmpty) {
+    0
+  } else {
+    this.posNodes
+        .filter{p: KoreanToken => !suffixes.contains(p.pos)}
+        .count {
+          p: KoreanToken => !profile.spaceGuide.contains(p.offset)
+        }
+  }
+
 
   def isAllNouns = if (this.posNodes.exists(
     t => t.pos != Noun && t.pos != ProperNoun)) 1

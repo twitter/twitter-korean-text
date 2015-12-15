@@ -21,5 +21,7 @@ case class TokenizerProfile(
     initialPostPosition: Float = 0.2f,
     haVerb: Float = 0.3f,
     preferredPattern: Float = 0.6f,
-    preferredPatterns: Seq[Seq[Any]] = Seq(Seq(Noun, Josa), Seq(ProperNoun, Josa))
+    preferredPatterns: Seq[Seq[Any]] = Seq(Seq(Noun, Josa), Seq(ProperNoun, Josa)),
+    spaceGuide: Set[Int] = Set[Int](),
+    spaceGuidePenalty: Float = 3.0f
 )
