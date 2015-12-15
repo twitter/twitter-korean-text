@@ -103,12 +103,12 @@ object TwitterKoreanProcessor {
   }
 
   /**
-    * Detokenize the input text
+    * Detokenize the input list of words.
     *
     * @param tokens List of words.
     * @return Detokenized string.
     */
-  def detokenize(tokens: List[String]): String = {
+  def detokenize(tokens: Iterable[String]): String = {
     KoreanDetokenizer.detokenize(tokens)
   }
 }
