@@ -1,5 +1,6 @@
 package com.twitter.penguin.korean;
 
+import java.util.Arrays;
 import java.util.List;
 
 import scala.collection.Seq;
@@ -105,6 +106,15 @@ public class TwitterKoreanProcessorJavaTest {
         "[가을이다!(0,5), 남자는 가을을 탄다......(6,22), 그렇지?(23,27), 루루야!(28,32), 버버리코트 사러 가자!!!!(33,48)]",
         tokens.toString()
     );
+  }
 
+  @Test
+  public void testDetokenizer() {
+    List<String> words = Arrays.asList("늘", "평온", "하게", "누워", "있", "는",  "루루");
+
+    assertEquals(
+        "늘 평온하게 누워있는 루루",
+        TwitterKoreanProcessorJava.detokenize(words)
+    );
   }
 }

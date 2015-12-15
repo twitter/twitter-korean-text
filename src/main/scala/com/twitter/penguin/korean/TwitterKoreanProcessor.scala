@@ -23,7 +23,7 @@ import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
-import com.twitter.penguin.korean.tokenizer.{KoreanSentenceSplitter, KoreanTokenizer, Sentence, TokenizerProfile}
+import com.twitter.penguin.korean.tokenizer._
 import com.twitter.penguin.korean.util.KoreanPos
 
 /**
@@ -102,4 +102,13 @@ object TwitterKoreanProcessor {
     KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
   }
 
+  /**
+    * Detokenize the input list of words.
+    *
+    * @param tokens List of words.
+    * @return Detokenized string.
+    */
+  def detokenize(tokens: Iterable[String]): String = {
+    KoreanDetokenizer.detokenize(tokens)
+  }
 }

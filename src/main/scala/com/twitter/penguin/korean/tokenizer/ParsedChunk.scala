@@ -1,3 +1,21 @@
+/*
+ * Twitter Korean Text - Scala library to process Korean text
+ *
+ * Copyright 2015 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.twitter.penguin.korean.tokenizer
 
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
@@ -32,12 +50,27 @@ case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int,
       countPos(Determiner) * profile.determinerPosCount +
       countPos(Exclamation) * profile.exclamationPosCount +
       isInitialPostPosition * profile.initialPostPosition +
-      isNounHa * profile.haVerb
+      isNounHa * profile.haVerb +
+      hasSpaceOutOfGuide * profile.spaceGuidePenalty
 
   def countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
+
   def countTokens = this.posNodes.size
+
   def isInitialPostPosition = if (suffixes.contains(this.posNodes.head.pos)) 1 else 0
+
   def isExactMatch = if (this.posNodes.size == 1) 0 else 1
+
+  def hasSpaceOutOfGuide = if (profile.spaceGuide.isEmpty) {
+    0
+  } else {
+    this.posNodes
+        .filter{p: KoreanToken => !suffixes.contains(p.pos)}
+        .count {
+          p: KoreanToken => !profile.spaceGuide.contains(p.offset)
+        }
+  }
+
 
   def isAllNouns = if (this.posNodes.exists(
     t => t.pos != Noun && t.pos != ProperNoun)) 1
