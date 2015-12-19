@@ -22,8 +22,8 @@ import com.twitter.penguin.korean.normalizer.KoreanNormalizer
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+import com.twitter.penguin.korean.tokenizer._
 import com.twitter.penguin.korean.util.KoreanPos
 
 /**
@@ -49,7 +49,19 @@ object TwitterKoreanProcessor {
   def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
 
   /**
-    * Wrapper for Korean stemmer
+    * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
+    * which includes part-of-speech information and whether a token is an out-of-vocabulary term.
+    *
+    * @param text input text
+    * @return A sequence of KoreanTokens.
+    */
+  def tokenize(
+    text: CharSequence,
+    profile: TokenizerProfile
+  ): Seq[KoreanToken] = KoreanTokenizer.tokenize(text, profile)
+
+  /**
+   * Wrapper for Korean stemmer
    *
    * @param tokens Korean tokens
    * @return A sequence of stemmed tokens
@@ -57,13 +69,23 @@ object TwitterKoreanProcessor {
   def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = KoreanStemmer.stem(tokens)
 
   /**
-    * Tokenize text into a sequence of token strings. This excludes spaces.
+   * Tokenize text into a sequence of token strings. This excludes spaces.
    *
    * @param tokens Korean tokens
    * @return A sequence of token strings.
    */
   def tokensToStrings(tokens: Seq[KoreanToken]): Seq[String] = {
     tokens.filterNot(t => t.pos == KoreanPos.Space).map(_.text.toString)
+  }
+
+  /**
+   * Split input text into sentences.
+   *
+   * @param text input text
+   * @return A sequence of sentences.
+   */
+  def splitSentences(text: CharSequence): Seq[Sentence] = {
+    KoreanSentenceSplitter.split(text)
   }
 
   /**
@@ -80,4 +102,13 @@ object TwitterKoreanProcessor {
     KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
   }
 
+  /**
+    * Detokenize the input list of words.
+    *
+    * @param tokens List of words.
+    * @return Detokenized string.
+    */
+  def detokenize(tokens: Iterable[String]): String = {
+    KoreanDetokenizer.detokenize(tokens)
+  }
 }

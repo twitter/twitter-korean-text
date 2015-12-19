@@ -232,7 +232,6 @@ object KoreanPhraseExtractor {
           !ModifyingPredicateExceptions.contains(lastChar)
       }
 
-
       // 과, 와, 의
       def isConjuction: Boolean =
         trimmed.pos == Josa && ConjunctionJosa.contains(trimmed.tokens.last.text)

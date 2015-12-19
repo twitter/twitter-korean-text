@@ -51,7 +51,7 @@ object CreatePhraseExtractionExamples extends Runnable {
     System.err.println("Writing the new phrases to " + outputFile)
 
     val out = new FileOutputStream(outputFile)
-    phrasePairs.foreach {
+    phrasePairs.toSeq.sortBy(_.text).foreach {
       p =>
         out.write(p.text.getBytes)
         out.write("\t".getBytes)

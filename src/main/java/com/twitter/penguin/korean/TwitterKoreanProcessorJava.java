@@ -18,16 +18,16 @@
 
 package com.twitter.penguin.korean;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import scala.collection.Iterator;
 import scala.collection.JavaConversions;
 import scala.collection.Seq;
 
-import com.google.common.collect.Lists;
-
 import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken;
+import com.twitter.penguin.korean.tokenizer.Sentence;
 import com.twitter.penguin.korean.util.KoreanPos;
 
 /**
@@ -68,7 +68,7 @@ public final class TwitterKoreanProcessorJava {
    */
   public static List<KoreanTokenJava> tokensToJavaKoreanTokenList(Seq<KoreanToken> tokens, boolean keepSpace) {
     Iterator<KoreanToken> tokenized = tokens.iterator();
-    List<KoreanTokenJava> output = Lists.newLinkedList();
+    List<KoreanTokenJava> output = new LinkedList<>();
     while (tokenized.hasNext()) {
       KoreanToken token = tokenized.next();
       if (keepSpace || token.pos() != KoreanPos.Space()) {
@@ -98,7 +98,7 @@ public final class TwitterKoreanProcessorJava {
    */
   public static List<String> tokensToJavaStringList(Seq<KoreanToken> tokens, boolean keepSpace) {
     Iterator<KoreanToken> tokenized = tokens.iterator();
-    List<String> output = Lists.newLinkedList();
+    List<String> output = new LinkedList<>();
     while (tokenized.hasNext()) {
       final KoreanToken token = tokenized.next();
 
@@ -127,6 +127,18 @@ public final class TwitterKoreanProcessorJava {
   }
 
   /**
+   * Split input text into sentences.
+   *
+   * @param text Input text.
+   * @return List of Sentence objects.
+   */
+  public static List<Sentence> splitSentences(CharSequence text) {
+    return JavaConversions.seqAsJavaList(
+        TwitterKoreanProcessor.splitSentences(text)
+    );
+  }
+
+  /**
    * Extract phrases from Korean input text
    *
    * @param tokens Korean tokens (output of tokenize(CharSequence text)).
@@ -138,4 +150,13 @@ public final class TwitterKoreanProcessorJava {
     );
   }
 
+  /**
+   * Detokenize the input list of words.
+   *
+   * @param tokens List of words.
+   * @return Detokenized string.
+   */
+  public static String detokenize(List<String> tokens) {
+    return TwitterKoreanProcessor.detokenize(JavaConversions.iterableAsScalaIterable(tokens));
+  }
 }

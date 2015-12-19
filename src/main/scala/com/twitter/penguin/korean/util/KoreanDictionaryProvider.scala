@@ -137,7 +137,7 @@ object KoreanDictionaryProvider {
     "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
     "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt")
 
-  lazy val nameDictionay = Map(
+  lazy val nameDictionary = Map(
     'family_name -> readWords("substantives/family_names.txt"),
     'given_name -> readWords("substantives/given_names.txt"),
     'full_name -> readWords("noun/kpop.txt", "noun/foreign.txt", "noun/names.txt")

@@ -47,7 +47,7 @@ object CreateParsingExamples extends Runnable  {
     System.err.println("Writing the new goldenset to " + outputFile)
 
     val out = new FileOutputStream(outputFile)
-    parsedPairs.foreach {
+    parsedPairs.toSeq.sortBy(_.text).foreach {
       p =>
         out.write(p.text.getBytes)
         out.write("\t".getBytes)
