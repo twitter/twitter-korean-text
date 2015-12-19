@@ -38,4 +38,31 @@ class KoreanDetokenizerTest extends TestBase {
           === "뭐 완벽하진 않지만 그럭저럭 쓸 만하군..."
     )
   }
+
+  test("detokenizer should correctly detokenize the edge cases") {
+    assert(
+      detokenize(List(""))
+          === ""
+    )
+
+    assert(
+      detokenize(List())
+          === ""
+    )
+
+    assert(
+      detokenize(List("완벽"))
+          === "완벽"
+    )
+
+    assert(
+      detokenize(List("이"))
+          === "이"
+    )
+
+    assert(
+      detokenize(List("이", "제품을", "사용하겠습니다"))
+          === "이 제품을 사용하겠습니다"
+    )
+  }
 }
