@@ -24,7 +24,7 @@ import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanP
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.tokenizer._
-import com.twitter.penguin.korean.util.KoreanPos
+import com.twitter.penguin.korean.util.{KoreanDictionaryProvider, KoreanPos}
 
 /**
  * TwitterKoreanTokenizer provides error and slang tolerant Korean tokenization.
@@ -49,16 +49,27 @@ object TwitterKoreanProcessor {
   def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
 
   /**
-    * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
-    * which includes part-of-speech information and whether a token is an out-of-vocabulary term.
-    *
-    * @param text input text
-    * @return A sequence of KoreanTokens.
-    */
+   * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
+   * which includes part-of-speech information and whether a token is an out-of-vocabulary term.
+   *
+   * @param text input text
+   * @return A sequence of KoreanTokens.
+   */
   def tokenize(
-    text: CharSequence,
-    profile: TokenizerProfile
-  ): Seq[KoreanToken] = KoreanTokenizer.tokenize(text, profile)
+      text: CharSequence,
+      profile: TokenizerProfile
+  ): Seq[KoreanToken] = {
+    KoreanTokenizer.tokenize(text, profile)
+  }
+
+  /**
+   * Add user-defined word list to the noun dictionary. Spaced words are not allowed.
+   *
+   * @param words Sequence of words to add.
+   */
+  def addNounsToDictionary(words: Seq[String]) {
+    KoreanDictionaryProvider.addWordsToDictionary(KoreanPos.Noun, words)
+  }
 
   /**
    * Wrapper for Korean stemmer
@@ -91,23 +102,23 @@ object TwitterKoreanProcessor {
   /**
    * Extract noun-phrases from Korean text
    *
-   * @param tokens Korean tokens
-   * @param filterSpam true if spam/slang terms to be filtered out (default: false)
+   * @param tokens         Korean tokens
+   * @param filterSpam     true if spam/slang terms to be filtered out (default: false)
    * @param enableHashtags true if #hashtags to be included (default: true)
    * @return A sequence of extracted phrases
    */
   def extractPhrases(tokens: Seq[KoreanToken],
-                     filterSpam: Boolean = false,
-                     enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
+      filterSpam: Boolean = false,
+      enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
     KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
   }
 
   /**
-    * Detokenize the input list of words.
-    *
-    * @param tokens List of words.
-    * @return Detokenized string.
-    */
+   * Detokenize the input list of words.
+   *
+   * @param tokens List of words.
+   * @return Detokenized string.
+   */
   def detokenize(tokens: Iterable[String]): String = {
     KoreanDetokenizer.detokenize(tokens)
   }

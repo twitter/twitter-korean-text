@@ -21,8 +21,9 @@ package com.twitter.penguin.korean
 import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
-import com.twitter.penguin.korean.TwitterKoreanProcessor.{tokenize, _}
+import com.twitter.penguin.korean.TwitterKoreanProcessor._
 import com.twitter.penguin.korean.tokenizer.TokenizerProfile
+import com.twitter.penguin.korean.util.{KoreanPos, KoreanDictionaryProvider}
 
 class TwitterKoreanProcessorTest extends TestBase {
   val LOG = Logger.getLogger(getClass.getSimpleName)
@@ -190,5 +191,11 @@ class TwitterKoreanProcessorTest extends TestBase {
       splitSentences("가을이다! 남자는 가을을 탄다...... 그렇지? 루루야! 버버리코트 사러 가자!!!!").mkString("/") ===
           "가을이다!(0,5)/남자는 가을을 탄다......(6,22)/그렇지?(23,27)/루루야!(28,32)/버버리코트 사러 가자!!!!(33,48)"
     )
+  }
+
+  test("addNounsToDictionary should add nouns to the dictionary") {
+    assert(!KoreanDictionaryProvider.koreanDictionary(KoreanPos.Noun).contains("후랴오교"))
+    addNounsToDictionary(List("후랴오교"))
+    assert(KoreanDictionaryProvider.koreanDictionary(KoreanPos.Noun).contains("후랴오교"))
   }
 }

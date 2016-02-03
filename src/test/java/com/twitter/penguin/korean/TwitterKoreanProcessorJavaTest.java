@@ -1,5 +1,24 @@
+/*
+ * Twitter Korean Text - Scala library to process Korean text
+ *
+ * Copyright 2014 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.twitter.penguin.korean;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +74,22 @@ public class TwitterKoreanProcessorJavaTest {
         "[착한, 강아지, 상, 을, 받은, 루루]",
         TwitterKoreanProcessorJava.tokensToJavaStringList(tokens, false).toString()
     );
+  }
+
+  @Test
+  public void testAddToDictionary() {
+    Seq<KoreanTokenizer.KoreanToken> tokens = TwitterKoreanProcessorJava.tokenize("우햐나어가녀아뎌");
+    assertEquals("[우햐나어가녀아뎌]", TwitterKoreanProcessorJava.tokensToJavaStringList(tokens).toString());
+
+    ArrayList<String> words = new ArrayList<>();
+    words.add("우햐나");
+    words.add("어가녀");
+    words.add("아뎌");
+    TwitterKoreanProcessorJava.addNounsToDictionary(words);
+
+    tokens = TwitterKoreanProcessorJava.tokenize("우햐나어가녀아뎌");
+
+    assertEquals("[우햐나, 어가녀, 아뎌]", TwitterKoreanProcessorJava.tokensToJavaStringList(tokens).toString());
   }
 
   @Test

@@ -102,8 +102,12 @@ object KoreanDictionaryProvider {
   lazy val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
     readWordFreqs("freq/entity-freq.txt.gz")
 
+  def addWordsToDictionary(pos: KoreanPos, words: Seq[String]): Unit = {
+    koreanDictionary(pos).addAll(words)
+  }
+
   val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
-    var map: collection.mutable.Map[KoreanPos, CharArraySet] =
+    val map: collection.mutable.Map[KoreanPos, CharArraySet] =
       new java.util.HashMap[KoreanPos, CharArraySet]
 
     map += Noun -> readWords(
