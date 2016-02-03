@@ -90,7 +90,8 @@ object KoreanTokenizer {
     * @return sequence of KoreanTokens
     */
   def tokenize(text: CharSequence,
-      profile: TokenizerProfile = TokenizerProfile.defaultProfile): Seq[KoreanToken] = {
+      profile: TokenizerProfile = TokenizerProfile.defaultProfile
+  ): Seq[KoreanToken] = {
     try {
       chunk(text).flatMap {
         case token: KoreanToken if token.pos == Korean =>

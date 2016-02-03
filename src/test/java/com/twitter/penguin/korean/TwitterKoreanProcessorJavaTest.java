@@ -1,5 +1,6 @@
 package com.twitter.penguin.korean;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +56,22 @@ public class TwitterKoreanProcessorJavaTest {
         "[착한, 강아지, 상, 을, 받은, 루루]",
         TwitterKoreanProcessorJava.tokensToJavaStringList(tokens, false).toString()
     );
+  }
+
+  @Test
+  public void testAddToDictionary() {
+    Seq<KoreanTokenizer.KoreanToken> tokens = TwitterKoreanProcessorJava.tokenize("우햐나어가녀아뎌");
+    assertEquals("[우햐나어가녀아뎌]", TwitterKoreanProcessorJava.tokensToJavaStringList(tokens).toString());
+
+    ArrayList<String> words = new ArrayList<>();
+    words.add("우햐나");
+    words.add("어가녀");
+    words.add("아뎌");
+    TwitterKoreanProcessorJava.addNounsToDictionary(words);
+
+    tokens = TwitterKoreanProcessorJava.tokenize("우햐나어가녀아뎌");
+
+    assertEquals("[우햐나, 어가녀, 아뎌]", TwitterKoreanProcessorJava.tokensToJavaStringList(tokens).toString());
   }
 
   @Test

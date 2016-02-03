@@ -58,6 +58,14 @@ public final class TwitterKoreanProcessorJava {
     );
   }
 
+  /**
+   * Add user-defined words to the noun dictionary. Spaced words are ignored.
+   *
+   * @param words List of user nouns.
+   */
+  public static void addNounsToDictionary(List<String> words) {
+    TwitterKoreanProcessor.addNounsToDictionary(JavaConversions.asScalaBuffer(words));
+  }
 
 
   /**

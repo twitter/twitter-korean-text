@@ -20,6 +20,7 @@ package com.twitter.penguin.korean.tokenizer
 
 import com.twitter.penguin.korean.TestBase
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer._
+import com.twitter.penguin.korean.util.KoreanDictionaryProvider
 import com.twitter.penguin.korean.util.KoreanPos._
 
 class KoreanTokenizerTest extends TestBase {
@@ -221,5 +222,22 @@ class KoreanTokenizerTest extends TestBase {
         "훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 " +
           "훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌쩍 훌"
     )
+  }
+
+  test("tokenize should add user-added nouns to dictionary") {
+    assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("뇬뇨"))
+    assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("쵸쵸"))
+
+    assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨쵸쵸").mkString(" ") ===
+        "뇬뇨뇬뇨뇬뇨뇬뇨*(ProperNoun: 0, 8) 쵸(VerbPrefix: 8, 1) 쵸(VerbPrefix: 9, 1)")
+
+    KoreanDictionaryProvider.addWordsToDictionary(Noun, List("뇬뇨", "쵸쵸"))
+
+    assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("뇬뇨"))
+    assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("쵸쵸"))
+
+    assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨쵸쵸").mkString(" ") ===
+        "뇬뇨(Noun: 0, 2) 뇬뇨(Noun: 2, 2) 뇬뇨(Noun: 4, 2) 뇬뇨(Noun: 6, 2) 쵸쵸(Noun: 8, 2)")
+
   }
 }
