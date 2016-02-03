@@ -21,7 +21,7 @@ package com.twitter.penguin.korean
 import java.util.logging.Logger
 
 import com.twitter.penguin.korean.TestBase._
-import com.twitter.penguin.korean.TwitterKoreanProcessor.{tokenize, _}
+import com.twitter.penguin.korean.TwitterKoreanProcessor._
 import com.twitter.penguin.korean.tokenizer.TokenizerProfile
 import com.twitter.penguin.korean.util.{KoreanPos, KoreanDictionaryProvider}
 
