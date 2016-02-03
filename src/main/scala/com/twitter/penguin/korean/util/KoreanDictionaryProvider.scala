@@ -106,8 +106,8 @@ object KoreanDictionaryProvider {
     koreanDictionary(pos).addAll(words)
   }
 
-  var koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
-    var map: collection.mutable.Map[KoreanPos, CharArraySet] =
+  val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
+    val map: collection.mutable.Map[KoreanPos, CharArraySet] =
       new java.util.HashMap[KoreanPos, CharArraySet]
 
     map += Noun -> readWords(

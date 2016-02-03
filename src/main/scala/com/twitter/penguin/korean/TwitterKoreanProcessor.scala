@@ -24,8 +24,6 @@ import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanP
 import com.twitter.penguin.korean.stemmer.KoreanStemmer
 import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.tokenizer._
-import com.twitter.penguin.korean.util.KoreanPos
-import com.twitter.penguin.korean.util.KoreanPos.KoreanPos
 import com.twitter.penguin.korean.util.{KoreanDictionaryProvider, KoreanPos}
 
 /**
