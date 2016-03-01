@@ -79,10 +79,13 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper: 
 [twkorean-ruby](https://github.com/jun85664396/twkorean-ruby)
+
 This provides access to com.twitter.penguin.korean.TwitterKoreanProcessorJava (Java wrapper).
+
 
 [Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper: 
 [twitter-korean-text-ruby](https://github.com/keepcosmos/twitter-korean-text-ruby)
+
 This provides access to com.twitter.penguin.korean.TwitterKoreanProcessor (Original Scala Class).
 
 
