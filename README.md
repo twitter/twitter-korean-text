@@ -72,6 +72,7 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 ### Python 
 
 [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
+
 [Baeg-il Kim](https://github.com/cedar101) kindly offered a Python version: https://github.com/cedar101/twitter-korean-py
 
 
