@@ -60,22 +60,24 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
 
 The maven site is available here http://twitter.github.io/twitter-korean-text/ and scaladocs are here http://twitter.github.io/twitter-korean-text/scaladocs/
 
-## Wrappers
-### .net Wrapper
+## Support for other languages.
+### .net 
 
 [modamoda](https://github.com/modamoda) kindly offered a .net wrapper: [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS)
 
-### node.js Wrapper
+### node.js 
 
 [Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
 
-### Python Wrapper
+### Python 
 
 [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
+[Baeg-il Kim](https://github.com/cedar101) kindly offered a Python version: https://github.com/cedar101/twitter-korean-py
+
 
 * Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes twitter-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 포함되었습니다. 
 
-### Ruby Wrapper
+### Ruby 
 
 [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper: 
 [twkorean-ruby](https://github.com/jun85664396/twkorean-ruby)
