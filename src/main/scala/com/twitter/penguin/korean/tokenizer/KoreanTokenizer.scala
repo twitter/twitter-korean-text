@@ -193,8 +193,14 @@ object KoreanTokenizer {
       }.take(TOP_N_PER_STATE)
     }
 
-    // Return the best parse of the final state
-    solutions(chunk.length).minBy(c => c.parse.score).parse.posNodes
+
+    if (solutions(chunk.length).isEmpty) {
+      // If the chunk is not parseable, treat it as a unknown noun chunk.
+      Seq(KoreanToken(chunk.text, Noun, 0, chunk.length, true))
+    } else {
+      // Return the best parse of the final state
+      solutions(chunk.length).minBy(c => c.parse.score).parse.posNodes
+    }
   }
 
   case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int,
@@ -213,5 +219,4 @@ object KoreanTokenizer {
       ending: Option[KoreanPos])
 
   private case class PossibleTrie(curTrie: KoreanPosTrie, words: Int)
-
 }
