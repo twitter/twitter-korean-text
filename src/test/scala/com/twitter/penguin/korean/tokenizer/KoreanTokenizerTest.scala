@@ -224,20 +224,25 @@ class KoreanTokenizerTest extends TestBase {
     )
   }
 
+  test("tokenize should properly tokenize edge cases") {
+    assert(
+      tokenize("해쵸쵸쵸쵸쵸쵸쵸쵸춏").mkString(" ") === "해쵸쵸쵸쵸쵸쵸쵸쵸춏*(Noun: 0, 10)"
+    )
+  }
+
   test("tokenize should add user-added nouns to dictionary") {
     assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("뇬뇨"))
-    assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("쵸쵸"))
+    assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("츄쵸"))
 
-    assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨쵸쵸").mkString(" ") ===
-        "뇬뇨뇬뇨뇬뇨뇬뇨*(ProperNoun: 0, 8) 쵸(VerbPrefix: 8, 1) 쵸(VerbPrefix: 9, 1)")
+    assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨츄쵸").mkString(" ") ===
+        "뇬뇨뇬뇨뇬뇨뇬뇨*(ProperNoun: 0, 8) 츄쵸*(ProperNoun: 8, 2)")
 
-    KoreanDictionaryProvider.addWordsToDictionary(Noun, List("뇬뇨", "쵸쵸"))
+    KoreanDictionaryProvider.addWordsToDictionary(Noun, List("뇬뇨", "츄쵸"))
 
     assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("뇬뇨"))
-    assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("쵸쵸"))
+    assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("츄쵸"))
 
-    assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨쵸쵸").mkString(" ") ===
-        "뇬뇨(Noun: 0, 2) 뇬뇨(Noun: 2, 2) 뇬뇨(Noun: 4, 2) 뇬뇨(Noun: 6, 2) 쵸쵸(Noun: 8, 2)")
-
+    assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨츄쵸").mkString(" ") ===
+        "뇬뇨(Noun: 0, 2) 뇬뇨(Noun: 2, 2) 뇬뇨(Noun: 4, 2) 뇬뇨(Noun: 6, 2) 츄쵸(Noun: 8, 2)")
   }
 }
