@@ -25,6 +25,9 @@ import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
 import com.twitter.penguin.korean.util.KoreanPos
 import com.twitter.penguin.korean.util.KoreanPos._
 
+import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
+
 case class KoreanChunk(text: String, offset: Int, length: Int)
 
 /**
@@ -47,8 +50,7 @@ object KoreanChunker {
     Space -> """\s+""".r.pattern
   )
 
-  private val CHUNKING_ORDER = Seq(Space, URL, Email, ScreenName, Hashtag, CashTag, Number, Korean, KoreanParticle, Alpha, Punctuation)
-  private val SPACE_REGEX_DELIMITER_KEEP_SPACES = """((?<=\s+)|(?=\s+))"""
+  private val CHUNKING_ORDER = Seq(URL, Email, ScreenName, Hashtag, CashTag, Number, Korean, KoreanParticle, Alpha, Punctuation)
 
   protected[korean] def getChunks(input: String, keepSpace: Boolean = false): Seq[String] = {
     chunk(input).map(_.text)
@@ -59,6 +61,27 @@ object KoreanChunker {
       (that.start < this.start && that.end <= this.start) ||
         (that.start >= this.end && that.end > this.end)
     }
+  }
+
+  def splitBySpaceKeepingSpace(s: CharSequence): Seq[String] = {
+    val space = """\s+""".r.pattern
+    val m = space.matcher(s)
+
+    var tokens = new ListBuffer[String]()
+    var index = 0
+    while(m.find()) {
+      if (index < m.start) {
+        tokens += s.subSequence(index, m.start).toString
+      }
+      tokens += s.subSequence(m.start, m.end).toString
+      index = m.end
+    }
+
+    if (index < s.length()) {
+      tokens += s.subSequence(index, s.length()).toString
+    }
+
+    return tokens.toList
   }
 
   /**
@@ -80,16 +103,27 @@ object KoreanChunker {
   }
 
   private[this] def splitChunks(text: String): List[ChunkMatch] = {
-    val chunks = text.split(SPACE_REGEX_DELIMITER_KEEP_SPACES).flatMap { s =>
-      CHUNKING_ORDER.foldLeft(List[ChunkMatch]()) {
-        (l, pos) =>
-          val m = POS_PATTERNS(pos).matcher(s)
-
-          findAllPatterns(m, pos).filter(cm => l.forall(cm.disjoint)) ::: l
+    if (text.charAt(0).isSpaceChar) {
+      List(ChunkMatch(0, text.length, text, Space))
+    } else {
+      val chunksBuf = new ListBuffer[ChunkMatch]()
+      var matchedLen = 0
+      CHUNKING_ORDER.foreach { pos =>
+        if (matchedLen < text.length) {
+          val m = POS_PATTERNS(pos).matcher(text)
+          while (m.find()) {
+            val cm = ChunkMatch(m.start, m.end, m.group(), pos)
+            if (chunksBuf.forall(cm.disjoint)) {
+              chunksBuf += cm
+              matchedLen += cm.end - cm.start
+            }
+          }
+        }
       }
-    }.sortBy(cm => cm.start)
 
-    fillInUnmatched(text, chunks, Foreign)
+      val chunks = chunksBuf.sortBy(cm => cm.start).toList
+      fillInUnmatched(text, chunks, Foreign)
+    }
   }
 
   /**
@@ -144,10 +178,8 @@ object KoreanChunker {
    * @return sequence of KoreanTokens
    */
   def chunk(input: CharSequence): Seq[KoreanToken] = {
-    val splitRegex = SPACE_REGEX_DELIMITER_KEEP_SPACES
     val s = input.toString
-
-    val (l: List[KoreanToken], i: Int) = s.split(splitRegex).flatMap {
+    val (l: List[KoreanToken], i: Int) = splitBySpaceKeepingSpace(s).flatMap {
       s => splitChunks(s)
     }.foldLeft(List[KoreanToken](), 0) {
       case ((l: List[KoreanToken], i: Int), m: ChunkMatch) =>
@@ -155,6 +187,5 @@ object KoreanChunker {
         (KoreanToken(m.text, m.pos, segStart, m.text.length) :: l, segStart + m.text.length)
     }
     l.reverse
-
   }
 }
