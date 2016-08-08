@@ -27,7 +27,7 @@ twitter-korean-text는 normalization, tokenization, stemming, phrase extraction 
 
 * 한국어를 처리하는 예시입니다 ㅋㅋ -> 한국어, 처리, 예시, 처리하는 예시
 
-Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU)
+Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU/)
 
 
 ## Try it here
@@ -80,7 +80,7 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 ### Ruby 
 
 [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper: 
-[twkorean-ruby](https://github.com/jun85664396/twkorean-ruby)
+[twitter-korean-text-ruby](https://github.com/jun85664396/twitter-korean-text-ruby)
 * This provides access to com.twitter.penguin.korean.TwitterKoreanProcessorJava (Java wrapper).
 
 
