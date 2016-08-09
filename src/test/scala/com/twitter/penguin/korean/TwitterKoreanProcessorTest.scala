@@ -37,7 +37,7 @@ class TwitterKoreanProcessorTest extends TestBase {
     assert(
       tokenize("이태민 복근있다..!!!!!!  11자...ㅋㅋㅋㅋ").mkString("/")
           === "이태민(Noun: 0, 3)/ (Space: 3, 1)/복근(Noun: 4, 2)/있다(Adjective: 6, 2)/" +
-          "..!!!!!!(Punctuation: 8, 8)/ (Space: 16, 1)/ (Space: 17, 1)/11(Number: 18, 2)/" +
+          "..!!!!!!(Punctuation: 8, 8)/  (Space: 16, 2)/11(Number: 18, 2)/" +
           "자(Noun: 20, 1)/...(Punctuation: 21, 3)/ㅋㅋㅋㅋ(KoreanParticle: 24, 4)"
     )
 
