@@ -105,6 +105,11 @@ class KoreanChunkerTest extends TestBase {
       getChunks("62:45의 결과").mkString("/")
         === "62:45/의/ /결과"
     )
+
+    assert(
+      getChunks("여러 칸  띄어쓰기,   하나의 Space묶음으로 처리됩니다.").mkString("/")
+        === "여러/ /칸/  /띄어쓰기/,/   /하나의/ /Space/묶음으로/ /처리됩니다/."
+    )
   }
 
   test("getChunkTokens should correctly find chunks with correct POS tags") {
