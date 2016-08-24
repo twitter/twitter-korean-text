@@ -71,6 +71,8 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 [Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
 
+[Youngrok Kim](https://github.com/rokoroku) kindly offered a node.js wrapper: [node-twitter-korean-text](https://github.com/rokoroku/node-twitter-korean-text)
+
 ### Python 
 
 [Baeg-il Kim](https://github.com/cedar101) kindly offered a Python version: https://github.com/cedar101/twitter-korean-py
