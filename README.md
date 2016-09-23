@@ -92,6 +92,10 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 [twitter-korean-text-ruby](https://github.com/keepcosmos/twitter-korean-text-ruby)
 * This provides access to com.twitter.penguin.korean.TwitterKoreanProcessor (Original Scala Class).
 
+### Elastic Search
+
+[socurites](https://github.com/socurites)'s Korean analyzer for elasticsearch based on twitter-korean-text: [tkt-elasticsearch](https://github.com/socurites/tkt-elasticsearch)
+
 
 ## Get the source 소스를 원하시는 경우
 
