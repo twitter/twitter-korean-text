@@ -61,32 +61,32 @@ To include this in your Maven-based JVM project, add the following lines to your
 ## Support for other languages.
 ### .net
 
-[modamoda](https://github.com/modamoda) kindly offered a .net wrapper: [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS)
+* [modamoda](https://github.com/modamoda) kindly offered a .net wrapper: [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS)
 
 ### node.js
 
-[Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
+* [Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
 
-[Youngrok Kim](https://github.com/rokoroku) kindly offered a node.js wrapper: [node-open-korean-text](https://github.com/rokoroku/node-open-korean-text)
+* [Youngrok Kim](https://github.com/rokoroku) kindly offered a node.js wrapper: [node-open-korean-text](https://github.com/rokoroku/node-open-korean-text)
 
 ### Python
 
-[Baeg-il Kim](https://github.com/cedar101) kindly offered a Python version: https://github.com/cedar101/twitter-korean-py
+* [Baeg-il Kim](https://github.com/cedar101) kindly offered a Python version: https://github.com/cedar101/twitter-korean-py
 
-[Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
+* [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
 
-* Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes open-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 twkorean이 포함되었습니다.
+Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes open-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 twkorean이 포함되었습니다.
 
 ### Ruby
 
-[jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper:
+* [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper:
 [open-korean-text-ruby](https://github.com/jun85664396/open-korean-text-ruby)
-* This provides access to org.openkoreantext.processor.OpenKoreanTextProcessorJava (Java wrapper).
+This provides access to org.openkoreantext.processor.OpenKoreanTextProcessorJava (Java wrapper).
 
 
-[Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper:
+* [Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper:
 [open-korean-text-ruby](https://github.com/keepcosmos/open-korean-text-ruby)
-* This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Original Scala Class).
+This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Original Scala Class).
 
 ### Elastic Search
 
