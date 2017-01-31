@@ -1,6 +1,6 @@
 ## open-korean-text [![Coverage Status](https://coveralls.io/repos/github/openkoreantext/open-korean-text/badge.svg)](https://coveralls.io/github/openkoreantext/open-korean-text) [![Build Status](https://travis-ci.org/openkoreantext/open-korean-text.svg?branch=master)](https://travis-ci.org/openkoreantext/open-korean-text)
 
-오픈소스 한국어 처리기 (Official Fork of open-korean-text)
+오픈소스 한국어 처리기 Open-source Korean Text Processor (Official Fork of twitter-korean-text)
 
 Scala/Java library to process Korean text with a Java wrapper. open-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/open-korean-text). The intent of this text processor is not limited to short tweet texts.
 
