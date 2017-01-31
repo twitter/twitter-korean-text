@@ -30,21 +30,19 @@ open-korean-text는 normalization, tokenization, stemming, phrase extraction 이
 
 Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU/)
 
-
-## Try it here
-
-Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
-
-Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다.
-[http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/)
-
-Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
-
 ## API
-[scaladoc](http://twitter.github.io/open-korean-text/scaladocs/#org.openkoreantext.processor.TwitterKoreanProcessor$)
+[Scala Doc](https://openkoreantext.github.io/open-korean-text/scaladocs/org/openkoreantext/processor/index.html)
 
-[mavendoc](http://twitter.github.io/open-korean-text)
+[Maven Doc](https://openkoreantext.github.io/open-korean-text/index.html)
 
+<!-- ## Try it here -->
+
+<!-- Gunja Agrawal kindly created a test API webpage for this project: [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/) -->
+
+<!-- Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다. -->
+<!-- [http://gunjaagrawal.com/langhack/](http://gunjaagrawal.com/langhack/) -->
+
+<!-- Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api) -->
 
 ## Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
@@ -53,9 +51,9 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
 
 ```xml
   <dependency>
-    <groupId>com.twitter.penguin</groupId>
-    <artifactId>korean-text</artifactId>
-    <version>4.4</version>
+    <groupId>org.openkoreantext</groupId>
+    <artifactId>open-korean-text-processor</artifactId>
+    <version>1.0.2</version>
   </dependency>
 ```
 
