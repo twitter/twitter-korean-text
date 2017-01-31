@@ -144,7 +144,7 @@
             ${project.artifactId}:${project.version}
           </checkinComment>
           <skipDeletedFiles>true</skipDeletedFiles>
-          <pubScmUrl>scm:git:git@github.com:twitter/twitter-korean-text.git</pubScmUrl>
+          <pubScmUrl>scm:git:https://github.com/openkoreantext/open-korean-text.git</pubScmUrl>
           <scmBranch>gh-pages</scmBranch>
         </configuration>
       </plugin>
