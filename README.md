@@ -1,14 +1,14 @@
-## twitter-korean-text [![Coverage Status](https://coveralls.io/repos/github/openkoreantext/open-korean-text/badge.svg)](https://coveralls.io/github/openkoreantext/open-korean-text) [![Build Status](https://travis-ci.org/openkoreantext/open-korean-text.svg?branch=master)](https://travis-ci.org/openkoreantext/open-korean-text)
+## open-korean-text [![Coverage Status](https://coveralls.io/repos/github/openkoreantext/open-korean-text/badge.svg)](https://coveralls.io/github/openkoreantext/open-korean-text) [![Build Status](https://travis-ci.org/openkoreantext/open-korean-text.svg?branch=master)](https://travis-ci.org/openkoreantext/open-korean-text)
 
-트위터에서 만든 오픈소스 한국어 처리기
+오픈소스 한국어 처리기 (Official Fork of open-korean-text)
 
-Scala/Java library to process Korean text with a Java wrapper. twitter-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text). The intent of this text processor is not limited to short tweet texts.
+Scala/Java library to process Korean text with a Java wrapper. open-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/open-korean-text). The intent of this text processor is not limited to short tweet texts.
 
-스칼라로 쓰여진 한국어 처리기입니다. 현재 텍스트 정규화와 형태소 분석, 스테밍을 지원하고 있습니다. 짧은 트윗은 물론이고 긴 글도 처리할 수 있습니다. 개발에 참여하시고 싶은 분은 [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text)에 가입해 주세요. 사용법을 알고자 하시는 초보부터 코드에 참여하고 싶으신 분들까지 모두 환영합니다.
+스칼라로 쓰여진 한국어 처리기입니다. 현재 텍스트 정규화와 형태소 분석, 스테밍을 지원하고 있습니다. 짧은 트윗은 물론이고 긴 글도 처리할 수 있습니다. 개발에 참여하시고 싶은 분은 [Google Forum](https://groups.google.com/forum/#!forum/open-korean-text)에 가입해 주세요. 사용법을 알고자 하시는 초보부터 코드에 참여하고 싶으신 분들까지 모두 환영합니다.
 
-twitter-korean-text의 목표는 빅데이터 등에서 간단한 한국어 처리를 통해 색인어를 추출하는 데에 있습니다. 완전한 수준의 형태소 분석을 지향하지는 않습니다.
+open-korean-text의 목표는 빅데이터 등에서 간단한 한국어 처리를 통해 색인어를 추출하는 데에 있습니다. 완전한 수준의 형태소 분석을 지향하지는 않습니다.
 
-twitter-korean-text는 normalization, tokenization, stemming, phrase extraction 이렇게 네가지 기능을 지원합니다.
+open-korean-text는 normalization, tokenization, stemming, phrase extraction 이렇게 네가지 기능을 지원합니다.
 
 
 **정규화 normalization (입니닼ㅋㅋ -> 입니다 ㅋㅋ, 샤릉해 -> 사랑해)**
@@ -41,9 +41,9 @@ Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다.
 Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
 
 ## API
-[scaladoc](http://twitter.github.io/twitter-korean-text/scaladocs/#org.openkoreantext.processor.TwitterKoreanProcessor$)
+[scaladoc](http://twitter.github.io/open-korean-text/scaladocs/#org.openkoreantext.processor.TwitterKoreanProcessor$)
 
-[mavendoc](http://twitter.github.io/twitter-korean-text)
+[mavendoc](http://twitter.github.io/open-korean-text)
 
 
 ## Maven
@@ -59,7 +59,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   </dependency>
 ```
 
-The maven site is available here http://twitter.github.io/twitter-korean-text/ and scaladocs are here http://twitter.github.io/twitter-korean-text/scaladocs/
+The maven site is available here http://twitter.github.io/open-korean-text/ and scaladocs are here http://twitter.github.io/open-korean-text/scaladocs/
 
 ## Support for other languages.
 ### .net
@@ -70,7 +70,7 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 [Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
 
-[Youngrok Kim](https://github.com/rokoroku) kindly offered a node.js wrapper: [node-twitter-korean-text](https://github.com/rokoroku/node-twitter-korean-text)
+[Youngrok Kim](https://github.com/rokoroku) kindly offered a node.js wrapper: [node-open-korean-text](https://github.com/rokoroku/node-open-korean-text)
 
 ### Python
 
@@ -78,22 +78,22 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
 
-* Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes twitter-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 twkorean이 포함되었습니다.
+* Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes open-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 twkorean이 포함되었습니다.
 
 ### Ruby
 
 [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper:
-[twitter-korean-text-ruby](https://github.com/jun85664396/twitter-korean-text-ruby)
+[open-korean-text-ruby](https://github.com/jun85664396/open-korean-text-ruby)
 * This provides access to org.openkoreantext.processor.OpenKoreanTextProcessorJava (Java wrapper).
 
 
 [Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper:
-[twitter-korean-text-ruby](https://github.com/keepcosmos/twitter-korean-text-ruby)
+[open-korean-text-ruby](https://github.com/keepcosmos/open-korean-text-ruby)
 * This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Original Scala Class).
 
 ### Elastic Search
 
-[socurites](https://github.com/socurites)'s Korean analyzer for elasticsearch based on twitter-korean-text: [tkt-elasticsearch](https://github.com/socurites/tkt-elasticsearch)
+[socurites](https://github.com/socurites)'s Korean analyzer for elasticsearch based on open-korean-text: [tkt-elasticsearch](https://github.com/socurites/tkt-elasticsearch)
 
 
 ## Get the source 소스를 원하시는 경우
@@ -103,8 +103,8 @@ Clone the git repo and build using maven.
 Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
 
 ```bash
-git clone https://github.com/twitter/twitter-korean-text.git
-cd twitter-korean-text
+git clone https://github.com/twitter/open-korean-text.git
+cd open-korean-text
 mvn compile
 ```
 
