@@ -81,11 +81,13 @@ Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now include
 
 * [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper:
 [open-korean-text-ruby](https://github.com/jun85664396/open-korean-text-ruby)
+
 This provides access to org.openkoreantext.processor.OpenKoreanTextProcessorJava (Java wrapper).
 
 
 * [Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper:
 [open-korean-text-ruby](https://github.com/keepcosmos/open-korean-text-ruby)
+
 This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Original Scala Class).
 
 ### Elastic Search
