@@ -46,8 +46,7 @@ Introductory Presentation: [Google Slides](https://docs.google.com/presentation/
 
 ## Maven
 To include this in your Maven-based JVM project, add the following lines to your pom.xml:
-
-Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
+/ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니다:
 
 ```xml
   <dependency>
@@ -97,8 +96,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
 ## Get the source 소스를 원하시는 경우
 
 Clone the git repo and build using maven.
-
-Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
+/ Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
 
 ```bash
 git clone https://github.com/openkoreantext/open-korean-text.git
@@ -111,21 +109,17 @@ Open 'pom.xml' from your favorite IDE.
 ## Basic Usage 사용 방법
 
 You can find these [examples](examples) in examples folder.
+/ [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
 
-[examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
+* [Scala Example](examples/src/main/scala/ScalaTwitterKoreanTextExample.scala)
 
-![](http://www.notablog.miserablemind.com/wp-content/uploads/2016/01/scala-logo-256.png =20x)
-[Scala Example](examples/src/main/scala/ScalaTwitterKoreanTextExample.scala)
-
-![](http://hanoo.org/images/icons/java.png =20x)
-[Java Example](examples/src/main/java/JavaOpenKoreanTextExample.java)
+* [Java Example](examples/src/main/java/JavaOpenKoreanTextExample.java)
 
 
 ## Running Tests
 
 `mvn test` will run our unit tests
-
-모든 유닛 테스트를 실행하려면 `mvn test`를 이용해 주세요.
+/ 모든 유닛 테스트를 실행하려면 `mvn test`를 이용해 주세요.
 
 
 <!-- ## Tools -->
