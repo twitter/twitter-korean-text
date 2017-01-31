@@ -20,10 +20,10 @@ import java.util.List;
 
 import scala.collection.Seq;
 
-import com.twitter.penguin.korean.TwitterKoreanProcessor;
-import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
-import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
+import org.openkoreantext.processor.TwitterKoreanProcessor;
+import org.openkoreantext.processor.TwitterKoreanProcessorJava;
+import org.openkoreantext.processor.phrase_extractor.KoreanPhraseExtractor;
+import org.openkoreantext.processor.tokenizer.KoreanTokenizer;
 
 public class JavaTwitterKoreanTextExample {
   public static void main(String[] args) {

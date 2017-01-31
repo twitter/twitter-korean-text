@@ -41,7 +41,7 @@ Gunja Agrawal님이 만들어주신 테스트 웹 페이지 입니다.
 Opensourced here: [twitter-korean-tokenizer-api](https://github.com/gunjaag/twitter-korean-tokenizer-api)
 
 ## API
-[scaladoc](http://twitter.github.io/twitter-korean-text/scaladocs/#com.twitter.penguin.korean.TwitterKoreanProcessor$)
+[scaladoc](http://twitter.github.io/twitter-korean-text/scaladocs/#org.openkoreantext.processor.TwitterKoreanProcessor$)
 
 [mavendoc](http://twitter.github.io/twitter-korean-text)
 
@@ -84,12 +84,12 @@ The maven site is available here http://twitter.github.io/twitter-korean-text/ a
 
 [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper:
 [twitter-korean-text-ruby](https://github.com/jun85664396/twitter-korean-text-ruby)
-* This provides access to com.twitter.penguin.korean.TwitterKoreanProcessorJava (Java wrapper).
+* This provides access to org.openkoreantext.processor.OpenKoreanTextProcessorJava (Java wrapper).
 
 
 [Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper:
 [twitter-korean-text-ruby](https://github.com/keepcosmos/twitter-korean-text-ruby)
-* This provides access to com.twitter.penguin.korean.TwitterKoreanProcessor (Original Scala Class).
+* This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Original Scala Class).
 
 ### Elastic Search
 
@@ -118,9 +118,9 @@ You can find these [examples](examples) in examples folder.
 
 from Scala
 ```scala
-import com.twitter.penguin.korean.TwitterKoreanProcessor
-import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer.KoreanToken
+import org.openkoreantext.processor.TwitterKoreanProcessor
+import org.openkoreantext.processor.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
+import org.openkoreantext.processor.tokenizer.KoreanTokenizer.KoreanToken
 
 object ScalaTwitterKoreanTextExample {
   def main(args: Array[String]) {
@@ -156,10 +156,10 @@ import java.util.List;
 
 import scala.collection.Seq;
 
-import com.twitter.penguin.korean.TwitterKoreanProcessor;
-import com.twitter.penguin.korean.TwitterKoreanProcessorJava;
-import com.twitter.penguin.korean.phrase_extractor.KoreanPhraseExtractor;
-import com.twitter.penguin.korean.tokenizer.KoreanTokenizer;
+import org.openkoreantext.processor.TwitterKoreanProcessor;
+import org.openkoreantext.processor.OpenKoreanTextProcessorJava;
+import org.openkoreantext.processor.phrase_extractor.KoreanPhraseExtractor;
+import org.openkoreantext.processor.tokenizer.KoreanTokenizer;
 
 public class JavaTwitterKoreanTextExample {
   public static void main(String[] args) {
