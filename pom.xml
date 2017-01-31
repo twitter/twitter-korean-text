@@ -22,7 +22,7 @@
   <artifactId>processor</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>Korean Text Processor</name>
+  <name>Open Korean Text Processor</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
   <description>Scala library to process Korean text</description>
   <inceptionYear>2014</inceptionYear>
@@ -37,8 +37,7 @@
   <scm>
     <url>https://github.com/openkoreantext/open-korean-text</url>
     <connection>scm:git:https://github.com/openkoreantext/open-korean-text.git</connection>
-    <developerConnection>scm:git:git@github.com:openkoreantext/open-korean-text.git
-    </developerConnection>
+    <developerConnection>scm:git:git@github.com:openkoreantext/open-korean-text.git</developerConnection>
     <tag>open-korean-text-1.0</tag>
   </scm>
   <prerequisites>
@@ -47,7 +46,7 @@
   <developers>
     <developer>
       <id>nlpenguin</id>
-      <name>Hohyon Ryu</name>
+      <name>Will Hohyon Ryu</name>
       <url>https://twitter.com/nlpenguin</url>
     </developer>
   </developers>
