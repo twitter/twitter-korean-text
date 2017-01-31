@@ -95,7 +95,7 @@ This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Ori
 [socurites](https://github.com/socurites)'s Korean analyzer for elasticsearch based on open-korean-text: [tkt-elasticsearch](https://github.com/socurites/tkt-elasticsearch)
 
 
-## Get the source 소스를 원하시는 경우
+## Get the source / 소스를 원하시는 경우
 
 Clone the git repo and build using maven.
 / Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
@@ -108,7 +108,7 @@ mvn compile
 
 Open 'pom.xml' from your favorite IDE.
 
-## Basic Usage 사용 방법
+## Basic Usage / 용 방법
 
 You can find these [examples](examples) in examples folder.
 / [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
@@ -136,7 +136,7 @@ Refer to the [general contribution guide](CONTRIBUTING.md). We will add this pro
 [설치 및 수정하는 방법 상세 안내](docs/contribution-guide.md)
 
 
-## Performance 처리 속도
+## Performance / 처리 속도
 
 Tested on Intel i7 2.3 Ghz
 
