@@ -21,7 +21,7 @@
   <groupId>org.openkoreantext</groupId>
   <artifactId>open-korean-text-processor</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <name>Open Korean Text Processor</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
   <description>Scala library to process Korean text</description>
