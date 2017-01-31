@@ -114,8 +114,10 @@ You can find these [examples](examples) in examples folder.
 
 [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
 
+![](http://www.notablog.miserablemind.com/wp-content/uploads/2016/01/scala-logo-256.png =20x)
 [Scala Example](examples/src/main/scala/ScalaTwitterKoreanTextExample.scala)
 
+![](http://hanoo.org/images/icons/java.png =20x)
 [Java Example](examples/src/main/java/JavaOpenKoreanTextExample.java)
 
 
