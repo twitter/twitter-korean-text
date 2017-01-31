@@ -115,6 +115,7 @@ You can find these [examples](examples) in examples folder.
 [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
 
 [Scala Example](examples/src/main/scala/ScalaTwitterKoreanTextExample.scala)
+
 [Java Example](examples/src/main/java/JavaOpenKoreanTextExample.java)
 
 
