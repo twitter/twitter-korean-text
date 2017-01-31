@@ -57,7 +57,7 @@ Maven을 이용할 경우 pom.xml에 다음의 내용을 추가하시면 됩니�
   </dependency>
 ```
 
-The maven site is available here http://twitter.github.io/open-korean-text/ and scaladocs are here http://twitter.github.io/open-korean-text/scaladocs/
+<!-- The maven site is available here http://twitter.github.io/open-korean-text/ and scaladocs are here http://twitter.github.io/open-korean-text/scaladocs/ -->
 
 ## Support for other languages.
 ### .net
@@ -101,105 +101,21 @@ Clone the git repo and build using maven.
 Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
 
 ```bash
-git clone https://github.com/twitter/open-korean-text.git
+git clone https://github.com/openkoreantext/open-korean-text.git
 cd open-korean-text
 mvn compile
 ```
 
 Open 'pom.xml' from your favorite IDE.
 
-## Usage 사용 방법
+## Basic Usage 사용 방법
 
 You can find these [examples](examples) in examples folder.
 
 [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
 
-from Scala
-```scala
-import org.openkoreantext.processor.TwitterKoreanProcessor
-import org.openkoreantext.processor.phrase_extractor.KoreanPhraseExtractor.KoreanPhrase
-import org.openkoreantext.processor.tokenizer.KoreanTokenizer.KoreanToken
-
-object ScalaTwitterKoreanTextExample {
-  def main(args: Array[String]) {
-    val text = "한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ #한국어"
-
-    // Normalize
-    val normalized: CharSequence = TwitterKoreanProcessor.normalize(text)
-    println(normalized)
-    // 한국어를 처리하는 예시입니다ㅋㅋ #한국어
-
-    // Tokenize
-    val tokens: Seq[KoreanToken] = TwitterKoreanProcessor.tokenize(normalized)
-    println(tokens)
-    // List(한국어(Noun: 0, 3), 를(Josa: 3, 1),  (Space: 4, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2),  (Space: 9, 1), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 다(Eomi: 14, 1), ㅋㅋ(KoreanParticle: 15, 2),  (Space: 17, 1), #한국어(Hashtag: 18, 4))
-
-    // Stemming
-    val stemmed: Seq[KoreanToken] = TwitterKoreanProcessor.stem(tokens)
-
-    println(stemmed)
-    // List(한국어(Noun: 0, 3), 를(Josa: 3, 1),  (Space: 4, 1), 처리(Noun: 5, 2), 하다(Verb: 7, 2),  (Space: 9, 1), 예시(Noun: 10, 2), 이다(Adjective: 12, 3), ㅋㅋ(KoreanParticle: 15, 2),  (Space: 17, 1), #한국어(Hashtag: 18, 4))
-
-    // Phrase extraction
-    val phrases: Seq[KoreanPhrase] = TwitterKoreanProcessor.extractPhrases(tokens, filterSpam = true, enableHashtags = true)
-    println(phrases)
-    // List(한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2), #한국어(Hashtag: 18, 4))
-  }
-}
-```
-
-from Java
-```java
-import java.util.List;
-
-import scala.collection.Seq;
-
-import org.openkoreantext.processor.TwitterKoreanProcessor;
-import org.openkoreantext.processor.OpenKoreanTextProcessorJava;
-import org.openkoreantext.processor.phrase_extractor.KoreanPhraseExtractor;
-import org.openkoreantext.processor.tokenizer.KoreanTokenizer;
-
-public class JavaTwitterKoreanTextExample {
-  public static void main(String[] args) {
-    String text = "한국어를 처리하는 예시입니닼ㅋㅋㅋㅋㅋ #한국어";
-
-    // Normalize
-    CharSequence normalized = TwitterKoreanProcessorJava.normalize(text);
-    System.out.println(normalized);
-    // 한국어를 처리하는 예시입니다ㅋㅋ #한국어
-
-
-    // Tokenize
-    Seq<KoreanTokenizer.KoreanToken> tokens = TwitterKoreanProcessorJava.tokenize(normalized);
-    System.out.println(TwitterKoreanProcessorJava.tokensToJavaStringList(tokens));
-    // [한국어, 를, 처리, 하는, 예시, 입니, 다, ㅋㅋ, #한국어]
-    System.out.println(TwitterKoreanProcessorJava.tokensToJavaKoreanTokenList(tokens));
-    // [한국어(Noun: 0, 3), 를(Josa: 3, 1),  (Space: 4, 1), 처리(Noun: 5, 2), 하는(Verb: 7, 2),  (Space: 9, 1), 예시(Noun: 10, 2), 입니(Adjective: 12, 2), 다(Eomi: 14, 1), ㅋㅋ(KoreanParticle: 15, 2),  (Space: 17, 1), #한국어(Hashtag: 18, 4)]
-
-
-    // Stemming
-    Seq<KoreanTokenizer.KoreanToken> stemmed = TwitterKoreanProcessorJava.stem(tokens);
-    System.out.println(TwitterKoreanProcessorJava.tokensToJavaStringList(stemmed));
-    // [한국어, 를, 처리, 하다, 예시, 이다, ㅋㅋ, #한국어]
-    System.out.println(TwitterKoreanProcessorJava.tokensToJavaKoreanTokenList(stemmed));
-    // [한국어(Noun: 0, 3), 를(Josa: 3, 1),  (Space: 4, 1), 처리(Noun: 5, 2), 하다(Verb: 7, 2),  (Space: 9, 1), 예시(Noun: 10, 2), 이다(Adjective: 12, 3), ㅋㅋ(KoreanParticle: 15, 2),  (Space: 17, 1), #한국어(Hashtag: 18, 4)]
-
-
-    // Phrase extraction
-    List<KoreanPhraseExtractor.KoreanPhrase> phrases = TwitterKoreanProcessorJava.extractPhrases(tokens, true, true);
-    System.out.println(phrases);
-    // [한국어(Noun: 0, 3), 처리(Noun: 5, 2), 처리하는 예시(Noun: 5, 7), 예시(Noun: 10, 2), #한국어(Hashtag: 18, 4)]
-
-  }
-}
-```
-
-
-## Basics
-
-[TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala) is the central object that provides the interface for all the features.
-
-[TwitterKoreanProcessor.scala](src/main/scala/com/twitter/penguin/korean/TwitterKoreanProcessor.scala)에 지원하는 모든 기능을 모아 두었습니다.
+[Scala Example](examples/src/main/scala/ScalaTwitterKoreanTextExample.scala)
+[Java Example](examples/src/main/java/JavaOpenKoreanTextExample.java)
 
 
 ## Running Tests
@@ -209,9 +125,9 @@ public class JavaTwitterKoreanTextExample {
 모든 유닛 테스트를 실행하려면 `mvn test`를 이용해 주세요.
 
 
-## Tools
+<!-- ## Tools -->
 
-We provide tools for quality assurance and test resources. They can be found under [src/main/scala/com/twitter/penguin/korean/qa](src/main/scala/com/twitter/penguin/korean/qa) and [src/main/scala/com/twitter/penguin/korean/tools](src/main/scala/com/twitter/penguin/korean/tools).
+<!-- We provide tools for quality assurance and test resources. They can be found under [src/main/scala/com/twitter/penguin/korean/qa](src/main/scala/com/twitter/penguin/korean/qa) and [src/main/scala/com/twitter/penguin/korean/tools](src/main/scala/com/twitter/penguin/korean/tools). -->
 
 
 ## Contribution
@@ -244,9 +160,13 @@ Average per tweet: 0.54212 ms
 From [http://konlpy.org/ko/v0.4.2/morph/](http://konlpy.org/ko/v0.4.2/morph/)
 
 
-## Author(s)
+## Author
 
 * Will Hohyon Ryu (유호현): https://github.com/nlpenguin | https://twitter.com/NLPenguin
+
+## Admin Staff
+
+* Mingyu Kim (김민규): https://github.com/MechanicKim
 
 ## License
 

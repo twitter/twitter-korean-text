@@ -30,9 +30,9 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.twitter.penguin</groupId>
-      <artifactId>korean-text</artifactId>
-      <version>4.0</version>
+      <groupId>org.openkoreantext</groupId>
+      <artifactId>open-korean-text-processor</artifactId>
+      <version>1.0.2</version>
     </dependency>
   </dependencies>
   <build>
