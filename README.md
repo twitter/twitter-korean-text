@@ -109,12 +109,12 @@ mvn compile
 
 Open 'pom.xml' from your favorite IDE.
 
-## Basic Usage / 용 방법
+## Basic Usage / 사용 방법
 
 You can find these [examples](examples) in examples folder.
 / [examples](examples) 폴더에 사용 방법 예제 파일이 있습니다.
 
-* [Scala Example](examples/src/main/scala/ScalaTwitterKoreanTextExample.scala)
+* [Scala Example](examples/src/main/scala/ScalaOpenKoreanTextExample.scala)
 
 * [Java Example](examples/src/main/java/JavaOpenKoreanTextExample.java)
 
