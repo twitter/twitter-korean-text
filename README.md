@@ -53,7 +53,7 @@ To include this in your Maven-based JVM project, add the following lines to your
   <dependency>
     <groupId>org.openkoreantext</groupId>
     <artifactId>open-korean-text-processor</artifactId>
-    <version>1.0.2</version>
+    <version>1.0</version>
   </dependency>
 ```
 
