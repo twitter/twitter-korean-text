@@ -64,14 +64,14 @@ To include this in your Maven-based JVM project, add the following lines to your
 | Type | Language | Contributor |
 | --- | --- | --- |
 | Wrapper | [.net/C#](https://github.com/openkoreantext/open-korean-text-wrapper-csharp) | [modamoda](https://github.com/modamoda) |
-|  | [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-1) | [Ch0p](https://github.com/Ch0p) |
-|  | [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-2) | [Youngrok Kim](https://github.com/rokoroku) |
-|  | [Python](https://github.com/openkoreantext/open-korean-text-wrapper-python) | [Jaepil Jeong](https://github.com/jaepil) |
-|  | [Ruby for Java Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-1) | [jun85664396](https://github.com/jun85664396) |
-|  | [Ruby for Scala Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-2) | [Jaehyun Shin](https://github.com/keepcosmos) |
+| Wrapper | [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-1) | [Ch0p](https://github.com/Ch0p) |
+| Wrapper | [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-2) | [Youngrok Kim](https://github.com/rokoroku) |
+| Wrapper | [Python](https://github.com/openkoreantext/open-korean-text-wrapper-python) | [Jaepil Jeong](https://github.com/jaepil) |
+| Wrapper | [Ruby for Java Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-1) | [jun85664396](https://github.com/jun85664396) |
+| Wrapper | [Ruby for Scala Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-2) | [Jaehyun Shin](https://github.com/keepcosmos) |
 | Porting | [Python](https://github.com/openkoreantext/open-korean-text-python) | [Baeg-il Kim](https://github.com/cedar101) |
 | Package | [Python Korean NLP](https://github.com/konlpy/konlpy) | [KoNLPy](https://github.com/konlpy/konlpy) |
-|  | [Elastic Search](https://github.com/openkoreantext/open-korean-text-elastic-search) | [socurites](https://github.com/socurites) |
+| Package | [Elastic Search](https://github.com/openkoreantext/open-korean-text-elastic-search) | [socurites](https://github.com/socurites) |
 
 
 ## Get the source / 소스를 원하시는 경우
