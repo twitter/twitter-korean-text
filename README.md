@@ -60,40 +60,35 @@ To include this in your Maven-based JVM project, add the following lines to your
 <!-- The maven site is available here http://twitter.github.io/open-korean-text/ and scaladocs are here http://twitter.github.io/open-korean-text/scaladocs/ -->
 
 ## Support for other languages.
-### .net
 
-* [modamoda](https://github.com/modamoda) kindly offered a .net wrapper: [https://github.com/modamoda/TwitterKoreanProcessorCS](https://github.com/modamoda/TwitterKoreanProcessorCS)
+### Wrappers
 
-### node.js
+* [.net/C#](https://github.com/openkoreantext/open-korean-text-wrapper-csharp) by [modamoda](https://github.com/modamoda)
 
-* [Ch0p](https://github.com/Ch0p) kindly offered a node.js wrapper: [twtkrjs](https://github.com/Ch0p/twtkrjs)
+* [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-1) by [Ch0p](https://github.com/Ch0p)
 
-* [Youngrok Kim](https://github.com/rokoroku) kindly offered a node.js wrapper: [node-open-korean-text](https://github.com/rokoroku/node-open-korean-text)
+* [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-2) by [Youngrok Kim](https://github.com/rokoroku)
 
-### Python
+* [Python](https://github.com/openkoreantext/open-korean-text-wrapper-python) by [Jaepil Jeong](https://github.com/jaepil)
 
-* [Baeg-il Kim](https://github.com/cedar101) kindly offered a Python version: https://github.com/cedar101/twitter-korean-py
+* [Ruby for Java Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-1) by [jun85664396](https://github.com/jun85664396)
 
-* [Jaepil Jeong](https://github.com/jaepil) kindly offered a Python wrapper: https://github.com/jaepil/twkorean
-
-Python Korean NLP project [KoNLPy](https://github.com/konlpy/konlpy) now includes open-korean-text. 파이썬에서 쉬운 활용이 가능한 [KoNLPy](https://github.com/konlpy/konlpy) 패키지에 twkorean이 포함되었습니다.
-
-### Ruby
-
-* [jun85664396](https://github.com/jun85664396) kindly offered a Ruby wrapper:
-[open-korean-text-ruby](https://github.com/jun85664396/open-korean-text-ruby)
-
-This provides access to org.openkoreantext.processor.OpenKoreanTextProcessorJava (Java wrapper).
+* [Ruby for Scala Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-2) by [Jaehyun Shin](https://github.com/keepcosmos)
 
 
-* [Jaehyun Shin](https://github.com/keepcosmos) kindly offered a Ruby wrapper:
-[open-korean-text-ruby](https://github.com/keepcosmos/open-korean-text-ruby)
+### Portings
 
-This provides access to org.openkoreantext.processor.TwitterKoreanProcessor (Original Scala Class).
+* [Python](https://github.com/openkoreantext/open-korean-text-python) by [Baeg-il Kim](https://github.com/cedar101)
+
+
+### Packages
+
+* [Python Korean NLP](https://github.com/konlpy/konlpy) by [KoNLPy](https://github.com/konlpy/konlpy)
+
 
 ### Elastic Search
 
-[socurites](https://github.com/socurites)'s Korean analyzer for elasticsearch based on open-korean-text: [tkt-elasticsearch](https://github.com/socurites/tkt-elasticsearch)
+* [tkt-elasticsearch](https://github.com/openkoreantext/open-korean-text-elastic-search) by [socurites](https://github.com/socurites)
 
 
 ## Get the source / 소스를 원하시는 경우
