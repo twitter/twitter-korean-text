@@ -31,6 +31,10 @@ open-korean-text는 normalization, tokenization, stemming, phrase extraction 이
 
 Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU/)
 
+## Quick Test
+
+https://open-korean-text.herokuapp.com/processor?text=%ED%95%9C%EA%B5%AD%EC%96%B4%EB%A5%BC%20%EC%B2%98%EB%A6%AC%ED%95%98%EB%8A%94%20%EC%98%88%EC%8B%9C%EC%9E%85%EB%8B%88%EB%8B%BC%E3%85%8B%E3%85%8B%E3%85%8B%E3%85%8B%E3%85%8B
+
 ## API
 * [Scala Doc](https://openkoreantext.github.io/open-korean-text/scaladocs/org/openkoreantext/processor/index.html)
 
