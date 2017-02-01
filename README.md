@@ -85,10 +85,7 @@ To include this in your Maven-based JVM project, add the following lines to your
 
 * [Python Korean NLP](https://github.com/konlpy/konlpy) by [KoNLPy](https://github.com/konlpy/konlpy)
 
-
-### Elastic Search
-
-* [tkt-elasticsearch](https://github.com/openkoreantext/open-korean-text-elastic-search) by [socurites](https://github.com/socurites)
+* [Elastic Search](https://github.com/openkoreantext/open-korean-text-elastic-search) by [socurites](https://github.com/socurites)
 
 
 ## Get the source / 소스를 원하시는 경우
