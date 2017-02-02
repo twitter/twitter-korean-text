@@ -42,7 +42,7 @@ object CreateParsingExamples extends Runnable  {
     }.toSet
 
 
-    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_parsing.txt"
+    val outputFile: String = "src/test/resources/org/openkoreantext/processor/util/current_parsing.txt"
 
     System.err.println("Writing the new goldenset to " + outputFile)
 

@@ -46,7 +46,7 @@ object CreatePhraseExtractionExamples extends Runnable {
     }.toSet
 
 
-    val outputFile: String = "src/test/resources/com/twitter/penguin/korean/util/current_phrases.txt"
+    val outputFile: String = "src/test/resources/org/openkoreantext/processor/util/current_phrases.txt"
 
     System.err.println("Writing the new phrases to " + outputFile)
 

@@ -21,13 +21,13 @@ git checkout -b "feature_branch_name"
 
 이 예제에서는 사전을 수정해 보겠습니다. 사전 파일들은 
 
-[src/main/resources/com/twitter/penguin/korean/util/](../../../tree/master/src/main/resources/com/twitter/penguin/korean/util) 에 있습니다. 
+[src/main/resources/org/openkoreantext/processor/util/](../../../tree/master/src/main/resources/org/openkoreantext/processor/util) 에 있습니다. 
 
-```src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt``` 에 동사가 들어가 있네요. 삭제했습니다. (이런 경우가 많이 있습니다. 수작업으로 없애 주어야 하는데요 여러분의 도움을 구합니다. 아울러 복합명사도 최대한 분리 되어야 합니다. 하동청룡리석불좌상 -> 하동 청룡리 석불 좌상)
+```src/main/resources/org/openkoreantext/processor/util/noun/wikipedia_title_nouns.txt``` 에 동사가 들어가 있네요. 삭제했습니다. (이런 경우가 많이 있습니다. 수작업으로 없애 주어야 하는데요 여러분의 도움을 구합니다. 아울러 복합명사도 최대한 분리 되어야 합니다. 하동청룡리석불좌상 -> 하동 청룡리 석불 좌상)
 
 ![editor](imgs/img2-1.png)
 
-사전을 정리하기 위해서 [src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CleanupDictionaries.scala) 를 실행합니다.
+사전을 정리하기 위해서 [src/main/scala/org/openkoreantext/processor/tools/CleanupDictionaries.scala](../../../tree/master/src/main/scala/org/openkoreantext/processor/tools/CleanupDictionaries.scala) 를 실행합니다.
 
 파일을 열고 Run > Run... 을 실행합니다.
 
@@ -42,10 +42,10 @@ git checkout -b "feature_branch_name"
 ```
 ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git diff
 
-diff --git a/src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt b/src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt
+diff --git a/src/main/resources/org/openkoreantext/processor/util/noun/wikipedia_title_nouns.txt b/src/main/resources/org/openkoreantext/processor/util/noun/wikipedia_title_nouns.txt
 index 8a6d3c5..c1386d3 100644
---- a/src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt
-+++ b/src/main/resources/com/twitter/penguin/korean/util/noun/wikipedia_title_nouns.txt
+--- a/src/main/resources/org/openkoreantext/processor/util/noun/wikipedia_title_nouns.txt
++++ b/src/main/resources/org/openkoreantext/processor/util/noun/wikipedia_title_nouns.txt
 @@ -1183,8 +1183,6 @@
  가야정
  가야정류장
@@ -171,7 +171,7 @@ Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가
 
 
 * 변화한 예시가 acceptable하면 Goldenset을 업데이트 합니다.
-[src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala](../../../tree/master/src/main/scala/com/twitter/penguin/korean/tools/CreateParsingGoldenset.scala) 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. (IntelliJ 안에서 실행 해 주세요.)
+[src/main/scala/org/openkoreantext/processor/tools/CreateParsingGoldenset.scala](../../../tree/master/src/main/scala/org/openkoreantext/processor/tools/CreateParsingGoldenset.scala) 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. (IntelliJ 안에서 실행 해 주세요.)
 
 * 다시 테스트를 실행해 봅니다.
 ```
@@ -219,7 +219,7 @@ Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
 ~/workspace/twitter-korean-text remove_verbs_from_wiki* ➜  git commit -am "dictionary update"
 [dictionary_update_name 8dffbfc] dictionary update
  2 files changed, 8 insertions(+), 41 deletions(-)
- rewrite src/test/resources/com/twitter/penguin/korean/util/goldenset.txt.gz (61%)
+ rewrite src/test/resources/org/openkoreantext/processor/util/goldenset.txt.gz (61%)
 ~/workspace/twitter-korean-text remove_verbs_from_wiki ➜  git push origin remove_verbs_from_wiki
 Counting objects: 20, done.
 Delta compression using up to 8 threads.
