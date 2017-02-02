@@ -36,7 +36,7 @@ object CreateConjugationExamples extends Runnable  {
     def updateConjugateExamples(file: String, isAdj: Boolean, outputFileName: String) {
       System.err.println("Writing the expansion goldenset in " + outputFileName)
 
-      val outputPath = "src/test/resources/com/twitter/penguin/korean/util/" + outputFileName
+      val outputPath = "src/test/resources/org/openkoreantext/processor/util/" + outputFileName
       val out = new FileOutputStream(outputPath)
 
       val words = readWordsAsSeq(file)

@@ -58,7 +58,7 @@ object DeduplicateAndSortDictionaries extends Runnable  {
   def run {
     RESOURCES_TO_CLEANUP.foreach {
       f: String =>
-        val outputFolder = "src/main/resources/com/twitter/penguin/korean/util/"
+        val outputFolder = "src/main/resources/org/openkoreantext/processor/util/"
         System.err.println("Processing %s.".format(f))
         val words = readWords(outputFolder + f).toList.sorted
 
