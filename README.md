@@ -32,9 +32,9 @@ open-korean-text는 normalization, tokenization, stemming, phrase extraction 이
 Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU/)
 
 ## API
-* [Scala Doc](https://openkoreantext.github.io/open-korean-text/scaladocs/org/openkoreantext/processor/index.html)
+* [Scala Doc](https://open-korean-text.github.io/open-korean-text/scaladocs/org/openkoreantext/processor/index.html)
 
-* [Maven Doc](https://openkoreantext.github.io/open-korean-text/index.html)
+* [Maven Doc](https://open-korean-text.github.io/open-korean-text/index.html)
 
 <!-- ## Try it here -->
 
@@ -63,15 +63,15 @@ To include this in your Maven-based JVM project, add the following lines to your
 
 | Type | Language | Contributor |
 | --- | --- | --- |
-| Wrapper | [.net/C#](https://github.com/openkoreantext/open-korean-text-wrapper-csharp) | [modamoda](https://github.com/modamoda) |
-| Wrapper | [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-1) | [Ch0p](https://github.com/Ch0p) |
-| Wrapper | [Node JS](https://github.com/openkoreantext/open-korean-text-wrapper-node-2) | [Youngrok Kim](https://github.com/rokoroku) |
-| Wrapper | [Python](https://github.com/openkoreantext/open-korean-text-wrapper-python) | [Jaepil Jeong](https://github.com/jaepil) |
-| Wrapper | [Ruby for Java Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-1) | [jun85664396](https://github.com/jun85664396) |
-| Wrapper | [Ruby for Scala Version](https://github.com/openkoreantext/open-korean-text-wrapper-ruby-2) | [Jaehyun Shin](https://github.com/keepcosmos) |
-| Porting | [Python](https://github.com/openkoreantext/open-korean-text-python) | [Baeg-il Kim](https://github.com/cedar101) |
+| Wrapper | [.net/C#](https://github.com/open-korean-text/open-korean-text-wrapper-csharp) | [modamoda](https://github.com/modamoda) |
+| Wrapper | [Node JS](https://github.com/open-korean-text/open-korean-text-wrapper-node-1) | [Ch0p](https://github.com/Ch0p) |
+| Wrapper | [Node JS](https://github.com/open-korean-text/open-korean-text-wrapper-node-2) | [Youngrok Kim](https://github.com/rokoroku) |
+| Wrapper | [Python](https://github.com/open-korean-text/open-korean-text-wrapper-python) | [Jaepil Jeong](https://github.com/jaepil) |
+| Wrapper | [Ruby for Java Version](https://github.com/open-korean-text/open-korean-text-wrapper-ruby-1) | [jun85664396](https://github.com/jun85664396) |
+| Wrapper | [Ruby for Scala Version](https://github.com/open-korean-text/open-korean-text-wrapper-ruby-2) | [Jaehyun Shin](https://github.com/keepcosmos) |
+| Porting | [Python](https://github.com/open-korean-text/open-korean-text-python) | [Baeg-il Kim](https://github.com/cedar101) |
 | Package | [Python Korean NLP](https://github.com/konlpy/konlpy) | [KoNLPy](https://github.com/konlpy/konlpy) |
-| Package | [Elastic Search](https://github.com/openkoreantext/open-korean-text-elastic-search) | [socurites](https://github.com/socurites) |
+| Package | [Elastic Search](https://github.com/open-korean-text/open-korean-text-elastic-search) | [socurites](https://github.com/socurites) |
 
 
 ## Get the source / 소스를 원하시는 경우
@@ -80,7 +80,7 @@ Clone the git repo and build using maven.
 / Git 전체를 클론하고 Maven을 이용하여 빌드합니다.
 
 ```bash
-git clone https://github.com/openkoreantext/open-korean-text.git
+git clone https://github.com/open-korean-text/open-korean-text.git
 cd open-korean-text
 mvn compile
 ```
