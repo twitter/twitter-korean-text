@@ -2,7 +2,6 @@ github에서 clone해서 설치하고 사전을 업데이트 하고 pull request
 
 # 개발 환경 설치
 
-* Scala를 설치해 주세요. [http://www.scala-lang.org/download/](http://www.scala-lang.org/download/)
 * IntelliJ Idea를 설치해 주세요. [https://www.jetbrains.com/idea/download/](https://www.jetbrains.com/idea/download/)
 * 설치 후에는 Scala Plugin을 설치해 주세요. 환경 설정에 있습니다.
 * GitHub repo를 Clone해 주세요.
@@ -27,7 +26,8 @@ git checkout -b "feature_branch_name"
 
 ![editor](imgs/img2-1.png)
 
-사전을 정리하기 위해서 [src/main/scala/org/openkoreantext/processor/tools/CleanupDictionaries.scala](../../../tree/master/src/main/scala/org/openkoreantext/processor/tools/CleanupDictionaries.scala) 를 실행합니다.
+사전을 정리하기 위해서 [src/main/scala/org/openkoreantext/processor/tools/DeduplicateAndSortDictionaries.scala](../../../tree/master/src/main/scala/org/openkoreantext/processor/tools/DeduplicateAndSortDictionaries.scala) 를 실행합니다.
+
 
 파일을 열고 Run > Run... 을 실행합니다.
 
@@ -171,7 +171,7 @@ Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가
 
 
 * 변화한 예시가 acceptable하면 Goldenset을 업데이트 합니다.
-[src/main/scala/org/openkoreantext/processor/tools/CreateParsingGoldenset.scala](../../../tree/master/src/main/scala/org/openkoreantext/processor/tools/CreateParsingGoldenset.scala) 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. (IntelliJ 안에서 실행 해 주세요.)
+[src/main/scala/org/openkoreantext/processor/tools/UpdateAllTheExamples.scala](../../../tree/master/src/main/scala/org/openkoreantext/processor/tools/UpdateAllTheExamples.scala) 파일을 실행하면 goldenset을 자동으로 업데이트 합니다. (IntelliJ 안에서 실행 해 주세요.)
 
 * 다시 테스트를 실행해 봅니다.
 ```
