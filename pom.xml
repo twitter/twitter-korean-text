@@ -16,7 +16,9 @@
     limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openkoreantext</groupId>
   <artifactId>open-korean-text</artifactId>
@@ -37,7 +39,8 @@
   <scm>
     <url>https://github.com/open-korean-text/open-korean-text</url>
     <connection>scm:git:https://github.com/open-korean-text/open-korean-text.git</connection>
-    <developerConnection>scm:git:git@github.com:openkoreantext/open-korean-text.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:openkoreantext/open-korean-text.git
+    </developerConnection>
     <tag>open-korean-text-processor-1.1</tag>
   </scm>
   <prerequisites>
@@ -222,6 +225,9 @@
           <coberturaReports>
             <param>${project.build.directory}/cobertura.xml</param>
           </coberturaReports>
+          <sourceDirectories>
+            <param>${basedir}/src/main/scala</param>
+          </sourceDirectories>
         </configuration>
       </plugin>
     </plugins>
