@@ -123,6 +123,7 @@
         <version>${scoverage.plugin.version}</version>
         <configuration>
           <excludedPackages>org.openkoreantext.processor.qa</excludedPackages>
+          <excludedPackages>org.openkoreantext.processor.tools</excludedPackages>
         </configuration>
       </plugin>
     </plugins>
@@ -209,6 +210,8 @@
         </executions>
         <configuration>
           <scalaVersion>${scala.version}</scalaVersion>
+          <excludedPackages>org.openkoreantext.processor.qa</excludedPackages>
+          <excludedPackages>org.openkoreantext.processor.tools</excludedPackages>
         </configuration>
       </plugin>
       <plugin>
@@ -219,9 +222,6 @@
           <coberturaReports>
             <param>${project.build.directory}/cobertura.xml</param>
           </coberturaReports>
-          <sourceDirectories>
-            <param>${basedir}/src/main/scala</param>
-          </sourceDirectories>
         </configuration>
       </plugin>
     </plugins>
