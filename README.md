@@ -1,4 +1,4 @@
-## open-korean-text-processor [![Coverage Status](https://coveralls.io/repos/github/open-korean-text/open-korean-text/badge.svg)](https://coveralls.io/github/open-korean-text/open-korean-text) [![Build Status](https://travis-ci.org/open-korean-text/open-korean-text.svg?branch=master)](https://travis-ci.org/open-korean-text/open-korean-text)
+## open-korean-text [![Coverage Status](https://coveralls.io/repos/github/open-korean-text/open-korean-text/badge.svg)](https://coveralls.io/github/open-korean-text/open-korean-text) [![Build Status](https://travis-ci.org/open-korean-text/open-korean-text.svg?branch=master)](https://travis-ci.org/open-korean-text/open-korean-text)
 
 Open-source Korean Text Processor / 오픈소스 한국어 처리기 (Official Fork of twitter-korean-text)
 
@@ -60,7 +60,7 @@ To include this in your Maven-based JVM project, add the following lines to your
 ```xml
   <dependency>
     <groupId>org.openkoreantext</groupId>
-    <artifactId>open-korean-text-processor</artifactId>
+    <artifactId>open-korean-text</artifactId>
     <version>1.1</version>
   </dependency>
 ```
