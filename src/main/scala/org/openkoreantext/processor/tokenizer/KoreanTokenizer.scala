@@ -166,13 +166,11 @@ object KoreanTokenizer {
                 val isWordKoreanNameVariation: Boolean = isKoreanNameVariation(word)
 
                 val unknown = !isWordName && !isKoreanNumber(word) && !isWordKoreanNameVariation
-                val pos = if (unknown || isWordName || isWordKoreanNameVariation) ProperNoun else Noun
+                val pos = Noun
                 ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length, unknown)),
                   t.words, profile)
               } else {
-                val pos = if (t.curTrie.curPos == Noun && properNouns.contains(
-                  word.toCharArray)) ProperNoun
-                else t.curTrie.curPos
+                val pos = t.curTrie.curPos
                 ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length)), t.words,
                   profile)
               }

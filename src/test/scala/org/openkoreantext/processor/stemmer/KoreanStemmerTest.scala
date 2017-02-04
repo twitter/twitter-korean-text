@@ -30,7 +30,7 @@ class KoreanStemmerTest extends TestBase {
   val sampleStems1 = Seq(
     KoreanToken("새롭다", Adjective, 0, 3),
     KoreanToken(" ", Space, 3, 1),
-    KoreanToken("스테밍", ProperNoun, 4, 3),
+    KoreanToken("스테밍", Noun, 4, 3),
     KoreanToken("을", Josa, 7, 1),
     KoreanToken(" ", Space, 8, 1),
     KoreanToken("추가", Noun, 9, 2),
@@ -61,7 +61,7 @@ class KoreanStemmerTest extends TestBase {
     KoreanToken("나", Noun, 4, 1),
     KoreanToken("는", Josa, 5, 1),
     KoreanToken(" ", Space, 6, 1),
-    KoreanToken("아이유", ProperNoun, 7, 3),
+    KoreanToken("아이유", Noun, 7, 3),
     KoreanToken("가", Josa, 10, 1),
     KoreanToken(" ", Space, 11, 1),
     KoreanToken("좋다", Adjective, 12, 3),
