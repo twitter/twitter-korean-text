@@ -125,8 +125,7 @@
         <artifactId>scoverage-maven-plugin</artifactId>
         <version>${scoverage.plugin.version}</version>
         <configuration>
-          <excludedPackages>org.openkoreantext.processor.qa</excludedPackages>
-          <excludedPackages>org.openkoreantext.processor.tools</excludedPackages>
+          <excludedPackages>org.openkoreantext.processor.qa;org.openkoreantext.processor.tools</excludedPackages>
         </configuration>
       </plugin>
     </plugins>
@@ -213,8 +212,7 @@
         </executions>
         <configuration>
           <scalaVersion>${scala.version}</scalaVersion>
-          <excludedPackages>org.openkoreantext.processor.qa</excludedPackages>
-          <excludedPackages>org.openkoreantext.processor.tools</excludedPackages>
+          <excludedPackages>org.openkoreantext.processor.qa;org.openkoreantext.processor.tools</excludedPackages>
         </configuration>
       </plugin>
       <plugin>
