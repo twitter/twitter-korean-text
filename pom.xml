@@ -220,7 +220,7 @@
             <param>${project.build.directory}/cobertura.xml</param>
           </coberturaReports>
           <sourceDirectories>
-            <param>${basedir}</param>
+            <param>${basedir}/src/main/scala</param>
           </sourceDirectories>
         </configuration>
       </plugin>
