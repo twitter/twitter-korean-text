@@ -31,6 +31,14 @@ open-korean-text는 normalization, tokenization, stemming, phrase extraction 이
 
 Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU/)
 
+## Semantic Versioning
+
+1.0.2 (Major.Minor.Patch)
+
+Major: API change
+Minor: Processor behavior change
+Patch: Bug fixes without a behavior change
+
 ## API
 * [Scala Doc](https://open-korean-text.github.io/open-korean-text/scaladocs/org/openkoreantext/processor/index.html)
 
