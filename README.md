@@ -3,8 +3,8 @@
   
 트위터에서 만든 오픈소스 한국어 처리기
 
-* 2017년 4.4 버전 이후의 개발은 http://openkoreantext.net 에서 진행됩니다. 
-* We now started an official fork at http://openkoreantext.net as of early 2017. All the development after version 4.4 will be done in open-korean-text.
+* 2017년 4.4 버전 이후의 개발은 http://openkoreantext.org 에서 진행됩니다. 
+* We now started an official fork at http://openkoreantext.org as of early 2017. All the development after version 4.4 will be done in open-korean-text.
 
 Scala/Java library to process Korean text with a Java wrapper. twitter-korean-text currently provides Korean normalization and tokenization. Please join our community at [Google Forum](https://groups.google.com/forum/#!forum/twitter-korean-text). The intent of this text processor is not limited to short tweet texts.
 
