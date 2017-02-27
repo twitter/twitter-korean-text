@@ -18,11 +18,11 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.twitter.penguin</groupId>
-  <artifactId>korean-text</artifactId>
+  <groupId>org.openkoreantext</groupId>
+  <artifactId>processor</artifactId>
   <packaging>jar</packaging>
-  <version>4.4.5-SNAPSHOT</version>
-  <name>Korean Text Processing Utilities</name>
+  <version>1.0-SNAPSHOT</version>
+  <name>Korean Text Processor</name>
   <url>https://github.com/twitter/twitter-korean-text</url>
   <description>Scala library to process Korean text</description>
   <inceptionYear>2014</inceptionYear>
@@ -35,11 +35,11 @@
     </license>
   </licenses>
   <scm>
-    <url>https://github.com/twitter/twitter-korean-text</url>
-    <connection>scm:git:https://github.com/twitter/twitter-korean-text.git</connection>
-    <developerConnection>scm:git:git@github.com:twitter/twitter-korean-text.git
+    <url>https://github.com/openkoreantext/open-korean-text</url>
+    <connection>scm:git:https://github.com/openkoreantext/open-korean-text.git</connection>
+    <developerConnection>scm:git:git@github.com:openkoreantext/open-korean-text.git
     </developerConnection>
-    <tag>korean-text-4.4.4</tag>
+    <tag>open-korean-text-1.0</tag>
   </scm>
   <prerequisites>
     <maven>3.0.4</maven>
@@ -52,7 +52,7 @@
     </developer>
   </developers>
   <issueManagement>
-    <url>https://www.github.com/twitter/twitter-korean-text/issues</url>
+    <url>https://github.com/openkoreantext/open-korean-text/issues</url>
     <system>Github Issues</system>
   </issueManagement>
   <properties>
@@ -60,7 +60,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <scala.version>2.11.7</scala.version>
+    <scala.version>2.12.0</scala.version>
     <scoverage.plugin.version>1.0.4</scoverage.plugin.version>
     <encoding>UTF-8</encoding>
   </properties>
@@ -95,8 +95,8 @@
     </dependency>
     <dependency>
       <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_2.11</artifactId>
-      <version>2.2.4</version>
+      <artifactId>scalatest_2.12</artifactId>
+      <version>3.0.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -123,7 +123,7 @@
         <artifactId>scoverage-maven-plugin</artifactId>
         <version>${scoverage.plugin.version}</version>
         <configuration>
-          <excludedPackages>com.twitter.penguin.korean.qa</excludedPackages>
+          <excludedPackages>org.openkoreantext.processor.qa</excludedPackages>
         </configuration>
       </plugin>
     </plugins>
@@ -188,6 +188,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.18.1</version>
+        <configuration>
+          <argLine>-Xms1024m -Xmx2048m</argLine>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -124,27 +124,27 @@ Picked up _JAVA_OPTIONS: -Xmx2g
  T E S T S
 -------------------------------------------------------
 Picked up _JAVA_OPTIONS: -Xmx2g
-Running com.twitter.penguin.korean.normalizer.KoreanNormalizerTest
+Running org.openkoreantext.processor.normalizer.KoreanNormalizerTest
 Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.574 sec
-Running com.twitter.penguin.korean.stemmer.KoreanStemmerTest
+Running org.openkoreantext.processor.stemmer.KoreanStemmerTest
 Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.783 sec
-Running com.twitter.penguin.korean.tokenizer.KoreanChunkerTest
+Running org.openkoreantext.processor.tokenizer.KoreanChunkerTest
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 sec
-Running com.twitter.penguin.korean.tokenizer.KoreanTokenizerTest
+Running org.openkoreantext.processor.tokenizer.KoreanTokenizerTest
 Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.214 sec
-Running com.twitter.penguin.korean.TwitterKoreanProcessorJavaTest
+Running org.openkoreantext.processor.TwitterKoreanProcessorJavaTest
 Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.055 sec
-Running com.twitter.penguin.korean.TwitterKoreanProcessorTest
+Running org.openkoreantext.processor.TwitterKoreanProcessorTest
 Goldenset Match Error: 가야하나요 (가야하나Noun 요Josa) -> (가다Verb)
 Goldenset Match Error: 가야하나 (가야하나Noun) -> (가야Noun 하나Noun)
 Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가Josa)
-Nov 14, 2014 9:43:51 PM com.twitter.penguin.korean.TwitterKoreanProcessorTest$$anonfun$12 apply$mcV$sp
+Nov 14, 2014 9:43:51 PM org.openkoreantext.processor.TwitterKoreanProcessorTest$$anonfun$12 apply$mcV$sp
 INFO: Parsed 42496 chunks.
        Total time: 4843 ms
        Average time: 0.11 ms
        Max time: 15 ms, 불러주시면
 Tests run: 12, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.884 sec <<< FAILURE!
-tokenize should correctly tokenize the goldenset(com.twitter.penguin.korean.TwitterKoreanProcessorTest)  Time elapsed: 5.637 sec  <<< ERROR!
+tokenize should correctly tokenize the goldenset(org.openkoreantext.processor.TwitterKoreanProcessorTest)  Time elapsed: 5.637 sec  <<< ERROR!
 
 ...
 
@@ -152,7 +152,7 @@ tokenize should correctly tokenize the goldenset(com.twitter.penguin.korean.Twit
 Results :
 
 Tests in error:
-  tokenize should correctly tokenize the goldenset(com.twitter.penguin.korean.TwitterKoreanProcessorTest): {(..)
+  tokenize should correctly tokenize the goldenset(org.openkoreantext.processor.TwitterKoreanProcessorTest): {(..)
 
 Tests run: 66, Failures: 0, Errors: 1, Skipped: 0
 
@@ -179,28 +179,28 @@ Goldenset Match Error: 락이가 (락이Noun* 가Josa) -> (락Noun 이Suffix 가
  T E S T S
 -------------------------------------------------------
 Picked up _JAVA_OPTIONS: -Xmx2g
-Running com.twitter.penguin.korean.normalizer.KoreanNormalizerTest
+Running org.openkoreantext.processor.normalizer.KoreanNormalizerTest
 Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.508 sec
-Running com.twitter.penguin.korean.stemmer.KoreanStemmerTest
+Running org.openkoreantext.processor.stemmer.KoreanStemmerTest
 Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.771 sec
-Running com.twitter.penguin.korean.tokenizer.KoreanChunkerTest
+Running org.openkoreantext.processor.tokenizer.KoreanChunkerTest
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 sec
-Running com.twitter.penguin.korean.tokenizer.KoreanTokenizerTest
+Running org.openkoreantext.processor.tokenizer.KoreanTokenizerTest
 Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.236 sec
-Running com.twitter.penguin.korean.TwitterKoreanProcessorJavaTest
+Running org.openkoreantext.processor.TwitterKoreanProcessorJavaTest
 Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 sec
-Running com.twitter.penguin.korean.TwitterKoreanProcessorTest
-Nov 14, 2014 9:52:40 PM com.twitter.penguin.korean.TwitterKoreanProcessorTest$$anonfun$12 apply$mcV$sp
+Running org.openkoreantext.processor.TwitterKoreanProcessorTest
+Nov 14, 2014 9:52:40 PM org.openkoreantext.processor.TwitterKoreanProcessorTest$$anonfun$12 apply$mcV$sp
 INFO: Parsed 42496 chunks.
        Total time: 5166 ms
        Average time: 0.12 ms
        Max time: 65 ms, 들리는게
 Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.387 sec
-Running com.twitter.penguin.korean.util.HangulTest
+Running org.openkoreantext.processor.util.HangulTest
 Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
-Running com.twitter.penguin.korean.util.KoreanConjugationTest
+Running org.openkoreantext.processor.util.KoreanConjugationTest
 Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.398 sec
-Running com.twitter.penguin.korean.util.KoreanSubstantiveTest
+Running org.openkoreantext.processor.util.KoreanSubstantiveTest
 Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
 
 Results :
