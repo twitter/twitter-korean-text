@@ -31,6 +31,23 @@ open-korean-text는 normalization, tokenization, stemming, phrase extraction 이
 
 Introductory Presentation: [Google Slides](https://docs.google.com/presentation/d/10CZj8ry03oCk_Jqw879HFELzOLjJZ0EOi4KJbtRSIeU/)
 
+## Web API Service
+
+[open-korean-text-api](https://github.com/open-korean-text/open-korean-text-api)  
+이 API 서비스는 Heroku 서버에서 제공되며(Domain: https://open-korean-text.herokuapp.com/)
+현재 정규화(normalization), 토큰화(tokenization), 어근화(stemmin), 어구 추출(phrase extract)
+서비스를 제공합니다.
+
+각 서비스와 사용법은 다음과 같습니다.  
+`normalize`, `tokenize`, `stem`, `extractPhrases` 가 각 서비스의 **Action** 이 되며 **Query parameter** 는 `text` 입니다.
+
+서비스 | 사용법
+---- | ----
+정규화 | https://open-korean-text.herokuapp.com/normalize?text=오픈코리안텍스트
+토큰화 | https://open-korean-text.herokuapp.com/tokenize?text=오픈코리안텍스트
+어근화 | https://open-korean-text.herokuapp.com/stem?text=오픈코리안텍스트
+어구 추출 | https://open-korean-text.herokuapp.com/extractPhrases?text=오픈코리안텍스트
+
 ## Semantic Versioning
 
 1.0.2 (Major.Minor.Patch)
