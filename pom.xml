@@ -23,7 +23,7 @@
   <groupId>org.openkoreantext</groupId>
   <artifactId>open-korean-text</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <name>Open Korean Text Processor</name>
   <url>http://openkoreantext.org</url>
   <description>Scala/Java library to process Korean text</description>

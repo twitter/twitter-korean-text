@@ -198,4 +198,9 @@ class OpenKoreanTextProcessorTest extends TestBase {
     addNounsToDictionary(List("후랴오교"))
     assert(KoreanDictionaryProvider.koreanDictionary(KoreanPos.Noun).contains("후랴오교"))
   }
+
+  test("tokenizeTopN should return top candidates") {
+    assert(OpenKoreanTextProcessor.tokenizeTopN("18대 대선 앞두고 야권 대선후보 경쟁", 3).toString() ===
+      "List(List(List(18(Number: 0, 2))), List(List(대(Verb: 2, 1)), List(대*(Noun: 2, 1))), List(List( (Space: 3, 1))), List(List(대선(Noun: 4, 2)), List(대(Verb: 4, 1), 선(Noun: 5, 1)), List(대(Verb: 4, 1), 선(Verb: 5, 1))), List(List( (Space: 6, 1))), List(List(앞두고(Verb: 7, 3)), List(앞두(Verb: 7, 2), 고(Eomi: 9, 1)), List(앞두(Verb: 7, 2), 고(PreEomi: 9, 1))), List(List( (Space: 10, 1))), List(List(야권(Noun: 11, 2)), List(야(Exclamation: 11, 1), 권(Noun: 12, 1)), List(야(Josa: 11, 1), 권(Noun: 12, 1))), List(List( (Space: 13, 1))), List(List(대선(Noun: 14, 2), 후보(Noun: 16, 2)), List(대선(Noun: 14, 2), 후보*(Noun: 16, 2)), List(대선(Noun: 14, 2), 후(Noun: 16, 1), 보(Verb: 17, 1))), List(List( (Space: 18, 1))), List(List(경쟁(Noun: 19, 2)), List(경쟁*(Noun: 19, 2))))")
+  }
 }
