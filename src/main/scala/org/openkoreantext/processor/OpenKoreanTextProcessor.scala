@@ -27,98 +27,130 @@ import org.openkoreantext.processor.tokenizer._
 import org.openkoreantext.processor.util.{KoreanDictionaryProvider, KoreanPos}
 
 /**
- * OpenKoreanTextProcessor provides error and slang tolerant Korean tokenization.
- */
+  * OpenKoreanTextProcessor provides error and slang tolerant Korean tokenization.
+  */
 object OpenKoreanTextProcessor {
   /**
-   * Normalize Korean text. Uses KoreanNormalizer.normalize().
-   *
-   * @param text Input text
-   * @return Normalized Korean text
-   */
+    * Normalize Korean text. Uses KoreanNormalizer.normalize().
+    *
+    * @param text Input text
+    * @return Normalized Korean text
+    */
   def normalize(text: CharSequence): CharSequence = KoreanNormalizer.normalize(text)
 
 
   /**
-   * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
-   * whether a token is an out-of-vocabulary term.
-   *
-   * @param text input text
-   * @return A sequence of KoreanTokens.
-   */
+    * Tokenize text into a sequence of KoreanTokens, which includes part-of-speech information and
+    * whether a token is an out-of-vocabulary term.
+    *
+    * @param text input text
+    * @return A sequence of KoreanTokens.
+    */
   def tokenize(text: CharSequence): Seq[KoreanToken] = KoreanTokenizer.tokenize(text)
 
   /**
-   * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
-   * which includes part-of-speech information and whether a token is an out-of-vocabulary term.
-   *
-   * @param text input text
-   * @return A sequence of KoreanTokens.
-   */
-  def tokenize(
-      text: CharSequence,
-      profile: TokenizerProfile
-  ): Seq[KoreanToken] = {
+    * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
+    * which includes part-of-speech information and whether a token is an out-of-vocabulary term.
+    *
+    * @param text input text
+    * @param profile TokenizerProfile
+    * @return A sequence of KoreanTokens.
+    */
+  def tokenize(text: CharSequence,
+               profile: TokenizerProfile
+              ): Seq[KoreanToken] = {
     KoreanTokenizer.tokenize(text, profile)
   }
 
   /**
-   * Add user-defined word list to the noun dictionary. Spaced words are not allowed.
-   *
-   * @param words Sequence of words to add.
-   */
+    * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
+    * which includes part-of-speech information and whether a token is an out-of-vocabulary term,
+    * and return top `n` candidates.
+    *
+    * @param text input text
+    * @param n number of top candidates
+    * @return A sequence of sequences of KoreanTokens.
+    */
+  def tokenizeTopN(text: CharSequence,
+                   n: Int
+                  ): Seq[Seq[Seq[KoreanToken]]] = {
+    KoreanTokenizer.tokenizeTopN(text, n)
+  }
+
+  /**
+    * Tokenize text (with a custom profile) into a sequence of KoreanTokens,
+    * which includes part-of-speech information and whether a token is an out-of-vocabulary term,
+    * and return top `n` candidates.
+    *
+    * @param text input text
+    * @param n number of top candidates
+    * @param profile TokenizerProfile
+    * @return A sequence of sequences of KoreanTokens.
+    */
+  def tokenizeTopN(text: CharSequence,
+                   n: Int,
+                   profile: TokenizerProfile
+                  ): Seq[Seq[Seq[KoreanToken]]] = {
+    KoreanTokenizer.tokenizeTopN(text, n, profile)
+  }
+
+  /**
+    * Add user-defined word list to the noun dictionary. Spaced words are not allowed.
+    *
+    * @param words Sequence of words to add.
+    */
   def addNounsToDictionary(words: Seq[String]) {
     KoreanDictionaryProvider.addWordsToDictionary(KoreanPos.Noun, words)
   }
 
   /**
-   * Wrapper for Korean stemmer
-   *
-   * @param tokens Korean tokens
-   * @return A sequence of stemmed tokens
-   */
+    * Wrapper for Korean stemmer
+    *
+    * @param tokens Korean tokens
+    * @return A sequence of stemmed tokens
+    */
   def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = KoreanStemmer.stem(tokens)
 
   /**
-   * Tokenize text into a sequence of token strings. This excludes spaces.
-   *
-   * @param tokens Korean tokens
-   * @return A sequence of token strings.
-   */
+    * Tokenize text into a sequence of token strings. This excludes spaces.
+    *
+    * @param tokens Korean tokens
+    * @return A sequence of token strings.
+    */
   def tokensToStrings(tokens: Seq[KoreanToken]): Seq[String] = {
     tokens.filterNot(t => t.pos == KoreanPos.Space).map(_.text.toString)
   }
 
   /**
-   * Split input text into sentences.
-   *
-   * @param text input text
-   * @return A sequence of sentences.
-   */
+    * Split input text into sentences.
+    *
+    * @param text input text
+    * @return A sequence of sentences.
+    */
   def splitSentences(text: CharSequence): Seq[Sentence] = {
     KoreanSentenceSplitter.split(text)
   }
 
   /**
-   * Extract noun-phrases from Korean text
-   *
-   * @param tokens         Korean tokens
-   * @param filterSpam     true if spam/slang terms to be filtered out (default: false)
-   * @param enableHashtags true if #hashtags to be included (default: true)
-   * @return A sequence of extracted phrases
-   */
+    * Extract noun-phrases from Korean text
+    *
+    * @param tokens         Korean tokens
+    * @param filterSpam     true if spam/slang terms to be filtered out (default: false)
+    * @param enableHashtags true if #hashtags to be included (default: true)
+    * @return A sequence of extracted phrases
+    */
   def extractPhrases(tokens: Seq[KoreanToken],
-      filterSpam: Boolean = false,
-      enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
+                     filterSpam: Boolean = false,
+                     enableHashtags: Boolean = true): Seq[KoreanPhrase] = {
     KoreanPhraseExtractor.extractPhrases(tokens, filterSpam, enableHashtags)
   }
 
   /**
-   * Detokenize the input list of words.
-   *
-   * @param tokens List of words.
-   * @return Detokenized string.
-   */
+    * Detokenize the input list of words.
+    *
+    * @param tokens List of words.
+    * @return Detokenized string.
+    */
   def detokenize(tokens: Iterable[String]): String = {
     KoreanDetokenizer.detokenize(tokens)
   }

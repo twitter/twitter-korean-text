@@ -90,19 +90,32 @@ object KoreanTokenizer {
     * @return sequence of KoreanTokens
     */
   def tokenize(text: CharSequence,
-      profile: TokenizerProfile = TokenizerProfile.defaultProfile
-  ): Seq[KoreanToken] = {
-    try {
-      chunk(text).flatMap {
+               profile: TokenizerProfile = TokenizerProfile.defaultProfile
+              ): Seq[KoreanToken] = {
+    tokenizeTopN(text, 1, profile).flatMap(_.head)
+  }
+
+  /**
+    * Parse Korean text into a sequence of KoreanTokens with custom parameters
+    *
+    * @param text Input Korean chunk
+    * @return sequence of KoreanTokens
+    */
+  def tokenizeTopN(text: CharSequence,
+                   topN: Int = 1,
+                   profile: TokenizerProfile = TokenizerProfile.defaultProfile
+                  ): Seq[Seq[Seq[KoreanToken]]] = {
+    try
+      chunk(text).map {
         case token: KoreanToken if token.pos == Korean =>
           // Get the best parse of each chunk
-          val parsed = parseKoreanChunk(token, profile)
+          val parsed = parseKoreanChunk(token, profile, topN)
 
           // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
-          collapseNouns(parsed)
-        case token: KoreanToken => Seq(token)
+          parsed.map(collapseNouns(_))
+        case token: KoreanToken => Seq(Seq(token))
       }
-    } catch {
+    catch {
       case e: Exception =>
         System.err.println(s"Error tokenizing a chunk: $text")
         throw e
@@ -117,15 +130,14 @@ object KoreanTokenizer {
     * @return The best possible parse.
     */
   private[this] def parseKoreanChunk(chunk: KoreanToken,
-      profile: TokenizerProfile = TokenizerProfile.defaultProfile): Seq[KoreanToken] = {
-    // Direct match
-    // This may produce 하 -> PreEomi
-    koreanDictionary.foreach {
-      case (pos, dict) =>
-        if (dict.contains(chunk.text)) {
-          return Seq(KoreanToken(chunk.text, pos, chunk.offset, chunk.length))
-        }
-    }
+                                     profile: TokenizerProfile = TokenizerProfile.defaultProfile,
+                                     topN: Int = 1
+                                    ): Seq[Seq[KoreanToken]] = {
+    findTopCandidates(chunk, profile).take(topN)
+  }
+
+  private def findTopCandidates(chunk: KoreanToken, profile: TokenizerProfile) = {
+    val directMatch: Seq[Seq[KoreanToken]] = findDirectMatch(chunk)
 
     // Buffer for solutions
     val solutions: mutable.Map[Int, List[CandidateParse]] = new java.util.HashMap[Int, List[CandidateParse]]
@@ -192,17 +204,31 @@ object KoreanTokenizer {
     }
 
 
-    if (solutions(chunk.length).isEmpty) {
+    val topCandidates: Seq[Seq[KoreanToken]] = if (solutions(chunk.length).isEmpty) {
       // If the chunk is not parseable, treat it as a unknown noun chunk.
-      Seq(KoreanToken(chunk.text, Noun, 0, chunk.length, true))
+      Seq(Seq(KoreanToken(chunk.text, Noun, 0, chunk.length, true)))
     } else {
       // Return the best parse of the final state
-      solutions(chunk.length).minBy(c => c.parse.score).parse.posNodes
+      solutions(chunk.length).sortBy(c => c.parse.score).map { p => p.parse.posNodes }
     }
+
+    (directMatch ++ topCandidates).distinct
+  }
+
+  private def findDirectMatch(chunk: KoreanToken): Seq[Seq[KoreanToken]] = {
+    // Direct match
+    // This may produce 하 -> PreEomi
+    koreanDictionary.foreach {
+      case (pos, dict) =>
+        if (dict.contains(chunk.text)) {
+          return Seq(Seq(KoreanToken(chunk.text, pos, chunk.offset, chunk.length)))
+        }
+    }
+    Seq()
   }
 
   case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int,
-      unknown: Boolean = false) {
+                         unknown: Boolean = false) {
     override def toString: String = {
       val unknownStar = if (unknown) "*" else ""
       s"$text$unknownStar(${pos.toString}: $offset, $length)"
@@ -214,7 +240,8 @@ object KoreanTokenizer {
   }
 
   private case class CandidateParse(parse: ParsedChunk, curTrie: List[KoreanPosTrie],
-      ending: Option[KoreanPos])
+                                    ending: Option[KoreanPos])
 
   private case class PossibleTrie(curTrie: KoreanPosTrie, words: Int)
+
 }
