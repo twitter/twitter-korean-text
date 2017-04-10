@@ -160,7 +160,7 @@ Average per tweet: 0.54212 ms
 
 ![Benchmark test](http://konlpy.org/ko/v0.4.2/_images/time.png)
 
-From [http://konlpy.org/ko/v0.4.2/morph/](http://konlpy.org/ko/v0.4.2/morph/)
+From [http://konlpy.org/ko/v0.4.3/morph/#pos-tagging-with-konlpy](http://konlpy.org/ko/v0.4.3/morph/#pos-tagging-with-konlpy)
 
 
 ## Author
