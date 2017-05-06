@@ -104,14 +104,6 @@ object OpenKoreanTextProcessor {
   }
 
   /**
-    * Wrapper for Korean stemmer
-    *
-    * @param tokens Korean tokens
-    * @return A sequence of stemmed tokens
-    */
-  def stem(tokens: Seq[KoreanToken]): Seq[KoreanToken] = KoreanStemmer.stem(tokens)
-
-  /**
     * Tokenize text into a sequence of token strings. This excludes spaces.
     *
     * @param tokens Korean tokens

@@ -26,7 +26,7 @@ import org.openkoreantext.processor.tokenizer.KoreanTokenizer.KoreanToken;
 import org.openkoreantext.processor.tokenizer.Sentence;
 import org.openkoreantext.processor.util.KoreanPos;
 import scala.collection.Iterator;
-import scala.collection.JavaConversions;
+import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
 /**
@@ -63,7 +63,7 @@ public final class OpenKoreanTextProcessorJava {
    * @param words List of user nouns.
    */
   public static void addNounsToDictionary(List<String> words) {
-    OpenKoreanTextProcessor.addNounsToDictionary(JavaConversions.asScalaBuffer(words));
+    OpenKoreanTextProcessor.addNounsToDictionary(JavaConverters.asScalaBuffer(words));
   }
 
 
@@ -121,18 +121,6 @@ public final class OpenKoreanTextProcessorJava {
     return tokensToJavaStringList(tokens, false);
   }
 
-
-  /**
-   * Stem Korean Verbs and Adjectives
-   *
-   * @param tokens Korean tokens (output of tokenize(CharSequence text)).
-   * @return StemmedTextWithTokens(text, tokens)
-   */
-  public static Seq<KoreanToken> stem(Seq<KoreanToken> tokens) {
-
-    return OpenKoreanTextProcessor.stem(tokens);
-  }
-
   /**
    * Split input text into sentences.
    *
@@ -140,7 +128,7 @@ public final class OpenKoreanTextProcessorJava {
    * @return List of Sentence objects.
    */
   public static List<Sentence> splitSentences(CharSequence text) {
-    return JavaConversions.seqAsJavaList(
+    return JavaConverters.seqAsJavaList(
         OpenKoreanTextProcessor.splitSentences(text)
     );
   }
@@ -152,7 +140,7 @@ public final class OpenKoreanTextProcessorJava {
    * @return List of phrase CharSequences.
    */
   public static List<KoreanPhraseExtractor.KoreanPhrase> extractPhrases(Seq<KoreanToken> tokens, boolean filterSpam, boolean includeHashtags) {
-    return JavaConversions.seqAsJavaList(
+    return JavaConverters.seqAsJavaList(
         OpenKoreanTextProcessor.extractPhrases(tokens, filterSpam, includeHashtags)
     );
   }
@@ -164,6 +152,6 @@ public final class OpenKoreanTextProcessorJava {
    * @return Detokenized string.
    */
   public static String detokenize(List<String> tokens) {
-    return OpenKoreanTextProcessor.detokenize(JavaConversions.iterableAsScalaIterable(tokens));
+    return OpenKoreanTextProcessor.detokenize(JavaConverters.iterableAsScalaIterable(tokens));
   }
 }

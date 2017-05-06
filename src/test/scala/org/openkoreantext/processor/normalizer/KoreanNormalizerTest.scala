@@ -25,26 +25,24 @@ class KoreanNormalizerTest extends TestBase {
 
   test("normalize should normalize ㅋㅋ ㅎㅎ ㅠㅜ chunks") {
     assert(normalize("안됔ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ내 심장을 가격했엌ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ")
-        === "안돼ㅋㅋ내 심장을 가격했어ㅋㅋ")
-    assert(normalize("무의식중에 손들어버려섴ㅋㅋㅋㅋ") === "무의식중에 손들어버려서ㅋㅋ")
-    assert(normalize("기억도 나지아낳ㅎㅎㅎ") === "기억도 나지아나ㅎㅎ")
+        === "안돼ㅋㅋㅋ내 심장을 가격했어ㅋㅋㅋ")
+    assert(normalize("무의식중에 손들어버려섴ㅋㅋㅋㅋ") === "무의식중에 손들어버려서ㅋㅋㅋ")
+    assert(normalize("기억도 나지아낳ㅎㅎㅎ") === "기억도 나지아나ㅎㅎㅎ")
     assert(normalize("근데비싸서못머구뮤ㅠㅠ") === "근데비싸서못먹음ㅠㅠ")
 
-    assert(normalize("미친 존잘니뮤ㅠㅠㅠㅠ") === "미친 존잘님ㅠㅠ")
-    assert(normalize("만나무ㅜㅜㅠ") === "만남ㅜㅜ")
-    assert(normalize("가루ㅜㅜㅜㅜ") === "가루ㅜㅜ")
-    assert(normalize("최지우ㅜㅜㅜㅜ") === "최지우ㅜㅜ")
+    assert(normalize("미친 존잘니뮤ㅠㅠㅠㅠ") === "미친 존잘님ㅠㅠㅠ")
+    assert(normalize("만나무ㅜㅜㅠ") === "만남ㅜㅜㅠ")
+    assert(normalize("가루ㅜㅜㅜㅜ") === "가루ㅜㅜㅜ")
 
-    assert(normalize("유성우ㅠㅠㅠ") === "유성우ㅠㅠ")
-    assert(normalize("ㅎㅎㅎㅋㅋ트위터ㅋㅎㅋ월드컵ㅠㅜㅠㅜㅠ") === "ㅎㅎㅋㅋ트위터ㅋㅎㅋ월드컵ㅠㅜ")
+    assert(normalize("유성우ㅠㅠㅠ") === "유성우ㅠㅠㅠ")
 
     assert(normalize("예뿌ㅠㅠ") === "예뻐ㅠㅠ")
     assert(normalize("고수야고수ㅠㅠ") === "고수야고수ㅠㅠ")
   }
 
   test("normalize should normalize repeated chunks") {
-    assert(normalize("땡큐우우우우우우") === "땡큐우우")
-    assert(normalize("구오오오오오오오오옹오오오") === "구오오옹오오")
+    assert(normalize("땡큐우우우우우우") === "땡큐우우우")
+    assert(normalize("구오오오오오오오오옹오오오") === "구오오오옹오오오")
   }
 
   test("normalize should normalize repeated 2-letters") {

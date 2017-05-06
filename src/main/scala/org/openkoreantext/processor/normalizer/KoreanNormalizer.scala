@@ -33,7 +33,7 @@ import scala.util.matching.Regex.Match
 object KoreanNormalizer {
   private[this] val EXTENTED_KOREAN_REGEX = """([ㄱ-ㅣ가-힣]+)""".r
   private[this] val KOREAN_TO_NORMALIZE_REGEX = """([가-힣]+)(ㅋ+|ㅎ+|[ㅠㅜ]+)""".r
-  protected[processor] val REPEATING_CHAR_REGEX = """(.)\1{2,}|[ㅠㅜ]{2,}""".r
+  protected[processor] val REPEATING_CHAR_REGEX = """(.)\1{3,}|[ㅠㅜ]{3,}""".r
   private[this] val REPEATING_2CHAR_REGEX = """(..)\1{2,}""".r
 
   private[this] val WHITESPACE_REGEX = """\s+""".r
@@ -60,10 +60,10 @@ object KoreanNormalizer {
       input, m => processNormalizationCandidate(m).toString
     )
 
-    // Normalize repeating chars: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ -> ㅋㅋ
+    // Normalize repeating chars: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ -> ㅋㅋㅋ
     val exclamationNormalized = REPEATING_CHAR_REGEX.replaceAllIn(
       endingNormalized, m => {
-        Matcher.quoteReplacement(m.group(0).take(2).toString)
+        Matcher.quoteReplacement(m.group(0).take(3).toString)
       }
     )
     // Normalize repeating chars: 훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍 -> 훌쩍훌쩍
@@ -102,10 +102,10 @@ object KoreanNormalizer {
     val lastTwoHead = lastTwo.charAt(0)
 
     // Exception cases
-    if (koreanDictionary(Noun).contains(chunk) ||
-        koreanDictionary(Conjunction).contains(chunk) ||
-        koreanDictionary(Adverb).contains(chunk) ||
-        koreanDictionary(Noun).contains(lastTwo) ||
+    if (koreanDictionary.get(Noun).contains(chunk) ||
+        koreanDictionary.get(Conjunction).contains(chunk) ||
+        koreanDictionary.get(Adverb).contains(chunk) ||
+        koreanDictionary.get(Noun).contains(lastTwo) ||
         lastTwoHead < '가' || lastTwoHead > '힣' ||
         CODA_N_EXCPETION.contains(lastTwoHead)
     ) {
@@ -120,7 +120,7 @@ object KoreanNormalizer {
 
     if (hc.coda == 'ㄴ' &&
         (last == '데' || last == '가' || last == '지') &&
-        koreanDictionary(Noun).contains(newHead)
+        koreanDictionary.get(Noun).contains(newHead)
     ) {
       val mid = if (hc.vowel == 'ㅡ') "은" else "인"
       newHead + mid + last
@@ -133,9 +133,9 @@ object KoreanNormalizer {
     val chunk = m.group(1)
     val toNormalize = m.group(2)
 
-    val normalizedChunk = if (koreanDictionary(Noun).contains(chunk) ||
-        koreanDictionary(Eomi).contains(chunk.takeRight(1)) ||
-        koreanDictionary(Eomi).contains(chunk.takeRight(2))) {
+    val normalizedChunk = if (koreanDictionary.get(Noun).contains(chunk) ||
+        koreanDictionary.get(Eomi).contains(chunk.takeRight(1)) ||
+        koreanDictionary.get(Eomi).contains(chunk.takeRight(2))) {
       chunk
     } else {
       normalizeEmotionAttachedChunk(chunk, toNormalize)

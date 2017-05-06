@@ -95,7 +95,7 @@ case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int,
 
   def getFreqScore = this.posNodes.foldLeft(0f) {
     case (output: Float, p: KoreanToken) if p.pos == Noun || p.pos == ProperNoun =>
-      output + (1f - koreanEntityFreq.getOrElse(p.text, 0f))
+      output + (1f - koreanEntityFreq.getOrDefault(p.text, 0f))
     case (output: Float, p: KoreanToken) => output + 1.0f
   } / this.posNodes.size
 

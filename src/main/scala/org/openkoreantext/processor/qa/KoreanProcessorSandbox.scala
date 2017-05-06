@@ -34,10 +34,6 @@ object KoreanProcessorSandbox {
     )
 
     println(
-      stem(tokens).mkString(" ")
-    )
-
-    println(
       extractPhrases(tokens)
     )
   }

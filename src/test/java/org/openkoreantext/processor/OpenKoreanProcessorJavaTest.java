@@ -32,31 +32,18 @@ import static org.junit.Assert.assertEquals;
 public class OpenKoreanProcessorJavaTest {
   @Test
   public void testNormalize() throws Exception {
-    assertEquals("힘들겠습니다 그래요ㅋㅋ", OpenKoreanTextProcessorJava.normalize("힘들겟씀다 그래욬ㅋㅋㅋ"));
+    assertEquals("힘들겠습니다 그래요ㅋㅋㅋ", OpenKoreanTextProcessorJava.normalize("힘들겟씀다 그래욬ㅋㅋㅋ"));
   }
 
   @Test
   public void testTokenize() throws Exception {
     String text = "착한강아지상을 받은 루루";
     assertEquals(
-        "List(착한(Adjective: 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), 을(Josa: 6, 1), " +
-            " (Space: 7, 1), 받은(Verb: 8, 2),  (Space: 10, 1), 루루(Noun: 11, 2))",
+        "List(착한(Adjective(착하다): 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), " +
+            "을(Josa: 6, 1),  (Space: 7, 1), 받은(Verb(받다): 8, 2),  " +
+            "(Space: 10, 1), 루루(Noun: 11, 2))",
         OpenKoreanTextProcessorJava.tokenize(text).toString()
     );
-  }
-
-  @Test
-  public void testStem() throws Exception {
-    Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize("아름다운 강산을 귀여워서 먹었다.");
-    Seq<KoreanTokenizer.KoreanToken> stemmed = OpenKoreanTextProcessorJava.stem(tokens);
-
-    assertEquals(
-        "[아름답다(Adjective: 0, 4), 강산(Noun: 5, 2), 을(Josa: 7, 1), 귀엽다(Adjective: 9, 4), " +
-            "먹다(Verb: 14, 3), .(Punctuation: 17, 1)]",
-        OpenKoreanTextProcessorJava.tokensToJavaKoreanTokenList(stemmed).toString());
-
-    assertEquals("[아름답다, 강산, 을, 귀엽다, 먹다, .]",
-        OpenKoreanTextProcessorJava.tokensToJavaStringList(stemmed).toString());
   }
 
   @Test
@@ -76,18 +63,17 @@ public class OpenKoreanProcessorJavaTest {
 
   @Test
   public void testAddToDictionary() {
-    Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize("우햐나어가녀아뎌");
-    assertEquals("[우햐나어가녀아뎌]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
+    Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize("춍춍춍춍챵챵챵");
+    assertEquals("[춍춍춍춍챵챵챵]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
 
     ArrayList<String> words = new ArrayList<>();
-    words.add("우햐나");
-    words.add("어가녀");
-    words.add("아뎌");
+    words.add("춍춍");
+    words.add("챵챵챵");
     OpenKoreanTextProcessorJava.addNounsToDictionary(words);
 
-    tokens = OpenKoreanTextProcessorJava.tokenize("우햐나어가녀아뎌");
+    tokens = OpenKoreanTextProcessorJava.tokenize("춍춍춍춍챵챵챵");
 
-    assertEquals("[우햐나, 어가녀, 아뎌]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
+    assertEquals("[춍춍, 춍춍, 챵챵챵]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
   }
 
   @Test

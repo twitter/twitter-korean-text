@@ -25,11 +25,11 @@ class KoreanDictionaryProviderTest extends TestBase {
   test("addWordsToDictionary should add words to dictionary") {
     val nonExsistentWord = "없는명사다"
 
-    assert(!koreanDictionary(KoreanPos.Noun).contains(nonExsistentWord))
+    assert(!koreanDictionary.get(KoreanPos.Noun).contains(nonExsistentWord))
 
     addWordsToDictionary(KoreanPos.Noun, Seq(nonExsistentWord))
 
-    assert(koreanDictionary(KoreanPos.Noun).contains(nonExsistentWord))
+    assert(koreanDictionary.get(KoreanPos.Noun).contains(nonExsistentWord))
   }
 }
 
