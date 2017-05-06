@@ -21,7 +21,7 @@
   <groupId>org.openkoreantext</groupId>
   <artifactId>open-korean-text</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.1</version>
+  <version>2.0.2-SNAPSHOT</version>
   <name>Open Korean Text Processor</name>
   <url>http://openkoreantext.org</url>
   <description>Scala/Java library to process Korean text</description>
@@ -39,7 +39,7 @@
     <connection>scm:git:https://github.com/open-korean-text/open-korean-text.git</connection>
     <developerConnection>scm:git:git@github.com:openkoreantext/open-korean-text.git
     </developerConnection>
-    <tag>open-korean-text-2.0.1</tag>
+    <tag>open-korean-text-processor-1.1</tag>
   </scm>
   <prerequisites>
     <maven>3.0.4</maven>
