@@ -61,7 +61,7 @@ object KoreanPhraseExtractor {
    */
   private val COLLAPSING_RULES = Map(
     // Substantive
-    "D0p*N1s0" -> Noun,
+    "D0m*N1s0" -> Noun,
     "n*a+n*" -> Noun,
     "n+" -> Noun,
 
@@ -330,14 +330,8 @@ object KoreanPhraseExtractor {
 
 
   private def permutateCadidates(candidates: Seq[KoreanPhraseChunk]): Seq[KoreanPhraseChunk] = {
-    val permutated = candidates.flatMap {
-      case phrases if phrases.length > MinPhrasesPerPhraseChunk =>
-        (0 to phrases.length - MinPhrasesPerPhraseChunk).map {
-          i => trimPhraseChunk(phrases.slice(i, phrases.length))
-        }
-      case phrases => Seq(phrases)
-    }.filter { phraseChunk: KoreanPhraseChunk => isProperPhraseChunk(phraseChunk)
-    }
-    distinctPhrases(permutated)
+    distinctPhrases(
+      candidates.filter { phraseChunk: KoreanPhraseChunk => isProperPhraseChunk(phraseChunk) }
+    )
   }
 }

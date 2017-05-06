@@ -22,12 +22,12 @@ import org.openkoreantext.processor.TestBase
 import org.openkoreantext.processor.util.KoreanConjugation._
 import org.openkoreantext.processor.util.KoreanDictionaryProvider._
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 class KoreanConjugationTest extends TestBase {
 
   def matchGoldenset(predicate: String, newExpanded: CharArraySet, examples: String): Boolean = {
-    val newExpandedString = newExpanded.map { case word: Array[Char] => new String(word)}.toSeq.sorted.mkString(", ")
+    val newExpandedString = newExpanded.asScala.map { case word: Array[Char] => new String(word)}.toSeq.sorted.mkString(", ")
     val isSameToGoldenset = newExpandedString == examples
     if (!isSameToGoldenset) {
       val prevSet = examples.split(", ").toSet

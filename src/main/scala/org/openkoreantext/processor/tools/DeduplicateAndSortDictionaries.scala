@@ -43,7 +43,7 @@ object DeduplicateAndSortDictionaries extends Runnable  {
     "noun/kpop.txt", "noun/bible.txt",
     "noun/wikipedia_title_nouns.txt", "noun/pokemon.txt", "noun/congress.txt",
 
-    "substantives/noun_prefix.txt", "substantives/suffix.txt",
+    "substantives/modifier.txt", "substantives/suffix.txt",
     "substantives/family_names.txt", "substantives/given_names.txt",
 
     "adjective/adjective.txt", "adverb/adverb.txt",

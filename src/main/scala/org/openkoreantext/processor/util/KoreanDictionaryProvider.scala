@@ -19,34 +19,35 @@
 package org.openkoreantext.processor.util
 
 import java.io.InputStream
+import java.util
 import java.util.zip.GZIPInputStream
 
 import org.openkoreantext.processor.util.KoreanConjugation._
 import org.openkoreantext.processor.util.KoreanPos._
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.io.Source
 
 /**
- * Provides a singleton Korean dictionary
- */
+  * Provides a singleton Korean dictionary
+  */
 object KoreanDictionaryProvider {
   private[this] def readStreamByLine(stream: InputStream, filename: String): Iterator[String] = {
     require(stream != null, "Resource not loaded: " + filename)
     Source.fromInputStream(stream)(io.Codec("UTF-8"))
-        .getLines()
-        .map(_.trim)
-        .filter(_.length > 0)
+      .getLines()
+      .map(_.trim)
+      .filter(_.length > 0)
   }
 
-  private[this] def readWordFreqs(filename: String): collection.mutable.Map[CharSequence, Float] = {
-    var freqMap: collection.mutable.Map[CharSequence, Float] =
+  private[this] def readWordFreqs(filename: String): util.HashMap[CharSequence, Float] = {
+    var freqMap: util.HashMap[CharSequence, Float] =
       new java.util.HashMap[CharSequence, Float]
 
     readFileByLineFromResources(filename).foreach {
       case line => if (line.contains("\t")) {
         val data = line.split("\t")
-        freqMap += (data(0) -> data(1).slice(0, 6).toFloat)
+        freqMap.put(data(0), data(1).slice(0, 6).toFloat)
       }
     }
     freqMap
@@ -99,37 +100,37 @@ object KoreanDictionaryProvider {
     new CharArraySet(10000, false)
   }
 
-  lazy val koreanEntityFreq: collection.mutable.Map[CharSequence, Float] =
+  lazy val koreanEntityFreq: util.HashMap[CharSequence, Float] =
     readWordFreqs("freq/entity-freq.txt.gz")
 
   def addWordsToDictionary(pos: KoreanPos, words: Seq[String]): Unit = {
-    koreanDictionary(pos).addAll(words)
+    koreanDictionary.get(pos).addAll(words.asJava)
   }
 
-  val koreanDictionary: collection.mutable.Map[KoreanPos, CharArraySet] = {
-    val map: collection.mutable.Map[KoreanPos, CharArraySet] =
+  val koreanDictionary: util.HashMap[KoreanPos, CharArraySet] = {
+    val map: util.HashMap[KoreanPos, CharArraySet] =
       new java.util.HashMap[KoreanPos, CharArraySet]
 
-    map += Noun -> readWords(
+    map.put(Noun, readWords(
       "noun/nouns.txt", "noun/entities.txt", "noun/spam.txt",
       "noun/names.txt", "noun/twitter.txt", "noun/lol.txt",
       "noun/slangs.txt", "noun/company_names.txt",
       "noun/foreign.txt", "noun/geolocations.txt", "noun/profane.txt",
       "substantives/given_names.txt", "noun/kpop.txt", "noun/bible.txt",
       "noun/pokemon.txt", "noun/congress.txt", "noun/wikipedia_title_nouns.txt"
-    )
-    map += Verb -> conjugatePredicatesToCharArraySet(readWordsAsSet("verb/verb.txt"))
-    map += Adjective -> conjugatePredicatesToCharArraySet(readWordsAsSet("adjective/adjective.txt"), isAdjective = true)
-    map += Adverb -> readWords("adverb/adverb.txt")
-    map += Determiner -> readWords("auxiliary/determiner.txt")
-    map += Exclamation -> readWords("auxiliary/exclamation.txt")
-    map += Josa -> readWords("josa/josa.txt")
-    map += Eomi -> readWords("verb/eomi.txt")
-    map += PreEomi -> readWords("verb/pre_eomi.txt")
-    map += Conjunction -> readWords("auxiliary/conjunctions.txt")
-    map += NounPrefix -> readWords("substantives/noun_prefix.txt")
-    map += VerbPrefix -> readWords("verb/verb_prefix.txt")
-    map += Suffix -> readWords("substantives/suffix.txt")
+    ))
+    map.put(Verb, conjugatePredicatesToCharArraySet(readWordsAsSet("verb/verb.txt")))
+    map.put(Adjective, conjugatePredicatesToCharArraySet(readWordsAsSet("adjective/adjective.txt"), isAdjective = true))
+    map.put(Adverb, readWords("adverb/adverb.txt"))
+    map.put(Determiner, readWords("auxiliary/determiner.txt"))
+    map.put(Exclamation, readWords("auxiliary/exclamation.txt"))
+    map.put(Josa, readWords("josa/josa.txt"))
+    map.put(Eomi, readWords("verb/eomi.txt"))
+    map.put(PreEomi, readWords("verb/pre_eomi.txt"))
+    map.put(Conjunction, readWords("auxiliary/conjunctions.txt"))
+    map.put(Modifier, readWords("substantives/modifier.txt"))
+    map.put(VerbPrefix, readWords("verb/verb_prefix.txt"))
+    map.put(Suffix, readWords("substantives/suffix.txt"))
     map
   }
 
@@ -154,9 +155,10 @@ object KoreanDictionaryProvider {
   lazy val predicateStems = {
     def getConjugationMap(words: Set[String], isAdjective: Boolean): Map[String, String] = {
       words.flatMap {
-        word: String => conjugatePredicated(Set(word), isAdjective).map {
-          conjugated => (conjugated.toString, word + "다")
-        }
+        word: String =>
+          conjugatePredicated(Set(word), isAdjective).map {
+            conjugated => (conjugated.toString, word + "다")
+          }
       }.toMap
     }
 

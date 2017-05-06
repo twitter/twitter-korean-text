@@ -33,53 +33,6 @@ class OpenKoreanTextProcessorTest extends TestBase {
     )
   }
 
-  test("tokenize should tokenize into a sequence of KoreanTokens") {
-    assert(
-      tokenize("이태민 복근있다..!!!!!!  11자...ㅋㅋㅋㅋ").mkString("/")
-          === "이태민(Noun: 0, 3)/ (Space: 3, 1)/복근(Noun: 4, 2)/있다(Adjective: 6, 2)/" +
-          "..!!!!!!(Punctuation: 8, 8)/  (Space: 16, 2)/11(Number: 18, 2)/" +
-          "자(Noun: 20, 1)/...(Punctuation: 21, 3)/ㅋㅋㅋㅋ(KoreanParticle: 24, 4)"
-    )
-
-    assert(
-      tokenize("요뎡왕댜는 복근 따위 없어도돼 얼굴이 대신하니까!!!! ").mkString("/")
-          === "요뎡왕댜(Noun: 0, 4)/는(Josa: 4, 1)/ (Space: 5, 1)/복근(Noun: 6, 2)/" +
-          " (Space: 8, 1)/따위(Noun: 9, 2)/ (Space: 11, 1)/없어(Adjective: 12, 2)/도(Eomi: 14, 1)/" +
-          "돼(Verb: 15, 1)/ (Space: 16, 1)/얼굴(Noun: 17, 2)/이(Josa: 19, 1)/ (Space: 20, 1)/" +
-          "대신하니(Verb: 21, 4)/까(Eomi: 25, 1)/!!!!(Punctuation: 26, 4)/ (Space: 30, 1)"
-    )
-
-    assert(
-      tokenize("삼겹살 바베큐는 뼈가 너무많다. 생된장이 예술이다.").mkString("/")
-          === "삼겹살(Noun: 0, 3)/ (Space: 3, 1)/바베큐(Noun: 4, 3)/는(Josa: 7, 1)/" +
-          " (Space: 8, 1)/뼈(Noun: 9, 1)/가(Josa: 10, 1)/ (Space: 11, 1)/너무(Adverb: 12, 2)/많다(Adjective: 14, 2)/" +
-          ".(Punctuation: 16, 1)/ (Space: 17, 1)/생(Noun: 18, 1)/된장(Noun: 19, 2)/이(Josa: 21, 1)/" +
-          " (Space: 22, 1)/예술(Noun: 23, 2)/이다(Josa: 25, 2)/.(Punctuation: 27, 1)"
-    )
-
-    assert(
-      tokenize("얼른 부산오십쇼!! 보고싶습니다!!! 사랑해여 김캡틴♥♥♥").mkString("/")
-          === "얼른(Noun: 0, 2)/ (Space: 2, 1)/부산(Noun: 3, 2)/오십(Noun: 5, 2)/쇼(Noun: 7, 1)/" +
-          "!!(Punctuation: 8, 2)/ (Space: 10, 1)/보고(Verb: 11, 2)/싶(PreEomi: 13, 1)/" +
-          "습니다(Eomi: 14, 3)/!!!(Punctuation: 17, 3)/ (Space: 20, 1)/사랑해(Verb: 21, 3)/" +
-          "여(Eomi: 24, 1)/ (Space: 25, 1)/김(Noun: 26, 1)/캡틴(Noun: 27, 2)/♥♥♥(Foreign: 29, 3)"
-    )
-
-    assert(
-      tokenize("와아아 페르세우스 유성우가 친창에 떨어진다!!!!").mkString("/")
-          === "와아아(Exclamation: 0, 3)/ (Space: 3, 1)/페르세우스(Noun: 4, 5)/" +
-          " (Space: 9, 1)/유성우(Noun: 10, 3)/가(Josa: 13, 1)/ (Space: 14, 1)/친창*(Noun: 15, 2)/" +
-          "에(Josa: 17, 1)/ (Space: 18, 1)/떨어진(Verb: 19, 3)/다(Eomi: 22, 1)/!!!!(Punctuation: 23, 4)"
-    )
-
-    assert(
-      tokenize("'넥서스' 갤럭시 Galaxy S5").mkString("/")
-          === "'(Punctuation: 0, 1)/넥서스(Noun: 1, 3)/'(Punctuation: 4, 1)/ (Space: 5, 1)/" +
-          "갤럭시(Noun: 6, 3)/ (Space: 9, 1)/Galaxy(Alpha: 10, 6)/ (Space: 16, 1)/" +
-          "S(Alpha: 17, 1)/5(Number: 18, 1)"
-    )
-  }
-
   test("tokenizer should correctly reflect custom parameters") {
     assert(
       tokenize("스윗박스가 점점 좁아지더니, 의자 두개 붙여놓은 것만큼 좁아졌어요. 맘에드는이성분과 앉으면 가까워질거에요 ㅎㅎ").mkString("/")
@@ -156,36 +109,6 @@ class OpenKoreanTextProcessorTest extends TestBase {
             "밝다(Verb: 8, 4)/.(Punctuation: 12, 1)")
   }
 
-  test("extractPhrases should correctly extract phrases") {
-
-    val tokens = tokenize("시발 토토가의 인기폭발을 보니 미국에서 뉴키즈온더블럭 백스트릿보이스 조인트 컨서트")
-
-    assert(
-      OpenKoreanTextProcessor.extractPhrases(
-        tokens
-      ).mkString(", ") ===
-          "시발(Noun: 0, 2), 시발 토토가(Noun: 0, 6), 시발 토토가의 인기폭발(Noun: 0, 12), " +
-              "토토가의 인기폭발(Noun: 3, 9), 인기폭발(Noun: 8, 4), 미국(Noun: 17, 2), " +
-              "뉴키즈온더블럭(Noun: 22, 7), 뉴키즈온더블럭 백스트릿보이스(Noun: 22, 15), " +
-              "뉴키즈온더블럭 백스트릿보이스 조인트(Noun: 22, 19), 백스트릿보이스 조인트(Noun: 30, 11), " +
-              "뉴키즈온더블럭 백스트릿보이스 조인트 컨서트(Noun: 22, 23), 백스트릿보이스 조인트 컨서트(Noun: 30, 15), " +
-              "조인트 컨서트(Noun: 38, 7), 토토가(Noun: 3, 3), 인기(Noun: 8, 2), 폭발(Noun: 10, 2), " +
-              "스트릿(Noun: 31, 3), 보이스(Noun: 34, 3), 조인트(Noun: 38, 3), 컨서트(Noun: 42, 3)"
-    )
-
-    assert(
-      OpenKoreanTextProcessor.extractPhrases(
-        tokens, filterSpam = true
-      ).mkString(", ") ===
-          "토토가(Noun: 3, 3), 토토가의 인기폭발(Noun: 3, 9), 인기폭발(Noun: 8, 4), 미국(Noun: 17, 2), " +
-              "뉴키즈온더블럭(Noun: 22, 7), 뉴키즈온더블럭 백스트릿보이스(Noun: 22, 15), " +
-              "뉴키즈온더블럭 백스트릿보이스 조인트(Noun: 22, 19), 백스트릿보이스 조인트(Noun: 30, 11), " +
-              "뉴키즈온더블럭 백스트릿보이스 조인트 컨서트(Noun: 22, 23), 백스트릿보이스 조인트 컨서트(Noun: 30, 15), " +
-              "조인트 컨서트(Noun: 38, 7), 인기(Noun: 8, 2), 폭발(Noun: 10, 2), 스트릿(Noun: 31, 3), " +
-              "보이스(Noun: 34, 3), 조인트(Noun: 38, 3), 컨서트(Noun: 42, 3)"
-    )
-  }
-
   test("splitSentences should correctly split sentences") {
     assert(
       splitSentences("가을이다! 남자는 가을을 탄다...... 그렇지? 루루야! 버버리코트 사러 가자!!!!").mkString("/") ===
@@ -194,13 +117,23 @@ class OpenKoreanTextProcessorTest extends TestBase {
   }
 
   test("addNounsToDictionary should add nouns to the dictionary") {
-    assert(!KoreanDictionaryProvider.koreanDictionary(KoreanPos.Noun).contains("후랴오교"))
+    assert(!KoreanDictionaryProvider.koreanDictionary.get(KoreanPos.Noun).contains("후랴오교"))
     addNounsToDictionary(List("후랴오교"))
-    assert(KoreanDictionaryProvider.koreanDictionary(KoreanPos.Noun).contains("후랴오교"))
+    assert(KoreanDictionaryProvider.koreanDictionary.get(KoreanPos.Noun).contains("후랴오교"))
   }
 
   test("tokenizeTopN should return top candidates") {
-    assert(OpenKoreanTextProcessor.tokenizeTopN("18대 대선 앞두고 야권 대선후보 경쟁", 3).toString() ===
-      "List(List(List(18(Number: 0, 2))), List(List(대(Verb: 2, 1)), List(대*(Noun: 2, 1))), List(List( (Space: 3, 1))), List(List(대선(Noun: 4, 2)), List(대(Verb: 4, 1), 선(Noun: 5, 1)), List(대(Verb: 4, 1), 선(Verb: 5, 1))), List(List( (Space: 6, 1))), List(List(앞두고(Verb: 7, 3)), List(앞두(Verb: 7, 2), 고(Eomi: 9, 1)), List(앞두(Verb: 7, 2), 고(PreEomi: 9, 1))), List(List( (Space: 10, 1))), List(List(야권(Noun: 11, 2)), List(야(Exclamation: 11, 1), 권(Noun: 12, 1)), List(야(Josa: 11, 1), 권(Noun: 12, 1))), List(List( (Space: 13, 1))), List(List(대선(Noun: 14, 2), 후보(Noun: 16, 2)), List(대선(Noun: 14, 2), 후보*(Noun: 16, 2)), List(대선(Noun: 14, 2), 후(Noun: 16, 1), 보(Verb: 17, 1))), List(List( (Space: 18, 1))), List(List(경쟁(Noun: 19, 2)), List(경쟁*(Noun: 19, 2))))")
+    assert(OpenKoreanTextProcessor.tokenizeTopN("대선 후보", 3).toString() ===
+      "List(" +
+        "List(" +
+          "List(대선(Noun: 0, 2)), " +
+          "List(대(Modifier: 0, 1), 선(Noun: 1, 1)), " +
+          "List(대(Verb: 0, 1), 선(Noun: 1, 1))), " +
+        "List(List( (Space: 2, 1))), " +
+        "List(" +
+          "List(후보(Noun: 3, 2)), " +
+          "List(후보*(Noun: 3, 2)), " +
+          "List(후(Noun: 3, 1), 보(Verb: 4, 1))))"
+    )
   }
 }

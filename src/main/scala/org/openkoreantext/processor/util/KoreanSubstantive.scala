@@ -71,7 +71,7 @@ object KoreanSubstantive {
    * @return true if the chunk is an 'ㅇ' omitted variation
    */
   protected[processor] def isKoreanNameVariation(chunk: CharSequence): Boolean = {
-    val nounDict = koreanDictionary(Noun)
+    val nounDict = koreanDictionary.get(Noun)
 
     val s = chunk.toString
     if (isName(s)) return true

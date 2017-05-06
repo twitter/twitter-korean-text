@@ -144,9 +144,9 @@ class KoreanSubstantiveTest extends TestBase {
     )
 
     assert(
-      collapseNouns(Seq(KoreanToken("개", NounPrefix, 0, 1), KoreanToken("마", Noun, 1, 1),
+      collapseNouns(Seq(KoreanToken("개", Modifier, 0, 1), KoreanToken("마", Noun, 1, 1),
         KoreanToken("코", Noun, 2, 1), KoreanToken("토", Noun, 3, 1)))
-        === Seq(KoreanToken("개", NounPrefix, 0, 1), KoreanToken("마코토", Noun, 1, 3, unknown = true))
+        === Seq(KoreanToken("개", Modifier, 0, 1), KoreanToken("마코토", Noun, 1, 3, unknown = true))
     )
 
     assert(

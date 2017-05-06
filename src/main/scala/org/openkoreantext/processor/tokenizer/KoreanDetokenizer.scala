@@ -27,7 +27,7 @@ import org.openkoreantext.processor.util.KoreanPos
 object KoreanDetokenizer {
   val SuffixPos = Set(KoreanPos.Josa, KoreanPos.Eomi, KoreanPos.PreEomi, KoreanPos.Suffix,
     KoreanPos.Punctuation)
-  val PrefixPos = Set(KoreanPos.NounPrefix, KoreanPos.VerbPrefix)
+  val PrefixPos = Set(KoreanPos.Modifier, KoreanPos.VerbPrefix)
 
   def detokenize(input: Iterable[String]) = {
     // Space guide prevents tokenizing a word that was not tokenized in the input.

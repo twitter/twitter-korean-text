@@ -231,16 +231,16 @@ class KoreanTokenizerTest extends TestBase {
   }
 
   test("tokenize should add user-added nouns to dictionary") {
-    assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("뇬뇨"))
-    assert(!KoreanDictionaryProvider.koreanDictionary(Noun).contains("츄쵸"))
+    assert(!KoreanDictionaryProvider.koreanDictionary.get(Noun).contains("뇬뇨"))
+    assert(!KoreanDictionaryProvider.koreanDictionary.get(Noun).contains("츄쵸"))
 
     assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨츄쵸").mkString(" ") ===
         "뇬뇨뇬뇨뇬뇨뇬뇨*(Noun: 0, 8) 츄쵸*(Noun: 8, 2)")
 
     KoreanDictionaryProvider.addWordsToDictionary(Noun, List("뇬뇨", "츄쵸"))
 
-    assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("뇬뇨"))
-    assert(KoreanDictionaryProvider.koreanDictionary(Noun).contains("츄쵸"))
+    assert(KoreanDictionaryProvider.koreanDictionary.get(Noun).contains("뇬뇨"))
+    assert(KoreanDictionaryProvider.koreanDictionary.get(Noun).contains("츄쵸"))
 
     assert(tokenize("뇬뇨뇬뇨뇬뇨뇬뇨츄쵸").mkString(" ") ===
         "뇬뇨(Noun: 0, 2) 뇬뇨(Noun: 2, 2) 뇬뇨(Noun: 4, 2) 뇬뇨(Noun: 6, 2) 츄쵸(Noun: 8, 2)")

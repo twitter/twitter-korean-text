@@ -62,7 +62,7 @@ object KoreanPos extends Enumeration {
   val Noun, Verb, Adjective,
   Adverb, Determiner, Exclamation,
   Josa, Eomi, PreEomi, Conjunction,
-  NounPrefix, VerbPrefix, Suffix, Unknown,
+  Modifier, VerbPrefix, Suffix, Unknown,
 
   // Chunk level POS
   Korean, Foreign, Number, KoreanParticle, Alpha,
@@ -91,7 +91,7 @@ object KoreanPos extends Enumeration {
     'j' -> Josa,
     'e' -> Eomi,
     'r' -> PreEomi,
-    'p' -> NounPrefix,
+    'm' -> Modifier,
     'v' -> VerbPrefix,
     's' -> Suffix,
 

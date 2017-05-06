@@ -50,7 +50,7 @@ object KoreanStemmer {
       val validLength = token.text.length > 2
       val validPos = token.pos == Verb
       val validEndings = EndingsForNouns.contains(token.text.takeRight(2))
-      val validNouns = koreanDictionary(Noun).contains(heading)
+      val validNouns = koreanDictionary.get(Noun).contains(heading)
 
       validLength && validPos && validEndings && validNouns
     }

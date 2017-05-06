@@ -76,18 +76,17 @@ public class OpenKoreanProcessorJavaTest {
 
   @Test
   public void testAddToDictionary() {
-    Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize("우햐나어가녀아뎌");
-    assertEquals("[우햐나어가녀아뎌]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
+    Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize("춍춍춍춍챵챵챵");
+    assertEquals("[춍춍춍춍챵챵챵]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
 
     ArrayList<String> words = new ArrayList<>();
-    words.add("우햐나");
-    words.add("어가녀");
-    words.add("아뎌");
+    words.add("춍춍");
+    words.add("챵챵챵");
     OpenKoreanTextProcessorJava.addNounsToDictionary(words);
 
-    tokens = OpenKoreanTextProcessorJava.tokenize("우햐나어가녀아뎌");
+    tokens = OpenKoreanTextProcessorJava.tokenize("춍춍춍춍챵챵챵");
 
-    assertEquals("[우햐나, 어가녀, 아뎌]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
+    assertEquals("[춍춍, 춍춍, 챵챵챵]", OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens).toString());
   }
 
   @Test

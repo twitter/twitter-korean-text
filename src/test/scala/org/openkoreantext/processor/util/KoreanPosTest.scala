@@ -25,8 +25,8 @@ class KoreanPosTest extends TestBase {
   test("buildTrie should build Trie correctly for initial optionals with final non-optionals") {
     // 0 -> 1
     assert(
-      buildTrie("p0N1", Noun) === List(
-        KoreanPosTrie(NounPrefix, List(
+      buildTrie("m0N1", Noun) === List(
+        KoreanPosTrie(Modifier, List(
           KoreanPosTrie(Noun, List(), ending = Some(Noun))
         ), ending = None),
         KoreanPosTrie(Noun, List(), ending = Some(Noun))
@@ -34,8 +34,8 @@ class KoreanPosTest extends TestBase {
     )
     // * -> +
     assert(
-      buildTrie("p*N+", Noun) === List(
-        KoreanPosTrie(NounPrefix, List(
+      buildTrie("m*N+", Noun) === List(
+        KoreanPosTrie(Modifier, List(
           selfNode,
           KoreanPosTrie(Noun, List(selfNode), ending = Some(Noun))
         ), ending = None),
@@ -46,8 +46,8 @@ class KoreanPosTest extends TestBase {
   test("buildTrie should build Trie correctly for initial optionals with multiple non-optionals") {
     // 0 -> 0 -> 1
     assert(
-      buildTrie("p0N0s1", Noun) === List(
-        KoreanPosTrie(NounPrefix, List(
+      buildTrie("m0N0s1", Noun) === List(
+        KoreanPosTrie(Modifier, List(
           KoreanPosTrie(Noun, List(
             KoreanPosTrie(Suffix, List(), ending = Some(Noun))
           ), ending = None),
@@ -63,8 +63,8 @@ class KoreanPosTest extends TestBase {
   test("buildTrie should build Trie correctly for initial non-optionals with final non-optionals") {
     // 1 -> +
     assert(
-      buildTrie("p1N+", Noun) === List(
-        KoreanPosTrie(NounPrefix, List(
+      buildTrie("m1N+", Noun) === List(
+        KoreanPosTrie(Modifier, List(
           KoreanPosTrie(Noun, List(
             selfNode
           ), ending = Some(Noun))
@@ -85,8 +85,8 @@ class KoreanPosTest extends TestBase {
   test("buildTrie should build Trie correctly for initial non-optionals with final optionals") {
     // 1 -> *
     assert(
-      buildTrie("p1N*", Noun) === List(
-        KoreanPosTrie(NounPrefix, List(
+      buildTrie("m1N*", Noun) === List(
+        KoreanPosTrie(Modifier, List(
           KoreanPosTrie(Noun, List(
             selfNode
           ), ending = Some(Noun))
@@ -117,5 +117,4 @@ class KoreanPosTest extends TestBase {
       )
     )
   }
-
 }
