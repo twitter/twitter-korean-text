@@ -21,7 +21,7 @@ package org.openkoreantext.processor.util
 import org.openkoreantext.processor.util.Hangul._
 import org.openkoreantext.processor.util.KoreanDictionaryProvider._
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 /**
  * Expands Korean verbs and adjectives to all possible conjugation forms.
@@ -70,7 +70,7 @@ object KoreanConjugation {
     val expanded: Set[String] = conjugatePredicated(words, isAdjective)
 
     val newSet = newCharArraySet
-    newSet.addAll(expanded)
+    newSet.addAll(expanded.asJava)
     newSet
   }
 
