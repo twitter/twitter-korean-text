@@ -44,6 +44,12 @@ public class OpenKoreanProcessorJavaTest {
             "(Space: 10, 1), 루루(Noun: 11, 2))",
         OpenKoreanTextProcessorJava.tokenize(text).toString()
     );
+
+    text = "백여마리";
+    assertEquals(
+        "List(백여(Modifier: 0, 2), 마리(Noun: 2, 2))",
+        OpenKoreanTextProcessorJava.tokenize(text).toString()
+    );
   }
 
   @Test
@@ -89,6 +95,13 @@ public class OpenKoreanProcessorJavaTest {
     assertEquals(
         "[착한(Adjective: 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), 을(Josa: 6, 1), " +
             "받은(Verb: 8, 2), 루루(Noun: 11, 2)]",
+        OpenKoreanTextProcessorJava.tokensToJavaKoreanTokenList(tokens, false).toString()
+    );
+
+    text =  "백여마리";
+    tokens = OpenKoreanTextProcessorJava.tokenize(text);
+    assertEquals(
+        "[백여(Modifier: 0, 2), 마리(Noun: 2, 2)]",
         OpenKoreanTextProcessorJava.tokensToJavaKoreanTokenList(tokens, false).toString()
     );
   }

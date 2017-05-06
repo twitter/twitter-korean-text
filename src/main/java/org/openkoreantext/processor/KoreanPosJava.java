@@ -26,7 +26,7 @@ public enum KoreanPosJava {
   Noun, Verb, Adjective,
   Adverb, Determiner, Exclamation,
   Josa, Eomi, PreEomi, Conjunction,
-  NounPrefix, VerbPrefix, Suffix, Unknown,
+  Modifier, VerbPrefix, Suffix, Unknown,
 
   // Chunk level POS
   Korean, Foreign, Number, KoreanParticle, Alpha,
@@ -36,5 +36,5 @@ public enum KoreanPosJava {
   // Functional POS
   Space, Others,
 
-  ProperNoun;
+  ProperNoun
 }
