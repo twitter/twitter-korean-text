@@ -33,7 +33,7 @@ import scala.util.matching.Regex.Match
 object KoreanNormalizer {
   private[this] val EXTENTED_KOREAN_REGEX = """([ㄱ-ㅣ가-힣]+)""".r
   private[this] val KOREAN_TO_NORMALIZE_REGEX = """([가-힣]+)(ㅋ+|ㅎ+|[ㅠㅜ]+)""".r
-  protected[processor] val REPEATING_CHAR_REGEX = """(.)\1{2,}|[ㅠㅜ]{2,}""".r
+  protected[processor] val REPEATING_CHAR_REGEX = """(.)\1{3,}|[ㅠㅜ]{3,}""".r
   private[this] val REPEATING_2CHAR_REGEX = """(..)\1{2,}""".r
 
   private[this] val WHITESPACE_REGEX = """\s+""".r
@@ -60,10 +60,10 @@ object KoreanNormalizer {
       input, m => processNormalizationCandidate(m).toString
     )
 
-    // Normalize repeating chars: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ -> ㅋㅋ
+    // Normalize repeating chars: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ -> ㅋㅋㅋ
     val exclamationNormalized = REPEATING_CHAR_REGEX.replaceAllIn(
       endingNormalized, m => {
-        Matcher.quoteReplacement(m.group(0).take(2).toString)
+        Matcher.quoteReplacement(m.group(0).take(3).toString)
       }
     )
     // Normalize repeating chars: 훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍훌쩍 -> 훌쩍훌쩍

@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 public class OpenKoreanProcessorJavaTest {
   @Test
   public void testNormalize() throws Exception {
-    assertEquals("힘들겠습니다 그래요ㅋㅋ", OpenKoreanTextProcessorJava.normalize("힘들겟씀다 그래욬ㅋㅋㅋ"));
+    assertEquals("힘들겠습니다 그래요ㅋㅋㅋ", OpenKoreanTextProcessorJava.normalize("힘들겟씀다 그래욬ㅋㅋㅋ"));
   }
 
   @Test

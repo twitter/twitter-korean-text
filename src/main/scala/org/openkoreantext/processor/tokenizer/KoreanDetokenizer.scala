@@ -37,19 +37,24 @@ object KoreanDetokenizer {
     val tokenized = KoreanTokenizer.tokenize(input.mkString(""), TokenizerProfile(spaceGuide = spaceGuide))
 
     // Attach suffixes and prefixes.
+    // Attach Noun + Verb
     collapseTokens(tokenized).mkString(" ")
   }
 
   private def collapseTokens(tokenized: Seq[KoreanToken]): List[String] = {
-    val (output, isPrefix) = tokenized.foldLeft((List[String](), false)) {
-      case ((output: List[String], isPrefix: Boolean), token: KoreanToken) =>
+    val (output, isPrefix, prev) = tokenized
+      .foldLeft[(List[String], Boolean, Option[KoreanToken])]((List[String](), false, None)) {
+      case ((output: List[String], isPrefix: Boolean, prev: Option[KoreanToken]), token: KoreanToken) =>
         if (output.nonEmpty && (isPrefix || SuffixPos.contains(token.pos))) {
           val attached = output.lastOption.getOrElse("") + token.text
-          (output.init :+ attached, false)
+          (output.init :+ attached, false, Some(token))
+        } else if (prev.isDefined && prev.get.pos == KoreanPos.Noun && token.pos == KoreanPos.Verb) {
+          val attached = output.lastOption.getOrElse("") + token.text
+          (output.init :+ attached, false, Some(token))
         } else if (PrefixPos.contains(token.pos)) {
-          (output :+ token.text, true)
+          (output :+ token.text, true, Some(token))
         } else {
-          (output :+ token.text, false)
+          (output :+ token.text, false, Some(token))
         }
     }
     output

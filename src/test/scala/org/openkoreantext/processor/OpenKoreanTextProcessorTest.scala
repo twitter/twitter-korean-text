@@ -29,7 +29,7 @@ class OpenKoreanTextProcessorTest extends TestBase {
   val LOG = Logger.getLogger(getClass.getSimpleName)
   test("normalize should correctly normalize") {
     assert(
-      normalize("그랰ㅋㅋㅋ 샤릉햌ㅋㅋ") === "그래ㅋㅋ 사랑해ㅋㅋ"
+      normalize("그랰ㅋㅋㅋㅋ 샤릉햌ㅋㅋ") === "그래ㅋㅋㅋ 사랑해ㅋㅋ"
     )
   }
 
@@ -50,6 +50,21 @@ class OpenKoreanTextProcessorTest extends TestBase {
     assert(
       tokenize("^///^규앙ㅇ").mkString("/")
           === "^///^(Punctuation: 0, 5)/규앙(Exclamation: 5, 2)/ㅇ(KoreanParticle: 7, 1)"
+    )
+  }
+
+  test("tokenize should correctly tokenize the example sentence") {
+    assert(
+      tokenize(normalize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋ")).mkString("/") ===
+        "한국어(Noun: 0, 3)/를(Josa: 3, 1)/ (Space: 4, 1)/처리(Noun: 5, 2)/하는(Verb(하다): 7, 2)/" +
+          " (Space: 9, 1)/예시(Noun: 10, 2)/입니다(Adjective(이다): 12, 3)/ㅋㅋㅋ(KoreanParticle: 15, 3)"
+    )
+  }
+
+  test("extractPharase should correctly extract phrase from the example sentence") {
+    assert(
+      extractPhrases(tokenize(normalize("한국어를 처리하는 예시입니닼ㅋㅋㅋㅋ"))).mkString("/") ===
+        "한국어(Noun: 0, 3)/처리(Noun: 5, 2)/처리하는 예시(Noun: 5, 7)/예시(Noun: 10, 2)"
     )
   }
 
