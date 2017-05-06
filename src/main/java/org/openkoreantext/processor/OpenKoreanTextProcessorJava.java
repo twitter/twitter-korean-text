@@ -121,18 +121,6 @@ public final class OpenKoreanTextProcessorJava {
     return tokensToJavaStringList(tokens, false);
   }
 
-
-  /**
-   * Stem Korean Verbs and Adjectives
-   *
-   * @param tokens Korean tokens (output of tokenize(CharSequence text)).
-   * @return StemmedTextWithTokens(text, tokens)
-   */
-  public static Seq<KoreanToken> stem(Seq<KoreanToken> tokens) {
-
-    return OpenKoreanTextProcessor.stem(tokens);
-  }
-
   /**
    * Split input text into sentences.
    *

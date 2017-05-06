@@ -101,14 +101,6 @@ class OpenKoreanTextProcessorTest extends TestBase {
     )
   }
 
-  test("stem should correctly stem the tokenized words") {
-    val tokens = tokenize("게으른 아침이 밝았구나.")
-
-    assert(stem(tokens).mkString("/") ===
-        "게으르다(Adjective: 0, 3)/ (Space: 3, 1)/아침(Noun: 4, 2)/이(Josa: 6, 1)/ (Space: 7, 1)/" +
-            "밝다(Verb: 8, 4)/.(Punctuation: 12, 1)")
-  }
-
   test("splitSentences should correctly split sentences") {
     assert(
       splitSentences("가을이다! 남자는 가을을 탄다...... 그렇지? 루루야! 버버리코트 사러 가자!!!!").mkString("/") ===

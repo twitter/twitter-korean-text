@@ -126,7 +126,7 @@ class KoreanTokenizerTest extends TestBase {
 
     assert(
       tokenize("쵸귀여운") ===
-        List(KoreanToken("쵸", VerbPrefix, 0, 1), KoreanToken("귀여운", Adjective, 1, 3))
+        List(KoreanToken("쵸", VerbPrefix, 0, 1), KoreanToken("귀여운", Adjective, 1, 3, stem = Some("귀엽다")))
     )
 
     assert(
@@ -138,21 +138,22 @@ class KoreanTokenizerTest extends TestBase {
       tokenize("엄청작아서귀엽다") ===
         List(
           KoreanToken("엄청", Adverb, 0, 2),
-          KoreanToken("작아", Adjective, 2, 2), KoreanToken("서", Eomi, 4, 1),
-          KoreanToken("귀엽", Adjective, 5, 2), KoreanToken("다", Eomi, 7, 1))
+          KoreanToken("작아서", Adjective, 2, 3, stem = Some("작다")),
+          KoreanToken("귀엽다", Adjective, 5, 3, stem = Some("귀엽다")))
     )
 
     assert(
       tokenize("안녕하셨어요") ===
         List(
-          KoreanToken("안녕하셨", Adjective, 0, 4), KoreanToken("어요", Eomi, 4, 2)
+          KoreanToken("안녕하셨어요", Adjective, 0, 6, stem = Some("안녕하다"))
         )
     )
 
     assert(
       tokenize("쵸귀여운개루루") ===
         List(
-          KoreanToken("쵸", VerbPrefix, 0, 1), KoreanToken("귀여운", Adjective, 1, 3),
+          KoreanToken("쵸", VerbPrefix, 0, 1),
+          KoreanToken("귀여운", Adjective, 1, 3, stem = Some("귀엽다")),
           KoreanToken("개", Noun, 4, 1), KoreanToken("루루", Noun, 5, 2)
         )
     )
@@ -181,7 +182,7 @@ class KoreanTokenizerTest extends TestBase {
 
     assert(
       tokenize("안녕하세요쿛툐캬님") ===
-        List(KoreanToken("안녕하세", Adjective, 0, 4), KoreanToken("요", Eomi, 4, 1),
+        List(KoreanToken("안녕하세요", Adjective, 0, 5, stem = Some("안녕하다")),
           KoreanToken("쿛툐캬", Noun, 5, 3, unknown = true), KoreanToken("님", Suffix, 8, 1))
     )
   }
@@ -199,11 +200,11 @@ class KoreanTokenizerTest extends TestBase {
 
     assert(
       tokenize("아이럴수가").mkString(", ") ===
-        "아(Exclamation: 0, 1), 이럴(Adjective: 1, 2), 수(PreEomi: 3, 1), 가(Eomi: 4, 1)"
+        "아(Exclamation: 0, 1), 이럴수가(Adjective(이렇다): 1, 4)"
     )
 
     assert(
-      tokenize("보다가").mkString(", ") === "보다(Verb: 0, 2), 가(Eomi: 2, 1)"
+      tokenize("보다가").mkString(", ") === "보다가(Verb(보다): 0, 3)"
     )
 
     assert(
@@ -211,7 +212,7 @@ class KoreanTokenizerTest extends TestBase {
     )
 
     assert(
-      tokenize("시전하는").mkString(", ") === "시전(Noun: 0, 2), 하는(Verb: 2, 2)"
+      tokenize("시전하는").mkString(", ") === "시전(Noun: 0, 2), 하는(Verb(하다): 2, 2)"
     )
   }
 

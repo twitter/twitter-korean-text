@@ -20,6 +20,7 @@ package org.openkoreantext.processor.tokenizer
 
 import java.util
 
+import org.openkoreantext.processor.stemmer.KoreanStemmer
 import org.openkoreantext.processor.tokenizer.KoreanChunker._
 import org.openkoreantext.processor.util.KoreanDictionaryProvider._
 import org.openkoreantext.processor.util.KoreanPos
@@ -94,7 +95,8 @@ object KoreanTokenizer {
   def tokenize(text: CharSequence,
                profile: TokenizerProfile = TokenizerProfile.defaultProfile
               ): Seq[KoreanToken] = {
-    tokenizeTopN(text, 1, profile).flatMap(_.head)
+    val tokenized = tokenizeTopN(text, 1, profile).flatMap(_.head)
+    KoreanStemmer.stem(tokenized)
   }
 
   /**
@@ -181,7 +183,7 @@ object KoreanTokenizer {
 
                 val unknown = !isWordName && !isKoreanNumber(word) && !isWordKoreanNameVariation
                 val pos = Noun
-                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length, unknown)),
+                ParsedChunk(Seq(KoreanToken(word, pos, chunk.offset + start, word.length, unknown = unknown)),
                   t.words, profile)
               } else {
                 val pos = t.curTrie.curPos
@@ -208,7 +210,7 @@ object KoreanTokenizer {
 
     val topCandidates: Seq[Seq[KoreanToken]] = if (solutions.get(chunk.length).isEmpty) {
       // If the chunk is not parseable, treat it as a unknown noun chunk.
-      Seq(Seq(KoreanToken(chunk.text, Noun, 0, chunk.length, true)))
+      Seq(Seq(KoreanToken(chunk.text, Noun, 0, chunk.length, unknown = true)))
     } else {
       // Return the best parse of the final state
       solutions.get(chunk.length).sortBy(c => c.parse.score).map { p => p.parse.posNodes }
@@ -230,14 +232,15 @@ object KoreanTokenizer {
   }
 
   case class KoreanToken(text: String, pos: KoreanPos, offset: Int, length: Int,
-                         unknown: Boolean = false) {
+                         stem: Option[String] = None, unknown: Boolean = false) {
     override def toString: String = {
       val unknownStar = if (unknown) "*" else ""
-      s"$text$unknownStar(${pos.toString}: $offset, $length)"
+      val stemString = if (stem.isDefined) "(%s)".format(stem.get) else ""
+      s"$text$unknownStar(${pos.toString}$stemString: $offset, $length)"
     }
 
     def copyWithNewPos(pos: KoreanPos): KoreanToken = {
-      KoreanToken(this.text, pos, this.offset, this.length, this.unknown)
+      KoreanToken(this.text, pos, this.offset, this.length, unknown = this.unknown)
     }
   }
 

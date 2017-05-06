@@ -39,24 +39,11 @@ public class OpenKoreanProcessorJavaTest {
   public void testTokenize() throws Exception {
     String text = "착한강아지상을 받은 루루";
     assertEquals(
-        "List(착한(Adjective: 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), 을(Josa: 6, 1), " +
-            " (Space: 7, 1), 받은(Verb: 8, 2),  (Space: 10, 1), 루루(Noun: 11, 2))",
+        "List(착한(Adjective(착하다): 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), " +
+            "을(Josa: 6, 1),  (Space: 7, 1), 받은(Verb(받다): 8, 2),  " +
+            "(Space: 10, 1), 루루(Noun: 11, 2))",
         OpenKoreanTextProcessorJava.tokenize(text).toString()
     );
-  }
-
-  @Test
-  public void testStem() throws Exception {
-    Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize("아름다운 강산을 귀여워서 먹었다.");
-    Seq<KoreanTokenizer.KoreanToken> stemmed = OpenKoreanTextProcessorJava.stem(tokens);
-
-    assertEquals(
-        "[아름답다(Adjective: 0, 4), 강산(Noun: 5, 2), 을(Josa: 7, 1), 귀엽다(Adjective: 9, 4), " +
-            "먹다(Verb: 14, 3), .(Punctuation: 17, 1)]",
-        OpenKoreanTextProcessorJava.tokensToJavaKoreanTokenList(stemmed).toString());
-
-    assertEquals("[아름답다, 강산, 을, 귀엽다, 먹다, .]",
-        OpenKoreanTextProcessorJava.tokensToJavaStringList(stemmed).toString());
   }
 
   @Test

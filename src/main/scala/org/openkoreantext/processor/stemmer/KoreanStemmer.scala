@@ -29,17 +29,20 @@ object KoreanStemmer {
         if (Predicates.contains(l.head.pos)) {
           val prevToken = l.head
           KoreanToken(
-            prevToken.text,
-            prevToken.pos, prevToken.offset, prevToken.length + token.length, prevToken.unknown
+            prevToken.text + token.text,
+            prevToken.pos, prevToken.offset, prevToken.length + token.length,
+            stem = prevToken.stem,
+            unknown = prevToken.unknown
           ) :: l.tail
         } else {
           l
         }
       case (l: List[KoreanToken], token: KoreanToken) if Predicates.contains(token.pos) =>
-        val text = predicateStems(token.pos)(token.text)
         KoreanToken(
-          text,
-          token.pos, token.offset, token.length, token.unknown
+          token.text,
+          token.pos, token.offset, token.length,
+          stem = Some(predicateStems(token.pos)(token.text)),
+          unknown = token.unknown
         ) :: l
       case (l: List[KoreanToken], token: KoreanToken) => token :: l
     }.reverse
