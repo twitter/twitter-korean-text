@@ -78,13 +78,18 @@ public final class OpenKoreanTextProcessorJava {
     List<KoreanTokenJava> output = new LinkedList<>();
     while (tokenized.hasNext()) {
       KoreanToken token = tokenized.next();
+      String stem = "";
+      if (token.stem().nonEmpty()) {
+        stem += token.stem().get();
+      }
       if (keepSpace || token.pos() != KoreanPos.Space()) {
         output.add(new KoreanTokenJava(
             token.text(),
             KoreanPosJava.valueOf(token.pos().toString()),
             token.offset(),
             token.length(),
-            token.unknown()
+            token.unknown(),
+            stem
         ));
       }
     }
