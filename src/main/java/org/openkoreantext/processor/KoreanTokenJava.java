@@ -18,18 +18,20 @@
 package org.openkoreantext.processor;
 
 public class KoreanTokenJava {
+  private final String stem;
   String text;
   KoreanPosJava pos;
   int offset;
   int length;
   boolean unknown;
 
-  public KoreanTokenJava(String text, KoreanPosJava pos, int offset, int length, boolean unknown) {
+  public KoreanTokenJava(String text, KoreanPosJava pos, int offset, int length, boolean unknown, String stem) {
     this.text = text;
     this.pos = pos;
     this.offset = offset;
     this.length = length;
     this.unknown = unknown;
+    this.stem = stem;
   }
 
   public String getText() {
@@ -55,9 +57,15 @@ public class KoreanTokenJava {
   @Override
   public String toString() {
     String unknownStar = "";
-    if (unknown){
+    if (unknown) {
       unknownStar = "*";
     }
-    return String.format("%s%s(%s: %d, %d)", text, unknownStar, pos.toString(), offset, length);
+
+    String stemString = "";
+    if (!this.stem.isEmpty()) {
+      stemString = "(" + this.stem + ")";
+    }
+
+    return String.format("%s%s(%s%s: %d, %d)", text, unknownStar, pos.toString(), stemString, offset, length);
   }
 }
