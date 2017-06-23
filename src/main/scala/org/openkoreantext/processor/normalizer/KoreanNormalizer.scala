@@ -25,6 +25,7 @@ import org.openkoreantext.processor.util.Hangul.{HangulChar, _}
 import org.openkoreantext.processor.util.KoreanDictionaryProvider._
 import org.openkoreantext.processor.util.KoreanPos._
 
+import scala.util.matching.Regex
 import scala.util.matching.Regex.Match
 
 /**
@@ -33,7 +34,7 @@ import scala.util.matching.Regex.Match
 object KoreanNormalizer {
   private[this] val EXTENTED_KOREAN_REGEX = """([ㄱ-ㅣ가-힣]+)""".r
   private[this] val KOREAN_TO_NORMALIZE_REGEX = """([가-힣]+)(ㅋ+|ㅎ+|[ㅠㅜ]+)""".r
-  protected[processor] val REPEATING_CHAR_REGEX = """(.)\1{3,}|[ㅠㅜ]{3,}""".r
+  protected[processor] val REPEATING_CHAR_REGEX: Regex = """(.)\1{3,}|[ㅠㅜ]{3,}""".r
   private[this] val REPEATING_2CHAR_REGEX = """(..)\1{2,}""".r
 
   private[this] val WHITESPACE_REGEX = """\s+""".r
@@ -81,7 +82,7 @@ object KoreanNormalizer {
     WHITESPACE_REGEX.replaceAllIn(typoCorrected, " ")
   }
 
-  protected[processor] def correctTypo(chunk: CharSequence): CharSequence = {
+  protected[processor] def correctTypo(chunk: CharSequence): CharSequence =
     typoDictionaryByLength.foldLeft(chunk) {
       case (output: String, (wordLen: Int, typoMap: Map[String, String])) =>
         output.sliding(wordLen).foldLeft(output) {
@@ -91,7 +92,6 @@ object KoreanNormalizer {
             sliceOutput
         }
     }
-  }
 
   protected[processor] def normalizeCodaN(chunk: CharSequence): CharSequence = {
     if (chunk.length < 2) return chunk

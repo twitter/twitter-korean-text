@@ -84,7 +84,7 @@ public class OpenKoreanProcessorJavaTest {
 
   @Test
   public void testTokensToJavaKoreanTokenList() throws Exception {
-    String text =  "착한강아지상을 받은 루루";
+    String text = "착한강아지상을 받은 루루";
     Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize(text);
     assertEquals(
         "[착한(Adjective(착하다): 0, 2), 강아지(Noun: 2, 3), 상(Suffix: 5, 1), 을(Josa: 6, 1), " +
@@ -98,7 +98,7 @@ public class OpenKoreanProcessorJavaTest {
         OpenKoreanTextProcessorJava.tokensToJavaKoreanTokenList(tokens, false).toString()
     );
 
-    text =  "백여마리";
+    text = "백여마리";
     tokens = OpenKoreanTextProcessorJava.tokenize(text);
     assertEquals(
         "[백여(Modifier: 0, 2), 마리(Noun: 2, 2)]",
@@ -142,7 +142,7 @@ public class OpenKoreanProcessorJavaTest {
 
   @Test
   public void testDetokenizer() {
-    List<String> words = Arrays.asList("늘", "평온", "하게", "누워", "있", "는",  "루루");
+    List<String> words = Arrays.asList("늘", "평온", "하게", "누워", "있", "는", "루루");
 
     assertEquals(
         "늘 평온하게 누워있는 루루",

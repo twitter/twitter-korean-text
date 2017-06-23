@@ -35,7 +35,7 @@ object KoreanStemmer {
             unknown = prevToken.unknown
           ) :: l.tail
         } else {
-          l
+          token :: l
         }
       case (l: List[KoreanToken], token: KoreanToken) if Predicates.contains(token.pos) =>
         KoreanToken(

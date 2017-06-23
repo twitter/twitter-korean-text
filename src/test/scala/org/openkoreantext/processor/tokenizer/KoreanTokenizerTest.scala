@@ -172,6 +172,24 @@ class KoreanTokenizerTest extends TestBase {
       tokenize("라고만") ===
         List(KoreanToken("라고만", Eomi, 0, 3))
     )
+
+    assert(
+      tokenize("\"라면서 외쳤다") ===
+        List(
+          KoreanToken("\"", Punctuation, 0, 1),
+          KoreanToken("라면서", Eomi, 1, 3),
+          KoreanToken(" ", Space, 4, 1),
+          KoreanToken("외쳤다", Verb, 5, 3, stem = Some("외치다"))
+        )
+    )
+
+    assert(
+      tokenize("사랑해") ===
+        List(
+          KoreanToken("사랑", Noun, 0, 2),
+          KoreanToken("해", Verb, 2, 1, stem = Some("하다"))
+        )
+    )
   }
 
   test("tokenize should handle unknown nouns") {
@@ -227,7 +245,7 @@ class KoreanTokenizerTest extends TestBase {
 
   test("tokenize should properly tokenize edge cases") {
     assert(
-      tokenize("해쵸쵸쵸쵸쵸쵸쵸쵸춏").mkString(" ") === "해쵸쵸쵸쵸쵸쵸쵸쵸춏*(Noun: 0, 10)"
+      tokenize("해쵸쵸쵸쵸쵸쵸쵸쵸춏").mkString(" ") === "해(Noun: 0, 1) 쵸쵸쵸쵸쵸쵸쵸쵸*(Noun: 1, 8) 춏*(Noun: 9, 1)"
     )
   }
 
