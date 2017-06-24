@@ -38,7 +38,7 @@ case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int,
     profile: TokenizerProfile = TokenizerProfile.defaultProfile) {
 
   // Using lazy val to cache the score
-  lazy val score = countTokens * profile.tokenCount +
+  lazy val score: Float = countTokens * profile.tokenCount +
       countUnknowns * profile.unknown +
       words * profile.wordCount +
       getUnknownCoverage * profile.unknownCoverage +
@@ -53,15 +53,15 @@ case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int,
       isNounHa * profile.haVerb +
       hasSpaceOutOfGuide * profile.spaceGuidePenalty
 
-  def countUnknowns = this.posNodes.count { p: KoreanToken => p.unknown }
+  def countUnknowns: Int = this.posNodes.count { p: KoreanToken => p.unknown }
 
-  def countTokens = this.posNodes.size
+  def countTokens: Int = this.posNodes.size
 
-  def isInitialPostPosition = if (suffixes.contains(this.posNodes.head.pos)) 1 else 0
+  def isInitialPostPosition: Int = if (suffixes.contains(this.posNodes.head.pos)) 1 else 0
 
-  def isExactMatch = if (this.posNodes.size == 1) 0 else 1
+  def isExactMatch: Int = if (this.posNodes.size == 1) 0 else 1
 
-  def hasSpaceOutOfGuide = if (profile.spaceGuide.isEmpty) {
+  def hasSpaceOutOfGuide: Int = if (profile.spaceGuide.isEmpty) {
     0
   } else {
     this.posNodes
@@ -72,36 +72,38 @@ case class ParsedChunk(posNodes: Seq[KoreanToken], words: Int,
   }
 
 
-  def isAllNouns = if (this.posNodes.exists(
+  def isAllNouns: Int = if (this.posNodes.exists(
     t => t.pos != Noun && t.pos != ProperNoun)) 1
   else 0
 
-  def isPreferredPattern = if (
+  def isPreferredPattern: Int = if (
     posNodes.size == 2 && profile.preferredPatterns.contains(posNodes.map(_.pos))
   ) 0
   else 1
 
-  def isNounHa = if (this.posNodes.size >= 2
+  def isNounHa: Int = if (this.posNodes.size >= 2
       && preferredBeforeHaVerb.contains(this.posNodes.head.pos)
       && this.posNodes(1).pos == Verb
-      && this.posNodes(1).text.startsWith("하")) 0
-  else 1
+      && (this.posNodes(1).text.startsWith("하") || this.posNodes(1).text.startsWith("해")))
+    0
+  else
+    1
 
-  def posTieBreaker = this.posNodes.map(_.pos.id).sum
+  def posTieBreaker: Int = this.posNodes.map(_.pos.id).sum
 
-  def getUnknownCoverage = this.posNodes.foldLeft(0) {
+  def getUnknownCoverage: Int = this.posNodes.foldLeft(0) {
     case (sum, p: KoreanToken) => if (p.unknown) sum + p.text.length else sum
   }
 
-  def getFreqScore = this.posNodes.foldLeft(0f) {
+  def getFreqScore: Float = this.posNodes.foldLeft(0f) {
     case (output: Float, p: KoreanToken) if p.pos == Noun || p.pos == ProperNoun =>
       output + (1f - koreanEntityFreq.getOrDefault(p.text, 0f))
     case (output: Float, p: KoreanToken) => output + 1.0f
   } / this.posNodes.size
 
-  def ++(that: ParsedChunk) = {
+  def ++(that: ParsedChunk): ParsedChunk = {
     ParsedChunk(this.posNodes ++ that.posNodes, this.words + that.words, profile)
   }
 
-  def countPos(pos: KoreanPos) = this.posNodes.count { p: KoreanToken => p.pos == pos }
+  def countPos(pos: KoreanPos): Int = this.posNodes.count { p: KoreanToken => p.pos == pos }
 }

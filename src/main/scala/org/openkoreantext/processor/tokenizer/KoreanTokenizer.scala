@@ -116,7 +116,7 @@ object KoreanTokenizer {
           val parsed = parseKoreanChunk(token, profile, topN)
 
           // Collapse sequence of one-char nouns into one unknown noun: (가Noun 회Noun -> 가회Noun*)
-          parsed.map(collapseNouns(_))
+          parsed.map(collapseNouns)
         case token: KoreanToken => Seq(Seq(token))
       }
     catch {
@@ -137,7 +137,9 @@ object KoreanTokenizer {
                                      profile: TokenizerProfile = TokenizerProfile.defaultProfile,
                                      topN: Int = 1
                                     ): Seq[Seq[KoreanToken]] = {
-    findTopCandidates(chunk, profile).take(topN)
+
+    val candidates = findTopCandidates(chunk, profile)
+    candidates.take(topN)
   }
 
   private def findTopCandidates(chunk: KoreanToken, profile: TokenizerProfile) = {
@@ -175,7 +177,7 @@ object KoreanTokenizer {
           possiblePoses.view.filter { t =>
             t.curTrie.curPos == Noun || koreanDictionary.get(t.curTrie.curPos).contains(
               word.toCharArray)
-          }.map { case t: PossibleTrie =>
+          }.map { t: PossibleTrie =>
             val candidateToAdd =
               if (t.curTrie.curPos == Noun && !koreanDictionary.get(Noun).contains(word.toCharArray)) {
                 val isWordName: Boolean = isName(word)
