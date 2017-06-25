@@ -143,4 +143,11 @@ class OpenKoreanTextProcessorTest extends TestBase {
           "List(후(Noun: 3, 1), 보(Verb: 4, 1))))"
     )
   }
+
+  test("tokensToStrings should return correct strings") {
+    assert(
+      OpenKoreanTextProcessor.tokensToStrings(OpenKoreanTextProcessor.tokenize("사랑해")) ===
+        List("사랑", "해")
+    )
+  }
 }
