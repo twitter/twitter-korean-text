@@ -1,4 +1,5 @@
-## open-korean-text [![Coverage Status](https://coveralls.io/repos/github/open-korean-text/open-korean-text/badge.svg?branch=master)](https://coveralls.io/github/open-korean-text/open-korean-text?branch=master) [![Build Status](https://travis-ci.org/open-korean-text/open-korean-text.svg?branch=master)](https://travis-ci.org/open-korean-text/open-korean-text)
+## open-korean-text [![Coverage Status](https://coveralls.io/repos/github/open-korean-text/open-korean-text/badge.svg?branch=master)](https://coveralls.io/github/open-korean-text/open-korean-text?branch=master) [![Build Status](https://travis-ci.org/open-korean-text/open-korean-text.svg?branch=master)](https://travis-ci.org/open-korean-text/open-korean-text) [![License](http://img.shields.io/:license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 Open-source Korean Text Processor / 오픈소스 한국어 처리기 (Official Fork of twitter-korean-text)
 
