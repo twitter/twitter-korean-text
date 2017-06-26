@@ -18,11 +18,122 @@
 
 package org.openkoreantext.processor.tokenizer
 
+import com.twitter.Regex
 import org.openkoreantext.processor.TestBase
 import org.openkoreantext.processor.tokenizer.KoreanChunker._
 import org.openkoreantext.processor.util.KoreanPos._
 
 class KoreanChunkerTest extends TestBase {
+  
+  test("findAllPatterns should correctly find all patterns") {
+    val testStr = "한국어와 English와 1234와 pic.twitter.com " +
+        "http://news.kukinews.com/article/view.asp?" +
+        "page=1&gCode=soc&arcid=0008599913&code=41121111 " +
+        "#Hashtag $hello_kr " +
+        "hohyonryu@twitter.com @nlpenguin 갤럭시 S5 ㄱㄱ"
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(URL).matcher(testStr), URL).mkString("/")
+        === "ChunkMatch(35,125, http://news.kukinews.com/article/view.asp?page=1&gCode=soc&arcid=0008599913&code=41121111,URL)/" +
+            "ChunkMatch(19,35, pic.twitter.com,URL)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(Email).matcher(testStr), Email).mkString("/")
+        === "ChunkMatch(145,166,hohyonryu@twitter.com,Email)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(ScreenName).matcher(testStr), ScreenName).mkString("/")
+        === "ChunkMatch(166,177, @nlpenguin,ScreenName)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(Hashtag).matcher(testStr), Hashtag).mkString("/")
+        === "ChunkMatch(125,134, #Hashtag,Hashtag)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(CashTag).matcher(testStr), CashTag).mkString("/")
+        === "ChunkMatch(134,144, $hello_kr,CashTag)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(Korean).matcher(testStr), Korean).mkString("/")
+        === "ChunkMatch(178,181,갤럭시,Korean)/" +
+            "ChunkMatch(18,19,와,Korean)/" +
+            "ChunkMatch(12,13,와,Korean)/" +
+            "ChunkMatch(0,4,한국어와,Korean)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(KoreanParticle).matcher(testStr), KoreanParticle).mkString("/")
+        === "ChunkMatch(185,187,ㄱㄱ,KoreanParticle)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(Number).matcher(testStr), Number).mkString("/")
+        === "ChunkMatch(183,184,5,Number)/" +
+            "ChunkMatch(117,125,41121111,Number)/" +
+            "ChunkMatch(101,111,0008599913,Number)/" +
+            "ChunkMatch(83,84,1,Number)/" +
+            "ChunkMatch(14,18,1234,Number)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(Alpha).matcher(testStr), Alpha).mkString("/")
+        === "ChunkMatch(182,183,S,Alpha)/" +
+            "ChunkMatch(168,177,nlpenguin,Alpha)/" +
+            "ChunkMatch(163,166,com,Alpha)/" +
+            "ChunkMatch(155,162,twitter,Alpha)/" +
+            "ChunkMatch(145,154,hohyonryu,Alpha)/" +
+            "ChunkMatch(142,144,kr,Alpha)/" +
+            "ChunkMatch(136,141,hello,Alpha)/" +
+            "ChunkMatch(127,134,Hashtag,Alpha)/" +
+            "ChunkMatch(112,116,code,Alpha)/" +
+            "ChunkMatch(95,100,arcid,Alpha)/" +
+            "ChunkMatch(91,94,soc,Alpha)/" +
+            "ChunkMatch(85,90,gCode,Alpha)/" +
+            "ChunkMatch(78,82,page,Alpha)/" +
+            "ChunkMatch(74,77,asp,Alpha)/" +
+            "ChunkMatch(69,73,view,Alpha)/" +
+            "ChunkMatch(61,68,article,Alpha)/" +
+            "ChunkMatch(57,60,com,Alpha)/" +
+            "ChunkMatch(48,56,kukinews,Alpha)/" +
+            "ChunkMatch(43,47,news,Alpha)/" +
+            "ChunkMatch(36,40,http,Alpha)/" +
+            "ChunkMatch(32,35,com,Alpha)/" +
+            "ChunkMatch(24,31,twitter,Alpha)/" +
+            "ChunkMatch(20,23,pic,Alpha)/" +
+            "ChunkMatch(5,12,English,Alpha)"
+    )
+    
+    assert(
+      findAllPatterns(POS_PATTERNS(Punctuation).matcher(testStr), Punctuation).mkString("/")
+        === "ChunkMatch(167,168,@,Punctuation)/" +
+            "ChunkMatch(162,163,.,Punctuation)/" +
+            "ChunkMatch(154,155,@,Punctuation)/" +
+            "ChunkMatch(141,142,_,Punctuation)/" +
+            "ChunkMatch(135,136,$,Punctuation)/" +
+            "ChunkMatch(126,127,#,Punctuation)/" +
+            "ChunkMatch(116,117,=,Punctuation)/" +
+            "ChunkMatch(111,112,&,Punctuation)/" +
+            "ChunkMatch(100,101,=,Punctuation)/" +
+            "ChunkMatch(94,95,&,Punctuation)/" +
+            "ChunkMatch(90,91,=,Punctuation)/" +
+            "ChunkMatch(84,85,&,Punctuation)/" +
+            "ChunkMatch(82,83,=,Punctuation)/" +
+            "ChunkMatch(77,78,?,Punctuation)/" +
+            "ChunkMatch(73,74,.,Punctuation)/" +
+            "ChunkMatch(68,69,/,Punctuation)/" +
+            "ChunkMatch(60,61,/,Punctuation)/" +
+            "ChunkMatch(56,57,.,Punctuation)/" +
+            "ChunkMatch(47,48,.,Punctuation)/" +
+            "ChunkMatch(40,43,://,Punctuation)/" +
+            "ChunkMatch(31,32,.,Punctuation)/" +
+            "ChunkMatch(23,24,.,Punctuation)"
+    )
+  }
 
   test("getChunks should correctly split a string into Korean-sensitive chunks") {
     assert(
@@ -51,7 +162,7 @@ class KoreanChunkerTest extends TestBase {
     )
   }
   
-  test("getChunksByPos should correctly find chunks with a POS tag") {
+  test("getChunksByPos should correctly extract chunks with a POS tag") {
     assert(
       getChunksByPos("openkoreantext.org에서 API를 테스트 할 수 있습니다.", URL).mkString("/")
         === "openkoreantext.org(URL: 0, 18)"

@@ -33,7 +33,7 @@ case class KoreanChunk(text: String, offset: Int, length: Int)
  * Split input text into Korean Chunks (어절)
  */
 object KoreanChunker {
-  private val POS_PATTERNS = Map(
+  private[tokenizer] val POS_PATTERNS = Map(
     Korean -> """([가-힣]+)""".r.pattern,
     Alpha -> """(\p{Alpha}+)""".r.pattern,
     Number -> ("""(\$?\p{Digit}+"""
@@ -55,7 +55,7 @@ object KoreanChunker {
     chunk(input).map(_.text)
   }
 
-  private[this] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
+  private[tokenizer] case class ChunkMatch(start: Int, end: Int, text: String, pos: KoreanPos) {
     def disjoint(that: ChunkMatch): Boolean = {
       (that.start < this.start && that.end <= this.start) ||
         (that.start >= this.end && that.end > this.end)
@@ -93,7 +93,7 @@ object KoreanChunker {
    * @return list of ChunkMatches
    */
   @scala.annotation.tailrec
-  private[this] def findAllPatterns(m: Matcher, pos: KoreanPos, matches: List[ChunkMatch] = List()): List[ChunkMatch] = {
+  private[tokenizer] def findAllPatterns(m: Matcher, pos: KoreanPos, matches: List[ChunkMatch] = List()): List[ChunkMatch] = {
     if (m.find()) {
       findAllPatterns(m, pos, ChunkMatch(m.start, m.end, m.group(), pos) :: matches)
     } else {
