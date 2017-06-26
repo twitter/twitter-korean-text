@@ -20,6 +20,7 @@ package org.openkoreantext.processor.tokenizer
 
 import org.openkoreantext.processor.TestBase
 import org.openkoreantext.processor.tokenizer.KoreanChunker._
+import org.openkoreantext.processor.util.KoreanPos._
 
 class KoreanChunkerTest extends TestBase {
 
@@ -47,6 +48,58 @@ class KoreanChunkerTest extends TestBase {
     assert(
       getChunks("#해쉬태그 이라는 것 #hash @hello 123 이런이런 #여자최애캐_5명으로_취향을_드러내자").mkString("/")
         === "#해쉬태그/ /이라는/ /것/ /#hash/ /@hello/ /123/ /이런이런/ /#여자최애캐_5명으로_취향을_드러내자"
+    )
+  }
+  
+  test("getChunksByPos should correctly find chunks with a POS tag") {
+    assert(
+      getChunksByPos("openkoreantext.org에서 API를 테스트 할 수 있습니다.", URL).mkString("/")
+        === "openkoreantext.org(URL: 0, 18)"
+    )
+    
+    assert(
+      getChunksByPos("메일 주소 mechanickim@openkoreantext.org로 문의주시거나", Email).mkString("/")
+        === "mechanickim@openkoreantext.org(Email: 6, 30)"
+    )
+    
+    assert(
+      getChunksByPos("open-korean-text 프로젝트 마스터 @nlpenguin님께 메일주시면 됩니다. :-)", ScreenName).mkString("/")
+        === "@nlpenguin(ScreenName: 26, 10)"
+    )
+    
+    assert(
+      getChunksByPos("해시태그는 이렇게 생겼습니다. #나는_해적왕이_될_사나이다", Hashtag).mkString("/")
+        === "#나는_해적왕이_될_사나이다(Hashtag: 17, 15)"
+    )
+    
+    assert(
+      getChunksByPos("캐쉬태그는 이렇게 생겼습니다. $hello_kr", CashTag).mkString("/")
+        === "$hello_kr(CashTag: 17, 9)"
+    )
+    
+    assert(
+      getChunksByPos("Black action solier 출두요~!", Korean).mkString("/")
+        === "출두요(Korean: 20, 3)"
+    )
+    
+    assert(
+      getChunksByPos("Black action solier 출두요~! ㅋㅋ", KoreanParticle).mkString("/")
+        === "ㅋㅋ(KoreanParticle: 26, 2)"
+    )
+    
+    assert(
+      getChunksByPos("최근 발매된 게임 '13일의 금요일'은 43,000원에 스팀에서 판매중입니다.", Number).mkString("/")
+        === "13일(Number: 11, 3)/43,000원(Number: 22, 7)"
+    )
+    
+    assert(
+      getChunksByPos("드래곤볼 Z", Alpha).mkString("/")
+        === "Z(Alpha: 5, 1)"
+    )
+    
+    assert(
+      getChunksByPos("나의 일기장 안에 모든 말을 다 꺼내어 줄 순 없지만... 사랑한다는 말 이에요.", Punctuation).mkString("/")
+        === "...(Punctuation: 29, 3)/.(Punctuation: 44, 1)"
     )
   }
 
