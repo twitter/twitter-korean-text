@@ -2,7 +2,7 @@ name := "Korean Text Processing Utilities SBT"
 
 version := "4.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.6"
 
 libraryDependencies ++= Seq(
   "com.twitter" % "twitter-text" % "1.11.1",
