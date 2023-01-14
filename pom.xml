@@ -60,7 +60,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <scala.version>2.11.7</scala.version>
+    <scala.version>2.13.10</scala.version>
     <scoverage.plugin.version>1.0.4</scoverage.plugin.version>
     <encoding>UTF-8</encoding>
   </properties>
